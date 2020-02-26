@@ -1,1 +1,1 @@
-import './common/index'
+export * from './common'
