@@ -1,5 +1,7 @@
 ## Contribute
 
+For faster development, you may instead want to contribute to [Vulcan Next Starter](https://github.com/VulcanJS/vulcan-next-starter/issues/1). NPM packages will be published in this repo when they reach sufficient maturity.
+
 ### Install
 
 Install Lerna
@@ -7,6 +9,10 @@ Install Lerna
 ```
 npm i -g lerna
 ```
+
+### Develop
+
+Install and link packages using `lerna bootstrap`. Now `@vulcan/xxx` will be available in your own application.
 
 ## Resources
 
