@@ -34,8 +34,7 @@ Options:
 import { useQuery } from "@apollo/react-hooks";
 import { useState } from "react";
 import gql from "graphql-tag";
-import { multiClientTemplate } from "@vulcan/graphql";
-import { VulcanModel } from "@vulcan/model";
+import { multiClientTemplate, VulcanGraphqlModel } from "@vulcan/graphql/index";
 import merge from "lodash/merge";
 import get from "lodash/get";
 import { QueryInput } from "./typings";
@@ -233,7 +232,7 @@ const buildResult = (
 interface MultiInput extends QueryInput {}
 
 interface UseMultiOptions {
-  model: VulcanModel;
+  model: VulcanGraphqlModel;
   input?: MultiInput;
   fragment?: string;
   fragmentName?: string;

@@ -1,8 +1,8 @@
 import { MutationHookOptions } from "@apollo/react-hooks";
-import { VulcanModel } from "@vulcan/model";
+import { VulcanGraphqlModel } from "@vulcan/graphql/index";
 
 export interface VulcanMutationHookOptions {
-  model: VulcanModel;
+  model: VulcanGraphqlModel;
   fragment?: string;
   fragmentName?: string;
   mutationOptions?: MutationHookOptions;

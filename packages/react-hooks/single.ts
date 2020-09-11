@@ -2,8 +2,10 @@ import { useQuery, QueryOptions } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import _merge from "lodash/merge";
 
-import { singleClientTemplate } from "@vulcan/graphql";
-import { VulcanModel } from "@vulcan/model";
+import {
+  singleClientTemplate,
+  VulcanGraphqlModel,
+} from "@vulcan/graphql/index";
 
 import { computeQueryVariables } from "./variables";
 import { OperationVariables } from "apollo-client";
@@ -94,7 +96,7 @@ interface SingleInput extends QueryInput {
   allowNull?: boolean; // if false, throw an error when not found
 }
 interface UseSingleOptions {
-  model: VulcanModel;
+  model: VulcanGraphqlModel;
   input?: SingleInput;
   fragment?: string;
   fragmentName?: string;

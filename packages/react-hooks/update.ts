@@ -31,7 +31,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { MutationResult } from "@apollo/react-common";
 import gql from "graphql-tag";
 
-import { updateClientTemplate } from "@vulcan/graphql";
+import { updateClientTemplate } from "@vulcan/graphql/index";
 
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { computeQueryVariables } from "./variables";

@@ -3,13 +3,13 @@
 //  */
 import { buildMultiQuery } from "./multi";
 import { getVariablesListFromCache } from "./cacheUpdate";
-import { getApolloClient } from "@vulcan/next-apollo";
+import { getApolloClient } from "@vulcan/next-apollo/index";
 import debug from "debug";
-import { VulcanModel } from "@vulcan/model";
+import { VulcanGraphqlModel } from "@vulcan/graphql/index";
 const debugApollo = debug("vn:apollo");
 
 interface ComputeNewDataArgs {
-  model: VulcanModel;
+  model: VulcanGraphqlModel;
   variables: { input: any };
   queryResult: Object;
   mutatedDocument: Object;
@@ -25,7 +25,7 @@ export const multiQueryUpdater = (computeNewData) => ({
   fragmentName,
   resolverName,
 }: {
-  model: VulcanModel;
+  model: VulcanGraphqlModel;
   fragment: string;
   fragmentName: string;
   resolverName: string;

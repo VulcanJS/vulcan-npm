@@ -15,7 +15,7 @@ import { createHttpLink } from "apollo-link-http";
 import { from } from "apollo-link";
 import fetch from "isomorphic-unfetch";
 import { NextPageContext } from "next";
-import { isServerRenderCtx } from "@vulcan/next-utils";
+import { isServerRenderCtx } from "@vulcan/next-utils/ssr"; // TODO: should be able to import from source
 import debug from "debug";
 const debugApollo = debug("vn:apollo");
 

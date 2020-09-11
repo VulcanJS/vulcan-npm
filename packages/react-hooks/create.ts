@@ -28,13 +28,13 @@
 
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { createClientTemplate } from "@vulcan/graphql";
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { MutationResult } from "@apollo/react-common";
 import { VulcanMutationHookOptions } from "./typings";
 
 import { addToData, matchSelector } from "./cacheUpdate";
 import { filterFunction } from "@vulcan/mongo";
+import { createClientTemplate } from "@vulcan/graphql/index";
 
 import debug from "debug";
 const debugApollo = debug("vn:apollo");

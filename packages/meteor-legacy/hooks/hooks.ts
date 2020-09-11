@@ -9,7 +9,7 @@ import {
 } from "@apollo/react-common";
 import { MutationTuple, MutationHookOptions } from "@apollo/react-hooks";
 
-import { ApolloVariables } from "@vulcan/graphql";
+import { ApolloVariables } from "@vulcan/graphql/typings";
 
 // We modify the result function so that variables can be provided as first param,
 // which is more intuitive
