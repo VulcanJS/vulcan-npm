@@ -1,32 +1,50 @@
 /**
  */
-import { VulcanModel } from "./typings";
-import { VulcanSchema } from "@vulcan/schema";
+import { VulcanGraphqlModel } from "./typings";
+import { VulcanModel, ExtendModelFunc } from "@vulcan/model";
+import {
+  getDefaultFragmentText,
+  getDefaultFragmentName,
+} from "../graphql/fragments/defaultFragment";
+import { camelCaseify } from "@vulcan/utils";
 
-export type ExtendModelFunc<TExtended extends VulcanModel = VulcanModel> = (
-  model: VulcanModel
-) => TExtended;
 interface CreateModelOptions {
-  schema: VulcanSchema;
-  name: string;
-  extensions: Array<ExtendModelFunc>;
+  typeName: string; // Canonical name of the model = its graphQL type name
+  multiTypeName: string; // Plural version, to be defined manually (automated pluralization leads to unexpected results)
 }
-// TODO: typing is not correct, it returns a combination of the "extensions" calls
-export const createModel = (options: CreateModelOptions): VulcanModel => {
-  const { schema, name, extensions } = options;
+export const extendModel = (options: CreateModelOptions): ExtendModelFunc => (
+  model: VulcanModel
+): VulcanGraphqlModel => {
+  const name = model.name;
+  const { typeName = name, multiTypeName } = options;
 
-  const model: VulcanModel = {
-    schema,
-    name,
+  const singleResolverName = camelCaseify(typeName);
+  const multiResolverName = camelCaseify(multiTypeName);
+
+  // compute base properties
+  const graphqlModel = {
+    typeName,
+    multiTypeName,
+    singleResolverName,
+    multiResolverName,
   };
-
-  const extendedModel = extensions.reduce(
-    (currentExtendedModel, extendFunction) => {
-      return extendFunction(currentExtendedModel);
-    },
-    model
-  );
-  return extendedModel;
+  // compute default fragment
+  const extendedModel = {
+    ...model,
+    graphql: graphqlModel,
+  };
+  const defaultFragment = getDefaultFragmentText(extendedModel);
+  const defaultFragmentName = getDefaultFragmentName(extendedModel);
+  const extendedGraphqlModel = {
+    ...graphqlModel,
+    defaultFragment,
+    defaultFragmentName,
+  };
+  const finalModel: VulcanGraphqlModel = {
+    ...model,
+    graphql: extendedGraphqlModel,
+  };
+  return finalModel;
 };
 
 //// CODE FROM CREATE COLLECTION

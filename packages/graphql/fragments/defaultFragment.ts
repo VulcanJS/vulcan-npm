@@ -3,8 +3,8 @@
  * = a fragment containing all fields
  */
 import { getFragmentFieldNames, isBlackbox } from "@vulcan/schema";
-import { VulcanModel } from "@vulcan/model";
 import { VulcanSchema } from "@vulcan/schema";
+import { VulcanGraphqlModelSkeleton } from "../typings";
 
 const intlSuffix = "_intl";
 
@@ -96,19 +96,16 @@ export const getFieldFragment = ({
   }
 };
 
-export const getDefaultFragmentName = (model: ModelSkeleton): string =>
-  `${model.graphql.typeName}DefaultFragment`;
+export const getDefaultFragmentName = (
+  model: VulcanGraphqlModelSkeleton
+): string => `${model.graphql.typeName}DefaultFragment`;
 /*
 
 Create default "dumb" gql fragment object for a given collection
 
 */
-interface ModelSkeleton {
-  schema: VulcanModel["schema"];
-  graphql: Pick<VulcanModel["graphql"], "typeName">;
-}
 export const getDefaultFragmentText = (
-  model: ModelSkeleton, // only need a partially defined model
+  model: VulcanGraphqlModelSkeleton, // only need a partially defined model
   options = { onlyViewable: true }
 ) => {
   const schema = model.schema;

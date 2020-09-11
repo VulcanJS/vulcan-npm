@@ -11,14 +11,6 @@ type FilterFunction = (args: {
  */
 export interface VulcanModel {
   name: string;
-  graphql: {
-    typeName: string;
-    multiTypeName: string; // plural name for the multi resolver
-    multiResolverName: string;
-    singleResolverName: string;
-    defaultFragment: string;
-    defaultFragmentName: string;
-  };
   //customFilters: Array<{ name: string; filter: FilterFunction }>;
   schema: VulcanSchema;
 }
