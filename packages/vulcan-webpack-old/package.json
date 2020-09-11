@@ -1,6 +1,6 @@
 {
-  "name": "@vulcan/webpack",
-  "version": "2.0.0",
+  "name": "@vulcan/webpack-old",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {

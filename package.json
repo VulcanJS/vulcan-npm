@@ -7,10 +7,13 @@
   "devDependencies": {
     "@types/node": "^13.7.6",
     "@types/react": "^16.9.23",
-    "lerna": "^3.20.2",
+    "lerna": "^3.22.1",
     "typescript": "^3.8.2",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
