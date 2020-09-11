@@ -1,5 +1,5 @@
-export function demo () {
-  console.log('demo')
+export function demo() {
+  console.log("demo");
 }
 
-demo()
+demo();
