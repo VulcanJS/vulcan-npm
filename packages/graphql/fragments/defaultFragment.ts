@@ -58,8 +58,8 @@ export const getFieldFragment = ({
     typeof fieldType === "object"
       ? "Object"
       : typeof fieldType === "function"
-      ? fieldType.name
-      : fieldType;
+        ? fieldType.name
+        : fieldType;
 
   switch (fieldTypeName) {
     case "Object":
@@ -114,7 +114,7 @@ export const getDefaultFragmentText = (
       schema,
       fragmentName: `fragment ${getDefaultFragmentName(model)} on ${
         model.graphql.typeName
-      }`,
+        }`,
       options,
     }) || null
   );

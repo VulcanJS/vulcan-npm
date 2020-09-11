@@ -1,7 +1,7 @@
 /**
  */
 import { VulcanGraphqlModel } from "./typings";
-import { VulcanModel, ExtendModelFunc } from "@vulcan/model";
+import { VulcanModel, ExtendModelFunc } from "@vulcan/model/index";
 import {
   getDefaultFragmentText,
   getDefaultFragmentName,
@@ -12,7 +12,7 @@ interface CreateModelOptions {
   typeName: string; // Canonical name of the model = its graphQL type name
   multiTypeName: string; // Plural version, to be defined manually (automated pluralization leads to unexpected results)
 }
-export const extendModel = (options: CreateModelOptions): ExtendModelFunc => (
+export const extendModel = (options: CreateModelOptions)/*: ExtendModelFunc<VulcanGraphqlModel>*/ => (
   model: VulcanModel
 ): VulcanGraphqlModel => {
   const name = model.name;
