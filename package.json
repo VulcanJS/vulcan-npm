@@ -2,7 +2,8 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "link": "lerna exec yarn link"
   },
   "devDependencies": {
     "@types/node": "^13.7.6",

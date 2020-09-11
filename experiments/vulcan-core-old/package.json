@@ -11,7 +11,7 @@
     "build": "npm run build-client && npm run build-server"
   },
   "dependencies": {
-    "@vulcan/users": "^2.0.0"
+    "@vulcan/users-old": "^0.0.1"
   },
   "author": "",
   "license": "MIT",
