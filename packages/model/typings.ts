@@ -13,4 +13,5 @@ export interface VulcanModel {
   name: string;
   //customFilters: Array<{ name: string; filter: FilterFunction }>;
   schema: VulcanSchema;
+  options?: any; // TODO: used to add "customFilters", but to be improved, we should avoid generic option and have only options per extension (graphql, mongo, filtering...)
 }

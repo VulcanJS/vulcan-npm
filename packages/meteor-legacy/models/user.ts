@@ -1,4 +1,5 @@
 import { createModel } from "@vulcan/model";
+import { extendModel as extendGraphqlModel } from "@vulcan/graphql";
 // import SimpleSchema from "simpl-schema";
 // import {
 //   Utils,
@@ -382,8 +383,13 @@ const schema = {
 };
 */
 export const User = createModel({
-  typeName: "VulcanMeteorUser", // TODO: automatically create from a modelName property
-  multiTypeName: "VulcanMeteorUsers",
+  name: "VulcanMeteorUser",
+  extensions: [
+    extendGraphqlModel({
+      typeName: "VulcanMeteorUser", // TODO: automatically create from a modelName property
+      multiTypeName: "VulcanMeteorUsers",
+    }),
+  ],
   schema: {
     _id: {
       type: String,

@@ -4,6 +4,7 @@
  * - you can pass "ssr: true" instead of directly passing "getDataFromTree"
  * - you can change the graphqlUri
  */
+import React from "react";
 import withApollo, { WithApolloOptions } from "next-with-apollo";
 import createApolloClient from "./apolloClient";
 import { NextPage } from "next";

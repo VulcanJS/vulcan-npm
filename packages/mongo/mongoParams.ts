@@ -236,7 +236,7 @@ export const filterFunction = async (
     } else {
       // eslint-disable-next-line no-console
       console.warn(
-        `Warning: search argument is set but schema ${model.options.graphql.typeName} has no searchable field. Set "searchable: true" for at least one field to enable search.`
+        `Warning: search argument is set but schema ${model.name} has no searchable field. Set "searchable: true" for at least one field to enable search.`
       );
     }
   }

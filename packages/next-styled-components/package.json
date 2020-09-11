@@ -16,5 +16,9 @@
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
+  },
+  "dependencies": {
+    "react": "^16.13.1",
+    "styled-components": "^5.2.0"
   }
 }

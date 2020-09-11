@@ -5,7 +5,7 @@ import { AppSheetsCollector } from "@vulcan/next-style-collector";
 export const getAppEnhancer = (): AppSheetsCollector => {
   const sheet = new ServerStyleSheet();
   const enhanceApp = (App) => (props) =>
-    sheet.collectStyles(<App {...props} />);
+    (sheet as any).collectStyles(<App {...props} />);
   return {
     sheets: sheet, // MUI and Styled components have non normalized types, so we renormalize the names
     enhanceApp,

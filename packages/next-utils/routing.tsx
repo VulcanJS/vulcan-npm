@@ -4,6 +4,7 @@
  * @see https://github.com/VulcanJS/vulcan-next-starter/issues/49
  * @see https://github.com/vercel/next.js/discussions/14531
  */
+import React from "react";
 import { NextPage, NextPageContext } from "next";
 import Router, { useRouter } from "next/router";
 import { isServerRenderCtx, isClientRender, isStaticExportCtx } from "./ssr";

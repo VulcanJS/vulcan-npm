@@ -16,5 +16,9 @@
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
+  },
+  "dependencies": {
+    "@vulcan/model": "^0.0.1",
+    "mongodb": "^3.6.2"
   }
 }
