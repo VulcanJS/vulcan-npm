@@ -1,18 +1,29 @@
 {
   "extends": "./tsconfig.common.json",
   "compilerOptions": {
-    "declaration": true,
-    "emitDecoratorMetadata": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "lib": ["es6", "dom"],
-    "module": "commonjs",
-    "noImplicitAny": false,
-    "noLib": false,
-    "removeComments": true,
-    "sourceMap": true,
     "target": "es6",
-    "jsx": "react"
+    "strict": false,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "removeComments": true,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false, // won't fail on unused variables
+    "noLib": false,
+    "noImplicitAny": false,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "lib": ["es6", "dom"],
+    "jsx": "react",
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "alwaysStrict": true,
+    "allowJs": true
   },
   "exclude": ["node_modules", "**/*.d.ts", "**/*.spec.ts", "**/*.tests.ts"]
 }
