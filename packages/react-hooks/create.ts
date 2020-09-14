@@ -34,7 +34,7 @@ import { VulcanMutationHookOptions } from "./typings";
 
 import { addToData, matchSelector } from "./cacheUpdate";
 import { filterFunction } from "@vulcan/mongo";
-import { createClientTemplate } from "@vulcan/graphql/index";
+import { createClientTemplate } from "@vulcan/graphql";
 
 import debug from "debug";
 const debugApollo = debug("vn:apollo");

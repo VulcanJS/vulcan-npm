@@ -2,10 +2,7 @@ import { useQuery, QueryOptions } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import _merge from "lodash/merge";
 
-import {
-  singleClientTemplate,
-  VulcanGraphqlModel,
-} from "@vulcan/graphql/index";
+import { singleClientTemplate, VulcanGraphqlModel } from "@vulcan/graphql";
 
 import { computeQueryVariables } from "./variables";
 import { OperationVariables } from "apollo-client";

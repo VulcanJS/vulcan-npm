@@ -29,7 +29,7 @@
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { MutationResult } from "@apollo/react-common";
-import { deleteClientTemplate } from "@vulcan/graphql/index";
+import { deleteClientTemplate } from "@vulcan/graphql";
 import { removeFromData } from "./cacheUpdate";
 import { computeQueryVariables } from "./variables";
 import { VulcanMutationHookOptions } from "./typings";

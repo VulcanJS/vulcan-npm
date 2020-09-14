@@ -1,5 +1,5 @@
 import { createModel } from "@vulcan/model";
-import { extendModel as extendGraphqlModel } from "@vulcan/graphql/index";
+import { extendModel as extendGraphqlModel } from "@vulcan/graphql";
 // import SimpleSchema from "simpl-schema";
 // import {
 //   Utils,
