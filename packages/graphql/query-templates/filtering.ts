@@ -1,4 +1,4 @@
-import { convertToGraphQL } from "./types.js";
+import { convertToGraphQL } from "./types";
 import { capitalize } from "@vulcan/utils";
 
 // field types that support filtering

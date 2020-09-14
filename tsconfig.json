@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
     "alwaysStrict": true,
     "declaration": true,
     "emitDecoratorMetadata": true,
@@ -29,6 +29,7 @@
     "**/*.d.ts",
     "**/*.spec.ts",
     "**/*.tests.ts",
-    "**/dist/*"
+    "**/dist/*",
+    "**/webpack.config.js"
   ]
 }

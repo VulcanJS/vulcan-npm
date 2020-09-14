@@ -2,7 +2,7 @@ import {
   selectorUniqueInputType,
   filterInputType,
   sortInputType,
-} from "./filtering.js";
+} from "./filtering";
 import { camelCaseify } from "@vulcan/utils";
 
 // eslint-disable-next-line

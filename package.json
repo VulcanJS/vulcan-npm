@@ -2,8 +2,10 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "postinstall": "lerna bootstrap",
     "build": "lerna run build",
-    "link": "lerna exec yarn link"
+    "link": "lerna exec yarn link",
+    "clean": "rm -Rf ./packages/*/dist"
   },
   "devDependencies": {
     "@types/node": "^13.7.6",

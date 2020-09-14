@@ -1,10 +1,10 @@
-import { convertToGraphQL } from './types.js';
-import { filterInputType, selectorUniqueInputType } from './filtering.js';
+import { convertToGraphQL } from "./types";
+import { filterInputType, selectorUniqueInputType } from "./filtering";
 
 // eslint-disable-next-line
 const deprecated = `# Deprecated (use 'input' field instead).`;
 
-const mutationReturnProperty = 'data';
+const mutationReturnProperty = "data";
 
 /* ------------------------------------- Mutation Types ------------------------------------- */
 
@@ -15,10 +15,10 @@ Mutation for creating a new document
 createMovie(input: CreateMovieInput) : MovieOutput
 
 */
-export const createMutationType = typeName => `create${typeName}`;
+export const createMutationType = (typeName) => `create${typeName}`;
 export const createMutationTemplate = ({ typeName }) =>
   `${createMutationType(typeName)}(
-  input: ${createInputType(typeName, false)},
+  input: ${createInputType(typeName)},
   ${deprecated}
   data: ${createDataInputType(typeName, false)}
 ) : ${mutationOutputType(typeName)}`;
@@ -30,10 +30,10 @@ Mutation for updating an existing document
 updateMovie(input: UpdateMovieInput) : MovieOutput
 
 */
-export const updateMutationType = typeName => `update${typeName}`;
+export const updateMutationType = (typeName) => `update${typeName}`;
 export const updateMutationTemplate = ({ typeName }) =>
   `${updateMutationType(typeName)}(
-  input: ${updateInputType(typeName, false)},
+  input: ${updateInputType(typeName)},
   ${deprecated}
   selector: ${selectorUniqueInputType(typeName)},
   ${deprecated}
@@ -47,10 +47,10 @@ Mutation for updating an existing document; or creating it if it doesn't exist y
 upsertMovie(input: UpsertMovieInput) : MovieOutput
 
 */
-export const upsertMutationType = typeName => `upsert${typeName}`;
+export const upsertMutationType = (typeName) => `upsert${typeName}`;
 export const upsertMutationTemplate = ({ typeName }) =>
   `${upsertMutationType(typeName)}(
-  input: ${upsertInputType(typeName, false)},
+  input: ${upsertInputType(typeName)},
   ${deprecated}
   selector: ${selectorUniqueInputType(typeName)},
   ${deprecated}
@@ -64,10 +64,10 @@ Mutation for deleting an existing document
 deleteMovie(input: DeleteMovieInput) : MovieOutput
 
 */
-export const deleteMutationType = typeName => `delete${typeName}`;
+export const deleteMutationType = (typeName) => `delete${typeName}`;
 export const deleteMutationTemplate = ({ typeName }) =>
   `${deleteMutationType(typeName)}(
-  input: ${deleteInputType(typeName, false)},
+  input: ${deleteInputType(typeName)},
   ${deprecated}
   selector: ${selectorUniqueInputType(typeName)}
 ) : ${mutationOutputType(typeName)}`;
@@ -83,7 +83,7 @@ type CreateMovieInput {
 }
 
 */
-export const createInputType = typeName => `Create${typeName}Input`;
+export const createInputType = (typeName) => `Create${typeName}Input`;
 export const createInputTemplate = ({ typeName }) =>
   `input ${createInputType(typeName)} {
   data: ${createDataInputType(typeName, true)}
@@ -103,7 +103,7 @@ type UpdateMovieInput {
 Note: selector is for backwards-compatibility
 
 */
-export const updateInputType = typeName => `Update${typeName}Input`;
+export const updateInputType = (typeName) => `Update${typeName}Input`;
 export const updateInputTemplate = ({ typeName }) =>
   `input ${updateInputType(typeName)}{
   filter: ${filterInputType(typeName)}
@@ -127,7 +127,7 @@ type UpsertMovieInput {
 Note: selector is for backwards-compatibility
 
 */
-export const upsertInputType = typeName => `Upsert${typeName}Input`;
+export const upsertInputType = (typeName) => `Upsert${typeName}Input`;
 export const upsertInputTemplate = ({ typeName }) =>
   `input ${upsertInputType(typeName)}{
   filter: ${filterInputType(typeName)}
@@ -148,7 +148,7 @@ type DeleteMovieInput {
 Note: selector is for backwards-compatibility
 
 */
-export const deleteInputType = typeName => `Delete${typeName}Input`;
+export const deleteInputType = (typeName) => `Delete${typeName}Input`;
 export const deleteInputTemplate = ({ typeName }) =>
   `input ${deleteInputType(typeName)}{
   filter: ${filterInputType(typeName)}
@@ -165,10 +165,11 @@ type CreateMovieDataInput {
 }
 
 */
-export const createDataInputType = (typeName, nonNull = false) => `Create${typeName}DataInput${nonNull ? '!' : ''}`;
+export const createDataInputType = (typeName, nonNull = false) =>
+  `Create${typeName}DataInput${nonNull ? "!" : ""}`;
 export const createDataInputTemplate = ({ typeName, fields }) =>
   `input ${createDataInputType(typeName)} {
-${convertToGraphQL(fields, '  ')}
+${convertToGraphQL(fields, "  ")}
 }`;
 
 /*
@@ -181,10 +182,11 @@ type UpdateMovieDataInput {
 }
 
 */
-export const updateDataInputType = (typeName, nonNull = false) => `Update${typeName}DataInput${nonNull ? '!' : ''}`;
+export const updateDataInputType = (typeName, nonNull = false) =>
+  `Update${typeName}DataInput${nonNull ? "!" : ""}`;
 export const updateDataInputTemplate = ({ typeName, fields }) =>
   `input ${updateDataInputType(typeName)} {
-${convertToGraphQL(fields, '  ')}
+${convertToGraphQL(fields, "  ")}
 }`;
 
 /* ------------------------------------- Mutation Output Type ------------------------------------- */
@@ -198,7 +200,7 @@ type MovieOutput {
 }
 
 */
-export const mutationOutputType = typeName => `${typeName}MutationOutput`;
+export const mutationOutputType = (typeName) => `${typeName}MutationOutput`;
 export const mutationOutputTemplate = ({ typeName }) =>
   `type ${mutationOutputType(typeName)}{
   ${mutationReturnProperty}: ${typeName}
@@ -223,7 +225,9 @@ mutation createMovie($data: CreateMovieDataInput!) {
 
 */
 export const createClientTemplate = ({ typeName, fragmentName }) =>
-  `mutation ${createMutationType(typeName)}($input: ${createInputType(typeName)}, $data: ${createDataInputType(typeName)}) {
+  `mutation ${createMutationType(typeName)}($input: ${createInputType(
+    typeName
+  )}, $data: ${createDataInputType(typeName)}) {
   ${createMutationType(typeName)}(input: $input, data: $data) {
     ${mutationReturnProperty} {
       ...${fragmentName}
@@ -248,10 +252,14 @@ mutation updateMovie($selector: MovieSelectorUniqueInput!, $data: UpdateMovieDat
 
 */
 export const updateClientTemplate = ({ typeName, fragmentName }) =>
-  `mutation ${updateMutationType(typeName)}($input: ${updateInputType(typeName)}, $selector: ${selectorUniqueInputType(
+  `mutation ${updateMutationType(typeName)}($input: ${updateInputType(
+    typeName
+  )}, $selector: ${selectorUniqueInputType(
     typeName
   )}, $data: ${updateDataInputType(typeName, false)}) {
-  ${updateMutationType(typeName)}(input: $input, selector: $selector, data: $data) {
+  ${updateMutationType(
+    typeName
+  )}(input: $input, selector: $selector, data: $data) {
     ${mutationReturnProperty} {
       ...${fragmentName}
     }
@@ -275,10 +283,14 @@ mutation upsertMovie($selector: MovieSelectorUniqueInput!, $data: UpdateMovieDat
 
 */
 export const upsertClientTemplate = ({ typeName, fragmentName }) =>
-  `mutation ${upsertMutationType(typeName)}($input: ${upsertInputType(typeName)}, $selector: ${selectorUniqueInputType(
+  `mutation ${upsertMutationType(typeName)}($input: ${upsertInputType(
+    typeName
+  )}, $selector: ${selectorUniqueInputType(
     typeName
   )}, $data: ${updateDataInputType(typeName, false)}) {
-  ${upsertMutationType(typeName)}(input: $input, selector: $selector, data: $data) {
+  ${upsertMutationType(
+    typeName
+  )}(input: $input, selector: $selector, data: $data) {
     ${mutationReturnProperty} {
       ...${fragmentName}
     }
@@ -302,7 +314,9 @@ mutation deleteMovie($selector: MovieSelectorUniqueInput!) {
 
 */
 export const deleteClientTemplate = ({ typeName, fragmentName }) =>
-  `mutation ${deleteMutationType(typeName)}($input: ${deleteInputType(typeName)}, $selector: ${selectorUniqueInputType(typeName)}) {
+  `mutation ${deleteMutationType(typeName)}($input: ${deleteInputType(
+    typeName
+  )}, $selector: ${selectorUniqueInputType(typeName)}) {
   ${deleteMutationType(typeName)}(input: $input, selector: $selector) {
     ${mutationReturnProperty} {
       ...${fragmentName}
