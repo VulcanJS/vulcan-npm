@@ -24,5 +24,11 @@
     "strict": false,
     "target": "es6"
   },
-  "exclude": ["node_modules", "**/*.d.ts", "**/*.spec.ts", "**/*.tests.ts"]
+  "exclude": [
+    "node_modules",
+    "**/*.d.ts",
+    "**/*.spec.ts",
+    "**/*.tests.ts",
+    "**/dist/*"
+  ]
 }
