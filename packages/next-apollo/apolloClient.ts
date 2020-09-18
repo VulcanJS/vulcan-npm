@@ -13,7 +13,9 @@ import { ApolloClient } from "apollo-client";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import { createHttpLink } from "apollo-link-http";
 import { from } from "apollo-link";
-import fetch from "isomorphic-unfetch";
+// TODO: Isomorphic-unfetch will produce a window not defined after a Webpack build for unknow reason "isomorphic-unfetch";
+// next-with-apollo depends on it already internally, so we had to add a Webpack alias too to bypass it
+import fetch from "cross-fetch";
 import { NextPageContext } from "next";
 import { isServerRenderCtx } from "@vulcan/next-utils/ssr"; // TODO: should be able to import from source
 import debug from "debug";

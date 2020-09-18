@@ -19,13 +19,13 @@
   },
   "dependencies": {
     "@apollo/react-ssr": "^4.0.0",
+    "@vulcan/next-utils": "^0.0.1",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",
     "apollo-link-error": "^1.1.13",
     "apollo-link-http": "^1.5.17",
-    "isomorphic-unfetch": "^3.0.0",
-    "next-with-apollo": "^5.1.0",
-    "@vulcan/next-utils": "^0.0.1"
+    "cross-fetch": "^3.0.6",
+    "next-with-apollo": "^5.1.0"
   }
 }
