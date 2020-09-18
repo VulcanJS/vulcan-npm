@@ -1,6 +1,11 @@
 // @see https://webpack.js.org/guides/typescript/
 // TODO: run with Babel, see electron-react-boilerplate example
 // of Babel +  Webpack
+/**
+ * Examples of Babel +  Webpack + TS-loader
+ * https://github.com/microsoft/TypeScriptSamples/blob/master/react-flux-babel-karma/webpack.config.js
+ *
+ */
 module.exports = {
   devtool: "inline-source-map",
   mode: "production",
@@ -12,7 +17,23 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: "ts-loader",
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              plugins: [
+                [
+                  "transform-define",
+                  {
+                    "process.env.NODE_ENV": "production",
+                    window: "42",
+                  },
+                ],
+              ],
+            },
+          },
+          { loader: "ts-loader" },
+        ],
         exclude: /node_modules/,
       },
     ],
