@@ -25,7 +25,6 @@
     "apollo-link": "^1.2.14",
     "apollo-link-error": "^1.1.13",
     "apollo-link-http": "^1.5.17",
-    "cross-fetch": "^3.0.6",
     "next-with-apollo": "^5.1.0"
   }
 }

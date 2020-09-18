@@ -16,6 +16,9 @@ module.exports = {
     libraryTarget: "commonjs2",
     filename: "index.js",
   },
+  // This prevent bundling node_modules into the app
+  // additionalModuleDirs allow handling root and nested node_modules
+  // @see https://stackoverflow.com/questions/46010926/how-to-use-webpack-with-a-monorepo-yarnpkg-workspaces
   externals: [
     nodeExternals({
       additionalModuleDirs: [path.resolve(__dirname, "../node_modules")],
@@ -48,8 +51,5 @@ module.exports = {
   },
   resolve: {
     extensions: [".tsx", ".jsx", ".ts", ".js"],
-    alias: {
-      "isomorphic-unfetch": "cross-fetch",
-    },
   },
 };
