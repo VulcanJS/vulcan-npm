@@ -6,6 +6,9 @@
  * https://github.com/microsoft/TypeScriptSamples/blob/master/react-flux-babel-karma/webpack.config.js
  *
  */
+
+const path = require("path");
+const nodeExternals = require("webpack-node-externals");
 module.exports = {
   devtool: "inline-source-map",
   mode: "production",
@@ -13,6 +16,11 @@ module.exports = {
     libraryTarget: "commonjs2",
     filename: "index.js",
   },
+  externals: [
+    nodeExternals({
+      additionalModuleDirs: [path.resolve(__dirname, "../node_modules")],
+    }),
+  ],
   module: {
     rules: [
       {
