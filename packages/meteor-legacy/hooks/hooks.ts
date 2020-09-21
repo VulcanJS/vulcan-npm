@@ -1,5 +1,9 @@
 // @see packages/vulcan-users/lib/server/mutations.js
-import { useMutation } from "@apollo/react-hooks";
+import {
+  useMutation,
+  MutationTuple,
+  MutationHookOptions,
+} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 // TODO: those typings should be reusable for all hooks
@@ -7,7 +11,6 @@ import {
   OperationVariables,
   MutationFunctionOptions,
 } from "@apollo/react-common";
-import { MutationTuple, MutationHookOptions } from "@apollo/react-hooks";
 
 import { ApolloVariables } from "@vulcan/graphql/typings";
 

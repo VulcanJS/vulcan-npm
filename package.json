@@ -2,10 +2,10 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap && ./scripts/link-duplicates.sh",
     "build": "lerna run build",
     "link": "lerna exec yarn link",
-    "clean": "rm -Rf ./packages/*/dist ./packages/*/node_modules"
+    "clean": "rm -Rf ./node_modules ./packages/*/dist ./packages/*/node_modules"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
