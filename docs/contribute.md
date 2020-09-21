@@ -12,8 +12,9 @@ lerna bootstrap
 
 In `vulcan-npm`, link all your packages:
 
-```js
-yarn lerna exec yarn link
+```sh
+# This is automatically done after an install
+yarn link
 ```
 
 In your app, link packages:
@@ -45,7 +46,7 @@ error - /code/vulcan-npm/packages/next-material-ui/components/Link.tsx 10:5
 Module parse failed: Unexpected token (10:5)
 You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
 | import MuiLink, { LinkProps as MuiLinkProps } from "@material-ui/core/Link";
-| 
+|
 > type LinkProps = NextLinkProps &
 |   MuiLinkProps & {
 |     activeClassName?: string;

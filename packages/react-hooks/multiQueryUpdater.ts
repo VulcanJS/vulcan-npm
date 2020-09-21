@@ -3,7 +3,7 @@
 //  */
 import { buildMultiQuery } from "./multi";
 import { getVariablesListFromCache } from "./cacheUpdate";
-import { getApolloClient } from "@vulcan/next-apollo";
+// import { getApolloClient } from "@vulcan/next-apollo";
 import debug from "debug";
 import { VulcanGraphqlModel } from "@vulcan/graphql";
 const debugApollo = debug("vn:apollo");
@@ -40,8 +40,9 @@ export const multiQueryUpdater = (computeNewData) => ({
   });
   return async (cache, { data }) => {
     const mutatedDocument = data[resolverName].data;
+    // @see https://github.com/VulcanJS/vulcan-npm/issues/7
+    //const client = getApolloClient();
     // get all the resolvers that match
-    const client = getApolloClient();
     const variablesList = getVariablesListFromCache(cache, multiResolverName); // TODO: mutli resolverName is wrong
     debugApollo(
       "Got variable list from cache",
@@ -81,7 +82,9 @@ export const multiQueryUpdater = (computeNewData) => ({
     // apply updates to the client
     multiQueryUpdates.forEach((update) => {
       debugApollo("Updating cache with query", update);
-      client.writeQuery(update);
+      cache.writeQuery(update); // NOTE: watched queries won't be updated
+      // @see https://github.com/VulcanJS/vulcan-npm/issues/7
+      // client.writeQuery(update);
     });
     // return for potential chainging
     return multiQueryUpdates;
