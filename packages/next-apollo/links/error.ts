@@ -1,5 +1,5 @@
 // import { onError } from "@apollo/link-error";
-import { onError } from "apollo-link-error";
+import { onError } from "@apollo/client/link/error";
 import { GraphQLError } from "graphql";
 
 const locationsToStr = (locations: GraphQLError["locations"] = []) =>

@@ -18,10 +18,9 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@apollo/react-common": "^3.1.4",
-    "graphql": "^15.3.0",
-    "graphql-tag": "^2.11.0",
+    "@apollo/client": "^3.2.0",
+    "@vulcan/graphql": "^0.0.1",
     "@vulcan/model": "^0.0.1",
-    "@vulcan/graphql": "^0.0.1"
+    "graphql": "^15.3.0"
   }
 }

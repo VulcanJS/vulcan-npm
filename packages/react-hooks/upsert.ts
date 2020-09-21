@@ -27,9 +27,7 @@
 
  */
 
-import { useMutation } from "@apollo/react-hooks";
-import { MutationResult } from "@apollo/react-common";
-import gql from "graphql-tag";
+import { useMutation, MutationResult, gql } from "@apollo/client";
 
 import { upsertClientTemplate } from "@vulcan/graphql";
 

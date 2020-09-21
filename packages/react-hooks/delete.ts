@@ -26,9 +26,7 @@
 
  */
 
-import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
-import { MutationResult } from "@apollo/react-common";
+import { useMutation, MutationResult, gql } from "@apollo/client";
 import { deleteClientTemplate } from "@vulcan/graphql";
 import { removeFromData } from "./cacheUpdate";
 import { computeQueryVariables } from "./variables";

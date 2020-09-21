@@ -31,9 +31,8 @@ Options:
          
 */
 
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, gql } from "@apollo/client";
 import { useState } from "react";
-import gql from "graphql-tag";
 import { multiClientTemplate, VulcanGraphqlModel } from "@vulcan/graphql";
 import merge from "lodash/merge";
 import get from "lodash/get";

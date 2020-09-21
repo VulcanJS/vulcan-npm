@@ -9,10 +9,8 @@ import {
 } from "@apollo/client";
 */
 import { IncomingHttpHeaders } from "http";
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
-import { createHttpLink } from "apollo-link-http";
-import { from } from "apollo-link";
+import { ApolloClient, from, createHttpLink } from "@apollo/client";
+import { InMemoryCache, NormalizedCacheObject } from "@apollo/client/cache";
 // TODO: Isomorphic-unfetch will produce a window not defined after a Webpack build for unknow reason "isomorphic-unfetch";
 // next-with-apollo depends on it already internally, so we had to add a Webpack alias too to bypass it
 import fetch from "cross-fetch";

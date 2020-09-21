@@ -13,9 +13,9 @@ import { NextPage } from "next";
 //    ApolloProvider,
 //    NormalizedCacheObject
 //} from "@apollo/client";
-import { ApolloProvider } from "@apollo/react-hooks";
-import { NormalizedCacheObject } from "apollo-cache-inmemory";
-import { getDataFromTree as getDataFromTreeDefault } from "@apollo/react-ssr";
+import { ApolloProvider } from "@apollo/client";
+import { NormalizedCacheObject } from "@apollo/client/cache";
+import { getDataFromTree as getDataFromTreeDefault } from "@apollo/client/react/ssr";
 
 // support the same options as next-with-apollo, but also additional client config + ssr activation
 export interface VulcanWithApolloOptions extends WithApolloOptions {
@@ -53,6 +53,8 @@ const vulcanWithApollo = (
 
   const withApolloOptions = { getDataFromTree, renderFromOption };
 
+  // next-with-apollo is using typings from Apollo v2, we need to ignore the error until it's updated 2654
+  // @ts-ignore
   return withApollo<NormalizedCacheObject>(initApolloClient(graphqlUri), {
     render: renderWithApolloProvider,
   })(Page, withApolloOptions);

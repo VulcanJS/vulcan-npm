@@ -1,11 +1,14 @@
-import { useQuery, QueryOptions } from "@apollo/react-hooks";
-import gql from "graphql-tag";
 import _merge from "lodash/merge";
 
 import { singleClientTemplate, VulcanGraphqlModel } from "@vulcan/graphql";
 
 import { computeQueryVariables } from "./variables";
-import { OperationVariables } from "apollo-client";
+import {
+  OperationVariables,
+  useQuery,
+  QueryOptions,
+  gql,
+} from "@apollo/client";
 import { QueryInput } from "./typings";
 
 const defaultInput = {
@@ -46,7 +49,9 @@ const buildQueryOptions = <TData = any, TVariables = OperationVariables>(
   pollInterval = typeof window === "undefined" ? null : pollInterval;
 
   // OpenCrud backwards compatibility
-  const graphQLOptions: Partial<QueryOptions<TData, any /*TVariables*/>> = {
+  const graphQLOptions: Partial<
+    QueryOptions</*TVariables*/ any, TData> & { pollInterval?: number }
+  > = {
     variables: {
       ...computeQueryVariables(
         { ...options, input: _merge({}, defaultInput, options.input || {}) }, // needed to merge in defaultInput, could be improved

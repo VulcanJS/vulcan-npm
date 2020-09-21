@@ -3,14 +3,10 @@ import {
   useMutation,
   MutationTuple,
   MutationHookOptions,
-} from "@apollo/react-hooks";
-import gql from "graphql-tag";
-
-// TODO: those typings should be reusable for all hooks
-import {
-  OperationVariables,
   MutationFunctionOptions,
-} from "@apollo/react-common";
+  OperationVariables,
+  gql,
+} from "@apollo/client";
 
 import { ApolloVariables } from "@vulcan/graphql/typings";
 
