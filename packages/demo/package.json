@@ -1,6 +1,6 @@
 {
   "name": "@vulcan/demo",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Vulcan core features",
   "main": "dist/index.js",
   "author": "eric-burel <eb@lebrun-burel.com>",

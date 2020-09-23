@@ -1,13 +1,13 @@
 {
   "name": "@vulcan/graphql",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "./dist/index.js",
   "description": "Vulcan graphQL schema generator",
   "author": "eric-burel <eb@lebrun-burel.com>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "dependencies": {
-    "@vulcan/model": "^0.0.3"
+    "@vulcan/model": "^0.0.4"
   },
   "repository": {
     "type": "git",
