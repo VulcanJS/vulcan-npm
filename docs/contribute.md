@@ -21,8 +21,8 @@ In your app, link packages:
 
 ```sh
 # USE YARN, it won't work with npm
-yarn link @vulcan/model
-yarn link @vulcan/schema
+yarn link @vulcanjs/model
+yarn link @vulcanjs/schema
 ...
 # NOTE: we don't yet have a way to link everything
 ```
@@ -53,4 +53,4 @@ You may need an appropriate loader to handle this file type, currently no loader
 
 ```
 
-You either forgot to call `yarn build` or did a direct import (`import foobar from "@vulcan/reac-hooks/some-not-built-file")`.
+You either forgot to call `yarn build` or did a direct import (`import foobar from "@vulcanjs/reac-hooks/some-not-built-file")`.

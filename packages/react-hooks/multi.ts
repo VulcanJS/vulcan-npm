@@ -33,7 +33,7 @@ Options:
 
 import { useQuery, gql } from "@apollo/client";
 import { useState } from "react";
-import { multiClientTemplate, VulcanGraphqlModel } from "@vulcan/graphql";
+import { multiClientTemplate, VulcanGraphqlModel } from "@vulcanjs/graphql";
 import merge from "lodash/merge";
 import get from "lodash/get";
 import { QueryInput } from "./typings";

@@ -29,7 +29,7 @@
 
 import { useMutation, MutationResult, gql } from "@apollo/client";
 
-import { upsertClientTemplate } from "@vulcan/graphql";
+import { upsertClientTemplate } from "@vulcanjs/graphql";
 
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { computeQueryVariables } from "./variables";

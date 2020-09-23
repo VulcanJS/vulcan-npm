@@ -1,4 +1,4 @@
-import { VulcanSchema } from "@vulcan/schema";
+import { VulcanSchema } from "@vulcanjs/schema";
 
 type FilterFunction = (args: {
   input: any;

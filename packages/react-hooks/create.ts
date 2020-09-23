@@ -28,8 +28,8 @@
 
 import { useMutation, MutationResult, gql } from "@apollo/client";
 
-import { filterFunction } from "@vulcan/mongo";
-import { createClientTemplate } from "@vulcan/graphql";
+import { filterFunction } from "@vulcanjs/mongo";
+import { createClientTemplate } from "@vulcanjs/graphql";
 
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { VulcanMutationHookOptions } from "./typings";

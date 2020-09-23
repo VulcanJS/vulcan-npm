@@ -7,8 +7,8 @@ import isEmpty from "lodash/isEmpty";
 import escapeStringRegexp from "escape-string-regexp";
 import merge from "lodash/merge";
 import { FindOneOptions } from "mongodb";
-import { isEmptyOrUndefined } from "@vulcan/utils";
-import { VulcanModel } from "@vulcan/model";
+import { isEmptyOrUndefined } from "@vulcanjs/utils";
+import { VulcanModel } from "@vulcanjs/model";
 
 // import { getSetting } from "./settings.js";
 // convert GraphQL selector into Mongo-compatible selector

@@ -1,5 +1,5 @@
 {
-  "name": "@vulcan/multi-env-demo",
+  "name": "@vulcanjs/multi-env-demo",
   "version": "0.0.4",
   "description": "Vulcan demonstration of a fullstack packages (client AND server exports)",
   "main": "./dist/index.js",
@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
-  "gitHead": "d94d174accdb46edb332f49218052a5b336508b0",
+  "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {
     "access": "public"
   }

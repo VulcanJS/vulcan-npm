@@ -1,4 +1,4 @@
-import { capitalize } from "@vulcan/utils";
+import { capitalize } from "@vulcanjs/utils";
 
 /*
 

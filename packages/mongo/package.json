@@ -1,5 +1,5 @@
 {
-  "name": "@vulcan/mongo",
+  "name": "@vulcanjs/mongo",
   "version": "0.0.4",
   "description": "Vulcan mongo bindings and helpers",
   "main": "./dist/index.js",
@@ -18,10 +18,10 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcan/model": "^0.0.4",
+    "@vulcanjs/model": "^0.0.4",
     "mongodb": "^3.6.2"
   },
-  "gitHead": "d94d174accdb46edb332f49218052a5b336508b0",
+  "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {
     "access": "public"
   }

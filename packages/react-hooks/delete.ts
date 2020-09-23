@@ -27,7 +27,7 @@
  */
 
 import { useMutation, MutationResult, gql } from "@apollo/client";
-import { deleteClientTemplate } from "@vulcan/graphql";
+import { deleteClientTemplate } from "@vulcanjs/graphql";
 import { removeFromData } from "./cacheUpdate";
 import { computeQueryVariables } from "./variables";
 import { VulcanMutationHookOptions } from "./typings";

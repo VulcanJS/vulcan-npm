@@ -3,7 +3,7 @@ import {
   filterInputType,
   sortInputType,
 } from "./filtering";
-import { camelCaseify } from "@vulcan/utils";
+import { camelCaseify } from "@vulcanjs/utils";
 
 // eslint-disable-next-line
 const deprecated1 = `# Deprecated (use 'filter/id' fields instead).`;

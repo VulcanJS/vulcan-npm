@@ -1,5 +1,5 @@
 {
-  "name": "@vulcan/utils",
+  "name": "@vulcanjs/utils",
   "version": "0.0.4",
   "description": "Vulcan helpers",
   "main": "./dist/index.js",
@@ -20,5 +20,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "d94d174accdb46edb332f49218052a5b336508b0"
+  "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95"
 }

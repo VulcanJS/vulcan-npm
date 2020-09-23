@@ -3,9 +3,9 @@
 //  */
 import { buildMultiQuery } from "./multi";
 import { getVariablesListFromCache } from "./cacheUpdate";
-// import { getApolloClient } from "@vulcan/next-apollo";
+// import { getApolloClient } from "@vulcanjs/next-apollo";
 import debug from "debug";
-import { VulcanGraphqlModel } from "@vulcan/graphql";
+import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 const debugApollo = debug("vn:apollo");
 
 interface ComputeNewDataArgs {

@@ -1,6 +1,6 @@
 import _merge from "lodash/merge";
 
-import { singleClientTemplate, VulcanGraphqlModel } from "@vulcan/graphql";
+import { singleClientTemplate, VulcanGraphqlModel } from "@vulcanjs/graphql";
 
 import { computeQueryVariables } from "./variables";
 import {

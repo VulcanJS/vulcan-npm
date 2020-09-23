@@ -1,5 +1,5 @@
 import { convertToGraphQL } from "./types";
-import { capitalize } from "@vulcan/utils";
+import { capitalize } from "@vulcanjs/utils";
 
 // field types that support filtering
 const supportedFieldTypes = ["String", "Int", "Float", "Boolean", "Date"];

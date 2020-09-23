@@ -8,7 +8,7 @@ import {
   gql,
 } from "@apollo/client";
 
-import { ApolloVariables } from "@vulcan/graphql/typings";
+import { ApolloVariables } from "@vulcanjs/graphql/typings";
 
 // We modify the result function so that variables can be provided as first param,
 // which is more intuitive

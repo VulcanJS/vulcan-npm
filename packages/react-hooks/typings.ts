@@ -1,5 +1,5 @@
 import { MutationHookOptions } from "@apollo/client";
-import { VulcanGraphqlModel } from "@vulcan/graphql";
+import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 
 export interface VulcanMutationHookOptions {
   model: VulcanGraphqlModel;

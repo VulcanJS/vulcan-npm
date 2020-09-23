@@ -2,8 +2,8 @@
  * Generates the default fragment for a collection
  * = a fragment containing all fields
  */
-import { getFragmentFieldNames, isBlackbox } from "@vulcan/schema";
-import { VulcanSchema } from "@vulcan/schema";
+import { getFragmentFieldNames, isBlackbox } from "@vulcanjs/schema";
+import { VulcanSchema } from "@vulcanjs/schema";
 import { VulcanGraphqlModelSkeleton } from "../typings";
 
 const intlSuffix = "_intl";
@@ -58,8 +58,8 @@ export const getFieldFragment = ({
     typeof fieldType === "object"
       ? "Object"
       : typeof fieldType === "function"
-        ? fieldType.name
-        : fieldType;
+      ? fieldType.name
+      : fieldType;
 
   switch (fieldTypeName) {
     case "Object":
@@ -114,7 +114,7 @@ export const getDefaultFragmentText = (
       schema,
       fragmentName: `fragment ${getDefaultFragmentName(model)} on ${
         model.graphql.typeName
-        }`,
+      }`,
       options,
     }) || null
   );

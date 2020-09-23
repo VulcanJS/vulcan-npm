@@ -1,5 +1,5 @@
 {
-  "name": "@vulcan/model",
+  "name": "@vulcanjs/model",
   "version": "0.0.4",
   "description": "Vulcan domain models built from schema",
   "main": "./dist/index.js",
@@ -24,7 +24,7 @@
   "devDependencies": {
     "ts-loader": "^8.0.3"
   },
-  "gitHead": "d94d174accdb46edb332f49218052a5b336508b0",
+  "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {
     "access": "public"
   }

@@ -1,12 +1,12 @@
 /**
  */
 import { VulcanGraphqlModel } from "./typings";
-import { VulcanModel, ExtendModelFunc } from "@vulcan/model";
+import { VulcanModel, ExtendModelFunc } from "@vulcanjs/model";
 import {
   getDefaultFragmentText,
   getDefaultFragmentName,
 } from "../graphql/fragments/defaultFragment";
-import { camelCaseify } from "@vulcan/utils";
+import { camelCaseify } from "@vulcanjs/utils";
 
 interface CreateModelOptions {
   typeName: string; // Canonical name of the model = its graphQL type name

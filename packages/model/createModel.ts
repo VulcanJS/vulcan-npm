@@ -1,7 +1,7 @@
 /**
  */
 import { VulcanModel } from "./typings";
-import { VulcanSchema } from "@vulcan/schema";
+import { VulcanSchema } from "@vulcanjs/schema";
 
 export type ExtendModelFunc<TExtended extends VulcanModel = VulcanModel> = (
   model: VulcanModel
