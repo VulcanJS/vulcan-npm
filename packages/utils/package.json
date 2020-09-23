@@ -1,6 +1,6 @@
 {
   "name": "@vulcan/utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Vulcan helpers",
   "main": "./dist/index.js",
   "author": "eric-burel <eb@lebrun-burel.com>",
