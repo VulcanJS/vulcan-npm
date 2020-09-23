@@ -16,5 +16,8 @@
     "lodash": "^4.17.20",
     "mingo": "^3.0.6"
   },
-  "gitHead": "ee7ac0b42fcfdd1cb5d82b290326d0329a6d7e88"
+  "gitHead": "d94d174accdb46edb332f49218052a5b336508b0",
+  "publishConfig": {
+    "access": "public"
+  }
 }

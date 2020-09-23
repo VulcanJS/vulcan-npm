@@ -21,5 +21,8 @@
     "@vulcan/model": "^0.0.3",
     "mongodb": "^3.6.2"
   },
-  "gitHead": "ee7ac0b42fcfdd1cb5d82b290326d0329a6d7e88"
+  "gitHead": "d94d174accdb46edb332f49218052a5b336508b0",
+  "publishConfig": {
+    "access": "public"
+  }
 }
