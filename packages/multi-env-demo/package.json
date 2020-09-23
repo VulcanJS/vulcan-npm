@@ -1,6 +1,6 @@
 {
   "name": "@vulcan/multi-env-demo",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Vulcan demonstration of a fullstack packages (client AND server exports)",
   "main": "./dist/index.js",
   "author": "eric-burel <eb@lebrun-burel.com>",

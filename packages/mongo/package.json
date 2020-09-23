@@ -1,6 +1,6 @@
 {
   "name": "@vulcan/mongo",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Vulcan mongo bindings and helpers",
   "main": "./dist/index.js",
   "author": "eric-burel <eb@lebrun-burel.com>",
@@ -18,7 +18,7 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcan/model": "^0.0.2",
+    "@vulcan/model": "^0.0.3",
     "mongodb": "^3.6.2"
   },
   "gitHead": "ee7ac0b42fcfdd1cb5d82b290326d0329a6d7e88"

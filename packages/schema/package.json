@@ -1,6 +1,6 @@
 {
   "name": "@vulcan/schema",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Vulcan JS schema",
   "main": "./dist/index.js",
   "author": "eric-burel <eb@lebrun-burel.com>",
