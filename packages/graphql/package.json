@@ -7,7 +7,9 @@
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/model": "^0.0.5"
+    "@vulcanjs/model": "^0.0.5",
+    "@vulcanjs/schema": "^0.0.5",
+    "@vulcanjs/utils": "^0.0.5"
   },
   "repository": {
     "type": "git",
