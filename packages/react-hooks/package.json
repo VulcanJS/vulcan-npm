@@ -15,5 +15,6 @@
     "graphql-tag": "^2.11.0",
     "lodash": "^4.17.20",
     "mingo": "^3.0.6"
-  }
+  },
+  "gitHead": "ee7ac0b42fcfdd1cb5d82b290326d0329a6d7e88"
 }

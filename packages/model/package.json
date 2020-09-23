@@ -23,5 +23,6 @@
   },
   "devDependencies": {
     "ts-loader": "^8.0.3"
-  }
+  },
+  "gitHead": "ee7ac0b42fcfdd1cb5d82b290326d0329a6d7e88"
 }

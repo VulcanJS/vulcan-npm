@@ -20,5 +20,6 @@
   "dependencies": {
     "@vulcan/model": "^0.0.2",
     "mongodb": "^3.6.2"
-  }
+  },
+  "gitHead": "ee7ac0b42fcfdd1cb5d82b290326d0329a6d7e88"
 }
