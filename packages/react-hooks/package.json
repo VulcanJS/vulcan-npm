@@ -20,5 +20,9 @@
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "@testing-library/react-hooks": "^3.4.1",
+    "react-test-renderer": "^16.13.1"
   }
 }

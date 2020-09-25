@@ -1,3 +1,7 @@
+/**
+ * Differences with Vulcan Meteor:
+ * - No more "propertyName" option, data are returned in the "document" shortcut
+ */
 import _merge from "lodash/merge";
 
 import { singleClientTemplate, VulcanGraphqlModel } from "@vulcanjs/graphql";
@@ -8,6 +12,7 @@ import {
   useQuery,
   QueryOptions,
   gql,
+  QueryResult,
 } from "@apollo/client";
 import { QueryInput } from "./typings";
 
@@ -21,6 +26,11 @@ export const buildSingleQuery = ({
   fragmentName,
   fragment,
   extraQueries,
+}: {
+  typeName: string;
+  fragmentName: string;
+  fragment: string;
+  extraQueries?: string;
 }) => {
   const query = gql`
     ${singleClientTemplate({ typeName, fragmentName, extraQueries })}
@@ -70,27 +80,30 @@ const buildQueryOptions = <TData = any, TVariables = OperationVariables>(
   };
 };
 
-const buildResult = (
-  options,
+interface SingleResult<TData = any> extends QueryResult<TData> {
+  fragmentName: string;
+  fragment: string;
+  result: TData; // shortcut to get the document
+}
+const buildSingleResult = <TData = any>(
+  options: UseSingleOptions,
   { fragmentName, fragment, resolverName },
-  returnedProps
-) => {
-  const { /* ownProps, */ data, error } = returnedProps;
-  const propertyName = options.propertyName || "document";
-  const props = {
-    ...returnedProps,
+  queryResult: QueryResult<TData>
+): SingleResult<TData> => {
+  const { /* ownProps, */ data, error } = queryResult;
+  const propertyName = "document";
+  const result = {
+    ...queryResult,
     // Note: Scalar types like Dates are NOT converted. It should be done at the UI level.
-    [propertyName]: data && data[resolverName] && data[resolverName].result,
+    result: data && data[resolverName] && data[resolverName].result,
     fragmentName,
     fragment,
-    data,
-    error,
   };
   if (error) {
     // eslint-disable-next-line no-console
     console.log(error);
   }
-  return props;
+  return result;
 };
 
 interface SingleInput extends QueryInput {
@@ -122,11 +135,11 @@ export const useSingle = (options: UseSingleOptions, props = {}) => {
     extraQueries,
   });
 
-  const queryRes = useQuery(query, buildQueryOptions(options, props));
-  const result = buildResult(
+  const queryResult = useQuery(query, buildQueryOptions(options, props));
+  const result = buildSingleResult(
     options,
     { fragment, fragmentName, resolverName },
-    queryRes
+    queryResult
   );
   return result;
 };

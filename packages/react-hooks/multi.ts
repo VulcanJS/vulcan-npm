@@ -31,7 +31,7 @@ Options:
          
 */
 
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, QueryResult } from "@apollo/client";
 import { useState } from "react";
 import { multiClientTemplate, VulcanGraphqlModel } from "@vulcanjs/graphql";
 import merge from "lodash/merge";
@@ -131,21 +131,17 @@ const buildQueryOptions = (options, paginationInput = {}, props) => {
   };
 };
 
-const buildResult = (
+const buildMultiResult = (
   options,
   { fragmentName, fragment, resolverName },
   { setPaginationInput, paginationInput, initialPaginationInput },
-  returnedProps
-) => {
+  queryResult: QueryResult
+): MultiQueryResult => {
   //console.log('returnedProps', returnedProps);
-  const {
-    refetch,
-    networkStatus,
-    error,
-    fetchMore,
-    data,
-    graphQLErrors,
-  } = returnedProps;
+
+  // workaround for https://github.com/apollographql/apollo-client/issues/2810
+  const graphQLErrors = get(queryResult, "error.networkError.result.errors");
+  const { refetch, networkStatus, error, fetchMore, data } = queryResult;
   // Note: Scalar types like Dates are NOT converted. It should be done at the UI level.
   const results = data && data[resolverName] && data[resolverName].results;
   const totalCount =
@@ -161,16 +157,13 @@ const buildResult = (
   }
 
   return {
+    ...queryResult,
     // see https://github.com/apollostack/apollo-client/blob/master/src/queries/store.ts#L28-L36
     // note: loading will propably change soon https://github.com/apollostack/apollo-client/issues/831
-    loading,
     loadingInitial,
     loadingMore,
     results,
     totalCount,
-    refetch,
-    networkStatus,
-    error,
     networkError: error && error.networkError,
     graphQLErrors,
     count: results && results.length,
@@ -237,7 +230,20 @@ interface UseMultiOptions {
   fragmentName?: string;
   extraQueries?: string; // Get more data alongside the objects
 } // & useQuery options?
-type QueryResult = { graphQLErrors: any } & ReturnType<typeof useQuery>;
+interface MultiQueryResult<TData = any> extends QueryResult<TData> {
+  graphQLErrors: any;
+  loadingInitial: boolean;
+  loadingMore: boolean;
+  loadMore: Function;
+  loadMoreInc: Function;
+  results?: Array<TData>;
+  totalCount?: number;
+  count?: number;
+  networkError?: any;
+  graphqlErrors?: Array<any>;
+  fragment: string;
+  fragmentName: string;
+}
 
 export const useMulti = (options: UseMultiOptions, props = {}) => {
   const initialPaginationInput = getInitialPaginationInput(options, props);
@@ -274,16 +280,13 @@ export const useMulti = (options: UseMultiOptions, props = {}) => {
   });
 
   const queryOptions = buildQueryOptions(options, paginationInput, props);
-  const queryRes: Partial<QueryResult> = useQuery(query, queryOptions);
+  const queryResult: QueryResult = useQuery(query, queryOptions);
 
-  // workaround for https://github.com/apollographql/apollo-client/issues/2810
-  queryRes.graphQLErrors = get(queryRes, "error.networkError.result.errors");
-
-  const result = buildResult(
+  const result = buildMultiResult(
     options,
     { fragment, fragmentName, resolverName },
     { setPaginationInput, paginationInput, initialPaginationInput },
-    queryRes
+    queryResult
   );
 
   return result;
