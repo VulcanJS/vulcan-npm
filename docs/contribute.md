@@ -54,3 +54,8 @@ You may need an appropriate loader to handle this file type, currently no loader
 ```
 
 You either forgot to call `yarn build` or did a direct import (`import foobar from "@vulcanjs/reac-hooks/some-not-built-file")`.
+
+#### Code not updating during test
+
+Don't forget to build the code.
+If you write a test for package "React Hooks", and discover and fix a bug in package "GraphQL", you'll need to rebuild the "GraphQL" package to get the freshest version.

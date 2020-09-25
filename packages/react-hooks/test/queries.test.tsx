@@ -7,7 +7,7 @@ import { print } from "graphql";
 //import { initComponentTest } from 'meteor/vulcan:test';
 import { useMulti, useSingle } from "../index";
 import { buildSingleQuery } from "../single";
-import { buildMultiQuery } from "../multi";
+import { buildMultiQuery, buildMultiQueryOptions } from "../multi";
 import { renderHook, act } from "@testing-library/react-hooks";
 
 import { createModel } from "@vulcanjs/model";
@@ -56,7 +56,8 @@ describe("react-hooks/queries", function () {
         __typename
       }`,
   };*/
-  const foo = { id: "1", hello: "world", __typename: "Foo" };
+  const foo = { id: "1", hello: "world" };
+  const fooWithTypename = { ...foo, __typename: "Foo" };
 
   describe("exports", () => {
     test("export hooks", () => {
@@ -76,20 +77,16 @@ describe("react-hooks/queries", function () {
             input: {
               id: foo.id,
               allowNull: false,
-              //selector: { documentId: undefined, slug: undefined },
               enableCache: false,
             },
           },
         },
         result: {
           data: {
-            foo: { result: foo },
+            foo: { result: fooWithTypename }, // we need __typename otherwise result is empty
           },
         },
       };
-      //expect(
-      //  print(buildSingleQuery({ typeName, fragmentName, fragment }))
-      //).toEqual("");
 
       const mocks = [mock]; // need multiple mocks, one per query
       const wrapper = ({ children }) => (
@@ -97,7 +94,7 @@ describe("react-hooks/queries", function () {
           {children}
         </MockedProvider>
       );
-      const { result } = renderHook(
+      const { result, waitForNextUpdate } = renderHook(
         () =>
           useSingle({
             model: Foo,
@@ -108,19 +105,20 @@ describe("react-hooks/queries", function () {
         { wrapper }
       );
 
-      const queryResult = result.current;
-
+      let queryResult = result.current;
       expect(queryResult.loading).toEqual(true);
-      //expect(loadingRes.prop("loading")).toBe(true);
       // @see https://www.apollographql.com/docs/react/recipes/testing/#testing-final-state
-      //await new Promise(resolve => setTimeout(resolve));
-      //await wait(0);
-      //wrapper.update(); // rerender
-      //
-      //      const finalRes = wrapper.find(TestComponent).first();
-      //      expect(finalRes.prop("loading")).toBe(false);
-      //      expect(finalRes.prop("data").error).toBeFalsy();
-      //      expect(finalRes.prop("document")).toEqual(foo);
+      // @see https://react-hooks-testing-library.com/reference/api#waitfornextupdate
+      // Needed for async hook that may update their state at any moment, like useQuery
+      // This will remove the "act" warning even if we don't test anything afterward
+      await waitForNextUpdate();
+      queryResult = result.current;
+      expect(queryResult.loading).toEqual(false);
+      expect(queryResult.data).toEqual({
+        foo: { result: foo },
+      });
+      // 'result' is a custom property, so that we can access relevant data without digging queries
+      expect(queryResult.result).toEqual(foo);
     });
     /*
     test("send new request if props are updated", async () => {
@@ -252,18 +250,12 @@ describe("react-hooks/queries", function () {
       multiTypeName,
       fragmentName,
     });
-    const defaultVariables = {
-      input: {
-        terms: {
-          limit: 10,
-          itemsPerPage: 10,
-        },
-        enableCache: false,
-        enableTotal: true,
-      },
-    };
+    const defaultVariables = buildMultiQueryOptions({ input: {} }, {}, {})
+      .variables;
+
     test("query multiple documents", async () => {
-      const response = {
+      const totalCount = 10;
+      const mock = {
         request: {
           query: defaultQuery,
           variables: defaultVariables,
@@ -271,20 +263,20 @@ describe("react-hooks/queries", function () {
         result: {
           data: {
             foos: {
-              results: [foo],
-              totalCount: 10,
+              results: [fooWithTypename],
+              totalCount,
             },
           },
         },
       };
-      const mocks = [response];
+      const mocks = [mock];
       const wrapper = ({ children }) => (
         <MockedProvider addTypename={false} mocks={mocks}>
           {children}
         </MockedProvider>
       );
 
-      const { result } = renderHook(
+      const { result, waitForNextUpdate } = renderHook(
         () =>
           useMulti({
             model: Foo,
@@ -292,10 +284,19 @@ describe("react-hooks/queries", function () {
           }),
         { wrapper }
       );
-      const queryResult = result.current;
-
+      let queryResult = result.current;
       expect(queryResult.loading).toEqual(true);
-
+      await waitForNextUpdate();
+      queryResult = result.current;
+      expect(queryResult.loading).toEqual(false);
+      expect(queryResult.data).toEqual({
+        foos: {
+          results: [foo],
+          totalCount,
+        },
+      });
+      // shortcut
+      expect(queryResult.results).toEqual([foo]);
       //expect(loadingRes.prop("loading")).toEqual(true);
       //expect(loadingRes.prop("error")).toBeFalsy();
       //// pass loading
