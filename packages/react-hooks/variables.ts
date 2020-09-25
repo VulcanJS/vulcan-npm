@@ -18,5 +18,14 @@ export const computeQueryVariables = (
   const { _id: argsId, input: argsInput = {} } = argsOrProps;
   const _id = argsId || optionsId || undefined; // use dynamic _id in priority, default _id otherwise
   const input = !_id ? _merge({}, optionsInput, argsInput) : undefined; // if _id is defined ignore input, else use dynamic input in priority
-  return { _id, input };
+  const variables: VulcanMutationOptions = {};
+  // Beware: MockProvider is sensitive to undefined values in variables
+  // If a value is undefined, don't add it at all in the variables
+  if (_id) {
+    variables._id = _id;
+  }
+  if (input) {
+    variables.input = input;
+  }
+  return variables;
 };

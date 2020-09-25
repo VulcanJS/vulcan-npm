@@ -1,6 +1,8 @@
 import React from "react";
 import expect from "expect";
 import { MockedProvider } from "@apollo/client/testing";
+import { print } from "graphql";
+
 //import gql from 'graphql-tag';
 //import { initComponentTest } from 'meteor/vulcan:test';
 import { useMulti, useSingle } from "../index";
@@ -72,21 +74,28 @@ describe("react-hooks/queries", function () {
             // variables must absolutely match with the emitted request,
             // including undefined values
             input: {
-              selector: { documentId: undefined, slug: undefined },
+              id: foo.id,
+              allowNull: false,
+              //selector: { documentId: undefined, slug: undefined },
               enableCache: false,
             },
           },
         },
         result: {
           data: {
-            foo: { result: foo, __typename: typeName },
+            foo: { result: foo },
           },
         },
       };
+      //expect(
+      //  print(buildSingleQuery({ typeName, fragmentName, fragment }))
+      //).toEqual("");
 
       const mocks = [mock]; // need multiple mocks, one per query
       const wrapper = ({ children }) => (
-        <MockedProvider mocks={mocks}>{children}</MockedProvider>
+        <MockedProvider addTypename={false} mocks={mocks}>
+          {children}
+        </MockedProvider>
       );
       const { result } = renderHook(
         () =>
@@ -99,7 +108,9 @@ describe("react-hooks/queries", function () {
         { wrapper }
       );
 
-      expect(result).toEqual("hello");
+      const queryResult = result.current;
+
+      expect(queryResult.loading).toEqual(true);
       //expect(loadingRes.prop("loading")).toBe(true);
       // @see https://www.apollographql.com/docs/react/recipes/testing/#testing-final-state
       //await new Promise(resolve => setTimeout(resolve));
@@ -251,14 +262,6 @@ describe("react-hooks/queries", function () {
         enableTotal: true,
       },
     };
-    const defaultOptions = {
-      collection: Foo,
-      fragment,
-      queryOptions: {
-        pollInterval: 0,
-        notifyOnNetworkStatusChange: true, // necessary for loadMoreInc
-      },
-    };
     test("query multiple documents", async () => {
       const response = {
         request: {
@@ -270,24 +273,28 @@ describe("react-hooks/queries", function () {
             foos: {
               results: [foo],
               totalCount: 10,
-              __typename: "[Foo]",
             },
           },
         },
       };
       const mocks = [response];
       const wrapper = ({ children }) => (
-        <MockedProvider mocks={mocks}>{children}</MockedProvider>
+        <MockedProvider addTypename={false} mocks={mocks}>
+          {children}
+        </MockedProvider>
       );
 
-      const { result } = renderHook(() =>
-        useMulti({
-          model: Foo,
-          input: {},
-        })
+      const { result } = renderHook(
+        () =>
+          useMulti({
+            model: Foo,
+            input: {},
+          }),
+        { wrapper }
       );
+      const queryResult = result.current;
 
-      expect(result).toEqual("hello");
+      expect(queryResult.loading).toEqual(true);
 
       //expect(loadingRes.prop("loading")).toEqual(true);
       //expect(loadingRes.prop("error")).toBeFalsy();

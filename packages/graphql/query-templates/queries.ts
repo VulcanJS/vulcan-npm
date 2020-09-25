@@ -192,7 +192,7 @@ export const singleClientTemplate = ({
     ${singleReturnProperty} {
       ...${fragmentName}
     }
-    __typename
+    # __typename
   }
   ${extraQueries ? extraQueries : ""}
 }`;
@@ -229,7 +229,7 @@ export const multiClientTemplate = ({
       ...${fragmentName}
     }
     totalCount
-    __typename
+    # __typename
   }
   ${extraQueries ? extraQueries : ""}
 }`;
