@@ -31,7 +31,13 @@ Options:
          
 */
 
-import { useQuery, gql, QueryResult } from "@apollo/client";
+import {
+  useQuery,
+  gql,
+  QueryResult,
+  QueryOptions,
+  OperationVariables,
+} from "@apollo/client";
 import { useState } from "react";
 import { multiClientTemplate, VulcanGraphqlModel } from "@vulcanjs/graphql";
 import merge from "lodash/merge";
@@ -87,7 +93,14 @@ const getInitialPaginationInput = (options, props) => {
  * @param {*} state
  * @param {*} props
  */
-const buildQueryOptions = (options, paginationInput = {}, props) => {
+export const buildMultiQueryOptions = <
+  TData = any,
+  TVariables = OperationVariables
+>(
+  options,
+  paginationInput: any = {},
+  props
+): Partial<QueryOptions<TData, TVariables>> => {
   let {
     input: optionsInput,
     pollInterval = 20000,
@@ -279,7 +292,7 @@ export const useMulti = (options: UseMultiOptions, props = {}) => {
     fragment,
   });
 
-  const queryOptions = buildQueryOptions(options, paginationInput, props);
+  const queryOptions = buildMultiQueryOptions(options, paginationInput, props);
   const queryResult: QueryResult = useQuery(query, queryOptions);
 
   const result = buildMultiResult(
