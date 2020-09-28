@@ -26,7 +26,7 @@
 
 // */
 
-import { useMutation, MutationResult, gql } from "@apollo/client";
+import { useMutation, MutationResult, gql, FetchResult } from "@apollo/client";
 
 import { filterFunction } from "@vulcanjs/mongo";
 import { createClientTemplate } from "@vulcanjs/graphql";
@@ -86,12 +86,15 @@ export const buildCreateQuery = ({ typeName, fragmentName, fragment }) => {
 };
 
 // Add data into the resolverName
-const buildResult = (options, resolverName, executionResult) => {
+const buildResult = <TData = any>(
+  options,
+  resolverName,
+  executionResult
+): CreateResult<TData> => {
   const { data } = executionResult;
-  const propertyName = options.propertyName || "document";
   const props = {
     ...executionResult,
-    [propertyName]: data && data[resolverName] && data[resolverName].data,
+    document: data && data[resolverName] && data[resolverName].data,
   };
   return props;
 };
@@ -103,9 +106,21 @@ interface CreateVariables<TData = any> {
   input: CreateInput<TData>;
 }
 interface UseCreateOptions extends VulcanMutationHookOptions {}
-type CreateFunc<T = any> = (args: CreateVariables<T>) => void;
+/**
+ * Result of the actual create function
+ */
+interface CreateResult<TData = any> extends FetchResult<TData> {
+  data: any; // TData seems to sometime be the type of the object, sometimes of the full response...
+  document: TData;
+}
+type CreateFunc<TData = any> = (
+  args: CreateVariables<TData>
+) => Promise<CreateResult<TData>>;
+
 type UseCreateResult<T = any> = [CreateFunc<T>, MutationResult<T>]; // return the usual useMutation result, but with an abstracted creation function
-export const useCreate = (options: UseCreateOptions): UseCreateResult => {
+export const useCreate = <TData = any>(
+  options: UseCreateOptions
+): UseCreateResult => {
   const {
     model,
     fragment = model.graphql.defaultFragment,
@@ -133,7 +148,7 @@ export const useCreate = (options: UseCreateOptions): UseCreateResult => {
     const executionResult = await createFunc({
       variables: { input: args.input },
     });
-    return buildResult(options, resolverName, executionResult);
+    return buildResult<TData>(options, resolverName, executionResult);
   };
   return [extendedCreateFunc, ...rest];
 };

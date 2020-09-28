@@ -102,14 +102,16 @@ export const useDelete = (options: UseDeleteOptions): UseDeleteResult => {
     }),
     ...mutationOptions,
   });
-  const extendedDeleteFunc = (
+  const extendedDeleteFunc = async (
     args: DeleteVariables /*{ input: argsInput, _id: argsId }*/
   ) => {
-    return deleteFunc({
+    const executionResult = await deleteFunc({
       variables: {
         ...computeQueryVariables(options, args),
       },
     });
+    const { data } = executionResult;
+    return { ...executionResult, document: data?.[resolverName]?.data };
   };
   return [extendedDeleteFunc, ...rest];
 };

@@ -1,3 +1,6 @@
+/**
+ * Compute variables for mutation hooks
+ */
 import _merge from "lodash/merge";
 
 interface VulcanMutationOptions {

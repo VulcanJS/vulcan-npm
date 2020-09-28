@@ -118,7 +118,7 @@ describe("react-hooks/queries", function () {
         foo: { result: foo },
       });
       // 'result' is a custom property, so that we can access relevant data without digging queries
-      expect(queryResult.result).toEqual(foo);
+      expect(queryResult.document).toEqual(foo);
     });
     /*
     test("send new request if props are updated", async () => {
@@ -296,17 +296,7 @@ describe("react-hooks/queries", function () {
         },
       });
       // shortcut
-      expect(queryResult.results).toEqual([foo]);
-      //expect(loadingRes.prop("loading")).toEqual(true);
-      //expect(loadingRes.prop("error")).toBeFalsy();
-      //// pass loading
-      //await wait(0);
-      //wrapper.update();
-      //const finalRes = wrapper.find(TestComponent);
-      //expect(finalRes.prop("loading")).toEqual(false);
-      //expect(finalRes.prop("error")).toBeFalsy();
-      //expect(finalRes.prop("results")).toEqual([foo]);
-      //expect(finalRes.prop("count")).toEqual(1);
+      expect(queryResult.documents).toEqual([foo]);
     });
 
     /*

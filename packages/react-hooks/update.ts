@@ -27,7 +27,7 @@
 
 // */
 
-import { useMutation, MutationResult, gql } from "@apollo/client";
+import { useMutation, MutationResult, gql, FetchResult } from "@apollo/client";
 
 import { updateClientTemplate } from "@vulcanjs/graphql";
 
@@ -35,6 +35,7 @@ import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { computeQueryVariables } from "./variables";
 import { computeNewDataAfterCreate } from "./create";
 import { VulcanMutationHookOptions } from "./typings";
+import { exec } from "child_process";
 
 // We can reuse the same function to compute the new list after an element update
 const computeNewDataAfterUpdate: ComputeNewDataFunc = computeNewDataAfterCreate;
@@ -62,8 +63,13 @@ interface UseUpdateOptions<TData = any>
   extends VulcanMutationHookOptions,
     Partial<UpdateVariables<TData>> {}
 // Function returned by the hook
-type UpdateFunc<T = any> = (args: UpdateVariables<T>) => void;
-// Result of the hook
+interface UpdateFuncResult<TData = any> extends FetchResult<TData> {
+  document: TData; // shortcut to get the document
+}
+type UpdateFunc<TData = any> = (
+  args: UpdateVariables<TData>
+) => Promise<UpdateFuncResult<TData>>;
+// Result of the hook itself
 type UseUpdateResult<T = any> = [UpdateFunc<T>, MutationResult<T>]; // return the usual useMutation result, but with an abstracted creation function
 
 /**
@@ -99,12 +105,14 @@ export const useUpdate = <TData = any>(
     ...mutationOptions,
   });
 
-  const extendedUpdateFunc = (variables: UpdateVariables) => {
-    return updateFunc({
+  const extendedUpdateFunc = async (variables: UpdateVariables) => {
+    const executionResult = await updateFunc({
       variables: {
         ...computeQueryVariables(options, variables),
       },
     });
+    const { data } = executionResult;
+    return { ...executionResult, document: data?.[resolverName]?.data };
   };
   return [extendedUpdateFunc, ...rest];
 };

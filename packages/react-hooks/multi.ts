@@ -156,7 +156,7 @@ const buildMultiResult = (
   const graphQLErrors = get(queryResult, "error.networkError.result.errors");
   const { refetch, networkStatus, error, fetchMore, data } = queryResult;
   // Note: Scalar types like Dates are NOT converted. It should be done at the UI level.
-  const results = data && data[resolverName] && data[resolverName].results;
+  const documents = data && data[resolverName] && data[resolverName].results;
   const totalCount =
     data && data[resolverName] && data[resolverName].totalCount;
   // see https://github.com/apollographql/apollo-client/blob/master/packages/apollo-client/src/core/networkStatus.ts
@@ -175,18 +175,18 @@ const buildMultiResult = (
     // note: loading will propably change soon https://github.com/apollostack/apollo-client/issues/831
     loadingInitial,
     loadingMore,
-    results,
+    documents,
     totalCount,
     networkError: error && error.networkError,
     graphQLErrors,
-    count: results && results.length,
+    count: documents && documents.length,
 
     // regular load more (reload everything)
     loadMore(providedInput) {
       // if new terms are provided by presentational component use them, else default to incrementing current limit once
       const newInput = providedInput || {
         ...paginationInput,
-        limit: results.length + initialPaginationInput.limit,
+        limit: documents.length + initialPaginationInput.limit,
       };
       setPaginationInput(newInput);
     },
@@ -199,7 +199,7 @@ const buildMultiResult = (
 
       const newInput = providedInput || {
         ...paginationInput,
-        offset: results.length,
+        offset: documents.length,
       };
 
       return fetchMore({
@@ -249,13 +249,13 @@ interface MultiQueryResult<TData = any> extends QueryResult<TData> {
   loadingMore: boolean;
   loadMore: Function;
   loadMoreInc: Function;
-  results?: Array<TData>;
   totalCount?: number;
   count?: number;
   networkError?: any;
   graphqlErrors?: Array<any>;
   fragment: string;
   fragmentName: string;
+  documents?: Array<TData>;
 }
 
 export const useMulti = (options: UseMultiOptions, props = {}) => {

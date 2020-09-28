@@ -27,7 +27,7 @@
 
  */
 
-import { useMutation, MutationResult, gql } from "@apollo/client";
+import { useMutation, MutationResult, gql, FetchResult } from "@apollo/client";
 
 import { upsertClientTemplate } from "@vulcanjs/graphql";
 
@@ -57,15 +57,20 @@ interface UpsertVariables<TData = any> {
   input: UpsertInput<TData>;
 }
 
-interface UseUpdateOptions<TData = any>
+interface UseUpsertOptions<TData = any>
   extends VulcanMutationHookOptions,
     Partial<UpsertVariables<TData>> {}
 
-type UpsertFunc<T = any> = (args: UpsertVariables<T>) => void;
+interface UpsertFuncResult<TData = any> extends FetchResult<TData> {
+  document: TData;
+}
+type UpsertFunc<T = any> = (
+  args: UpsertVariables<T>
+) => Promise<UpsertFuncResult>;
 // Result of the hook
 type UseUpsertResult<T = any> = [UpsertFunc<T>, MutationResult<T>]; // return the usual useMutation result, but with an abstracted creation function
 
-export const useUpsert = (options) => {
+export const useUpsert = (options: UseUpsertOptions): UseUpsertResult => {
   const {
     model,
     fragment = model.graphql.defaultFragment,
@@ -91,12 +96,14 @@ export const useUpsert = (options) => {
     ...mutationOptions,
   });
 
-  const extendedUpsertFunc = (variables: UpsertVariables) => {
-    return upsertFunc({
+  const extendedUpsertFunc = async (variables: UpsertVariables) => {
+    const executionResult = await upsertFunc({
       variables: {
         ...computeQueryVariables(options, variables),
       },
     });
+    const { data } = executionResult;
+    return { ...executionResult, document: data?.[resolverName]?.data };
   };
 
   return [extendedUpsertFunc, ...rest];

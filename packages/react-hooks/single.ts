@@ -83,7 +83,7 @@ const buildQueryOptions = <TData = any, TVariables = OperationVariables>(
 interface SingleResult<TData = any> extends QueryResult<TData> {
   fragmentName: string;
   fragment: string;
-  result: TData; // shortcut to get the document
+  document: TData; // shortcut to get the document
 }
 const buildSingleResult = <TData = any>(
   options: UseSingleOptions,
@@ -91,11 +91,10 @@ const buildSingleResult = <TData = any>(
   queryResult: QueryResult<TData>
 ): SingleResult<TData> => {
   const { /* ownProps, */ data, error } = queryResult;
-  const propertyName = "document";
   const result = {
     ...queryResult,
     // Note: Scalar types like Dates are NOT converted. It should be done at the UI level.
-    result: data && data[resolverName] && data[resolverName].result,
+    document: data && data[resolverName] && data[resolverName].result,
     fragmentName,
     fragment,
   };
