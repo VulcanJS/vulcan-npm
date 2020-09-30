@@ -86,11 +86,11 @@ export const buildCreateQuery = ({ typeName, fragmentName, fragment }) => {
 };
 
 // Add data into the resolverName
-const buildResult = <TData = any>(
+const buildResult = <TModel = any>(
   options,
   resolverName,
   executionResult
-): CreateResult<TData> => {
+): CreateResult<TModel> => {
   const { data } = executionResult;
   const props = {
     ...executionResult,
@@ -109,18 +109,21 @@ interface UseCreateOptions extends VulcanMutationHookOptions {}
 /**
  * Result of the actual create function
  */
-interface CreateResult<TData = any> extends FetchResult<TData> {
-  data: any; // TData seems to sometime be the type of the object, sometimes of the full response...
-  document: TData;
+interface CreateResult<TModel = any, TData = any> extends FetchResult<TData> {
+  data: TData;
+  document: TModel;
 }
-type CreateFunc<TData = any> = (
+type CreateFunc<TModel = any, TData = any> = (
   args: CreateVariables<TData>
-) => Promise<CreateResult<TData>>;
+) => Promise<CreateResult<TModel, TData>>;
 
-type UseCreateResult<T = any> = [CreateFunc<T>, MutationResult<T>]; // return the usual useMutation result, but with an abstracted creation function
-export const useCreate = <TData = any>(
+type UseCreateResult<TModel = any, TData = any> = [
+  CreateFunc<TModel>,
+  MutationResult<TData>
+]; // return the usual useMutation result, but with an abstracted creation function
+export const useCreate = <TModel = any>(
   options: UseCreateOptions
-): UseCreateResult => {
+): UseCreateResult<TModel> => {
   const {
     model,
     fragment = model.graphql.defaultFragment,
@@ -148,7 +151,7 @@ export const useCreate = <TData = any>(
     const executionResult = await createFunc({
       variables: { input: args.input },
     });
-    return buildResult<TData>(options, resolverName, executionResult);
+    return buildResult<TModel>(options, resolverName, executionResult);
   };
   return [extendedCreateFunc, ...rest];
 };

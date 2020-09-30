@@ -35,7 +35,6 @@ import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { computeQueryVariables } from "./variables";
 import { computeNewDataAfterCreate } from "./create";
 import { VulcanMutationHookOptions } from "./typings";
-import { exec } from "child_process";
 
 // We can reuse the same function to compute the new list after an element update
 const computeNewDataAfterUpdate: ComputeNewDataFunc = computeNewDataAfterCreate;
@@ -51,20 +50,21 @@ export const buildUpdateQuery = ({ typeName, fragmentName, fragment }) =>
   `;
 
 // Describe the update input, can be provided to the hook or the update function
-interface UpdateInput<TData> {
-  data: TData;
+interface UpdateInput<TModel> {
+  data: TModel;
   id?: string;
 }
-interface UpdateVariables<TData = any> {
-  input: UpdateInput<TData>;
+interface UpdateVariables<TModel = any> {
+  input: UpdateInput<TModel>;
 }
 // Options of the hook
-interface UseUpdateOptions<TData = any>
+interface UseUpdateOptions<TModel = any>
   extends VulcanMutationHookOptions,
-    Partial<UpdateVariables<TData>> {}
+    Partial<UpdateVariables<TModel>> {}
 // Function returned by the hook
-interface UpdateFuncResult<TData = any> extends FetchResult<TData> {
-  document: TData; // shortcut to get the document
+interface UpdateFuncResult<TModel = any, TData = any>
+  extends FetchResult<TData> {
+  document: TModel; // shortcut to get the document
 }
 type UpdateFunc<TData = any> = (
   args: UpdateVariables<TData>
@@ -77,9 +77,9 @@ type UseUpdateResult<T = any> = [UpdateFunc<T>, MutationResult<T>]; // return th
  * ...
  * await updateFoo({input: { _id: "1234", data: myNewFoo }})
  */
-export const useUpdate = <TData = any>(
+export const useUpdate = <TModel = any>(
   options: UseUpdateOptions
-): UseUpdateResult<TData> => {
+): UseUpdateResult<TModel> => {
   const {
     model,
     fragment = model.graphql.defaultFragment,
@@ -105,7 +105,7 @@ export const useUpdate = <TData = any>(
     ...mutationOptions,
   });
 
-  const extendedUpdateFunc = async (variables: UpdateVariables) => {
+  const extendedUpdateFunc = async (variables: UpdateVariables<TModel>) => {
     const executionResult = await updateFunc({
       variables: {
         ...computeQueryVariables(options, variables),

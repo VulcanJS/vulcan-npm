@@ -49,28 +49,33 @@ export const buildUpsertQuery = ({ typeName, fragment, fragmentName }) =>
     ${fragment}
   `;
 
-interface UpsertInput<TData> {
-  data: TData;
+interface UpsertInput<TModel> {
+  data: TModel;
   _id?: string;
 }
-interface UpsertVariables<TData = any> {
-  input: UpsertInput<TData>;
+interface UpsertVariables<TModel = any> {
+  input: UpsertInput<TModel>;
 }
 
-interface UseUpsertOptions<TData = any>
+interface UseUpsertOptions<TModel = any>
   extends VulcanMutationHookOptions,
-    Partial<UpsertVariables<TData>> {}
+    Partial<UpsertVariables<TModel>> {}
 
-interface UpsertFuncResult<TData = any> extends FetchResult<TData> {
-  document: TData;
+interface UpsertFuncResult<TModel, TData = any> extends FetchResult<TData> {
+  document: TModel;
 }
-type UpsertFunc<T = any> = (
-  args: UpsertVariables<T>
-) => Promise<UpsertFuncResult>;
+type UpsertFunc<TModel = any> = (
+  args: UpsertVariables<TModel>
+) => Promise<UpsertFuncResult<TModel>>;
 // Result of the hook
-type UseUpsertResult<T = any> = [UpsertFunc<T>, MutationResult<T>]; // return the usual useMutation result, but with an abstracted creation function
+type UseUpsertResult<TModel = any, TData = any> = [
+  UpsertFunc<TModel>,
+  MutationResult<TData>
+]; // return the usual useMutation result, but with an abstracted creation function
 
-export const useUpsert = (options: UseUpsertOptions): UseUpsertResult => {
+export const useUpsert = <TModel = any>(
+  options: UseUpsertOptions
+): UseUpsertResult<TModel> => {
   const {
     model,
     fragment = model.graphql.defaultFragment,

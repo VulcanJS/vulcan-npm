@@ -72,9 +72,20 @@ interface DeleteVariables {
 interface UseDeleteOptions
   extends VulcanMutationHookOptions,
     Partial<DeleteVariables> {}
-type DeleteFunc = (args: DeleteVariables) => void;
-type UseDeleteResult<T = any> = [DeleteFunc, MutationResult<T>];
-export const useDelete = (options: UseDeleteOptions): UseDeleteResult => {
+
+interface DeleteFuncResult<TModel> {
+  document: TModel;
+}
+type DeleteFunc<TModel> = (
+  args: DeleteVariables
+) => Promise<DeleteFuncResult<TModel>>;
+type UseDeleteResult<TModel, TData = any> = [
+  DeleteFunc<TModel>,
+  MutationResult<TData>
+];
+export const useDelete = <TModel>(
+  options: UseDeleteOptions
+): UseDeleteResult<TModel> => {
   const {
     model,
     fragment = model.graphql.defaultFragment,

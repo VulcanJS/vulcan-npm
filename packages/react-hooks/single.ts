@@ -80,12 +80,7 @@ const buildQueryOptions = <TData = any, TVariables = OperationVariables>(
   };
 };
 
-interface SingleResult<TData = any> extends QueryResult<TData> {
-  fragmentName: string;
-  fragment: string;
-  document: TData; // shortcut to get the document
-}
-const buildSingleResult = <TData = any>(
+const buildSingleResult = <TModel = any, TData = any>(
   options: UseSingleOptions,
   { fragmentName, fragment, resolverName },
   queryResult: QueryResult<TData>
@@ -105,6 +100,11 @@ const buildSingleResult = <TData = any>(
   return result;
 };
 
+interface SingleResult<TModel = any, TData = any> extends QueryResult<TData> {
+  fragmentName: string;
+  fragment: string;
+  document: TModel; // shortcut to get the document
+}
 interface SingleInput extends QueryInput {
   id?: string;
   allowNull?: boolean; // if false, throw an error when not found
@@ -117,7 +117,15 @@ interface UseSingleOptions {
   extraQueries?: string;
 }
 
-export const useSingle = (options: UseSingleOptions, props = {}) => {
+/**
+ * Fetch a single, known document
+ * @param options
+ * @param props
+ */
+export const useSingle = <TModel = any>(
+  options: UseSingleOptions,
+  props = {}
+): SingleResult<TModel> => {
   let {
     model,
     fragment = model.graphql.defaultFragment,
@@ -135,7 +143,7 @@ export const useSingle = (options: UseSingleOptions, props = {}) => {
   });
 
   const queryResult = useQuery(query, buildQueryOptions(options, props));
-  const result = buildSingleResult(
+  const result = buildSingleResult<TModel>(
     options,
     { fragment, fragmentName, resolverName },
     queryResult

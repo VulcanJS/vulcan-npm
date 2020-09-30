@@ -144,12 +144,12 @@ export const buildMultiQueryOptions = <
   };
 };
 
-const buildMultiResult = (
+const buildMultiResult = <TModel, TData = any>(
   options,
   { fragmentName, fragment, resolverName },
   { setPaginationInput, paginationInput, initialPaginationInput },
-  queryResult: QueryResult
-): MultiQueryResult => {
+  queryResult: QueryResult<TData>
+): MultiQueryResult<TModel> => {
   //console.log('returnedProps', returnedProps);
 
   // workaround for https://github.com/apollographql/apollo-client/issues/2810
@@ -243,7 +243,8 @@ interface UseMultiOptions {
   fragmentName?: string;
   extraQueries?: string; // Get more data alongside the objects
 } // & useQuery options?
-interface MultiQueryResult<TData = any> extends QueryResult<TData> {
+interface MultiQueryResult<TModel = any, TData = any>
+  extends QueryResult<TData> {
   graphQLErrors: any;
   loadingInitial: boolean;
   loadingMore: boolean;
@@ -255,10 +256,13 @@ interface MultiQueryResult<TData = any> extends QueryResult<TData> {
   graphqlErrors?: Array<any>;
   fragment: string;
   fragmentName: string;
-  documents?: Array<TData>;
+  documents?: Array<TModel>;
 }
 
-export const useMulti = (options: UseMultiOptions, props = {}) => {
+export const useMulti = <TModel = any>(
+  options: UseMultiOptions,
+  props = {}
+): MultiQueryResult<TModel> => {
   const initialPaginationInput = getInitialPaginationInput(options, props);
   const [paginationInput, setPaginationInput] = useState(
     initialPaginationInput
@@ -295,7 +299,7 @@ export const useMulti = (options: UseMultiOptions, props = {}) => {
   const queryOptions = buildMultiQueryOptions(options, paginationInput, props);
   const queryResult: QueryResult = useQuery(query, queryOptions);
 
-  const result = buildMultiResult(
+  const result = buildMultiResult<TModel>(
     options,
     { fragment, fragmentName, resolverName },
     { setPaginationInput, paginationInput, initialPaginationInput },
