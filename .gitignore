@@ -23,6 +23,7 @@
 /packages/*/node_modules
 /runtime.js
 build
-coverage
+coverage/
+coverage-unit/
 dist
 package-lock.json
