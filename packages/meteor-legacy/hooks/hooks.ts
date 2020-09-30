@@ -49,6 +49,10 @@ const acceptVariablesAsFirstArg = (
   return (variables = {}, options) =>
     mutationFunction({ ...options, variables });
 };
+/**
+ * Transform mutation callbacks so they accept arguments as the first response
+ * @param result
+ */
 const enhanceUseMutationResult = <TData = any, TVariables = OperationVariables>(
   result: MutationTuple<TData, TVariables>
 ): EnhancedMutationTuple<TData, TVariables> => {
@@ -117,22 +121,106 @@ export const useLogout: PrebuiltMutation<
   { logout: LogoutOutput },
   ApolloVariables<LogoutInput>
 > = (options) => enhanceUseMutationResult(useMutation(logoutMutation, options));
-// export const useSetPassword = () => {
-//
-// }
-//
-// export const useSendResetPasswordEmail = () => {
-//
-// }
-//
-// export const useResetPassword = () => {
-//
-// }
-//
-// export const useSendVerificationEmail = () => {
-//
-// }
-//
-// export const verifyEmail = () => {
-//
-// }
+
+interface SetPasswordInput {
+  newPassword: string;
+}
+interface AuthResult {
+  token: string;
+  userId: string;
+}
+interface SetPasswordOutput extends AuthResult {}
+const setPasswordMutation = gql`
+  mutation setPassword($input: SetPasswordInput) {
+    setPassword(input: $input) {
+      token
+      userId
+    }
+  }
+`;
+/**
+ * Update the password (for an authenticated user)
+ * @param options
+ */
+export const useSetPassword: PrebuiltMutation<
+  { setPassword: SetPasswordOutput },
+  ApolloVariables<SetPasswordInput>
+> = (options) =>
+  enhanceUseMutationResult(useMutation(setPasswordMutation, options));
+
+interface AuthEmailInput {
+  email: string;
+}
+interface SendResetPasswordEmailInput extends AuthEmailInput {}
+type SendResetPasswordEmailOutput = boolean;
+
+const sendResetPasswordEmail = gql`
+  mutation sendResetPasswordEmailEmail($input: AuthEmailInput) {
+    sendResetPasswordEmail(input: $input)
+  }
+`;
+/**
+ * Trigger the reset password email
+ */
+export const useSendResetPasswordEmail: PrebuiltMutation<
+  { sendResetPasswordEmail: SendResetPasswordEmailOutput },
+  ApolloVariables<SendResetPasswordEmailInput>
+> = () => enhanceUseMutationResult(useMutation(sendResetPasswordEmail));
+
+interface ResetPasswordInput {
+  token: string;
+  newPassword: string;
+}
+interface ResetPasswordOutput {
+  userId: string;
+}
+const resetPasswordMutation = gql`
+  mutation resetPassword($input: ResetPasswordInput) {
+    resetPassword(input: $input) {
+      userId
+    }
+  }
+`;
+/**
+ * Change the password using a "forgotten password" token sent by mail
+ */
+export const useResetPassword: PrebuiltMutation<
+  { resetPassword: ResetPasswordOutput },
+  ApolloVariables<ResetPasswordInput>
+> = () => enhanceUseMutationResult(useMutation(resetPasswordMutation));
+
+interface SendVerificationEmailInput extends AuthEmailInput {}
+type SendVerificationEmailOutput = boolean;
+
+const sendVerificationEmailMutation = gql`
+  mutation sendVerificationEmail($input: AuthEmailInput) {
+    sendVerificationEmail(input: $input)
+  }
+`;
+
+/**
+ * Send again the verification email if necessary
+ */
+export const useSendVerificationEmail: PrebuiltMutation<
+  { sendVerificationEmail: SendVerificationEmailOutput },
+  ApolloVariables<SendVerificationEmailInput>
+> = () => enhanceUseMutationResult(useMutation(sendVerificationEmailMutation));
+
+interface VerifyEmailInput {
+  token: string;
+}
+interface VerifyEmailOutput {
+  userId: string;
+}
+
+const verifyEmailMutation = gql`
+  mutation verifyEmail($input: VerifyEmailInput) {
+    verifyEmail(input: $input) {
+      userId
+    }
+  }
+`;
+export const verifyEmail: PrebuiltMutation<
+  { verifyEmail: VerifyEmailOutput },
+  ApolloVariables<VerifyEmailInput>
+> = () => enhanceUseMutationResult(useMutation(verifyEmailMutation));

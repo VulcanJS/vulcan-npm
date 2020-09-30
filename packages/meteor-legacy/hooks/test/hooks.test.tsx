@@ -1,6 +1,5 @@
-import React from "react";
+//import React from "react";
 import expect from "expect";
-import { mount } from "enzyme";
 //import gql from 'graphql-tag';
 //import { initComponentTest } from 'meteor/vulcan:test';
 import {
