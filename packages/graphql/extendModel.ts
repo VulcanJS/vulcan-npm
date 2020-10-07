@@ -8,10 +8,17 @@ import {
 } from "../graphql/fragments/defaultFragment";
 import { camelCaseify } from "@vulcanjs/utils";
 
-interface CreateModelOptions {
+interface CreateModelSharedOptions {
   typeName: string; // Canonical name of the model = its graphQL type name
   multiTypeName: string; // Plural version, to be defined manually (automated pluralization leads to unexpected results)
 }
+interface CreateModelServerOptions {
+  resolvers?: any;
+  mutations?: any;
+}
+interface CreateModelOptions
+  extends CreateModelSharedOptions,
+    CreateModelServerOptions {}
 export const extendModel = (
   options: CreateModelOptions
 ) /*: ExtendModelFunc<VulcanGraphqlModel>*/ => (
@@ -29,6 +36,7 @@ export const extendModel = (
     multiTypeName,
     singleResolverName,
     multiResolverName,
+    ...options,
   };
   // compute default fragment
   const extendedModel = {
@@ -37,10 +45,17 @@ export const extendModel = (
   };
   const defaultFragment = getDefaultFragmentText(extendedModel);
   const defaultFragmentName = getDefaultFragmentName(extendedModel);
+
+  // server-only
+  const defaultQueryResolvers = null;
+  const defaultMutationResolvers = null;
   const extendedGraphqlModel = {
     ...graphqlModel,
     defaultFragment,
     defaultFragmentName,
+    // server-only
+    resolvers: defaultQueryResolvers,
+    mutations: defaultMutationResolvers,
   };
   const finalModel: VulcanGraphqlModel = {
     ...model,
@@ -403,3 +418,5 @@ export const extendModel = (
 //   });
 //   return schema;
 // }
+
+export default extendModel;

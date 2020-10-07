@@ -20,6 +20,7 @@
   "dependencies": {
     "@vulcanjs/model": "^0.0.6",
     "@vulcanjs/utils": "^0.0.6",
+    "lodash": "^4.17.20",
     "mongodb": "^3.6.2"
   },
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",

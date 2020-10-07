@@ -8,7 +8,7 @@ export interface ApolloVariables<TInput> {
 export interface VulcanGraphqlModelSkeleton extends VulcanModel {
   graphql: Pick<GraphqlModel, "typeName">;
 }
-export interface GraphqlModel {
+interface GraphqlSharedModel {
   typeName: string;
   multiTypeName: string; // plural name for the multi resolver
   multiResolverName: string;
@@ -16,6 +16,11 @@ export interface GraphqlModel {
   defaultFragment: string;
   defaultFragmentName: string;
 }
+interface GraphqlServerModel {
+  resolvers: any;
+  mutations: any;
+}
+export interface GraphqlModel extends GraphqlSharedModel, GraphqlServerModel {}
 export interface VulcanGraphqlModel extends VulcanModel {
   graphql: GraphqlModel;
 }

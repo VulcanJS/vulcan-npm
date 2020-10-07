@@ -361,21 +361,6 @@ export const getSchemaFieldAllowedValues = (schemaFieldOptionsArray) => {
  */
 export const getFieldType = (field) => get(field, "type.definitions.0.type");
 
-/**
- * Convert an array of field names into a Mongo fields specifier
- * @param {Array} fieldsArray
- */
-/*
-export const arrayToFields = (fieldsArray) => {
-  return _.object(
-    fieldsArray,
-    _.map(fieldsArray, function () {
-      return true;
-    })
-  );
-};
-*/
-
 export const isEmptyOrUndefined = (value) =>
   typeof value === "undefined" ||
   value === null ||

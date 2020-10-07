@@ -1,6 +1,6 @@
 /**
  */
-import { VulcanModel } from "./typings";
+import { VulcanModel, PermissionOptions } from "./typings";
 import { VulcanSchema } from "@vulcanjs/schema";
 
 export type ExtendModelFunc<TExtended extends VulcanModel = VulcanModel> = (
@@ -9,15 +9,17 @@ export type ExtendModelFunc<TExtended extends VulcanModel = VulcanModel> = (
 interface CreateModelOptions {
   schema: VulcanSchema;
   name: string;
-  extensions: Array<ExtendModelFunc>;
+  permissions: PermissionsOptions;
+  extensions?: Array<ExtendModelFunc>;
 }
 // TODO: typing is not correct, it returns a combination of the "extensions" calls
 export const createModel = (options: CreateModelOptions): VulcanModel => {
-  const { schema, name, extensions } = options;
+  const { schema, name, extensions = [] } = options;
 
   const model: VulcanModel = {
     schema,
     name,
+    options,
   };
 
   const extendedModel = extensions.reduce(
