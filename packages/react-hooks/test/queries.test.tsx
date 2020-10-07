@@ -41,21 +41,6 @@ describe("react-hooks/queries", function () {
 
   const fragment = Foo.graphql.defaultFragment;
   const fragmentName = Foo.graphql.defaultFragmentName;
-  /*
-  const fragment = {
-    definitions: [
-      {
-        name: {
-          value: fragmentName,
-        },
-      },
-    ],
-    toString: () => `fragment FoosDefaultFragment on Foo { 
-        id
-        hello
-        __typename
-      }`,
-  };*/
   const foo = { id: "1", hello: "world" };
   const fooWithTypename = { ...foo, __typename: "Foo" };
 
@@ -120,128 +105,6 @@ describe("react-hooks/queries", function () {
       // 'result' is a custom property, so that we can access relevant data without digging queries
       expect(queryResult.document).toEqual(foo);
     });
-    /*
-    test("send new request if props are updated", async () => {
-      const query = singleQuery({ typeName, fragmentName, fragment });
-      const firstRequest = {
-        request: {
-          query,
-          variables: {
-            // variables must absolutely match with the emitted request,
-            // including undefined values
-            input: {
-              selector: { documentId: undefined, slug: undefined },
-              enableCache: false,
-            },
-          },
-        },
-        result: {
-          data: {
-            foo: { result: null, __typename: "Foo" },
-          },
-        },
-      };
-      const documentIdRequest = {
-        request: {
-          query,
-          variables: {
-            input: {
-              selector: { documentId: "42", slug: undefined },
-              enableCache: false,
-            },
-          },
-        },
-        result: {
-          data: {
-            foo: { result: foo, __typename: "Foo" },
-          },
-        },
-      };
-      const mocks = [firstRequest, documentIdRequest]; // need multiple mocks, one per query
-      const SingleComponent = withSingle({
-        collection: Foo,
-        queryOptions: {
-          pollInterval: 0, // disable polling otherwise it will fail (we need 1 mock per request)
-        },
-        fragment,
-      })(TestComponent);
-      const wrapper = mount(
-        <MockedProvider mocks={mocks}>
-          <SingleComponent />
-        </MockedProvider>
-      );
-      // @see https://www.apollographql.com/docs/react/recipes/testing/#testing-final-state
-      //await new Promise(resolve => setTimeout(resolve));
-      await wait(0);
-      wrapper.update(); // rerender
-      const intermediateRes = wrapper.find(TestComponent).first();
-      expect(intermediateRes.prop("loading")).toBe(false);
-      expect(intermediateRes.prop("data").error).toBeFalsy();
-      expect(intermediateRes.prop("document")).toEqual(null);
-      // change props (MockedProvider will pass childProps down)
-      wrapper.setProps({ childProps: { documentId: "42" } });
-      await wait(0);
-      wrapper.update();
-      const finalRes = wrapper.find(TestComponent).first();
-      expect(finalRes.prop("loading")).toBe(false);
-      expect(finalRes.prop("data").error).toBeFalsy();
-      expect(finalRes.prop("document")).toEqual(foo);
-    });
-    test("work if fragment is not yet defined", () => {
-      const hoc = withSingle({
-        collection: Foo,
-        fragmentName: "NotRegisteredYetFragment",
-      });
-      expect(hoc).toBeDefined();
-      expect(hoc).toBeInstanceOf(Function);
-    });
-    test("add extra queries", async () => {
-      const mock = {
-        request: {
-          query: singleQuery({
-            typeName,
-            fragmentName,
-            fragment,
-            extraQueries: "extra { foo }",
-          }),
-          variables: {
-            // variables must absolutely match with the emitted request,
-            // including undefined values
-            input: {
-              selector: { documentId: undefined, slug: undefined },
-              enableCache: false,
-            },
-          },
-        },
-        result: {
-          data: {
-            foo: { result: foo, __typename: "Foo" },
-            extra: { foo: "bar", __typename: "Foo" },
-          },
-        },
-      };
-      const mocks = [mock]; // need multiple mocks, one per query
-      const SingleComponent = withSingle({
-        collection: Foo,
-        queryOptions: {
-          pollInterval: 0, // disable polling otherwise it will fail (we need 1 mock per request)
-        },
-        fragment,
-        extraQueries: "extra { foo }",
-      })(TestComponent);
-      const wrapper = mount(
-        <MockedProvider removeTypename mocks={mocks}>
-          <SingleComponent />
-        </MockedProvider>
-      );
-      await wait(0);
-      wrapper.update(); // rerender
-      const finalRes = wrapper.find(TestComponent).first();
-      expect(finalRes.prop("loading")).toBe(false);
-      expect(finalRes.prop("data").error).toBeFalsy();
-      expect(finalRes.prop("document")).toEqual(foo);
-    });
-  });*/
   });
   describe("useMulti", () => {
     const defaultQuery = buildMultiQuery({
@@ -299,151 +162,82 @@ describe("react-hooks/queries", function () {
       expect(queryResult.documents).toEqual([foo]);
     });
 
-    /*
-    test("load more increase the limit", async () => {
-      // @see https://stackoverflow.com/questions/49064334/invoke-a-function-with-enzyme-when-function-is-passed-down-as-prop-react
-      const responses = [
-        // first request
-        {
-          request: {
-            query: defaultQuery,
-            variables: {
-              input: {
-                ...defaultVariables.input,
-                terms: {
-                  limit: 1,
-                  itemsPerPage: 1, // = first limit
-                },
-              },
-            },
-          },
-          result: {
-            data: {
-              foos: {
-                results: [foo],
-                totalCount: 10,
-                __typename: "[Foo]",
-              },
-            },
-          },
-        },
-        // calling loadMore / loadMoreInc will send new requests with updated terms
-        // loadMore
-        {
-          request: {
-            query: defaultQuery,
-            variables: {
-              input: {
-                ...defaultVariables.input,
-                terms: {
-                  limit: 2, // limit is increased by load more
-                  itemsPerPage: 1,
-                },
-              },
-            },
-          },
-          result: {
-            data: {
-              foos: {
-                results: [foo, foo, foo],
-                totalCount: 10,
-                __typename: "[Foo]",
-              },
-            },
-          },
-        },
-      ];
-
-      const MultiComponent = withMulti(defaultOptions)(TestComponent);
-
-      const wrapper = mount(
-        <MockedProvider mocks={responses}>
-          <MultiComponent terms={{ limit: 1 }} />
-        </MockedProvider>
-      );
-      // get data
-      await wait(0);
-      wrapper.update();
-
-      // call load more
-      expect(wrapper.find(TestComponent).prop("loadMore")).toBeInstanceOf(
-        Function
-      );
-      wrapper.find(TestComponent).prop("loadMore")();
-      await wait(0);
-      wrapper.update();
-      const loadMoreRes = wrapper.find(TestComponent);
-      expect(loadMoreRes.prop("error")).toBeFalsy();
-      expect(loadMoreRes.prop("results")).toHaveLength(3);
-    });
-
     // FIXME: sometimes this test does not pass
-    test.skip("loadMoreInc get more data", async () => {
+    test("loadMore get more data", async () => {
+      const totalCount = 10;
       // @see https://stackoverflow.com/questions/49064334/invoke-a-function-with-enzyme-when-function-is-passed-down-as-prop-react
-      const responses = [
+      const mocks = [
         // first request
         {
           request: {
             query: defaultQuery,
             variables: {
+              ...defaultVariables,
               input: {
                 ...defaultVariables.input,
-                terms: {
-                  limit: 1,
-                  itemsPerPage: 1, // = first limit
-                },
+                limit: 1,
               },
             },
           },
           result: {
             data: {
               foos: {
-                results: [foo],
+                results: [fooWithTypename],
                 totalCount: 10,
-                __typename: "[Foo]",
               },
             },
           },
         },
-        // loadmoreInc
+        // loadmore
         {
           request: {
             query: defaultQuery,
             variables: {
               // get an offset to load only relevant data
-              input: { terms: { limit: 1, itemsPerPage: 1, offset: 1 } },
+              input: { limit: 1, offset: 1 },
             },
           },
           result: {
             data: {
               foos: {
-                results: [foo],
+                results: [fooWithTypename],
                 totalCount: 10,
-                __typename: "[Foo]",
               },
             },
           },
         },
       ];
-
-      const MultiComponent = withMulti(defaultOptions)(TestComponent);
-
-      const wrapper = mount(
-        <MockedProvider mocks={responses}>
-          <MultiComponent terms={{ limit: 1 }} />
-        </MockedProvider>
+      const wrapper = ({ children }) => (
+        <MockedProvider mocks={mocks}>{children}</MockedProvider>
       );
-      // get data
-      await wait(0);
-      wrapper.update();
-      // call load more incremental
-      // TODO: weird behaviour
-      expect(wrapper.find(TestComponent).prop("loadMoreInc")).toBeInstanceOf(
-        Function
+
+      const { result, waitForNextUpdate } = renderHook(
+        () =>
+          useMulti({
+            model: Foo,
+            input: { limit: 1 },
+          }),
+        { wrapper }
       );
-      wrapper.find(TestComponent).prop("loadMoreInc")();
-      await wait();
-      wrapper.update();
+      let queryResult = result.current;
+      expect(queryResult.loading).toEqual(true);
+      await waitForNextUpdate();
+      queryResult = result.current;
+      expect(queryResult.loading).toEqual(false);
+      expect(queryResult.loadMore).toBeInstanceOf(Function);
+      await act(async () => {
+        await queryResult.loadMore();
+      });
+      queryResult = result.current;
+      expect(queryResult.data).toEqual({
+        foos: {
+          results: [fooWithTypename, fooWithTypename],
+          totalCount,
+        },
+      });
+      // await waitForNextUpdate();
+      expect(queryResult.documents).toEqual([fooWithTypename, fooWithTypename]);
+      /*
       // NOTE: this can sometimes fail for no reason... rerun the tests to debug
       if (Meteor.isServer) {
         // in the client call is instantaneous... don't know why
@@ -456,16 +250,10 @@ describe("react-hooks/queries", function () {
       expect(loadMoreIncRes.prop("loadingMore")).toEqual(false);
       expect(loadMoreIncRes.prop("error")).toBeFalsy();
       expect(loadMoreIncRes.prop("results")).toHaveLength(2);
-    });
-    test("work if fragment is not yet defined", () => {
-      const hoc = withMulti({
-        collection: Foo,
-        fragmentName: "NotRegisteredYetFragment",
-      });
-      expect(hoc).toBeDefined();
-      expect(hoc).toBeInstanceOf(Function);
+      */
     });
   });
+  /*
 
   describe("withCurrentUser", () => {
     test("return a valid component", () => {
@@ -478,6 +266,6 @@ describe("react-hooks/queries", function () {
       const SiteDataComponent = withSiteData(TestComponent);
       expect(SiteDataComponent).toBeDefined();
     });
-    */
   });
+    */
 });

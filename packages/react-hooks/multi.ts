@@ -35,8 +35,8 @@ import {
   useQuery,
   gql,
   QueryResult,
-  QueryOptions,
   OperationVariables,
+  QueryHookOptions,
 } from "@apollo/client";
 import { useState } from "react";
 import { multiClientTemplate, VulcanGraphqlModel } from "@vulcanjs/graphql";
@@ -93,14 +93,11 @@ const getInitialPaginationInput = (options, props) => {
  * @param {*} state
  * @param {*} props
  */
-export const buildMultiQueryOptions = <
-  TData = any,
-  TVariables = OperationVariables
->(
-  options,
+export const buildMultiQueryOptions = <TData>(
+  options: Partial<UseMultiOptions<TData, MultiVariables>>,
   paginationInput: any = {},
   props
-): Partial<QueryOptions<TData, TVariables>> => {
+): Partial<QueryHookOptions<TData, MultiVariables>> => {
   let {
     input: optionsInput,
     pollInterval = 20000,
@@ -120,14 +117,14 @@ export const buildMultiQueryOptions = <
 
   // get input from options, then props, then pagination
   // TODO: should be done during the merge with lodash
-  const mergedInput = {
+  const mergedInput: MultiInput = {
     ...defaultInput,
     ...options.input,
     ...input,
     ...paginationInput,
   };
 
-  const graphQLOptions = {
+  const graphQLOptions: Partial<QueryHookOptions<TData, MultiVariables>> = {
     variables: {
       input: mergedInput,
     },
@@ -144,8 +141,8 @@ export const buildMultiQueryOptions = <
   };
 };
 
-const buildMultiResult = <TModel, TData = any>(
-  options,
+const buildMultiResult = <TModel, TData, TVariables>(
+  options: UseMultiOptions<TData, TVariables>,
   { fragmentName, fragment, resolverName },
   { setPaginationInput, paginationInput, initialPaginationInput },
   queryResult: QueryResult<TData>
@@ -161,7 +158,6 @@ const buildMultiResult = <TModel, TData = any>(
     data && data[resolverName] && data[resolverName].totalCount;
   // see https://github.com/apollographql/apollo-client/blob/master/packages/apollo-client/src/core/networkStatus.ts
   const loadingInitial = networkStatus === 1;
-  const loading = networkStatus === 1;
   const loadingMore = networkStatus === 3 || networkStatus === 2;
 
   if (error) {
@@ -182,6 +178,7 @@ const buildMultiResult = <TModel, TData = any>(
     count: documents && documents.length,
 
     // regular load more (reload everything)
+    /*
     loadMore(providedInput) {
       // if new terms are provided by presentational component use them, else default to incrementing current limit once
       const newInput = providedInput || {
@@ -189,30 +186,29 @@ const buildMultiResult = <TModel, TData = any>(
         limit: documents.length + initialPaginationInput.limit,
       };
       setPaginationInput(newInput);
-    },
+    },*/
 
-    // incremental loading version (only load new content)
     // note: not compatible with polling
     // TODO
-    loadMoreInc(providedInput) {
+    /**
+     * User friendly wrapper around fetchMore
+     * NOTE: this feature is not compatible with polling
+     * @param providedInput
+     */
+    loadMore(providedInput) {
       // get terms passed as argument or else just default to incrementing the offset
-
-      const newInput = providedInput || {
+      if (options.pollInterval)
+        throw new Error("Can't call loadMore when polling is set.");
+      const offsetInput = providedInput || {
         ...paginationInput,
         offset: documents.length,
       };
 
       return fetchMore({
-        variables: { input: newInput },
+        variables: { input: offsetInput },
         updateQuery(previousResults, { fetchMoreResult }) {
           // no more post to fetch
-          if (
-            !(
-              fetchMoreResult[resolverName] &&
-              fetchMoreResult[resolverName].results &&
-              fetchMoreResult[resolverName].results.length
-            )
-          ) {
+          if (!fetchMoreResult[resolverName]?.results?.length) {
             return previousResults;
           }
           const newResults = {
@@ -234,22 +230,22 @@ const buildMultiResult = <TModel, TData = any>(
   };
 };
 
-interface MultiInput extends QueryInput {}
-
-interface UseMultiOptions {
+interface UseMultiOptions<TData, TVariables>
+  extends QueryHookOptions<TData, TVariables> {
   model: VulcanGraphqlModel;
   input?: MultiInput;
   fragment?: string;
   fragmentName?: string;
   extraQueries?: string; // Get more data alongside the objects
+  queryOptions?: QueryHookOptions<TData, TVariables>;
 } // & useQuery options?
 interface MultiQueryResult<TModel = any, TData = any>
   extends QueryResult<TData> {
   graphQLErrors: any;
   loadingInitial: boolean;
   loadingMore: boolean;
-  loadMore: Function;
-  loadMoreInc: Function;
+  loadMore: (input?: MultiInput) => ReturnType<QueryResult<TData>["fetchMore"]>;
+  //loadMoreInc: Function;
   totalCount?: number;
   count?: number;
   networkError?: any;
@@ -259,8 +255,13 @@ interface MultiQueryResult<TModel = any, TData = any>
   documents?: Array<TModel>;
 }
 
-export const useMulti = <TModel = any>(
-  options: UseMultiOptions,
+interface MultiInput extends QueryInput {}
+interface MultiVariables extends OperationVariables {
+  input: MultiInput;
+}
+
+export const useMulti = <TModel = any, TData = any>(
+  options: UseMultiOptions<TData, MultiVariables>,
   props = {}
 ): MultiQueryResult<TModel> => {
   const initialPaginationInput = getInitialPaginationInput(options, props);
@@ -274,12 +275,6 @@ export const useMulti = <TModel = any>(
     fragmentName = model.graphql.defaultFragmentName,
     extraQueries,
   } = options;
-
-  //const { collectionName, collection } = extractCollectionInfo(options);
-  //const { fragmentName, fragment } = extractFragmentInfo(
-  //  options,
-  //  collectionName
-  //);
 
   const {
     typeName,
@@ -296,10 +291,14 @@ export const useMulti = <TModel = any>(
     fragment,
   });
 
-  const queryOptions = buildMultiQueryOptions(options, paginationInput, props);
+  const queryOptions = buildMultiQueryOptions<TData>(
+    options,
+    paginationInput,
+    props
+  );
   const queryResult: QueryResult = useQuery(query, queryOptions);
 
-  const result = buildMultiResult<TModel>(
+  const result = buildMultiResult<TModel, TData, MultiVariables>(
     options,
     { fragment, fragmentName, resolverName },
     { setPaginationInput, paginationInput, initialPaginationInput },
