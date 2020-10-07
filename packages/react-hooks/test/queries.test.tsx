@@ -108,10 +108,7 @@ describe("react-hooks/queries", function () {
   });
   describe("useMulti", () => {
     const defaultQuery = buildMultiQuery({
-      fragment,
-      typeName,
-      multiTypeName,
-      fragmentName,
+      model: Foo,
     });
     const defaultVariables = buildMultiQueryOptions({ input: {} }, {}, {})
       .variables;
@@ -206,6 +203,24 @@ describe("react-hooks/queries", function () {
             },
           },
         },
+        // no more data
+        {
+          request: {
+            query: defaultQuery,
+            variables: {
+              // get an offset to load only relevant data
+              input: { limit: 1, offset: 2 },
+            },
+          },
+          result: {
+            data: {
+              foos: {
+                results: [],
+                totalCount: 10,
+              },
+            },
+          },
+        },
       ];
       const wrapper = ({ children }) => (
         <MockedProvider mocks={mocks}>{children}</MockedProvider>
@@ -224,6 +239,7 @@ describe("react-hooks/queries", function () {
       await waitForNextUpdate();
       queryResult = result.current;
       expect(queryResult.loading).toEqual(false);
+      // 2nd request to get more data
       expect(queryResult.loadMore).toBeInstanceOf(Function);
       await act(async () => {
         await queryResult.loadMore();
@@ -237,35 +253,19 @@ describe("react-hooks/queries", function () {
       });
       // await waitForNextUpdate();
       expect(queryResult.documents).toEqual([fooWithTypename, fooWithTypename]);
-      /*
-      // NOTE: this can sometimes fail for no reason... rerun the tests to debug
-      if (Meteor.isServer) {
-        // in the client call is instantaneous... don't know why
-        const loadMoreIncLoading = wrapper.find(TestComponent);
-        expect(loadMoreIncLoading.prop("loadingMore")).toBe(true);
-        await wait();
-        wrapper.update();
-      }
-      const loadMoreIncRes = wrapper.find(TestComponent);
-      expect(loadMoreIncRes.prop("loadingMore")).toEqual(false);
-      expect(loadMoreIncRes.prop("error")).toBeFalsy();
-      expect(loadMoreIncRes.prop("results")).toHaveLength(2);
-      */
+      // 3rd request (no more data)
+      await act(async () => {
+        await queryResult.loadMore();
+      });
+      queryResult = result.current;
+      expect(queryResult.data).toEqual({
+        foos: {
+          results: [fooWithTypename, fooWithTypename],
+          totalCount,
+        },
+      });
+      // await waitForNextUpdate();
+      expect(queryResult.documents).toEqual([fooWithTypename, fooWithTypename]);
     });
   });
-  /*
-
-  describe("withCurrentUser", () => {
-    test("return a valid component", () => {
-      const CurrentUserComponent = withCurrentUser(TestComponent);
-      expect(CurrentUserComponent).toBeDefined();
-    });
-  });
-  describe("withSiteData", () => {
-    test("return a valid component", () => {
-      const SiteDataComponent = withSiteData(TestComponent);
-      expect(SiteDataComponent).toBeDefined();
-    });
-  });
-    */
 });

@@ -31,10 +31,9 @@ export const multiQueryUpdater = (computeNewData) => ({
   resolverName: string;
 }) => {
   // update multi queries
-  const { typeName, multiTypeName, multiResolverName } = model.graphql;
+  const { multiResolverName } = model.graphql;
   const multiQuery = buildMultiQuery({
-    typeName,
-    multiTypeName,
+    model,
     fragmentName,
     fragment,
   });

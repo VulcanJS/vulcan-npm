@@ -9,27 +9,6 @@ Differences with Vulcan Meteor:
 - automated pluralization is forbidden, eg in graphql templates 
 => user has to provide a multiTypeName in the model (could be improved but automated pluralization must be avoided)
 */
-/*
-
-### withMulti
-
-Paginated items container
-
-Options: 
-
-  - collection: the collection to fetch the documents from
-  - fragment: the fragment that defines which properties to fetch
-  - fragmentName: the name of the fragment, passed to getFragment
-  - limit: the number of documents to show initially
-  - pollInterval: how often the data should be updated, in ms (set to 0 to disable polling)
-  - input: the initial query input
-    - filter
-    - sort
-    - search
-    - offset
-    - limit
-         
-*/
 
 import {
   useQuery,
@@ -52,28 +31,28 @@ const defaultInput = {
 };
 
 interface BuildMultiQueryArgs {
-  typeName: string;
-  multiTypeName: string;
-  fragmentName: string;
-  fragment: string;
+  model: VulcanGraphqlModel;
+  fragmentName?: string;
+  fragment?: string;
   extraQueries?: string;
 }
 export const buildMultiQuery = ({
-  typeName,
-  multiTypeName,
-  fragmentName,
+  model,
+  fragmentName = model.graphql.defaultFragmentName,
+  fragment = model.graphql.defaultFragment,
   extraQueries,
-  fragment,
-}: BuildMultiQueryArgs) => gql`
-  ${multiClientTemplate({
-    typeName,
-    multiTypeName,
-    fragmentName,
-    extraQueries,
-  })}
-  ${fragment}
-`;
-
+}: BuildMultiQueryArgs) => {
+  const { typeName, multiTypeName } = model.graphql;
+  return gql`
+    ${multiClientTemplate({
+      typeName,
+      multiTypeName,
+      fragmentName,
+      extraQueries,
+    })}
+    ${fragment}
+  `;
+};
 const getInitialPaginationInput = (options, props) => {
   // get initial limit from props, or else options, or else default value
   const limit =
@@ -141,6 +120,29 @@ export const buildMultiQueryOptions = <TData>(
   };
 };
 
+/**
+ * Query updater after a fetch more
+ * @param resolverName
+ */
+export const fetchMoreUpdateQuery = (resolverName: string) => (
+  previousResults,
+  { fetchMoreResult }
+) => {
+  // no more post to fetch
+  if (!fetchMoreResult[resolverName]?.results?.length) {
+    return previousResults;
+  }
+  const newResults = {
+    ...previousResults,
+    [resolverName]: { ...previousResults[resolverName] },
+  };
+  newResults[resolverName].results = [
+    ...previousResults[resolverName].results,
+    ...fetchMoreResult[resolverName].results,
+  ];
+  return newResults;
+};
+
 const buildMultiResult = <TModel, TData, TVariables>(
   options: UseMultiOptions<TData, TVariables>,
   { fragmentName, fragment, resolverName },
@@ -160,11 +162,6 @@ const buildMultiResult = <TModel, TData, TVariables>(
   const loadingInitial = networkStatus === 1;
   const loadingMore = networkStatus === 3 || networkStatus === 2;
 
-  if (error) {
-    // eslint-disable-next-line no-console
-    console.log(error);
-  }
-
   return {
     ...queryResult,
     // see https://github.com/apollostack/apollo-client/blob/master/src/queries/store.ts#L28-L36
@@ -177,50 +174,23 @@ const buildMultiResult = <TModel, TData, TVariables>(
     graphQLErrors,
     count: documents && documents.length,
 
-    // regular load more (reload everything)
-    /*
-    loadMore(providedInput) {
-      // if new terms are provided by presentational component use them, else default to incrementing current limit once
-      const newInput = providedInput || {
-        ...paginationInput,
-        limit: documents.length + initialPaginationInput.limit,
-      };
-      setPaginationInput(newInput);
-    },*/
-
-    // note: not compatible with polling
-    // TODO
     /**
      * User friendly wrapper around fetchMore
      * NOTE: this feature is not compatible with polling
      * @param providedInput
      */
-    loadMore(providedInput) {
+    loadMore() {
       // get terms passed as argument or else just default to incrementing the offset
       if (options.pollInterval)
         throw new Error("Can't call loadMore when polling is set.");
-      const offsetInput = providedInput || {
+      const offsetInput = {
         ...paginationInput,
         offset: documents.length,
       };
 
       return fetchMore({
         variables: { input: offsetInput },
-        updateQuery(previousResults, { fetchMoreResult }) {
-          // no more post to fetch
-          if (!fetchMoreResult[resolverName]?.results?.length) {
-            return previousResults;
-          }
-          const newResults = {
-            ...previousResults,
-            [resolverName]: { ...previousResults[resolverName] },
-          }; // TODO: should we clone this object? => yes
-          newResults[resolverName].results = [
-            ...previousResults[resolverName].results,
-            ...fetchMoreResult[resolverName].results,
-          ];
-          return newResults;
-        },
+        updateQuery: fetchMoreUpdateQuery(resolverName),
       });
     },
 
@@ -244,7 +214,7 @@ interface MultiQueryResult<TModel = any, TData = any>
   graphQLErrors: any;
   loadingInitial: boolean;
   loadingMore: boolean;
-  loadMore: (input?: MultiInput) => ReturnType<QueryResult<TData>["fetchMore"]>;
+  loadMore: () => ReturnType<QueryResult<TData>["fetchMore"]>;
   //loadMoreInc: Function;
   totalCount?: number;
   count?: number;
@@ -276,16 +246,11 @@ export const useMulti = <TModel = any, TData = any>(
     extraQueries,
   } = options;
 
-  const {
-    typeName,
-    multiTypeName,
-    multiResolverName: resolverName,
-  } = model.graphql;
+  const { multiResolverName: resolverName } = model.graphql;
 
   // build graphql query from options
   const query = buildMultiQuery({
-    typeName,
-    multiTypeName,
+    model,
     fragmentName,
     extraQueries,
     fragment,
