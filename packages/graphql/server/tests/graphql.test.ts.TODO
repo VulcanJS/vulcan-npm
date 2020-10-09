@@ -1,7 +1,5 @@
 import { createModel } from "@vulcanjs/model";
 
-import expect from "expect";
-
 import SimpleSchema from "simpl-schema";
 import extendModel from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
@@ -15,14 +13,9 @@ import { addIntlFields } from "../../lib/modules/collections";
 
 //import collectionToGraphQL from '../../lib/modules/graphql/collectionToSchema';
 import collectionToGraphQL from "../../lib/server/graphql/collection";
-import { getSchemaFields } from "../../lib/server/graphql/schemaFields";
-import { getGraphQLType } from "../..//lib/modules/graphql/utils.js";
+import { getSchemaFields } from "../schemaFields";
+import { getGraphQLType } from "../../lib/modules/graphql/utils.js";
 import { generateResolversFromSchema } from "../../lib/server/graphql/resolvers";
-import SimpleSchema from "simpl-schema";
-import {
-  createDummyCollection,
-  normalizeGraphQLSchema,
-} from "meteor/vulcan:test";
 import Users from "meteor/vulcan:users";
 import { createModel } from "@vulcanjs/model";
 

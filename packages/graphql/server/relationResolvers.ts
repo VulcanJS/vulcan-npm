@@ -1,11 +1,21 @@
+import { VulcanModel } from "@vulcanjs/model";
+import { VulcanDocument } from "@vulcanjs/schema";
 /*
 
 Default Relation Resolvers
 
 */
-const restrictViewableFields = () => {}; // TODO: get from a user lib
+import { restrictViewableFields } from "../permissions";
 
-export const hasOne = async ({
+interface RelationResolverInput {
+  document: VulcanDocument;
+  fieldName: string;
+  context: any;
+  relatedModel: VulcanModel;
+}
+type RelationResolver = (input: RelationResolverInput) => VulcanDocument;
+
+export const hasOne: RelationResolver = async ({
   document,
   fieldName,
   context,
@@ -24,22 +34,27 @@ export const hasOne = async ({
     context.currentUser,
     relatedModel,
     relatedDocument
-  );
+  ) as VulcanDocument;
 };
 
-export const hasMany = async ({ document, fieldName, context, typeName }) => {
+export const hasMany: RelationResolver = async ({
+  document,
+  fieldName,
+  context,
+  relatedModel,
+}) => {
   // if document doesn't have a "foreign key" field, return null
   if (!document[fieldName]) return null;
+  const documentId = document[fieldName];
   // get related collection
-  const relatedCollection = getCollectionByTypeName(typeName);
   // get related documents
-  const relatedDocuments = await relatedCollection.loader.loadMany(
-    document[fieldName]
-  );
+  const relatedDocuments = await context[
+    relatedModel.name
+  ].connector.findOneById(documentId);
   // filter related document to restrict viewable fields
   return context.Users.restrictViewableFields(
     context.currentUser,
-    relatedCollection,
+    relatedModel,
     relatedDocuments
-  );
+  ) as Array<VulcanDocument>;
 };

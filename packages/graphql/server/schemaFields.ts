@@ -13,7 +13,7 @@ import {
   VulcanFieldSchema,
   VulcanSchema,
 } from "@vulcanjs/schema";
-import * as relations from "./relations";
+import * as relations from "./relationResolvers";
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
 

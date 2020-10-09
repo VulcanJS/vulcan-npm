@@ -353,7 +353,7 @@ export const restrictDocument = (
 export const restrictViewableFields = (
   user,
   model: VulcanModel,
-  docOrDocs: Array<any> | any
+  docOrDocs: Array<VulcanDocument> | VulcanDocument
 ) => {
   if (!docOrDocs) return {};
   const schema = model.schema;
