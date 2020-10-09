@@ -294,7 +294,7 @@ const generateSchemaFragments = ({
     // enums,
   } = fields;
 
-  const typeName = model ? model.graphql : typeNameArgs;
+  const typeName = model ? model.graphql.typeName : typeNameArgs;
 
   if (!mainType || mainType.length === 0) {
     throw new Error(

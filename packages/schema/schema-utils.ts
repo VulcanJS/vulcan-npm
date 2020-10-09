@@ -1,6 +1,5 @@
 import _reject from "lodash/reject";
 import _keys from "lodash/keys";
-// import { Collections } from './collections.js';
 import {
   getNestedSchema,
   getArrayChild,
@@ -12,7 +11,6 @@ import _isEmpty from "lodash/isEmpty";
 import _omit from "lodash/omit";
 import moment from "moment-timezone";
 import SimpleSchema from "simpl-schema";
-// import { getSetting } from "./settings";
 
 export const formattedDateResolver = (fieldName) => {
   return (document = {}, args: any = {}, context: any = {}) => {
