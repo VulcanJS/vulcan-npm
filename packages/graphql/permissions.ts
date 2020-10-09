@@ -202,23 +202,24 @@ const isAdmin = function (user: User) {
  */
 const canReadField = function (
   user: User,
-  field: VulcanFieldSchema,
+  field: Pick<VulcanFieldSchema, "canRead">,
   document: Object
 ) {
   const canRead = field.canRead;
-  if (canRead) {
-    if (typeof canRead === "function") {
-      // if canRead is a function, execute it with user and document passed. it must return a boolean
-      return canRead(user, document);
-    } else if (typeof canRead === "string") {
-      // if canRead is just a string, we assume it's the name of a group and pass it to isMemberOf
-      return canRead === "guests" || isMemberOf(user, canRead, document);
-    } else if (Array.isArray(canRead) && canRead.length > 0) {
-      // if canRead is an array, we do a recursion on every item and return true if one of the items return true
-      return canRead.some((group) =>
-        canReadField(user, { canRead: group }, document)
-      );
-    }
+  if (!canRead) {
+    return false;
+  }
+  if (typeof canRead === "function") {
+    // if canRead is a function, execute it with user and document passed. it must return a boolean
+    return (canRead as Function)(user, document); // TODO: we should not need the explicit case thanks to the typecguard
+  } else if (typeof canRead === "string") {
+    // if canRead is just a string, we assume it's the name of a group and pass it to isMemberOf
+    return canRead === "guests" || isMemberOf(user, canRead, document);
+  } else if (Array.isArray(canRead) && canRead.length > 0) {
+    // if canRead is an array, we do a recursion on every item and return true if one of the items return true
+    return canRead.some((group) =>
+      canReadField(user, { canRead: group }, document)
+    );
   }
   return false;
 };
@@ -239,7 +240,9 @@ export const getReadableFields = function (
 /**
  * Check if field canRead include a permission that needs to be checked against the actual document and not just from the user
  */
-export const isDocumentBasedPermissionField = (field: VulcanFieldSchema) => {
+export const isDocumentBasedPermissionField = (
+  field: Pick<VulcanFieldSchema, "canRead">
+) => {
   const canRead = field.canRead;
   if (canRead) {
     if (typeof canRead === "function") {
@@ -399,7 +402,10 @@ export const restrictDocuments = function ({
  * @param {Object} user - The user performing the action
  * @param {Object} field - The field being edited or inserted
  */
-export const canCreateField = function (user: User, field: VulcanFieldSchema) {
+export const canCreateField = function (
+  user: User,
+  field: Pick<VulcanFieldSchema, "canCreate">
+) {
   const canCreate = field.canCreate;
   if (canCreate) {
     if (typeof canCreate === "function") {
@@ -431,10 +437,10 @@ export const canCreateField = function (user: User, field: VulcanFieldSchema) {
  */
 export const canUpdateField = function (
   user: User,
-  field: VulcanFieldSchema,
+  field: Pick<VulcanFieldSchema, "canUpdate">,
   document: VulcanDocument
 ) {
-  const canUpdate = field.canUpdate || field.editableBy; //OpenCRUD backwards compatibility
+  const canUpdate = field.canUpdate;
 
   if (canUpdate) {
     if (typeof canUpdate === "function") {

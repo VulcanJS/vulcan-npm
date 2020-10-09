@@ -9,12 +9,12 @@ export type ExtendModelFunc<TExtended extends VulcanModel = VulcanModel> = (
 interface CreateModelOptions {
   schema: VulcanSchema;
   name: string;
-  permissions: PermissionsOptions;
+  permissions?: PermissionsOptions;
   extensions?: Array<ExtendModelFunc>;
 }
 // TODO: typing is not correct, it returns a combination of the "extensions" calls
 export const createModel = (options: CreateModelOptions): VulcanModel => {
-  const { schema, name, extensions = [], permissions } = options;
+  const { schema, name, extensions = [], permissions = {} } = options;
 
   const model: VulcanModel = {
     schema, // TODO: it might me new SimpleSchema(schema)._schema (and type would be EvaluatedSchema instead of schema)

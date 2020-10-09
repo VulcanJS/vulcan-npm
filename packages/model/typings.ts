@@ -7,10 +7,10 @@ type FilterFunction = (args: {
 }) => { selector: Object; options: Object };
 
 export interface PermissionsOptions {
-  canRead: Array<Function | string>; // TODO: put in common permission related stuffs
-  canCreate: Array<Function | string>; // TODO: put in common permission related stuffs
-  canUpdate: Array<Function | string>; // TODO: put in common permission related stuffs
-  canDelete: Array<Function | string>; // TODO: put in common permission related stuffs
+  canRead?: Array<Function | string>; // TODO: put in common permission related stuffs
+  canCreate?: Array<Function | string>; // TODO: put in common permission related stuffs
+  canUpdate?: Array<Function | string>; // TODO: put in common permission related stuffs
+  canDelete?: Array<Function | string>; // TODO: put in common permission related stuffs
 }
 
 /**

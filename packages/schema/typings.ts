@@ -5,19 +5,19 @@
  */
 import { SchemaDefinition, EvaluatedSchemaDefinition } from "simpl-schema";
 
+type PermissionDefinition = String | Function;
 interface VulcanField {
-  // TODO: all Vulcan specific fields goes here
-  canRead?: Array<String | Function>;
-  canCreate?: Array<String | Function>;
-  canUpdate?: Array<String | Function>;
+  canRead?: PermissionDefinition | Array<PermissionDefinition>;
+  canCreate?: PermissionDefinition | Array<PermissionDefinition>;
+  canUpdate?: PermissionDefinition | Array<PermissionDefinition>;
   // viewableBy, Deprecated, do not exist anymore in Vulcan
   // insertableBy,
   // editableBy,
   // Field-level resolver
-  resolveAs: any;
+  resolveAs?: any;
   // TODO: review those fields
   // Field is hidden in forms
-  hidden: boolean;
+  hidden?: boolean;
   // "mustComplete", // mustComplete: true means the field is required to have a complete profile
   form?: any; // extra form properties
   inputProperties?: any; // extra form properties

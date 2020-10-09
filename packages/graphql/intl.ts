@@ -78,7 +78,7 @@ export const schemaHasIntlField = (schema, fieldName) =>
 Generate custom IntlString SimpleSchema type
 
 */
-export const getIntlString = () => {
+export const getIntlString = (): SimpleSchema & { name: string } => {
   const schema = {
     locale: {
       type: String,
@@ -91,8 +91,8 @@ export const getIntlString = () => {
   };
 
   const IntlString = new SimpleSchema(schema);
-  IntlString.name = "IntlString";
-  return IntlString;
+  (IntlString as any).name = "IntlString";
+  return IntlString as SimpleSchema & { name: string };
 };
 
 /*
