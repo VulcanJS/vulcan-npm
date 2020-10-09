@@ -3,16 +3,18 @@ import { createModel } from "@vulcanjs/model";
 import SimpleSchema from "simpl-schema";
 import extendModel from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
-// import { normalizeGraphQLSchema } from "../../testUtils";
+import { normalizeGraphQLSchema } from "../../testUtils";
 import { getGraphQLType } from "../../utils";
+import { getSchemaFields } from "../schemaFields";
+import { modelToGraphql } from "../model";
 
 // import { GraphQLSchema } from "../../lib/server/graphql";
 // import initGraphQL from "../../lib/server/apollo-server/initGraphQL";
 // //import { getIntlString } from '../../lib/modules/intl'
 // import { addIntlFields } from "../../lib/modules/collections";
 //
-// //import collectionToGraphQL from '../../lib/modules/graphql/collectionToSchema';
-// import collectionToGraphQL from "../../lib/server/graphql/collection";
+// //import modelToGraphl from '../../lib/modules/graphql/collectionToSchema';
+// import modelToGraphl from "../../lib/server/graphql/collection";
 // import { getSchemaFields } from "../schemaFields";
 // import { generateResolversFromSchema } from "../../lib/server/graphql/resolvers";
 // import Users from "meteor/vulcan:users";
@@ -100,7 +102,7 @@ describe("graphq/typeDefs", () => {
     });
   });
 */
-  describe("getGraphQLType - associate a graphQL type to a field", () => {
+  describe("field parsing - getGraphQLType - associate a graphQL type to a field", () => {
     test("return nested type for nested objects", () => {
       const schema = new SimpleSchema({
         nestedField: {
@@ -239,90 +241,81 @@ describe("graphq/typeDefs", () => {
     test("return JSON if blackbox is true", () => {});
   });
 
-  /*
-  describe("schemaFields - graphql fields generation from simple schema", () => {
-    describe("getSchemaFields - get the fields to add to graphQL schema", () => {
-      test("fields without permissions are ignored", () => {
-        const schema = new SimpleSchema({
-          field: {
-            type: String,
-            canRead: ["admins"],
-          },
-          ignoredField: {
-            type: String,
-          },
-        })._schema;
-        const fields = getSchemaFields(schema, "Foo");
-        const mainType = fields.fields.mainType;
-        expect(mainType).toHaveLength(1);
-        expect(mainType[0].name).toEqual("field");
-      });
-      test("nested fields without permissions are ignored", () => {
-        const schema = new SimpleSchema({
-          nestedField: {
-            type: new SimpleSchema({
-              firstNestedField: {
-                type: String,
-                canRead: ["admins"],
-              },
-              ignoredNestedField: {
-                type: Number,
-              },
-            }),
-            canRead: ["admins"],
-          },
-        })._schema;
-        const fields = getSchemaFields(schema, "Foo");
-        const nestedFields = fields.nestedFieldsList[0];
-        // one field in the nested object
-        expect(nestedFields.fields.mainType).toHaveLength(1);
-        expect(nestedFields.fields.mainType[0].name).toEqual(
-          "firstNestedField"
-        );
-      });
-      test("generate fields for nested objects", () => {
-        const schema = new SimpleSchema({
-          nestedField: {
-            type: new SimpleSchema({
-              firstNestedField: {
-                type: String,
-                canRead: ["admins"],
-              },
-              secondNestedField: {
-                type: Number,
-                canRead: ["admins"],
-              },
-            }),
-            canRead: ["admins"],
-          },
-        })._schema;
+  describe("schema parsing - getSchemaFields - get the fields to add to graphQL schema as a JS representation", () => {
+    test("fields without permissions are ignored", () => {
+      const schema = new SimpleSchema({
+        field: {
+          type: String,
+          canRead: ["admins"],
+        },
+        ignoredField: {
+          type: String,
+        },
+      })._schema;
+      const fields = getSchemaFields(schema, "Foo");
+      const mainType = fields.fields.mainType;
+      expect(mainType).toHaveLength(1);
+      expect(mainType[0].name).toEqual("field");
+    });
+    test("nested fields without permissions are ignored", () => {
+      const schema = new SimpleSchema({
+        nestedField: {
+          type: new SimpleSchema({
+            firstNestedField: {
+              type: String,
+              canRead: ["admins"],
+            },
+            ignoredNestedField: {
+              type: Number,
+            },
+          }),
+          canRead: ["admins"],
+        },
+      })._schema;
+      const fields = getSchemaFields(schema, "Foo");
+      const nestedFields = fields.nestedFieldsList[0];
+      // one field in the nested object
+      expect(nestedFields.fields.mainType).toHaveLength(1);
+      expect(nestedFields.fields.mainType[0].name).toEqual("firstNestedField");
+    });
+    test("generate fields for nested objects", () => {
+      const schema = new SimpleSchema({
+        nestedField: {
+          type: new SimpleSchema({
+            firstNestedField: {
+              type: String,
+              canRead: ["admins"],
+            },
+            secondNestedField: {
+              type: Number,
+              canRead: ["admins"],
+            },
+          }),
+          canRead: ["admins"],
+        },
+      })._schema;
 
-        const fields = getSchemaFields(schema, "Foo");
-        // one nested object
-        expect(fields.nestedFieldsList).toHaveLength(1);
-        const nestedFields = fields.nestedFieldsList[0];
-        expect(nestedFields.typeName).toEqual("FooNestedField");
-        // one field in the nested object
-        expect(nestedFields.fields.mainType).toHaveLength(2);
-        expect(nestedFields.fields.mainType[0].name).toEqual(
-          "firstNestedField"
-        );
-        expect(nestedFields.fields.mainType[1].name).toEqual(
-          "secondNestedField"
-        );
-      });
+      const fields = getSchemaFields(schema, "Foo");
+      // one nested object
+      expect(fields.nestedFieldsList).toHaveLength(1);
+      const nestedFields = fields.nestedFieldsList[0];
+      expect(nestedFields.typeName).toEqual("FooNestedField");
+      // one field in the nested object
+      expect(nestedFields.fields.mainType).toHaveLength(2);
+      expect(nestedFields.fields.mainType[0].name).toEqual("firstNestedField");
+      expect(nestedFields.fields.mainType[1].name).toEqual("secondNestedField");
     });
   });
-  describe("collection to GraphQL schema and type", () => {
+  describe("model parsing to GraphQL schema and type", () => {
     describe("basic", () => {
       test("generate a type for a simple collection", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           field: {
             type: String,
             canRead: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         expect(res.graphQLSchema).toBeDefined();
         // debug
         //console.log(res.graphQLSchema);
@@ -330,18 +323,14 @@ describe("graphq/typeDefs", () => {
         expect(normalizedSchema).toMatch("type Foo { field: String }");
       });
       test("use provided graphQL type if any", () => {
-        const collection = createDummyCollection({
-          collectionName: "Foos",
-          typeName: "Foo",
-          schema: {
-            field: {
-              type: String,
-              typeName: "StringEnum",
-              canRead: ["admins"],
-            },
+        const model = FooModel({
+          field: {
+            type: String,
+            typeName: "StringEnum",
+            canRead: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         expect(res.graphQLSchema).toBeDefined();
         // debug
         //console.log(res.graphQLSchema);
@@ -351,7 +340,7 @@ describe("graphq/typeDefs", () => {
     });
     describe("nested objects and arrays", () => {
       test("generate type for a nested field", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           nestedField: {
             type: new SimpleSchema({
               subField: {
@@ -362,7 +351,7 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
         expect(normalizedSchema).toMatch(
           "type Foo { nestedField: FooNestedField }"
@@ -372,7 +361,7 @@ describe("graphq/typeDefs", () => {
         );
       });
       test("generate graphQL type for array of nested objects", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           arrayField: {
             type: Array,
             canRead: ["admins"],
@@ -387,7 +376,7 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
         expect(normalizedSchema).toMatch(
           "type Foo { arrayField: [FooArrayField] }"
@@ -397,7 +386,7 @@ describe("graphq/typeDefs", () => {
         );
       });
       test("ignore field if parent is blackboxed", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           blocks: {
             type: Array,
             canRead: ["admins"],
@@ -422,7 +411,7 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
         expect(normalizedSchema).toMatch("type Foo { blocks: [JSON] }");
       });
@@ -430,7 +419,7 @@ describe("graphq/typeDefs", () => {
 
     describe("nesting with referenced field", () => {
       test("use referenced graphQL type if provided for nested object", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           nestedField: {
             type: Object,
             blackbox: true,
@@ -438,7 +427,7 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
         expect(normalizedSchema).toMatch(
           "type Foo { nestedField: AlreadyRegisteredNestedType }"
@@ -448,7 +437,7 @@ describe("graphq/typeDefs", () => {
 
       // TODO: does this test case make any sense?
       test("do NOT generate graphQL type if an existing graphQL type is referenced", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           nestedField: {
             type: new SimpleSchema({
               subField: {
@@ -460,7 +449,7 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
         expect(normalizedSchema).toMatch(
           "type Foo { nestedField: AlreadyRegisteredNestedType }"
@@ -468,7 +457,7 @@ describe("graphq/typeDefs", () => {
         expect(normalizedSchema).not.toMatch("FooNestedField");
       });
       test("do NOT generate graphQL type for array of nested objects if an existing graphQL type is referenced", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           arrayField: {
             type: Array,
             canRead: ["admins"],
@@ -484,7 +473,7 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
         expect(normalizedSchema).toMatch(
           "type Foo { arrayField: [AlreadyRegisteredType] }"
@@ -494,167 +483,170 @@ describe("graphq/typeDefs", () => {
         );
       });
     });
+  });
 
-    describe("intl", () => {
-      test("generate type for intl fields", () => {
-        const collection = fooCollection(
-          addIntlFields(
-            // we need to do this manually, it is handled by a callback when creating the collection
-            {
-              intlField: {
-                intl: true,
-                type: String,
-                canRead: ["admins"],
-              },
-            }
-          )
-        );
-        const res = collectionToGraphQL(collection);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
-        expect(normalizedSchema).toMatch(
-          "type Foo { intlField(locale: String): String @intl intlField_intl(locale: String): [IntlValue] @intl }"
-        );
-      });
-      test.skip("generate type for array of intl fields", () => {
-        const collection = fooCollection(
-          addIntlFields(
-            // we need to do this manually, it is handled by a callback when creating the collection
-            {
-              arrayField: {
-                type: Array,
-                canRead: ["admins"],
-              },
-              "arrayField.$": {
-                type: String,
-                intl: true,
-                canRead: ["admins"],
-              },
-            }
-          )
-        );
-        const res = collectionToGraphQL(collection);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
-        expect(normalizedSchema).toMatch(
-          "type Foo { arrayField: [[IntlValue]] }"
-        );
-      });
-      test("generate correct type for nested intl fields", () => {
-        const collection = fooCollection({
-          nestedField: {
-            type: new SimpleSchema(
-              addIntlFields(
-                // we need to do this manually, it is handled by a callback when creating the collection
-                {
-                  intlField: {
-                    type: String,
-                    intl: true,
-                    canRead: ["admins"],
-                  },
-                }
-              )
-            ),
-            canRead: ["admins"],
-          },
-        });
-        const res = collectionToGraphQL(collection);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
-        expect(normalizedSchema).toMatch(
-          "type Foo { nestedField: FooNestedField }"
-        );
-        expect(normalizedSchema).toMatch(
-          "type FooNestedField { intlField(locale: String): String @intl intlField_intl(locale: String): [IntlValue] @intl }"
-        );
-      });
+  /*
+  describe("intl", () => {
+    test("generate type for intl fields", () => {
+      const model = FooModel(
+        addIntlFields(
+          // we need to do this manually, it is handled by a callback when creating the collection
+          {
+            intlField: {
+              intl: true,
+              type: String,
+              canRead: ["admins"],
+            },
+          }
+        )
+      );
+      const res = modelToGraphql(model);
+      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      expect(normalizedSchema).toMatch(
+        "type Foo { intlField(locale: String): String @intl intlField_intl(locale: String): [IntlValue] @intl }"
+      );
     });
+    test.skip("generate type for array of intl fields", () => {
+      const model = FooModel(
+        addIntlFields(
+          // we need to do this manually, it is handled by a callback when creating the collection
+          {
+            arrayField: {
+              type: Array,
+              canRead: ["admins"],
+            },
+            "arrayField.$": {
+              type: String,
+              intl: true,
+              canRead: ["admins"],
+            },
+          }
+        )
+      );
+      const res = modelToGraphql(model);
+      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      expect(normalizedSchema).toMatch(
+        "type Foo { arrayField: [[IntlValue]] }"
+      );
+    });
+    test("generate correct type for nested intl fields", () => {
+      const model = FooModel({
+        nestedField: {
+          type: new SimpleSchema(
+            addIntlFields(
+              // we need to do this manually, it is handled by a callback when creating the collection
+              {
+                intlField: {
+                  type: String,
+                  intl: true,
+                  canRead: ["admins"],
+                },
+              }
+            )
+          ),
+          canRead: ["admins"],
+        },
+      });
+      const res = modelToGraphql(model);
+      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      expect(normalizedSchema).toMatch(
+        "type Foo { nestedField: FooNestedField }"
+      );
+      expect(normalizedSchema).toMatch(
+        "type FooNestedField { intlField(locale: String): String @intl intlField_intl(locale: String): [IntlValue] @intl }"
+      );
+    });
+  });
 
-    describe("resolveAs", () => {
-      test("generate a type for a field with resolveAs", () => {
-        const collection = fooCollection({
-          field: {
-            type: String,
-            canRead: ["admins"],
-            resolveAs: {
-              fieldName: "field",
-              type: "Bar",
-              resolver: async (user, args, { Users }) => {
-                return "bar";
-              },
+  describe("resolveAs", () => {
+    test("generate a type for a field with resolveAs", () => {
+      const model = FooModel({
+        field: {
+          type: String,
+          canRead: ["admins"],
+          resolveAs: {
+            fieldName: "field",
+            type: "Bar",
+            resolver: async (user, args, { Users }) => {
+              return "bar";
             },
           },
-        });
-        const res = collectionToGraphQL(collection);
-        expect(res.graphQLSchema).toBeDefined();
-        // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
-        expect(normalizedSchema).toMatch("type Foo { field: Bar }");
+        },
       });
-      test("generate a type for a field with addOriginalField=true", () => {
-        const collection = fooCollection({
-          field: {
-            type: String,
-            optional: true,
-            canRead: ["admins"],
-            resolveAs: {
+      const res = modelToGraphql(model);
+      expect(res.graphQLSchema).toBeDefined();
+      // debug
+      //console.log(res.graphQLSchema);
+      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      expect(normalizedSchema).toMatch("type Foo { field: Bar }");
+    });
+    test("generate a type for a field with addOriginalField=true", () => {
+      const model = FooModel({
+        field: {
+          type: String,
+          optional: true,
+          canRead: ["admins"],
+          resolveAs: {
+            fieldName: "resolvedField",
+            type: "Bar",
+            resolver: (collection, args, context) => {
+              return "bar";
+            },
+            addOriginalField: true,
+          },
+        },
+      });
+      const res = modelToGraphql(model);
+      expect(res.graphQLSchema).toBeDefined();
+      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      expect(normalizedSchema).toMatch(
+        "type Foo { field: String resolvedField: Bar }"
+      );
+    });
+    test("generate a type for a field with addOriginalField=true for at least one resolver of an array of resolveAs", () => {
+      const model = FooModel({
+        field: {
+          type: String,
+          optional: true,
+          canRead: ["admins"],
+          resolveAs: [
+            {
               fieldName: "resolvedField",
               type: "Bar",
-              resolver: (collection, args, context) => {
-                return "bar";
-              },
+              resolver: () => "bar",
               addOriginalField: true,
             },
-          },
-        });
-        const res = collectionToGraphQL(collection);
-        expect(res.graphQLSchema).toBeDefined();
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
-        expect(normalizedSchema).toMatch(
-          "type Foo { field: String resolvedField: Bar }"
-        );
+            {
+              fieldName: "anotherResolvedField",
+              type: "Bar",
+              resolver: () => "bar",
+            },
+          ],
+        },
       });
-      test("generate a type for a field with addOriginalField=true for at least one resolver of an array of resolveAs", () => {
-        const collection = fooCollection({
-          field: {
-            type: String,
-            optional: true,
-            canRead: ["admins"],
-            resolveAs: [
-              {
-                fieldName: "resolvedField",
-                type: "Bar",
-                resolver: () => "bar",
-                addOriginalField: true,
-              },
-              {
-                fieldName: "anotherResolvedField",
-                type: "Bar",
-                resolver: () => "bar",
-              },
-            ],
-          },
-        });
-        const res = collectionToGraphQL(collection);
-        expect(res.graphQLSchema).toBeDefined();
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
-        expect(normalizedSchema).toMatch(
-          "type Foo { field: String resolvedField: Bar anotherResolvedField: Bar }"
-        );
-      });
+      const res = modelToGraphql(model);
+      expect(res.graphQLSchema).toBeDefined();
+      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      expect(normalizedSchema).toMatch(
+        "type Foo { field: String resolvedField: Bar anotherResolvedField: Bar }"
+      );
     });
+  });
+  /*
 
-    /*
+  /*
     Feature removed
     generating enums from allowed values automatically => bad idea, could be a manual helper instead
     describe('enums', () => {
       test('don\'t generate enum type when some values are not allowed', () => {
-        const collection = fooCollection({
+        const model = FooModel({
           withAllowedField: {
             type: String,
             canRead: ['admins'],
             allowedValues: ['français', 'bar'] // "ç" is not accepted, Enum must be a name
           }
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         expect(res.graphQLSchema).toBeDefined();
         // debug
         //console.log(res.graphQLSchema);
@@ -664,24 +656,24 @@ describe("graphq/typeDefs", () => {
         expect(normalizedSchema).not.toMatch('enum FooWithAllowedFieldEnum { français bar }');
       });
       test('fail when allowedValues are not string', () => {
-        const collection = fooCollection({
+        const model = FooModel({
           withAllowedField: {
             type: String,
             canRead: ['admins'],
             allowedValues: [0, 1] // "ç" is not accepted, Enum must be a name
           }
         });
-        expect(() => collectionToGraphQL(collection)).toThrow();
+        expect(() => modelToGraphql(model)).toThrow();
       });
       test('generate enum type when allowedValues is defined and field is a string', () => {
-        const collection = fooCollection({
+        const model = FooModel({
           withAllowedField: {
             type: String,
             canRead: ['admins'],
             allowedValues: ['foo', 'bar']
           }
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         expect(res.graphQLSchema).toBeDefined();
         // debug
         //console.log(res.graphQLSchema);
@@ -691,7 +683,7 @@ describe("graphq/typeDefs", () => {
       });
       test('generate enum type for nested objects', () => {
         test('generate enum type when allowedValues is defined and field is a string', () => {
-          const collection = fooCollection({
+          const model = FooModel({
             nestedField: {
               type: new SimpleSchema({
                 withAllowedField: {
@@ -703,7 +695,7 @@ describe("graphq/typeDefs", () => {
               canRead: ['admins'],
             }
           });
-          const res = collectionToGraphQL(collection);
+          const res = modelToGraphql(model);
           expect(res.graphQLSchema).toBeDefined();
           // debug
           //console.log(res.graphQLSchema);
@@ -715,7 +707,7 @@ describe("graphq/typeDefs", () => {
       });
      
       test('2 level of nesting', () => {
-        const collection = fooCollection({
+        const model = FooModel({
           entrepreneurLifeCycleHistory: {
             type: Array,
             optional: true,
@@ -743,7 +735,7 @@ describe("graphq/typeDefs", () => {
             )
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         expect(res.graphQLSchema).toBeDefined();
         // debug
         //console.log(res.graphQLSchema);
@@ -769,14 +761,14 @@ describe("graphq/typeDefs", () => {
   /*
     describe("mutation inputs", () => {
       test("generate creation input", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           field: {
             type: String,
             canRead: ["admins"],
             canCreate: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         // debug
         //console.log(res.graphQLSchema);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
@@ -788,7 +780,7 @@ describe("graphq/typeDefs", () => {
         );
       });
       test("generate inputs for nested objects", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           nestedField: {
             type: new SimpleSchema({
               someField: {
@@ -801,7 +793,7 @@ describe("graphq/typeDefs", () => {
             canCreate: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         // debug
         //console.log(res.graphQLSchema);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
@@ -817,7 +809,7 @@ describe("graphq/typeDefs", () => {
         );
       });
       test("generate inputs for array of nested objects", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           arrayField: {
             type: Array,
             canRead: ["admins"],
@@ -835,7 +827,7 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         // debug
         //console.log(res.graphQLSchema);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
@@ -851,7 +843,7 @@ describe("graphq/typeDefs", () => {
         );
       });
       test("do NOT generate new inputs for array of JSON", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           arrayField: {
             type: Array,
             canRead: ["admins"],
@@ -863,7 +855,7 @@ describe("graphq/typeDefs", () => {
             type: Object,
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         // debug
         //console.log(res.graphQLSchema);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
@@ -874,7 +866,7 @@ describe("graphq/typeDefs", () => {
         expect(normalizedSchema).not.toMatch("CreateJSONDataInput");
       });
       test("do NOT generate new inputs for blackboxed array", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           arrayField: {
             type: Array,
             canRead: ["admins"],
@@ -893,7 +885,7 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         // debug
         //console.log(res.graphQLSchema);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
@@ -904,7 +896,7 @@ describe("graphq/typeDefs", () => {
       });
 
       test("do NOT generate new inputs for nested objects if a type is provided", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           nestedField: {
             type: new SimpleSchema({
               someField: {
@@ -918,7 +910,7 @@ describe("graphq/typeDefs", () => {
             canCreate: ["admins"],
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         // debug
         //console.log(res.graphQLSchema);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
@@ -929,7 +921,7 @@ describe("graphq/typeDefs", () => {
         expect(normalizedSchema).not.toMatch("CreateFooNestedFieldDataInput");
       });
       test("do NOT generate new inputs for array of objects if typeName is provided", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           arrayField: {
             type: Array,
             canRead: ["admins"],
@@ -948,7 +940,7 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         // debug
         //console.log(res.graphQLSchema);
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
@@ -960,7 +952,7 @@ describe("graphq/typeDefs", () => {
       });
 
       test("ignore resolveAs", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           nestedField: {
             canRead: ["admins"],
             canCreate: ["admins"],
@@ -980,7 +972,7 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         expect(res.graphQLSchema).toBeDefined();
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
         expect(normalizedSchema).not.toMatch(
@@ -988,7 +980,7 @@ describe("graphq/typeDefs", () => {
         );
       });
       test("ignore resolveAs with addOriginalField when generating nested create input", () => {
-        const collection = fooCollection({
+        const model = FooModel({
           nestedField: {
             canRead: ["admins"],
             canCreate: ["admins"],
@@ -1010,7 +1002,7 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         expect(res.graphQLSchema).toBeDefined();
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
         expect(normalizedSchema).toMatch(
@@ -1026,7 +1018,7 @@ describe("graphq/typeDefs", () => {
 
       test("do not generate generic input type for direct nested arrays or objects (only appliable to referenced types)", () => {
         // TODO: test is over complex because of a previous misunderstanding, can be simplified
-        const collection = fooCollection({
+        const model = FooModel({
           arrayField: {
             type: Array,
             optional: true,
@@ -1052,7 +1044,7 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = collectionToGraphQL(collection);
+        const res = modelToGraphql(model);
         expect(res.graphQLSchema).toBeDefined();
         const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
         expect(normalizedSchema).not.toMatch("input FooArrayFieldInput");

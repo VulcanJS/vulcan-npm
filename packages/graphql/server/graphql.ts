@@ -2,7 +2,6 @@
  * Generates the Graphql schema
  * (in the form of a string template)
  */
-*/
 import deepmerge from "deepmerge";
 // import GraphQLJSON from 'graphql-type-json';
 // import GraphQLDate from 'graphql-date';
@@ -16,7 +15,7 @@ import {
   createDataInputTemplate,
   updateDataInputTemplate,
   fieldSortInputTemplate,
-} from "../query-templates";
+} from "../templates";
 import getSchemaFields from "./schemaFields";
 
 disableFragmentWarnings();

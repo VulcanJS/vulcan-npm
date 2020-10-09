@@ -4,23 +4,28 @@ Default mutations
 
 */
 
-import { createMutator, updateMutator, deleteMutator } from './mutators.js';
-import { Connectors } from './connectors.js';
-import { getCollectionByTypeName } from '../modules/collections.js';
-import get from 'lodash/get';
-import { throwError } from './errors.js';
+import { createMutator, updateMutator, deleteMutator } from "./mutators.js";
+import { Connectors } from "./connectors.js";
+import { getCollectionByTypeName } from "../modules/collections.js";
+import get from "lodash/get";
+import { throwError } from "./errors.js";
 
-const defaultOptions = { create: true, update: true, upsert: true, delete: true };
+const defaultOptions = {
+  create: true,
+  update: true,
+  upsert: true,
+  delete: true,
+};
 
-const getCreateMutationName = typeName => `create${typeName}`;
-const getUpdateMutationName = typeName => `update${typeName}`;
-const getDeleteMutationName = typeName => `delete${typeName}`;
-const getUpsertMutationName = typeName => `upsert${typeName}`;
+const getCreateMutationName = (typeName) => `create${typeName}`;
+const getUpdateMutationName = (typeName) => `update${typeName}`;
+const getDeleteMutationName = (typeName) => `delete${typeName}`;
+const getUpsertMutationName = (typeName) => `upsert${typeName}`;
 
 const operationChecks = {
-  create: 'canCreate',
-  update: 'canUpdate',
-  delete: 'canDelete',
+  create: "canCreate",
+  update: "canUpdate",
+  delete: "canDelete",
 };
 
 /*
@@ -28,25 +33,35 @@ const operationChecks = {
 Perform security check before calling mutators
 
 */
-export const performMutationCheck = options => {
-  const { user, document, collection, context, typeName, operationName } = options;
+export const performMutationCheck = (options) => {
+  const {
+    user,
+    document,
+    collection,
+    context,
+    typeName,
+    operationName,
+  } = options;
   const { Users } = context;
   const documentId = document._id;
-  const permissionsCheck = get(collection, `options.permissions.${operationChecks[operationName]}`);
+  const permissionsCheck = get(
+    collection,
+    `options.permissions.${operationChecks[operationName]}`
+  );
   let allowOperation = false;
   const fullOperationName = `${typeName}:${operationName}`;
   const data = { documentId, operationName: fullOperationName };
 
   // 1. if no permission has been defined, throw error
   if (!permissionsCheck) {
-    throwError({ id: 'app.no_permissions_defined', data });
+    throwError({ id: "app.no_permissions_defined", data });
   }
   // 2. if no document is passed, throw error
   if (!document) {
-    throwError({ id: 'app.document_not_found', data });
+    throwError({ id: "app.document_not_found", data });
   }
 
-  if (typeof permissionsCheck === 'function') {
+  if (typeof permissionsCheck === "function") {
     allowOperation = permissionsCheck(options);
   } else if (Array.isArray(permissionsCheck)) {
     allowOperation = Users.isMemberOf(user, permissionsCheck, document);
@@ -54,7 +69,7 @@ export const performMutationCheck = options => {
 
   // 3. if permission check is defined but fails, disallow operation
   if (!allowOperation) {
-    throwError({ id: 'app.operation_not_allowed', data });
+    throwError({ id: "app.operation_not_allowed", data });
   }
 };
 
@@ -63,7 +78,11 @@ export const performMutationCheck = options => {
 Default Mutations
 
 */
-export function getNewDefaultMutations({ typeName, collectionName, options }) {
+export function getDefaultMutationResolvers({
+  typeName,
+  collectionName,
+  options,
+}) {
   collectionName = collectionName || getCollectionByTypeName(typeName);
   const mutationOptions = { ...defaultOptions, ...options };
 
@@ -83,7 +102,7 @@ export function getNewDefaultMutations({ typeName, collectionName, options }) {
           collection,
           context,
           typeName,
-          operationName: 'create',
+          operationName: "create",
         });
 
         return await createMutator({
@@ -101,10 +120,15 @@ export function getNewDefaultMutations({ typeName, collectionName, options }) {
   const getMutationDocument = async ({ input, _id, collection }) => {
     let document;
     let selector;
-    if (_id) { // _id bypass input
+    if (_id) {
+      // _id bypass input
       document = await collection.loader.load(_id);
     } else {
-      const filterParameters = await Connectors.filter(collection, input, context);
+      const filterParameters = await Connectors.filter(
+        collection,
+        input,
+        context
+      );
       selector = filterParameters.selector;
       // get entire unmodified document from database
       document = await Connectors.get(collection, selector);
@@ -116,19 +140,27 @@ export function getNewDefaultMutations({ typeName, collectionName, options }) {
     mutations.update = {
       description: `Mutation for updating a ${typeName} document`,
       name: getUpdateMutationName(typeName),
-      async mutation(root, { input, _id: argsId, selector: oldSelector, data }, context) {
+      async mutation(
+        root,
+        { input, _id: argsId, selector: oldSelector, data },
+        context
+      ) {
         const { currentUser } = context;
         const collection = context[collectionName];
-        const _id = argsId || (data && typeof data === 'object' && data._id); // use provided id or documentId if available
+        const _id = argsId || (data && typeof data === "object" && data._id); // use provided id or documentId if available
 
-        const { document, selector } = await getMutationDocument({ input, _id, collection });
+        const { document, selector } = await getMutationDocument({
+          input,
+          _id,
+          collection,
+        });
 
         performMutationCheck({
           user: currentUser,
           document,
           collection,
           context,
-          operationName: 'update',
+          operationName: "update",
         });
 
         // call editMutator boilerplate function
@@ -151,10 +183,13 @@ export function getNewDefaultMutations({ typeName, collectionName, options }) {
       name: getUpsertMutationName(typeName),
       async mutation(root, { input, _id: argsId, data }, context) {
         const collection = context[collectionName];
-        const _id = argsId || (data && typeof data === 'object' && data._id); // use provided id or documentId if available
+        const _id = argsId || (data && typeof data === "object" && data._id); // use provided id or documentId if available
 
         // check if document exists already
-        const { document: existingDocument, selector } = await getMutationDocument({ input, _id, collection });
+        const {
+          document: existingDocument,
+          selector,
+        } = await getMutationDocument({ input, _id, collection });
 
         if (existingDocument) {
           return await collection.options.mutations.update.mutation(
@@ -163,7 +198,11 @@ export function getNewDefaultMutations({ typeName, collectionName, options }) {
             context
           );
         } else {
-          return await collection.options.mutations.create.mutation(root, { data }, context);
+          return await collection.options.mutations.create.mutation(
+            root,
+            { data },
+            context
+          );
         }
       },
     };
@@ -177,14 +216,18 @@ export function getNewDefaultMutations({ typeName, collectionName, options }) {
         const { currentUser } = context;
         const collection = context[collectionName];
 
-        const { document, /*selector*/ } = await getMutationDocument({ input, _id, collection });
+        const { document /*selector*/ } = await getMutationDocument({
+          input,
+          _id,
+          collection,
+        });
 
         performMutationCheck({
           user: currentUser,
           document,
           collection,
           context,
-          operationName: 'delete',
+          operationName: "delete",
         });
 
         return await deleteMutator({

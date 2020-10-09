@@ -1,3 +1,3 @@
-export * from "./query-templates";
+export * from "./templates";
 export * from "./typings";
 export * from "./extendModel";

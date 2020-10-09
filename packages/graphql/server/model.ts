@@ -2,9 +2,9 @@
  * Generates the GraphQL schema and
  * the resolvers and mutations for a Vulcan collectio
  */
-import { getDefaultResolvers } from "../default_resolvers";
-import { getDefaultMutations } from "../default_mutations";
-import { getSchemaFields } from "./schemaFields";
+// import { getDefaultMutationResolvers } from "./defaultMutationResolvers";
+// import { getDefaultQueryResolvers } from "./defaultQueryResolvers";
+import { getSchemaFields, MutationDefinitionsMap } from "./schemaFields";
 import {
   selectorInputTemplate,
   mainTypeTemplate,
@@ -26,19 +26,18 @@ import {
   updateMutationTemplate,
   upsertMutationTemplate,
   deleteMutationTemplate,
-  enumTypeTemplate,
+  // enumTypeTemplate,
   fieldFilterInputTemplate,
   fieldSortInputTemplate,
   customFilterTemplate,
   // customSortTemplate, // not currently used
   //nestedInputTemplate,
-} from "../../modules/graphql_templates";
-
-import { Utils } from "../utils.js";
+} from "../templates";
 
 import _isEmpty from "lodash/isEmpty";
 import _initial from "lodash/initial";
 import { VulcanGraphqlModel } from "../typings";
+import { camelCaseify } from "@vulcanjs/utils";
 
 /**
  * Extract relevant collection information and set default values
@@ -61,19 +60,48 @@ import { VulcanGraphqlModel } from "../typings";
 //     description,
 //   };
 // };
-
-const createResolvers = ({ resolvers: providedResolvers, typeName }) => {
-  const queryResolvers = {};
-  const queriesToAdd = [];
-  const resolversToAdd = [];
-  if (providedResolvers === null) {
-    // user explicitely disabled default resolvers
+type Resolver = Function;
+interface ResolverDefinition {
+  description?: string;
+  resolver: Resolver;
+}
+type ResolverMap = {
+  [key in string]: Resolver;
+};
+interface CreateResolversInput {
+  resolvers: {
+    single: ResolverDefinition;
+    multi: ResolverDefinition;
+  };
+  typeName: string;
+  multiTypeName: string;
+}
+interface CreateResolversOutput {
+  // Graphql typeDef
+  queriesToAdd: Array<[string, string]>; // [query typedef, description]
+  // Functions
+  resolversToAdd: Array<{ Query: ResolverMap }>;
+}
+/**
+ * Compute query resolvers for a given model
+ */
+const createResolvers = ({
+  resolvers,
+  typeName,
+  multiTypeName,
+}: CreateResolversInput): CreateResolversOutput => {
+  const queryResolvers: ResolverMap = {};
+  const queriesToAdd: Array<[string, string]> = [];
+  const resolversToAdd: Array<{ Query: ResolverMap }> = [];
+  if (resolvers === null) {
+    // user explicitely don't want resolvers
     return { queriesToAdd, resolversToAdd };
   }
-  // if resolvers are empty, use defaults
-  const resolvers = _isEmpty(providedResolvers)
-    ? getDefaultResolvers({ typeName })
-    : providedResolvers;
+  // REMOVED FEATURE: if resolvers are empty, use defaults
+  // => we expect user to provide default resolvers explicitely (or we compute them earlier, here it's too far)
+  /*const resolvers = _isEmpty(providedResolvers)
+    ? getDefaultQueryResolvers({ typeName })
+    : providedResolvers;*/
   // single
   if (resolvers.single) {
     queriesToAdd.push([
@@ -81,20 +109,20 @@ const createResolvers = ({ resolvers: providedResolvers, typeName }) => {
       resolvers.single.description,
     ]);
     //addGraphQLQuery(singleQueryTemplate({ typeName }), resolvers.single.description);
-    queryResolvers[
-      Utils.camelCaseify(typeName)
-    ] = resolvers.single.resolver.bind(resolvers.single);
+    queryResolvers[camelCaseify(typeName)] = resolvers.single.resolver.bind(
+      resolvers.single
+    );
   }
   // multi
   if (resolvers.multi) {
     queriesToAdd.push([
-      multiQueryTemplate({ typeName }),
+      multiQueryTemplate({ typeName, multiTypeName }),
       resolvers.multi.description,
     ]);
     //addGraphQLQuery(multiQueryTemplate({ typeName }), resolvers.multi.description);
-    queryResolvers[
-      Utils.camelCaseify(Utils.pluralize(typeName))
-    ] = resolvers.multi.resolver.bind(resolvers.multi);
+    queryResolvers[camelCaseify(multiTypeName)] = resolvers.multi.resolver.bind(
+      resolvers.multi
+    );
   }
   //addGraphQLResolvers({ Query: { ...queryResolvers } });
   resolversToAdd.push({ Query: { ...queryResolvers } });
@@ -103,23 +131,52 @@ const createResolvers = ({ resolvers: providedResolvers, typeName }) => {
     resolversToAdd,
   };
 };
+
+interface MutationResolver {
+  description?: string;
+  mutation: Function;
+}
+type MutationResolverMap = {
+  [key in string]: MutationResolver;
+};
+interface CreateMutationsInput {
+  mutations: {
+    create: any;
+    update: any;
+    upsert: any;
+    delete: any;
+  };
+  typeName: string;
+  modelName: string;
+  fields: MutationDefinitionsMap;
+}
+interface CreateMutationsOutput {
+  mutationsToAdd: Array<[string, string]>;
+  mutationsResolversToAdd: Array<{ Mutation: MutationResolverMap }>;
+}
+/**
+ * Create mutation resolvers for a model
+ */
 const createMutations = ({
-  mutations: providedMutations,
+  mutations,
   typeName,
-  collectionName,
+  modelName,
   fields,
-}) => {
-  const mutationResolvers = {};
-  const mutationsToAdd = [];
-  const mutationsResolversToAdd = [];
-  if (providedMutations === null) {
+}: CreateMutationsInput): CreateMutationsOutput => {
+  const mutationResolvers: MutationResolverMap = {};
+  const mutationsToAdd: CreateMutationsOutput["mutationsToAdd"] = [];
+  const mutationsResolversToAdd: CreateMutationsOutput["mutationsResolversToAdd"] = [];
+  if (mutations === null) {
     // user explicitely disabled mutations
     return { mutationsResolversToAdd, mutationsToAdd };
   }
+  // WE EXPECT mutations to be passed now
   // if mutations are undefined, use defaults
+  /*
   const mutations = _isEmpty(providedMutations)
-    ? getDefaultMutations({ typeName })
+    ? getDefaultMutationResolvers({ typeName })
     : providedMutations;
+    */
 
   const { create, update } = fields;
 
@@ -129,7 +186,7 @@ const createMutations = ({
     if (create.length === 0) {
       // eslint-disable-next-line no-console
       console.log(
-        `// Warning: you defined a "create" mutation for collection ${collectionName}, but it doesn't have any mutable fields, so no corresponding mutation types can be generated. Remove the "create" mutation or define a "canCreate" property on a field to disable this warning`
+        `// Warning: you defined a "create" mutation for model ${modelName}, but it doesn't have any mutable fields, so no corresponding mutation types can be generated. Remove the "create" mutation or define a "canCreate" property on a field to disable this warning`
       );
     } else {
       //addGraphQLMutation(createMutationTemplate({ typeName }), mutations.create.description);
@@ -148,7 +205,7 @@ const createMutations = ({
     if (update.length === 0) {
       // eslint-disable-next-line no-console
       console.log(
-        `// Warning: you defined an "update" mutation for collection ${collectionName}, but it doesn't have any mutable fields, so no corresponding mutation types can be generated. Remove the "update" mutation or define a "canUpdate" property on a field to disable this warning`
+        `// Warning: you defined an "update" mutation for model ${modelName}, but it doesn't have any mutable fields, so no corresponding mutation types can be generated. Remove the "update" mutation or define a "canUpdate" property on a field to disable this warning`
       );
     } else {
       mutationsToAdd.push([
@@ -167,7 +224,7 @@ const createMutations = ({
     if (update.length === 0) {
       // eslint-disable-next-line no-console
       console.log(
-        `// Warning: you defined an "upsert" mutation for collection ${collectionName}, but it doesn't have any mutable fields, so no corresponding mutation types can be generated. Remove the "upsert" mutation or define a "canUpdate" property on a field to disable this warning`
+        `// Warning: you defined an "upsert" mutation for model ${modelName}, but it doesn't have any mutable fields, so no corresponding mutation types can be generated. Remove the "upsert" mutation or define a "canUpdate" property on a field to disable this warning`
       );
     } else {
       mutationsToAdd.push([
@@ -205,7 +262,7 @@ interface Fields {
   selectorUnique: any;
   readable: Array<any>;
   filterable: Array<any>;
-  enums: Array<{ allowedValues: Array<any>; typeName: string }>;
+  // enums: Array<{ allowedValues: Array<any>; typeName: string }>;
 }
 interface GenerateSchemaFragmentsInput {
   model?: VulcanGraphqlModel;
@@ -234,7 +291,7 @@ const generateSchemaFragments = ({
     //orderBy,
     readable,
     filterable,
-    enums,
+    // enums,
   } = fields;
 
   const typeName = model ? model.graphql : typeNameArgs;
@@ -249,6 +306,8 @@ const generateSchemaFragments = ({
     mainTypeTemplate({ typeName, description, interfaces, fields: mainType })
   );
 
+  /*
+  FEATURE REMOVED enum do not work as expected
   if (enums) {
     for (const { allowedValues, typeName: enumTypeName } of enums) {
       schemaFragments.push(
@@ -256,6 +315,7 @@ const generateSchemaFragments = ({
       );
     }
   }
+  */
   if (isNested) {
     // TODO: this is wrong because the mainType includes resolveAs fields
     // + this input type does not seem to be actually used?
@@ -330,7 +390,7 @@ const generateSchemaFragments = ({
     // TODO: reenable customSorts
     const customSorts = undefined; // collection.options.customSorts;
     schemaFragments.push(
-      fieldSortInputTemplate({ typeName, fields: filterable, customSorts })
+      fieldSortInputTemplate({ typeName, fields: filterable }) //, customSorts })
     );
     // TODO: not currently working
     // if (customSorts) {
@@ -348,7 +408,7 @@ const generateSchemaFragments = ({
 
   return schemaFragments;
 };
-export const modelToGraphQL = (model: VulcanGraphqlModel) => {
+export const modelToGraphql = (model: VulcanGraphqlModel) => {
   let graphQLSchema = "";
   const schemaFragments = [];
 
@@ -359,10 +419,10 @@ export const modelToGraphQL = (model: VulcanGraphqlModel) => {
   //   resolvers,
   //   mutations,
   // } = getCollectionInfos(collection);
-  const resolvers = null; // TODO
-  const mutations = null; // TODO
-  const { schema } = model;
-  const { typeName } = model.graphql;
+  const resolvers = null; // TODO: get from Model?
+  const mutations = null; // TODO: get from Model?
+  const { schema, name: modelName } = model;
+  const { typeName, multiTypeName } = model.graphql;
 
   const {
     nestedFieldsList,
@@ -379,54 +439,52 @@ export const modelToGraphQL = (model: VulcanGraphqlModel) => {
     );
     return { graphQLSchema };
   }
-    schemaFragments.push(
-      ...generateSchemaFragments({
-        model,
-        // description,
-        // interfaces,
-        fields,
-        isNested: false,
-      })
-    );
-    /* NESTED */
-    // TODO: factorize to use the same function as for non nested fields
-    // the schema may produce a list of additional graphQL types for nested arrays/objects
-    if (nestedFieldsList) {
-      for (const nestedFields of nestedFieldsList) {
-        schemaFragments.push(
-          ...generateSchemaFragments({
-            typeName: nestedFields.typeName,
-            fields: nestedFields.fields,
-            isNested: true,
-          })
-        );
-      }
-    }
-
-    const { queriesToAdd, resolversToAdd } = createResolvers({
-      resolvers,
-      typeName,
-    });
-    const { mutationsToAdd, mutationsResolversToAdd } = createMutations({
-      mutations,
-      typeName,
-      collectionName,
+  schemaFragments.push(
+    ...generateSchemaFragments({
+      model,
+      // description,
+      // interfaces,
       fields,
-    });
-
-    graphQLSchema = schemaFragments.join("\n\n") + "\n\n\n";
-
-    return {
-      graphQLSchema,
-      queriesToAdd,
-      schemaResolvers,
-      resolversToAdd,
-      mutationsToAdd,
-      mutationsResolversToAdd,
-    };
+      isNested: false,
+    })
+  );
+  /* NESTED */
+  // TODO: factorize to use the same function as for non nested fields
+  // the schema may produce a list of additional graphQL types for nested arrays/objects
+  if (nestedFieldsList) {
+    for (const nestedFields of nestedFieldsList) {
+      schemaFragments.push(
+        ...generateSchemaFragments({
+          typeName: nestedFields.typeName,
+          fields: nestedFields.fields,
+          isNested: true,
+        })
+      );
+    }
   }
 
-  return { graphQLSchema };
+  const { queriesToAdd, resolversToAdd } = createResolvers({
+    resolvers,
+    typeName,
+    multiTypeName,
+  });
+  const { mutationsToAdd, mutationsResolversToAdd } = createMutations({
+    mutations,
+    typeName,
+    modelName,
+    fields,
+  });
+
+  graphQLSchema = schemaFragments.join("\n\n") + "\n\n\n";
+
+  return {
+    graphQLSchema,
+    queriesToAdd,
+    schemaResolvers,
+    resolversToAdd,
+    mutationsToAdd,
+    mutationsResolversToAdd,
+  };
 };
 
-export default collectionToGraphQL;
+export default modelToGraphql;

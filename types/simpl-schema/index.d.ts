@@ -105,7 +105,7 @@ declare module "simpl-schema" {
     [key: string]: any;
   }
 
-  interface EvaluatedSchemaDefinition {
+  export interface EvaluatedSchemaDefinition {
     type: ArrayLike<{ type: SchemaType }>;
     label?: string;
     optional?: boolean;

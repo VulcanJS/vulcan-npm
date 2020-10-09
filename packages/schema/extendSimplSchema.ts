@@ -12,22 +12,12 @@ SimpleSchema.extendOptions([
   "arrayItem", // properties for array items
 
   "onCreate", // field insert callback
-  "onInsert", // field insert callback (OpenCRUD backwards compatibility)
-
   "onUpdate", // field edit callback
-  "onEdit", // field edit callback (OpenCRUD backwards compatibility)
-
   "onDelete", // field remove callback
-  "onRemove", // field remove callback (OpenCRUD backwards compatibility)
 
   "canRead", // who can view the field
-  "viewableBy", // who can view the field (OpenCRUD backwards compatibility)
-
   "canCreate", // who can insert the field
-  "insertableBy", // who can insert the field (OpenCRUD backwards compatibility)
-
   "canUpdate", // who can edit the field
-  "editableBy", // who can edit the field (OpenCRUD backwards compatibility)
 
   "typeName", // the type to resolve the field with
   "resolveAs", // field-level resolver

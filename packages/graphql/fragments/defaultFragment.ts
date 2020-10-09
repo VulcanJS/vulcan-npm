@@ -1,15 +1,19 @@
 /**
  * Generates the default fragment for a collection
  * = a fragment containing all fields
+ *
+ * DIFFERENCES with Vulcan:
+ * - Default name is "FooDefaultFragment" (singular) instead of plural "FoosDefaultFragment"
  */
 import { getFragmentFieldNames, isBlackbox } from "@vulcanjs/schema";
-import { VulcanSchema } from "@vulcanjs/schema";
+import { VulcanSchema, VulcanSchemaEvaluated } from "@vulcanjs/schema";
+import SimpleSchema from "simpl-schema";
 import { VulcanGraphqlModelSkeleton } from "../typings";
 
 const intlSuffix = "_intl";
 
-interface getObjectFragmentArgs {
-  schema: VulcanSchema;
+interface GetObjectFragmentInput {
+  schema: VulcanSchemaEvaluated; // TODO: use a normal schema definition instead
   fragmentName: string;
   options: any;
 }
@@ -18,7 +22,7 @@ const getObjectFragment = ({
   schema,
   fragmentName,
   options,
-}: getObjectFragmentArgs): string | null => {
+}: GetObjectFragmentInput): string | null => {
   const fieldNames = getFragmentFieldNames({ schema, options });
   const childFragments =
     fieldNames.length &&
@@ -39,13 +43,19 @@ const getObjectFragment = ({
   return null;
 };
 
+interface GetFragmentInput {
+  schema: VulcanSchemaEvaluated; // TODO: use a normal schema definition instead to simplify
+  fieldName: string;
+  options: any;
+  getObjectFragment?: Function;
+}
 // get fragment for a specific field (either the field name or a nested fragment)
 export const getFieldFragment = ({
   schema,
   fieldName,
   options,
   getObjectFragment: getObjectFragmentArg = getObjectFragment, // a callback to call on nested schema
-}) => {
+}: GetFragmentInput): string => {
   // intl
   if (fieldName.slice(-5) === intlSuffix) {
     return `${fieldName}{ locale value }`;
@@ -53,7 +63,7 @@ export const getFieldFragment = ({
   if (fieldName === "_id") return fieldName;
   const field = schema[fieldName];
 
-  const fieldType = field.type.singleType;
+  const fieldType = (field.type as any).singleType;
   const fieldTypeName =
     typeof fieldType === "object"
       ? "Object"
@@ -79,7 +89,7 @@ export const getFieldFragment = ({
       // note: make sure field has an associated array item field
       if (arrayItemField) {
         // child will either be native value or a an object (first case)
-        const arrayItemFieldType = arrayItemField.type.singleType;
+        const arrayItemFieldType = (arrayItemField.type as any).singleType;
         if (!isBlackbox(field) && arrayItemFieldType._schema) {
           return (
             getObjectFragmentArg({
@@ -111,7 +121,7 @@ export const getDefaultFragmentText = (
   const schema = model.schema;
   return (
     getObjectFragment({
-      schema,
+      schema: new SimpleSchema(model.schema)._schema,
       fragmentName: `fragment ${getDefaultFragmentName(model)} on ${
         model.graphql.typeName
       }`,

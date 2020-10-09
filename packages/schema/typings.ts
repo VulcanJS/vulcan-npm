@@ -3,9 +3,9 @@
  *
  * /*\ this is not the simpl-schema processed version, but the definition
  */
-import { SchemaDefinition } from "simpl-schema";
+import { SchemaDefinition, EvaluatedSchemaDefinition } from "simpl-schema";
 
-export type VulcanFieldSchema<T = any> = SchemaDefinition<T> & {
+interface VulcanField {
   // TODO: all Vulcan specific fields goes here
   canRead?: Array<String | Function>;
   canCreate?: Array<String | Function>;
@@ -52,10 +52,23 @@ export type VulcanFieldSchema<T = any> = SchemaDefinition<T> & {
   intl?: boolean; // set to `true` to make a field international
   isIntlData?: boolean; // marker for the actual schema fields that hold intl strings
   intlId?: boolean; // set an explicit i18n key for a field
-};
+}
+export interface VulcanFieldSchema<T = any>
+  extends VulcanField,
+    SchemaDefinition<T> {}
 
 export type VulcanSchema = {
   [key: string]: VulcanFieldSchema;
+};
+
+/**
+ * Version obtained after running new SimpleSchema({...})._schema
+ */
+export interface VulcanFieldSchemaEvaluated<T = any>
+  extends EvaluatedSchemaDefinition,
+    VulcanField {}
+export type VulcanSchemaEvaluated = {
+  [key: string]: VulcanFieldSchemaEvaluated;
 };
 
 export interface VulcanDocument {

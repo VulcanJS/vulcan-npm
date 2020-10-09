@@ -12,10 +12,12 @@ import {
   shouldAddOriginalField,
   VulcanFieldSchema,
   VulcanSchema,
+  VulcanFieldSchemaEvaluated,
 } from "@vulcanjs/schema";
 import * as relations from "./relationResolvers";
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
+import SimpleSchema from "simpl-schema";
 
 const capitalize = (word) => {
   if (!word) return word;
@@ -212,14 +214,27 @@ interface FieldDefinition {
   args?: any;
   directive?: string;
 }
-interface FieldDefinitionsMap {
+export interface MutationDefinitionsMap {
   create: Array<FieldDefinition>;
   update: Array<FieldDefinition>;
+  upsert?: Array<any>;
+  delete?: Array<any>;
+}
+interface FieldDefinitionsMap extends MutationDefinitionsMap {
   selector: Array<FieldDefinition>;
   selectorUnique: Array<FieldDefinition>;
   sort: Array<FieldDefinition>;
   readable: Array<FieldDefinition>;
   filterable: Array<FieldDefinition>;
+}
+/**
+ * JS Representation of the fields to include in the executable schema
+ */
+interface FullFieldDefinitionsMap
+  extends FieldDefinitionsMap,
+    MutationDefinitionsMap {
+  mainType: Array<FieldDefinition>;
+  // enums: Array<FieldDefinition>;
 }
 // handle querying/updating permissions
 export const getPermissionFields = ({
@@ -310,10 +325,6 @@ export const getPermissionFields = ({
   return fields;
 };
 
-interface FullFieldDefinitionsMap extends FieldDefinitionsMap {
-  mainType: Array<FieldDefinition>;
-  enums: Array<FieldDefinition>;
-}
 // For nested fields we also need the parent typeName
 interface NestedFieldsOutput extends GetSchemaFieldsOutput {
   typeName: string; // the parent typeName for the nested field
@@ -325,8 +336,11 @@ interface GetSchemaFieldsOutput {
 }
 // for a given schema, return main type fields, selector fields,
 // unique selector fields, sort fields, creatable fields, and updatable fields
-export const getSchemaFields = (schema: VulcanSchema, typeName: string) => {
-  if (!schema)
+export const getSchemaFields = (
+  schemaDefinition: VulcanSchema,
+  typeName: string
+) => {
+  if (!schemaDefinition)
     console.log("/////////////////////", typeName, "/////////////////////");
   const fields: FullFieldDefinitionsMap = {
     mainType: [],
@@ -335,16 +349,21 @@ export const getSchemaFields = (schema: VulcanSchema, typeName: string) => {
     selector: [],
     selectorUnique: [],
     sort: [],
-    enums: [],
+    // enums: [],
     readable: [],
     filterable: [],
   };
   const nestedFieldsList = [];
   const resolvers = [];
 
+  const schema = new SimpleSchema(schemaDefinition)._schema; // TODO: make it possible to call on the schema directly
   Object.keys(schema).forEach((fieldName) => {
-    const field = schema[fieldName];
-    const fieldType = getGraphQLType({ schema, fieldName, typeName });
+    const field: VulcanFieldSchemaEvaluated = schema[fieldName]; // TODO: remove the need to call SimpleSchema
+    const fieldType = getGraphQLType({
+      schema,
+      fieldName,
+      typeName,
+    });
     const inputFieldType = getGraphQLType({
       schema,
       fieldName,

@@ -33,7 +33,7 @@ describe("default fragment generation", () => {
     const fragment = getDefaultFragmentText(model);
     const normalizedFragment = normalizeGraphQLSchema(fragment);
     expect(normalizedFragment).toMatch(
-      "fragment FoosDefaultFragment on Foo { foo bar }"
+      "fragment FooDefaultFragment on Foo { foo bar }"
     );
   });
   test("generate default fragment with nested object", () => {
@@ -55,7 +55,7 @@ describe("default fragment generation", () => {
     const fragment = getDefaultFragmentText(model);
     const normalizedFragment = normalizeGraphQLSchema(fragment);
     expect(normalizedFragment).toMatch(
-      "fragment FoosDefaultFragment on Foo { foo nestedField { bar } }"
+      "fragment FooDefaultFragment on Foo { foo nestedField { bar } }"
     );
   });
   test("generate default fragment with blackbox JSON object (no nesting)", () => {
@@ -72,7 +72,7 @@ describe("default fragment generation", () => {
     const fragment = getDefaultFragmentText(model);
     const normalizedFragment = normalizeGraphQLSchema(fragment);
     expect(normalizedFragment).toMatch(
-      "fragment FoosDefaultFragment on Foo { foo object }"
+      "fragment FooDefaultFragment on Foo { foo object }"
     );
   });
   test("generate default fragment with nested array of objects", () => {
@@ -94,7 +94,7 @@ describe("default fragment generation", () => {
     const fragment = getDefaultFragmentText(model);
     const normalizedFragment = normalizeGraphQLSchema(fragment);
     expect(normalizedFragment).toMatch(
-      "fragment FoosDefaultFragment on Foo { arrayField { subField } }"
+      "fragment FooDefaultFragment on Foo { arrayField { subField } }"
     );
   });
   test("generate default fragment with array of native values", () => {
@@ -111,7 +111,7 @@ describe("default fragment generation", () => {
     const fragment = getDefaultFragmentText(model);
     const normalizedFragment = normalizeGraphQLSchema(fragment);
     expect(normalizedFragment).toMatch(
-      "fragment FoosDefaultFragment on Foo { arrayField }"
+      "fragment FooDefaultFragment on Foo { arrayField }"
     );
   });
   test("return fieldName for intl fields even if they are objects or arrays", () => {
@@ -132,7 +132,7 @@ describe("default fragment generation", () => {
     const fragment = getDefaultFragmentText(model);
     const normalizedFragment = normalizeGraphQLSchema(fragment);
     expect(normalizedFragment).toMatch(
-      "fragment FoosDefaultFragment on Foo { foo_intl{ locale value } bar_intl{ locale value } }"
+      "fragment FooDefaultFragment on Foo { foo_intl{ locale value } bar_intl{ locale value } }"
     );
   });
 
@@ -156,7 +156,7 @@ describe("default fragment generation", () => {
     const fragment = getDefaultFragmentText(model);
     const normalizedFragment = normalizeGraphQLSchema(fragment);
     expect(normalizedFragment).toMatch(
-      "fragment FoosDefaultFragment on Foo { foo }"
+      "fragment FooDefaultFragment on Foo { foo }"
     );
   });
 
@@ -182,7 +182,7 @@ describe("default fragment generation", () => {
       const fragment = getDefaultFragmentText(model);
       const normalizedFragment = normalizeGraphQLSchema(fragment);
       expect(normalizedFragment).toMatch(
-        "fragment FoosDefaultFragment on Foo { object foo }"
+        "fragment FooDefaultFragment on Foo { object foo }"
       );
     });
     test("add original field with resolveAs as a default", () => {
@@ -200,7 +200,7 @@ describe("default fragment generation", () => {
       const fragment = getDefaultFragmentText(model);
       const normalizedFragment = normalizeGraphQLSchema(fragment);
       expect(normalizedFragment).toMatch(
-        "fragment FoosDefaultFragment on Foo { json }"
+        "fragment FooDefaultFragment on Foo { json }"
       );
     });
     test("do not add original field if at least one addOriginalField is false", () => {
@@ -246,7 +246,7 @@ describe("default fragment generation", () => {
     const fragment = getDefaultFragmentText(model);
     const normalizedFragment = normalizeGraphQLSchema(fragment);
     expect(normalizedFragment).toMatch(
-      "fragment FoosDefaultFragment on Foo { field }"
+      "fragment FooDefaultFragment on Foo { field }"
     );
   });
   test("ignore referenced schemas in array child", () => {
@@ -269,7 +269,7 @@ describe("default fragment generation", () => {
     const fragment = getDefaultFragmentText(model);
     const normalizedFragment = normalizeGraphQLSchema(fragment);
     expect(normalizedFragment).toMatch(
-      "fragment FoosDefaultFragment on Foo { field }"
+      "fragment FooDefaultFragment on Foo { field }"
     );
   });
 });

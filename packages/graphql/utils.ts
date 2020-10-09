@@ -6,10 +6,12 @@ import {
   getFieldTypeName,
   VulcanSchema,
   VulcanFieldSchema,
+  VulcanFieldSchemaEvaluated,
 } from "@vulcanjs/schema";
+import SimpleSchema from "simpl-schema";
 
 interface GetGraphqlTypeInput {
-  fieldSchema?: VulcanFieldSchema;
+  fieldSchema?: VulcanFieldSchemaEvaluated; // TODO: replace by normal field schema to simplify
   schema: VulcanSchema;
   fieldName: string;
   typeName: string;
@@ -26,8 +28,8 @@ export const getGraphQLType = ({
   typeName,
   isInput = false,
   isParentBlackbox = false,
-}: GetGraphqlTypeInput) => {
-  const field = fieldSchema || schema[fieldName];
+}: GetGraphqlTypeInput): string => {
+  const field = fieldSchema || new SimpleSchema(schema)._schema[fieldName];
 
   if (field.typeName) return field.typeName; // respect typeName provided by user
 
