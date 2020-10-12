@@ -1,50 +1,51 @@
 /**
- * Generate GraphQL typedefs
+ * Generate GraphQL final typedefs
  */
 
-
 // schema generation
-const generateQueryType = (queries = []) => 
+const generateQueryTypeDefs = (
+  queries: Array<{ description: string; query: string }> = []
+): string =>
   queries.length === 0
-  ? ''
-  : `type Query {
+    ? ""
+    : `type Query {
 ${queries
-      .map(
-        q =>
-          `${
-          q.description
-            ? `  # ${q.description}
+  .map(
+    (q) =>
+      `${
+        q.description
+          ? `  # ${q.description}
 `
-            : ''
-          }  ${q.query}
+          : ""
+      }  ${q.query}
   `
-      )
-      .join('\n')}
+  )
+  .join("\n")}
 }
   `;
 
-const generateMutationType = (mutations = []) => 
+const generateMutationTypeDefs = (
+  mutations: Array<{ description: string; mutation: string }> = []
+): string =>
   mutations.length === 0
-  ? ''
-  : `type Mutation {
+    ? ""
+    : `type Mutation {
 ${mutations
-              .map(
-                m =>
-                  `${
-                    m.description
-                      ? `  # ${m.description}
+  .map(
+    (m) =>
+      `${
+        m.description
+          ? `  # ${m.description}
 `
-                      : ''
-                  }  ${m.mutation}
+          : ""
+      }  ${m.mutation}
 `
-              )
-              .join('\n')}
+  )
+  .join("\n")}
 }
 `;
 
-// typeDefs
-export const generateTypeDefs = (GraphQLSchema) => [
-  `
+const commonTypeDefs = `
 scalar JSON
 scalar Date
 
@@ -146,15 +147,37 @@ input OptionsInput {
   enableCache: Boolean
   # For single document queries, return null instead of throwing MissingDocumentError
   allowNull: Boolean
+}`;
+
+interface GenerateTypeDefsInput {
+  additionalTypeDefs?: string;
+  modelTypeDefs?: string;
+  queries: Array<{ description: string; query: string }>;
+  mutations: Array<{ description: string; mutation: string }>;
 }
+/**
+ *
+ * @param param0
+ * @param GraphQLSchema
+ */
+export const generateTypeDefs = ({
+  additionalTypeDefs,
+  modelTypeDefs,
+  queries,
+  mutations,
+}: GenerateTypeDefsInput): Array<string> => [
+  `
+  ${commonTypeDefs}
 
-${GraphQLSchema.getAdditionalSchemas()}
+${additionalTypeDefs}
 
-${GraphQLSchema.getCollectionsSchemas()}
+${modelTypeDefs}
 
-${generateQueryType(GraphQLSchema.queries)}
+${generateQueryTypeDefs(queries)}
 
-${generateMutationType(GraphQLSchema.mutations)}
+${generateMutationTypeDefs(mutations)}
 
 `,
 ];
+
+export default generateTypeDefs;

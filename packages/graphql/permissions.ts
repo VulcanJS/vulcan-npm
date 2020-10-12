@@ -200,7 +200,7 @@ const isAdmin = function (user: User) {
  * @param {Object} field - The full document of the collection
  * @returns {Boolean} - true if the user can read the field, false if not
  */
-const canReadField = function (
+export const canReadField = function (
   user: User,
   field: Pick<VulcanFieldSchema, "canRead">,
   document: Object

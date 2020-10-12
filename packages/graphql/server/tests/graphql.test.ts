@@ -1,23 +1,11 @@
 import { createModel } from "@vulcanjs/model";
 
-import SimpleSchema from "simpl-schema";
 import extendModel from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
 import { normalizeGraphQLSchema } from "../../testUtils";
 import { getGraphQLType } from "../../utils";
-import { getSchemaFields } from "../schemaFields";
-import { modelToGraphql } from "../model";
-
-// import { GraphQLSchema } from "../../lib/server/graphql";
-// import initGraphQL from "../../lib/server/apollo-server/initGraphQL";
-// //import { getIntlString } from '../../lib/modules/intl'
-// import { addIntlFields } from "../../lib/modules/collections";
-//
-// //import modelToGraphl from '../../lib/modules/graphql/collectionToSchema';
-// import modelToGraphl from "../../lib/server/graphql/collection";
-// import { getSchemaFields } from "../schemaFields";
-// import { generateResolversFromSchema } from "../../lib/server/graphql/resolvers";
-// import Users from "meteor/vulcan:users";
+import { parseSchema } from "../parseSchema";
+import { parseModel } from "../parseModel";
 
 const FooModel = (schema): VulcanGraphqlModel =>
   createModel({
@@ -29,23 +17,6 @@ const FooModel = (schema): VulcanGraphqlModel =>
 describe("graphq/typeDefs", () => {
   // TODO: handle the graphQL init better to fix those tests
   /*
-  it.skip("throws if graphql schema is not initialized", function () {
-    expect(() => GraphQLSchema.getSchema()).toThrow();
-  });
-  it.skip("throws if executable schema is not initialized", function () {
-    expect(() => GraphQLSchema.getExecutableSchema()).toThrow();
-  });
-  it("can access the graphql schema", function () {
-    GraphQLSchema.init();
-    initGraphQL();
-    expect(GraphQLSchema.getSchema()).toBeDefined();
-  });
-  it("can access the executable graphql schema", function () {
-    GraphQLSchema.init();
-    initGraphQL();
-    expect(GraphQLSchema.getExecutableSchema()).toBeDefined();
-  });
-
   describe("generateResolversFromSchema - generate a secure resolver for each field", () => {
     const context = {
       currentUser: null,
@@ -242,7 +213,7 @@ describe("graphq/typeDefs", () => {
     test("return JSON if blackbox is true", () => {});
   });
 
-  describe("schema parsing - getSchemaFields - get the fields to add to graphQL schema as a JS representation", () => {
+  describe("schema parsing - parseSchema - get the fields to add to graphQL schema as a JS representation", () => {
     test("fields without permissions are ignored", () => {
       const schema = {
         field: {
@@ -253,7 +224,7 @@ describe("graphq/typeDefs", () => {
           type: String,
         },
       };
-      const fields = getSchemaFields(schema, "Foo");
+      const fields = parseSchema(schema, "Foo");
       const mainType = fields.fields.mainType;
       expect(mainType).toHaveLength(1);
       expect(mainType[0].name).toEqual("field");
@@ -273,7 +244,7 @@ describe("graphq/typeDefs", () => {
           canRead: ["admins"],
         },
       };
-      const fields = getSchemaFields(schema, "Foo");
+      const fields = parseSchema(schema, "Foo");
       const nestedFields = fields.nestedFieldsList[0];
       // one field in the nested object
       expect(nestedFields.fields.mainType).toHaveLength(1);
@@ -296,7 +267,7 @@ describe("graphq/typeDefs", () => {
         },
       };
 
-      const fields = getSchemaFields(schema, "Foo");
+      const fields = parseSchema(schema, "Foo");
       // one nested object
       expect(fields.nestedFieldsList).toHaveLength(1);
       const nestedFields = fields.nestedFieldsList[0];
@@ -316,11 +287,11 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
-        expect(res.graphQLSchema).toBeDefined();
+        const res = parseModel(model);
+        expect(res.typeDefs).toBeDefined();
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch("type Foo { field: String }");
       });
       test("use provided graphQL type if any", () => {
@@ -331,11 +302,11 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
-        expect(res.graphQLSchema).toBeDefined();
+        const res = parseModel(model);
+        expect(res.typeDefs).toBeDefined();
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch("type Foo { field: StringEnum }");
       });
     });
@@ -352,8 +323,8 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        const res = parseModel(model);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch(
           "type Foo { nestedField: FooNestedField }"
         );
@@ -377,8 +348,8 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        const res = parseModel(model);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch(
           "type Foo { arrayField: [FooArrayField] }"
         );
@@ -412,8 +383,8 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        const res = parseModel(model);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch("type Foo { blocks: [JSON] }");
       });
     });
@@ -428,8 +399,8 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        const res = parseModel(model);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch(
           "type Foo { nestedField: AlreadyRegisteredNestedType }"
         );
@@ -450,8 +421,8 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        const res = parseModel(model);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch(
           "type Foo { nestedField: AlreadyRegisteredNestedType }"
         );
@@ -474,8 +445,8 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        const res = parseModel(model);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch(
           "type Foo { arrayField: [AlreadyRegisteredType] }"
         );
@@ -501,8 +472,8 @@ describe("graphq/typeDefs", () => {
           }
         )
       );
-      const res = modelToGraphql(model);
-      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      const res = parseModel(model);
+      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
       expect(normalizedSchema).toMatch(
         "type Foo { intlField(locale: String): String @intl intlField_intl(locale: String): [IntlValue] @intl }"
       );
@@ -524,8 +495,8 @@ describe("graphq/typeDefs", () => {
           }
         )
       );
-      const res = modelToGraphql(model);
-      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      const res = parseModel(model);
+      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
       expect(normalizedSchema).toMatch(
         "type Foo { arrayField: [[IntlValue]] }"
       );
@@ -548,8 +519,8 @@ describe("graphq/typeDefs", () => {
           canRead: ["admins"],
         },
       });
-      const res = modelToGraphql(model);
-      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      const res = parseModel(model);
+      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
       expect(normalizedSchema).toMatch(
         "type Foo { nestedField: FooNestedField }"
       );
@@ -574,11 +545,11 @@ describe("graphq/typeDefs", () => {
           },
         },
       });
-      const res = modelToGraphql(model);
-      expect(res.graphQLSchema).toBeDefined();
+      const res = parseModel(model);
+      expect(res.typeDefs).toBeDefined();
       // debug
-      //console.log(res.graphQLSchema);
-      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      //console.log(res.typeDefs);
+      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
       expect(normalizedSchema).toMatch("type Foo { field: Bar }");
     });
     test("generate a type for a field with addOriginalField=true", () => {
@@ -597,9 +568,9 @@ describe("graphq/typeDefs", () => {
           },
         },
       });
-      const res = modelToGraphql(model);
-      expect(res.graphQLSchema).toBeDefined();
-      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      const res = parseModel(model);
+      expect(res.typeDefs).toBeDefined();
+      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
       expect(normalizedSchema).toMatch(
         "type Foo { field: String resolvedField: Bar }"
       );
@@ -625,9 +596,9 @@ describe("graphq/typeDefs", () => {
           ],
         },
       });
-      const res = modelToGraphql(model);
-      expect(res.graphQLSchema).toBeDefined();
-      const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+      const res = parseModel(model);
+      expect(res.typeDefs).toBeDefined();
+      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
       expect(normalizedSchema).toMatch(
         "type Foo { field: String resolvedField: Bar anotherResolvedField: Bar }"
       );
@@ -647,11 +618,11 @@ describe("graphq/typeDefs", () => {
             allowedValues: ['français', 'bar'] // "ç" is not accepted, Enum must be a name
           }
         });
-        const res = modelToGraphql(model);
-        expect(res.graphQLSchema).toBeDefined();
+        const res = parseModel(model);
+        expect(res.typeDefs).toBeDefined();
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch('type Foo { withAllowedField: String }');
         expect(normalizedSchema).not.toMatch('type Foo { withAllowedField: FooWithAllowedFieldEnum }');
         expect(normalizedSchema).not.toMatch('enum FooWithAllowedFieldEnum { français bar }');
@@ -664,7 +635,7 @@ describe("graphq/typeDefs", () => {
             allowedValues: [0, 1] // "ç" is not accepted, Enum must be a name
           }
         });
-        expect(() => modelToGraphql(model)).toThrow();
+        expect(() => parseModel(model)).toThrow();
       });
       test('generate enum type when allowedValues is defined and field is a string', () => {
         const model = FooModel({
@@ -674,11 +645,11 @@ describe("graphq/typeDefs", () => {
             allowedValues: ['foo', 'bar']
           }
         });
-        const res = modelToGraphql(model);
-        expect(res.graphQLSchema).toBeDefined();
+        const res = parseModel(model);
+        expect(res.typeDefs).toBeDefined();
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch('type Foo { withAllowedField: FooWithAllowedFieldEnum }');
         expect(normalizedSchema).toMatch('enum FooWithAllowedFieldEnum { foo bar }');
       });
@@ -696,11 +667,11 @@ describe("graphq/typeDefs", () => {
               canRead: ['admins'],
             }
           });
-          const res = modelToGraphql(model);
-          expect(res.graphQLSchema).toBeDefined();
+          const res = parseModel(model);
+          expect(res.typeDefs).toBeDefined();
           // debug
-          //console.log(res.graphQLSchema);
-          const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+          //console.log(res.typeDefs);
+          const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
           expect(normalizedSchema).toMatch('type Foo { nestedField { withAllowedField: FooNestedFieldWithAllowedFieldEnum } }');
           expect(normalizedSchema).toMatch('enum FooNestedFieldWithAllowedFieldEnum { foo bar }');
         });
@@ -736,11 +707,11 @@ describe("graphq/typeDefs", () => {
             )
           },
         });
-        const res = modelToGraphql(model);
-        expect(res.graphQLSchema).toBeDefined();
+        const res = parseModel(model);
+        expect(res.typeDefs).toBeDefined();
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch('type Foo { entrepreneurLifeCycleHistory: [FooEntrepreneurLifeCycleHistory]');
         expect(normalizedSchema).toMatch('type FooEntrepreneurLifeCycleHistory { entrepreneurLifeCycleState: FooEntrepreneurLifeCycleHistoryEntrepreneurLifeCycleStateEnum');
         expect(normalizedSchema).toMatch('enum FooEntrepreneurLifeCycleHistoryEntrepreneurLifeCycleStateEnum { booster explorer starter tester }');
@@ -769,10 +740,10 @@ describe("graphq/typeDefs", () => {
             canCreate: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
+        const res = parseModel(model);
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch(
           "input CreateFooInput { data: CreateFooDataInput! }"
         );
@@ -794,10 +765,10 @@ describe("graphq/typeDefs", () => {
             canCreate: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
+        const res = parseModel(model);
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         // TODO: not 100% of the expected result
         expect(normalizedSchema).toMatch(
           "input CreateFooInput { data: CreateFooDataInput! }"
@@ -828,10 +799,10 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = modelToGraphql(model);
+        const res = parseModel(model);
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         // TODO: not 100% sure of the syntax
         expect(normalizedSchema).toMatch(
           "input CreateFooInput { data: CreateFooDataInput! }"
@@ -856,10 +827,10 @@ describe("graphq/typeDefs", () => {
             type: Object,
           },
         });
-        const res = modelToGraphql(model);
+        const res = parseModel(model);
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         // TODO: not 100% sure of the syntax
         expect(normalizedSchema).toMatch(
           "input CreateFooDataInput { arrayField: [JSON] }"
@@ -886,10 +857,10 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = modelToGraphql(model);
+        const res = parseModel(model);
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch(
           "input CreateFooDataInput { arrayField: [JSON] }"
         );
@@ -911,10 +882,10 @@ describe("graphq/typeDefs", () => {
             canCreate: ["admins"],
           },
         });
-        const res = modelToGraphql(model);
+        const res = parseModel(model);
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         // TODO: not 100% of the expected result
         expect(normalizedSchema).toMatch(
           "input CreateFooDataInput { nestedField: CreateAlreadyRegisteredTypeDataInput }"
@@ -941,10 +912,10 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = modelToGraphql(model);
+        const res = parseModel(model);
         // debug
-        //console.log(res.graphQLSchema);
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         // TODO: not 100% sure of the syntax
         expect(normalizedSchema).toMatch(
           "input CreateFooDataInput { arrayField: [CreateAlreadyRegisteredTypeDataInput] }"
@@ -973,9 +944,9 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = modelToGraphql(model);
-        expect(res.graphQLSchema).toBeDefined();
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        const res = parseModel(model);
+        expect(res.typeDefs).toBeDefined();
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).not.toMatch(
           "input CreateFooNestedFieldDataInput"
         );
@@ -1003,9 +974,9 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = modelToGraphql(model);
-        expect(res.graphQLSchema).toBeDefined();
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        const res = parseModel(model);
+        expect(res.typeDefs).toBeDefined();
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).toMatch(
           "input CreateFooInput { data: CreateFooDataInput! }"
         );
@@ -1045,9 +1016,9 @@ describe("graphq/typeDefs", () => {
             }),
           },
         });
-        const res = modelToGraphql(model);
-        expect(res.graphQLSchema).toBeDefined();
-        const normalizedSchema = normalizeGraphQLSchema(res.graphQLSchema);
+        const res = parseModel(model);
+        expect(res.typeDefs).toBeDefined();
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
         expect(normalizedSchema).not.toMatch("input FooArrayFieldInput");
       });
     });

@@ -1,10 +1,8 @@
 /**
- * Generates the GraphQL schema and
- * the resolvers and mutations for a Vulcan collectio
  */
 // import { getDefaultMutationResolvers } from "./defaultMutationResolvers";
 // import { getDefaultQueryResolvers } from "./defaultQueryResolvers";
-import { getSchemaFields, MutationDefinitionsMap } from "./schemaFields";
+import { MutableFieldsDefinitions, parseSchema } from "./parseSchema";
 import {
   selectorInputTemplate,
   mainTypeTemplate,
@@ -38,36 +36,17 @@ import _isEmpty from "lodash/isEmpty";
 import _initial from "lodash/initial";
 import { VulcanGraphqlModel } from "../typings";
 import { camelCaseify } from "@vulcanjs/utils";
+import {
+  Resolver,
+  ResolverMap,
+  ModelResolverMap,
+  ResolversDefinitions,
+} from "./typings";
 
-/**
- * Extract relevant collection information and set default values
- * @param {*} collection
- */
-// const getCollectionInfos = (collection) => {
-//   const collectionName = collection.options.collectionName;
-//   const typeName = collection.typeName
-//     ? collection.typeName
-//     : Utils.camelToSpaces(_initial(collectionName).join("")); // default to posts -> Post
-//   const schema = collection.simpleSchema()._schema;
-//   const description = collection.options.description
-//     ? collection.options.description
-//     : `Type for ${collectionName}`;
-//   return {
-//     ...collection.options,
-//     collectionName,
-//     typeName,
-//     schema,
-//     description,
-//   };
-// };
-type Resolver = Function;
 interface ResolverDefinition {
   description?: string;
   resolver: Resolver;
 }
-type ResolverMap = {
-  [key in string]: Resolver;
-};
 interface CreateResolversInput {
   resolvers: {
     single: ResolverDefinition;
@@ -148,7 +127,7 @@ interface CreateMutationsInput {
   };
   typeName: string;
   modelName: string;
-  fields: MutationDefinitionsMap;
+  fields: MutableFieldsDefinitions;
 }
 interface CreateMutationsOutput {
   mutationsToAdd: Array<[string, string]>;
@@ -273,14 +252,14 @@ interface GenerateSchemaFragmentsInput {
   isNested?: boolean;
 }
 // generate types, input and enums
-const generateSchemaFragments = ({
+const generateTypeDefs = ({
   model,
   typeName: typeNameArgs,
   description,
   interfaces = [],
   fields,
   isNested = false,
-}: GenerateSchemaFragmentsInput) => {
+}: GenerateSchemaFragmentsInput): Array<string> => {
   const schemaFragments = [];
   const {
     mainType,
@@ -298,7 +277,7 @@ const generateSchemaFragments = ({
 
   if (!mainType || mainType.length === 0) {
     throw new Error(
-      `GraphQL type ${typeName} has no fields. Please add readable fields or remove the type.`
+      `GraphQL type ${typeName} has no readable fields. Please add readable fields or remove the type.`
     );
   }
 
@@ -358,12 +337,14 @@ const generateSchemaFragments = ({
     //    schemaFragments.push(orderByInputTemplate({ typeName, fields: orderBy }));
     return schemaFragments; // return now
   }
-  schemaFragments.push(deleteInputTemplate({ typeName }));
+
   schemaFragments.push(singleInputTemplate({ typeName }));
   schemaFragments.push(multiInputTemplate({ typeName }));
   schemaFragments.push(singleOutputTemplate({ typeName }));
   schemaFragments.push(multiOutputTemplate({ typeName }));
   schemaFragments.push(mutationOutputTemplate({ typeName }));
+
+  schemaFragments.push(deleteInputTemplate({ typeName }));
 
   if (create.length) {
     schemaFragments.push(createInputTemplate({ typeName }));
@@ -408,9 +389,15 @@ const generateSchemaFragments = ({
 
   return schemaFragments;
 };
-export const modelToGraphql = (model: VulcanGraphqlModel) => {
-  let graphQLSchema = "";
-  const schemaFragments = [];
+
+interface ParseModelOutput
+  extends Partial<CreateMutationsOutput>,
+    Partial<CreateResolversOutput> {
+  typeDefs: string;
+  schemaResolvers?: ResolversDefinitions;
+}
+export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
+  const typeDefs = [];
 
   // const {
   //   collectionName,
@@ -424,11 +411,10 @@ export const modelToGraphql = (model: VulcanGraphqlModel) => {
   const { schema, name: modelName } = model;
   const { typeName, multiTypeName } = model.graphql;
 
-  const {
-    nestedFieldsList,
-    fields,
-    resolvers: schemaResolvers,
-  } = getSchemaFields(schema, typeName);
+  const { nestedFieldsList, fields, resolvers: schemaResolvers } = parseSchema(
+    schema,
+    typeName
+  );
 
   const { mainType } = fields;
 
@@ -437,10 +423,10 @@ export const modelToGraphql = (model: VulcanGraphqlModel) => {
     console.warn(
       `// Warning: model ${model.name} doesn't have any GraphQL-enabled fields, so no corresponding type can be generated. Pass generateGraphQLSchema = false to createCollection() to disable this warning`
     );
-    return { graphQLSchema };
+    return { typeDefs: "" };
   }
-  schemaFragments.push(
-    ...generateSchemaFragments({
+  typeDefs.push(
+    ...generateTypeDefs({
       model,
       // description,
       // interfaces,
@@ -453,8 +439,8 @@ export const modelToGraphql = (model: VulcanGraphqlModel) => {
   // the schema may produce a list of additional graphQL types for nested arrays/objects
   if (nestedFieldsList) {
     for (const nestedFields of nestedFieldsList) {
-      schemaFragments.push(
-        ...generateSchemaFragments({
+      typeDefs.push(
+        ...generateTypeDefs({
           typeName: nestedFields.typeName,
           fields: nestedFields.fields,
           isNested: true,
@@ -475,10 +461,10 @@ export const modelToGraphql = (model: VulcanGraphqlModel) => {
     fields,
   });
 
-  graphQLSchema = schemaFragments.join("\n\n") + "\n\n\n";
+  const mergedTypeDefs = typeDefs.join("\n\n") + "\n\n\n";
 
   return {
-    graphQLSchema,
+    typeDefs: mergedTypeDefs,
     queriesToAdd,
     schemaResolvers,
     resolversToAdd,
@@ -487,4 +473,4 @@ export const modelToGraphql = (model: VulcanGraphqlModel) => {
   };
 };
 
-export default modelToGraphql;
+export default parseModel;

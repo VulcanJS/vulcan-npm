@@ -9,7 +9,11 @@
   "dependencies": {
     "@vulcanjs/model": "^0.0.6",
     "@vulcanjs/schema": "^0.0.6",
-    "@vulcanjs/utils": "^0.0.6"
+    "@vulcanjs/utils": "^0.0.6",
+    "apollo-server": "^2.18.2",
+    "graphql-date": "^1.0.3",
+    "graphql-tools": "^6.2.4",
+    "graphql-type-json": "^0.3.2"
   },
   "repository": {
     "type": "git",
