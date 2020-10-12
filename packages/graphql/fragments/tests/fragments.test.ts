@@ -44,12 +44,12 @@ describe("default fragment generation", () => {
       },
       nestedField: {
         canRead: ["guests"],
-        type: new SimpleSchema({
+        type: {
           bar: {
             type: String,
             canRead: ["guests"],
           },
-        }),
+        },
       },
     });
     const fragment = getDefaultFragmentText(model);
@@ -82,12 +82,12 @@ describe("default fragment generation", () => {
         canRead: ["admins"],
       },
       "arrayField.$": {
-        type: new SimpleSchema({
+        type: {
           subField: {
             type: String,
             canRead: ["admins"],
           },
-        }),
+        },
         canRead: ["admins"],
       },
     });
@@ -144,12 +144,13 @@ describe("default fragment generation", () => {
         blackbox: true,
       },
       "foo.$": {
-        type: new SimpleSchema({
+        type: {
           bar: {
             type: String,
             canRead: ["guests"],
           },
-        }),
+        },
+        blackbox: true,
         canRead: ["guests"],
       },
     });

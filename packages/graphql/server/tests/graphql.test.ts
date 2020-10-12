@@ -53,7 +53,7 @@ describe("graphq/typeDefs", () => {
     };
     test("get the resolvers for a field", () => {
       const resolvers = generateResolversFromSchema(
-        new SimpleSchema({
+        {
           foo: {
             type: String,
             canRead: ["guests"],
@@ -66,7 +66,7 @@ describe("graphq/typeDefs", () => {
     });
     test("ignore non readable fields", () => {
       const resolvers = generateResolversFromSchema(
-        new SimpleSchema({
+        {
           foo: {
             type: String,
             canRead: ["admins"],
@@ -78,7 +78,7 @@ describe("graphq/typeDefs", () => {
     });
     test("convert undefined fields into null", () => {
       const resolvers = generateResolversFromSchema(
-        new SimpleSchema({
+        {
           foo: {
             type: String,
             canRead: ["admins"],
@@ -90,7 +90,7 @@ describe("graphq/typeDefs", () => {
     });
     test("do NOT convert other falsy fields into null", () => {
       const resolvers = generateResolversFromSchema(
-        new SimpleSchema({
+        {
           foo: {
             type: Number,
             canRead: ["guests"],
@@ -104,18 +104,18 @@ describe("graphq/typeDefs", () => {
 */
   describe("field parsing - getGraphQLType - associate a graphQL type to a field", () => {
     test("return nested type for nested objects", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         nestedField: {
-          type: new SimpleSchema({
+          type: {
             firstNestedField: {
               type: String,
             },
             secondNestedField: {
               type: Number,
             },
-          }),
+          },
         },
-      })._schema;
+      };
       const type = getGraphQLType({
         schema,
         fieldName: "nestedField",
@@ -124,20 +124,20 @@ describe("graphq/typeDefs", () => {
       expect(type).toBe("FooNestedField");
     });
     test("return JSON for nested objects with blackbox option", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         nestedField: {
           optional: true,
           blackbox: true,
-          type: new SimpleSchema({
+          type: {
             firstNestedField: {
               type: String,
             },
             secondNestedField: {
               type: Number,
             },
-          }),
+          },
         },
-      })._schema;
+      };
       const type = getGraphQLType({
         schema,
         fieldName: "nestedField",
@@ -146,11 +146,12 @@ describe("graphq/typeDefs", () => {
       expect(type).toBe("JSON");
     });
     test("return JSON for nested objects that are actual JSON objects", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         nestedField: {
           type: Object,
+          typeName: "JSON", // typeName is mandatory otherwise it is considered a nested field
         },
-      })._schema;
+      };
       const type = getGraphQLType({
         schema,
         fieldName: "nestedField",
@@ -159,19 +160,19 @@ describe("graphq/typeDefs", () => {
       expect(type).toBe("JSON");
     });
     test("return JSON for child of blackboxed array", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         arrayField: {
           type: Array,
           blackbox: true,
         },
         "arrayField.$": {
-          type: new SimpleSchema({
+          type: {
             someField: {
               type: String,
             },
-          }),
+          },
         },
-      })._schema;
+      };
       const type = getGraphQLType({
         schema,
         fieldName: "arrayField",
@@ -181,12 +182,12 @@ describe("graphq/typeDefs", () => {
     });
 
     test("return JSON for input type if provided typeName is JSON", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         nestedField: {
           type: Object,
           typeName: "JSON",
         },
-      })._schema;
+      };
       const inputType = getGraphQLType({
         schema,
         fieldName: "nestedField",
@@ -197,22 +198,22 @@ describe("graphq/typeDefs", () => {
     });
 
     test("return nested  array type for arrays of nested objects", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         arrayField: {
           type: Array,
           canRead: ["admins"],
         },
         "arrayField.$": {
-          type: new SimpleSchema({
+          type: {
             firstNestedField: {
               type: String,
             },
             secondNestedField: {
               type: Number,
             },
-          }),
+          },
         },
-      })._schema;
+      };
       const type = getGraphQLType({
         schema,
         fieldName: "arrayField",
@@ -221,7 +222,7 @@ describe("graphq/typeDefs", () => {
       expect(type).toBe("[FooArrayField]");
     });
     test("return basic array type for array of primitives", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         arrayField: {
           type: Array,
           canRead: ["admins"],
@@ -229,7 +230,7 @@ describe("graphq/typeDefs", () => {
         "arrayField.$": {
           type: String,
         },
-      })._schema;
+      };
       const type = getGraphQLType({
         schema,
         fieldName: "arrayField",
@@ -243,7 +244,7 @@ describe("graphq/typeDefs", () => {
 
   describe("schema parsing - getSchemaFields - get the fields to add to graphQL schema as a JS representation", () => {
     test("fields without permissions are ignored", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         field: {
           type: String,
           canRead: ["admins"],
@@ -251,16 +252,16 @@ describe("graphq/typeDefs", () => {
         ignoredField: {
           type: String,
         },
-      })._schema;
+      };
       const fields = getSchemaFields(schema, "Foo");
       const mainType = fields.fields.mainType;
       expect(mainType).toHaveLength(1);
       expect(mainType[0].name).toEqual("field");
     });
     test("nested fields without permissions are ignored", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         nestedField: {
-          type: new SimpleSchema({
+          type: {
             firstNestedField: {
               type: String,
               canRead: ["admins"],
@@ -268,10 +269,10 @@ describe("graphq/typeDefs", () => {
             ignoredNestedField: {
               type: Number,
             },
-          }),
+          },
           canRead: ["admins"],
         },
-      })._schema;
+      };
       const fields = getSchemaFields(schema, "Foo");
       const nestedFields = fields.nestedFieldsList[0];
       // one field in the nested object
@@ -279,9 +280,9 @@ describe("graphq/typeDefs", () => {
       expect(nestedFields.fields.mainType[0].name).toEqual("firstNestedField");
     });
     test("generate fields for nested objects", () => {
-      const schema = new SimpleSchema({
+      const schema = {
         nestedField: {
-          type: new SimpleSchema({
+          type: {
             firstNestedField: {
               type: String,
               canRead: ["admins"],
@@ -290,10 +291,10 @@ describe("graphq/typeDefs", () => {
               type: Number,
               canRead: ["admins"],
             },
-          }),
+          },
           canRead: ["admins"],
         },
-      })._schema;
+      };
 
       const fields = getSchemaFields(schema, "Foo");
       // one nested object
@@ -342,12 +343,12 @@ describe("graphq/typeDefs", () => {
       test("generate type for a nested field", () => {
         const model = FooModel({
           nestedField: {
-            type: new SimpleSchema({
+            type: {
               subField: {
                 type: String,
                 canRead: ["admins"],
               },
-            }),
+            },
             canRead: ["admins"],
           },
         });
@@ -367,12 +368,12 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
           },
           "arrayField.$": {
-            type: new SimpleSchema({
+            type: {
               subField: {
                 type: String,
                 canRead: ["admins"],
               },
-            }),
+            },
             canRead: ["admins"],
           },
         });
@@ -393,21 +394,21 @@ describe("graphq/typeDefs", () => {
             blackbox: true,
           },
           "blocks.$": {
-            type: new SimpleSchema({
+            type: {
               addresses: {
                 type: Array,
                 canRead: ["admins"],
               },
               "addresses.$": {
-                type: new SimpleSchema({
+                type: {
                   street: {
                     type: String,
                     canRead: ["adminst"],
                   },
-                }),
+                },
                 canRead: ["admins"],
               },
-            }),
+            },
             canRead: ["admins"],
           },
         });
@@ -439,12 +440,12 @@ describe("graphq/typeDefs", () => {
       test("do NOT generate graphQL type if an existing graphQL type is referenced", () => {
         const model = FooModel({
           nestedField: {
-            type: new SimpleSchema({
+            type: {
               subField: {
                 type: String,
                 canRead: ["admins"],
               },
-            }),
+            },
             typeName: "AlreadyRegisteredNestedType",
             canRead: ["admins"],
           },
@@ -464,12 +465,12 @@ describe("graphq/typeDefs", () => {
           },
           "arrayField.$": {
             typeName: "AlreadyRegisteredType",
-            type: new SimpleSchema({
+            type: {
               subField: {
                 type: String,
                 canRead: ["admins"],
               },
-            }),
+            },
             canRead: ["admins"],
           },
         });
@@ -532,7 +533,7 @@ describe("graphq/typeDefs", () => {
     test("generate correct type for nested intl fields", () => {
       const model = FooModel({
         nestedField: {
-          type: new SimpleSchema(
+          type: 
             addIntlFields(
               // we need to do this manually, it is handled by a callback when creating the collection
               {
@@ -685,7 +686,7 @@ describe("graphq/typeDefs", () => {
         test('generate enum type when allowedValues is defined and field is a string', () => {
           const model = FooModel({
             nestedField: {
-              type: new SimpleSchema({
+              type: {
                 withAllowedField: {
                   type: String,
                   allowedValues: ['foo', 'bar'],
@@ -715,7 +716,7 @@ describe("graphq/typeDefs", () => {
             //onUpdate: entLifecycleHistoryOnUpdate,
           },
           'entrepreneurLifeCycleHistory.$': {
-            type: new SimpleSchema(
+            type: 
               {
                 entrepreneurLifeCycleState: {
                   type: String,
@@ -782,7 +783,7 @@ describe("graphq/typeDefs", () => {
       test("generate inputs for nested objects", () => {
         const model = FooModel({
           nestedField: {
-            type: new SimpleSchema({
+            type: {
               someField: {
                 type: String,
                 canRead: ["admins"],
@@ -818,7 +819,7 @@ describe("graphq/typeDefs", () => {
           "arrayField.$": {
             canRead: ["admins"],
             canCreate: ["admins"],
-            type: new SimpleSchema({
+            type: {
               someField: {
                 type: String,
                 canRead: ["admins"],
@@ -876,7 +877,7 @@ describe("graphq/typeDefs", () => {
           "arrayField.$": {
             canRead: ["admins"],
             canCreate: ["admins"],
-            type: new SimpleSchema({
+            type: {
               foo: {
                 type: String,
                 canRead: ["admins"],
@@ -898,7 +899,7 @@ describe("graphq/typeDefs", () => {
       test("do NOT generate new inputs for nested objects if a type is provided", () => {
         const model = FooModel({
           nestedField: {
-            type: new SimpleSchema({
+            type: {
               someField: {
                 type: String,
                 canRead: ["admins"],
@@ -931,7 +932,7 @@ describe("graphq/typeDefs", () => {
             canRead: ["admins"],
             canCreate: ["admins"],
             typeName: "AlreadyRegisteredType",
-            type: new SimpleSchema({
+            type: {
               someField: {
                 type: String,
                 canRead: ["admins"],
@@ -956,7 +957,7 @@ describe("graphq/typeDefs", () => {
           nestedField: {
             canRead: ["admins"],
             canCreate: ["admins"],
-            type: new SimpleSchema({
+            type: {
               someField: {
                 type: String,
                 optional: true,
@@ -984,7 +985,7 @@ describe("graphq/typeDefs", () => {
           nestedField: {
             canRead: ["admins"],
             canCreate: ["admins"],
-            type: new SimpleSchema({
+            type: {
               someField: {
                 type: String,
                 optional: true,
@@ -1027,7 +1028,7 @@ describe("graphq/typeDefs", () => {
             canUpdate: ["admins"],
           },
           "arrayField.$": {
-            type: new SimpleSchema({
+            type: {
               someFieldId: {
                 type: String,
                 optional: true,

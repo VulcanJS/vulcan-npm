@@ -17,7 +17,7 @@ export const createModel = (options: CreateModelOptions): VulcanModel => {
   const { schema, name, extensions = [], permissions = {} } = options;
 
   const model: VulcanModel = {
-    schema, // TODO: it might me new SimpleSchema(schema)._schema (and type would be EvaluatedSchema instead of schema)
+    schema,
     name,
     permissions,
     options,

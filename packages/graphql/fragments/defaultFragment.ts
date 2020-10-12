@@ -5,15 +5,21 @@
  * DIFFERENCES with Vulcan:
  * - Default name is "FooDefaultFragment" (singular) instead of plural "FoosDefaultFragment"
  */
-import { getFragmentFieldNames, isBlackbox } from "@vulcanjs/schema";
-import { VulcanSchema, VulcanSchemaEvaluated } from "@vulcanjs/schema";
-import SimpleSchema from "simpl-schema";
+import {
+  getFieldType,
+  getFieldTypeName,
+  getFragmentFieldNames,
+  getNestedSchema,
+  hasNestedSchema,
+  isBlackbox,
+} from "@vulcanjs/schema";
+import { VulcanSchema } from "@vulcanjs/schema";
 import { VulcanGraphqlModelSkeleton } from "../typings";
 
 const intlSuffix = "_intl";
 
 interface GetObjectFragmentInput {
-  schema: VulcanSchemaEvaluated; // TODO: use a normal schema definition instead
+  schema: VulcanSchema;
   fragmentName: string;
   options: any;
 }
@@ -44,7 +50,7 @@ const getObjectFragment = ({
 };
 
 interface GetFragmentInput {
-  schema: VulcanSchemaEvaluated; // TODO: use a normal schema definition instead to simplify
+  schema: VulcanSchema;
   fieldName: string;
   options: any;
   getObjectFragment?: Function;
@@ -63,21 +69,15 @@ export const getFieldFragment = ({
   if (fieldName === "_id") return fieldName;
   const field = schema[fieldName];
 
-  const fieldType = (field.type as any).singleType;
-  const fieldTypeName =
-    typeof fieldType === "object"
-      ? "Object"
-      : typeof fieldType === "function"
-      ? fieldType.name
-      : fieldType;
+  const fieldTypeName = getFieldTypeName(getFieldType(field));
 
   switch (fieldTypeName) {
     case "Object":
-      if (!isBlackbox(field) && fieldType._schema) {
+      if (hasNestedSchema(field)) {
         return (
           getObjectFragmentArg({
             fragmentName: fieldName,
-            schema: fieldType._schema,
+            schema: getNestedSchema(field),
             options,
           }) || null
         );
@@ -89,12 +89,14 @@ export const getFieldFragment = ({
       // note: make sure field has an associated array item field
       if (arrayItemField) {
         // child will either be native value or a an object (first case)
-        const arrayItemFieldType = (arrayItemField.type as any).singleType;
-        if (!isBlackbox(field) && arrayItemFieldType._schema) {
+        const arrayItemFieldType = getFieldTypeName(
+          getFieldType(arrayItemField)
+        );
+        if (hasNestedSchema(arrayItemField)) {
           return (
             getObjectFragmentArg({
               fragmentName: fieldName,
-              schema: arrayItemFieldType._schema,
+              schema: getNestedSchema(arrayItemField),
               options,
             }) || null
           );
@@ -121,7 +123,7 @@ export const getDefaultFragmentText = (
   const schema = model.schema;
   return (
     getObjectFragment({
-      schema: new SimpleSchema(model.schema)._schema,
+      schema,
       fragmentName: `fragment ${getDefaultFragmentName(model)} on ${
         model.graphql.typeName
       }`,

@@ -5,6 +5,15 @@
  */
 import { SchemaDefinition, EvaluatedSchemaDefinition } from "simpl-schema";
 
+export type FieldTypeName =
+  | "String"
+  | "Boolean"
+  | "Number"
+  | "SimpleSchema.Integer"
+  | "Array"
+  | "Object" // can be a nested schema OR a JSON in certain cases (depending on blackbox etc.)
+  | "JSON" // explicitely a JSON
+  | "Date";
 type PermissionDefinition = String | Function;
 interface VulcanField {
   canRead?: PermissionDefinition | Array<PermissionDefinition>;
@@ -55,7 +64,9 @@ interface VulcanField {
 }
 export interface VulcanFieldSchema<T = any>
   extends VulcanField,
-    SchemaDefinition<T> {}
+    SchemaDefinition<T> {
+  type: SchemaDefinition<any>["type"] | VulcanFieldSchema;
+}
 
 export type VulcanSchema = {
   [key: string]: VulcanFieldSchema;
@@ -63,13 +74,14 @@ export type VulcanSchema = {
 
 /**
  * Version obtained after running new SimpleSchema({...})._schema
+ * SHOULD BE USED SPARSELY
  */
-export interface VulcanFieldSchemaEvaluated<T = any>
-  extends EvaluatedSchemaDefinition,
-    VulcanField {}
-export type VulcanSchemaEvaluated = {
-  [key: string]: VulcanFieldSchemaEvaluated;
-};
+// export interface VulcanFieldSchemaEvaluated<T = any>
+//   extends EvaluatedSchemaDefinition,
+//     VulcanField {}
+// export type VulcanSchemaEvaluated = {
+//   [key: string]: VulcanFieldSchemaEvaluated;
+// };
 
 export interface VulcanDocument {
   // Special fields

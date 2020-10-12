@@ -6,12 +6,10 @@ import {
   getFieldTypeName,
   VulcanSchema,
   VulcanFieldSchema,
-  VulcanFieldSchemaEvaluated,
 } from "@vulcanjs/schema";
-import SimpleSchema from "simpl-schema";
 
 interface GetGraphqlTypeInput {
-  fieldSchema?: VulcanFieldSchemaEvaluated; // TODO: replace by normal field schema to simplify
+  fieldSchema?: VulcanFieldSchema;
   schema: VulcanSchema;
   fieldName: string;
   typeName: string;
@@ -29,7 +27,7 @@ export const getGraphQLType = ({
   isInput = false,
   isParentBlackbox = false,
 }: GetGraphqlTypeInput): string => {
-  const field = fieldSchema || new SimpleSchema(schema)._schema[fieldName];
+  const field = fieldSchema || schema[fieldName];
 
   if (field.typeName) return field.typeName; // respect typeName provided by user
 
@@ -100,7 +98,7 @@ export const getGraphQLType = ({
       // - a nested Schema,
       // - a referenced schema, or an actual JSON
       if (isParentBlackbox) return "JSON";
-      if (!isBlackbox(field) && fieldType._schema) {
+      if (!isBlackbox(field) && fieldType) {
         return getNestedGraphQLType(typeName, fieldName, isInput);
       }
 

@@ -12,12 +12,11 @@ import {
   shouldAddOriginalField,
   VulcanFieldSchema,
   VulcanSchema,
-  VulcanFieldSchemaEvaluated,
+  hasNestedSchema,
 } from "@vulcanjs/schema";
 import * as relations from "./relationResolvers";
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
-import SimpleSchema from "simpl-schema";
 
 const capitalize = (word) => {
   if (!word) return word;
@@ -37,8 +36,6 @@ export const getNestedGraphQLType = (
 
 //const isObject = field => getFieldTypeName(getFieldType(field));
 const hasTypeName = (field) => !!(field || {}).typeName;
-
-const hasNestedSchema = (field) => !!getNestedSchema(field);
 
 const hasArrayChild = (fieldName, schema) => !!getArrayChild(fieldName, schema);
 
@@ -78,9 +75,12 @@ interface ResolveAsRelation extends ResolveAsCommon {}
 interface ResolveAsCustom extends ResolveAsCommon {}
 type ResolveAs = ResolveAsCustom | ResolveAsRelation;
 
+interface ResolveAsField extends VulcanFieldSchema {
+  resolveAs: Array<ResolveAs> | ResolveAs;
+}
 interface GetResolveAsFieldsInput {
   typeName: string;
-  field: { resolveAs: Array<ResolveAs> | ResolveAs };
+  field: ResolveAsField;
   fieldName: string;
   fieldType: string;
   fieldDescription: string;
@@ -356,9 +356,9 @@ export const getSchemaFields = (
   const nestedFieldsList = [];
   const resolvers = [];
 
-  const schema = new SimpleSchema(schemaDefinition)._schema; // TODO: make it possible to call on the schema directly
+  const schema = schemaDefinition; // TODO: make it possible to call on the schema directly
   Object.keys(schema).forEach((fieldName) => {
-    const field: VulcanFieldSchemaEvaluated = schema[fieldName]; // TODO: remove the need to call SimpleSchema
+    const field: VulcanFieldSchema = schema[fieldName]; // TODO: remove the need to call SimpleSchema
     const fieldType = getGraphQLType({
       schema,
       fieldName,
@@ -408,7 +408,7 @@ export const getSchemaFields = (
           resolvers: resolveAsResolvers,
         } = getResolveAsFields({
           typeName,
-          field,
+          field: field as ResolveAsField,
           fieldName,
           fieldType,
           fieldDescription,

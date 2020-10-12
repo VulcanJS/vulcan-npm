@@ -10,7 +10,8 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _omit from "lodash/omit";
 import moment from "moment-timezone";
-import SimpleSchema from "simpl-schema";
+// import SimpleSchema from "simpl-schema";
+import { VulcanFieldSchema } from "./typings";
 
 export const formattedDateResolver = (fieldName) => {
   return (document = {}, args: any = {}, context: any = {}) => {
@@ -25,6 +26,7 @@ export const formattedDateResolver = (fieldName) => {
   };
 };
 
+/*
 export const createSchema = (schema, apiSchema = {}, dbSchema = {}) => {
   let modifiedSchema = { ...schema };
 
@@ -104,6 +106,7 @@ export const createSchema = (schema, apiSchema = {}, dbSchema = {}) => {
 
   return new SimpleSchema(modifiedSchema);
 };
+*/
 
 /* getters */
 // filter out fields with "." or "$"
@@ -146,7 +149,10 @@ Rule: we always add it except if:
 3. A resolveAs field doesn't have a name (in which case it will take the name of the main field)
 
 */
-export const shouldAddOriginalField = (fieldName, field) => {
+export const shouldAddOriginalField = (
+  fieldName: string,
+  field: VulcanFieldSchema
+): boolean => {
   if (!field.resolveAs) return true;
 
   const resolveAsArray = Array.isArray(field.resolveAs)
@@ -179,7 +185,7 @@ export const getFragmentFieldNames = ({ schema, options }) =>
       (field.resolveAs && !shouldAddOriginalField(fieldName, field)) ||
       fieldName.includes("$") ||
       fieldName.includes(".") ||
-      (options.onlyViewable && !(field.canRead || field.viewableBy)) ||
+      (options.onlyViewable && !field.canRead) ||
       field.typeName ||
       (schema[`${fieldName}.$`] && schema[`${fieldName}.$`].typeName)
     );
