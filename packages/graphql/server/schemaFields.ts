@@ -13,42 +13,25 @@ import {
   VulcanFieldSchema,
   VulcanSchema,
   hasNestedSchema,
+  getArrayChildSchema,
+  hasArrayNestedChild,
 } from "@vulcanjs/schema";
 import * as relations from "./relationResolvers";
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
-
-const capitalize = (word) => {
-  if (!word) return word;
-  const [first, ...rest] = word;
-  return [first.toUpperCase(), ...rest].join("");
-};
+import { capitalize } from "@vulcanjs/utils";
 
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (
   typeName: string,
   fieldName: string,
   isInput?: boolean
-) =>
+): string =>
   `${typeName}${capitalize(unarrayfyFieldName(fieldName))}${
     isInput ? "Input" : ""
   }`;
 
-//const isObject = field => getFieldTypeName(getFieldType(field));
-const hasTypeName = (field) => !!(field || {}).typeName;
-
-const hasArrayChild = (fieldName, schema) => !!getArrayChild(fieldName, schema);
-
-const getArrayChildSchema = (fieldName, schema) => {
-  return getNestedSchema(getArrayChild(fieldName, schema));
-};
-const hasArrayNestedChild = (fieldName, schema) =>
-  hasArrayChild(fieldName, schema) && !!getArrayChildSchema(fieldName, schema);
-
-//const getArrayChildTypeName = (fieldName, schema) =>
-//  (getArrayChild(fieldName, schema) || {}).typeName;
-//const hasArrayReferenceChild = (fieldName, schema) =>
-//  hasArrayChild(fieldName, schema) && !!getArrayChildTypeName(fieldName, schema);
+const hasTypeName = (field: VulcanFieldSchema): boolean => !!field.typeName;
 
 const hasPermissions = (field) =>
   field.canRead || field.canCreate || field.canUpdate;
@@ -380,7 +363,8 @@ export const getSchemaFields = (
       !isIntlField(field) &&
       !isIntlDataField(field);
     const isReferencedObject = hasTypeName(field);
-    const isReferencedArray = hasTypeName(getArrayChild(fieldName, schema));
+    const arrayChild = getArrayChild(fieldName, schema);
+    const isReferencedArray = arrayChild && hasTypeName(arrayChild);
     const hasNesting =
       !isBlackbox(field) &&
       (isNestedArray ||

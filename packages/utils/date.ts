@@ -31,7 +31,7 @@ export const convertDates = (collection, listOrDocument) => {
       document,
       schema,
       ({ fieldName, fieldSchema, currentPath }) => {
-        if (fieldSchema && getFieldType(fieldSchema) === Date) {
+        if (fieldSchema && getFieldTypeName(fieldSchema) === "Date") {
           const valuePath = `${currentPath}${fieldName}`;
           const value = get(document, valuePath);
           set(document, valuePath, new Date(value));

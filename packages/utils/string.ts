@@ -11,7 +11,6 @@ Utilities
 import get from "lodash/get";
 import isFunction from "lodash/isFunction";
 // import pluralize from "pluralize";
-// import { getFieldType } from "./simpleSchema_utils";
 import isEmpty from "lodash/isEmpty";
 
 /**
@@ -103,8 +102,10 @@ export const trimHTML = function (html, numWords) {
  * @summary Capitalize a string.
  * @param {String} str
  */
-export const capitalize = function (str) {
+export const capitalize = function (str: string): string {
   return str && str.charAt(0).toUpperCase() + str.slice(1);
+  // we leave the rest alone (in order to preserve camel-casing for other characters)
+  // .toLowerCase();
 };
 
 // Utils.t = function (message) {
@@ -353,13 +354,6 @@ export const getSchemaFieldAllowedValues = (schemaFieldOptionsArray) => {
     (schemaFieldOption) => schemaFieldOption.value
   );
 };
-
-/**
- * type is an array due to the possibility of using SimpleSchema.oneOf
- * right now we support only fields with one type
- * @param {Object} field
- */
-export const getFieldType = (field) => get(field, "type.definitions.0.type");
 
 export const isEmptyOrUndefined = (value) =>
   typeof value === "undefined" ||
