@@ -19,6 +19,7 @@ export interface PermissionsOptions {
 export interface VulcanModel {
   name: string;
   //customFilters: Array<{ name: string; filter: FilterFunction }>;
+  description?: string;
   schema: VulcanSchema; // NOTE: the right type might be "Evalutated Schema" if we use new SimpleSchema(mySchema)._schema to get it
   permissions: PermissionsOptions;
   options?: any; // TODO: used to add "customFilters", but to be improved, we should avoid generic option and have only options per extension (graphql, mongo, filtering...)

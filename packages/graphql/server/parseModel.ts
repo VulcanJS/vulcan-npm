@@ -37,44 +37,47 @@ import _initial from "lodash/initial";
 import { VulcanGraphqlModel } from "../typings";
 import { camelCaseify } from "@vulcanjs/utils";
 import {
-  Resolver,
-  ResolverMap,
+  QueryResolver,
   ModelResolverMap,
-  ResolversDefinitions,
+  MutationResolver,
+  MutationResolverMap,
+  QueryResolverMap,
+  QuerySchema,
+  MutationSchema,
+  AnyResolverMap,
 } from "./typings";
 
-interface ResolverDefinition {
+interface QueryResolverDefinition {
   description?: string;
-  resolver: Resolver;
+  resolver: QueryResolver;
 }
 interface CreateResolversInput {
-  resolvers: {
-    single: ResolverDefinition;
-    multi: ResolverDefinition;
+  resolverDefinitions: {
+    single: QueryResolverDefinition;
+    multi: QueryResolverDefinition;
   };
   typeName: string;
   multiTypeName: string;
 }
 interface CreateResolversOutput {
   // Graphql typeDef
-  queriesToAdd: Array<[string, string]>; // [query typedef, description]
+  queries: Array<QuerySchema>; // [query typedef, description]
   // Functions
-  resolversToAdd: Array<{ Query: ResolverMap }>;
+  queryResolvers: QueryResolverMap;
 }
 /**
  * Compute query resolvers for a given model
  */
 const createResolvers = ({
-  resolvers,
+  resolverDefinitions,
   typeName,
   multiTypeName,
 }: CreateResolversInput): CreateResolversOutput => {
-  const queryResolvers: ResolverMap = {};
-  const queriesToAdd: Array<[string, string]> = [];
-  const resolversToAdd: Array<{ Query: ResolverMap }> = [];
-  if (resolvers === null) {
+  const queryResolvers: QueryResolverMap = {};
+  const queries: Array<{ description: string; query: string }> = [];
+  if (resolverDefinitions === null) {
     // user explicitely don't want resolvers
-    return { queriesToAdd, resolversToAdd };
+    return { queries, queryResolvers };
   }
   // REMOVED FEATURE: if resolvers are empty, use defaults
   // => we expect user to provide default resolvers explicitely (or we compute them earlier, here it's too far)
@@ -82,72 +85,64 @@ const createResolvers = ({
     ? getDefaultQueryResolvers({ typeName })
     : providedResolvers;*/
   // single
-  if (resolvers.single) {
-    queriesToAdd.push([
-      singleQueryTemplate({ typeName }),
-      resolvers.single.description,
-    ]);
+  if (resolverDefinitions.single) {
+    queries.push({
+      query: singleQueryTemplate({ typeName }),
+      description: resolverDefinitions.single.description,
+    });
     //addGraphQLQuery(singleQueryTemplate({ typeName }), resolvers.single.description);
-    queryResolvers[camelCaseify(typeName)] = resolvers.single.resolver.bind(
-      resolvers.single
-    );
+    queryResolvers[
+      camelCaseify(typeName)
+    ] = resolverDefinitions.single.resolver.bind(resolverDefinitions.single);
   }
   // multi
-  if (resolvers.multi) {
-    queriesToAdd.push([
-      multiQueryTemplate({ typeName, multiTypeName }),
-      resolvers.multi.description,
-    ]);
+  if (resolverDefinitions.multi) {
+    queries.push({
+      query: multiQueryTemplate({ typeName, multiTypeName }),
+      description: resolverDefinitions.multi.description,
+    });
     //addGraphQLQuery(multiQueryTemplate({ typeName }), resolvers.multi.description);
-    queryResolvers[camelCaseify(multiTypeName)] = resolvers.multi.resolver.bind(
-      resolvers.multi
-    );
+    queryResolvers[
+      camelCaseify(multiTypeName)
+    ] = resolverDefinitions.multi.resolver.bind(resolverDefinitions.multi);
   }
   //addGraphQLResolvers({ Query: { ...queryResolvers } });
-  resolversToAdd.push({ Query: { ...queryResolvers } });
+  // resolversToAdd.push({ Query: { ...queryResolvers } });
   return {
-    queriesToAdd,
-    resolversToAdd,
+    queries,
+    queryResolvers,
   };
 };
 
-interface MutationResolver {
-  description?: string;
-  mutation: Function;
-}
-type MutationResolverMap = {
-  [key in string]: MutationResolver;
-};
 interface CreateMutationsInput {
-  mutations: {
-    create: any;
-    update: any;
-    upsert: any;
-    delete: any;
+  mutationDefinitions: {
+    create?: { description?: string; mutation: MutationResolver };
+    update?: { description?: string; mutation: MutationResolver };
+    upsert?: { description?: string; mutation: MutationResolver };
+    delete?: { description?: string; mutation: MutationResolver };
   };
   typeName: string;
   modelName: string;
   fields: MutableFieldsDefinitions;
 }
 interface CreateMutationsOutput {
-  mutationsToAdd: Array<[string, string]>;
-  mutationsResolversToAdd: Array<{ Mutation: MutationResolverMap }>;
+  mutations: Array<MutationSchema>;
+  mutationResolvers: MutationResolverMap;
 }
 /**
  * Create mutation resolvers for a model
  */
 const createMutations = ({
-  mutations,
+  mutationDefinitions,
   typeName,
   modelName,
   fields,
 }: CreateMutationsInput): CreateMutationsOutput => {
   const mutationResolvers: MutationResolverMap = {};
-  const mutationsToAdd: CreateMutationsOutput["mutationsToAdd"] = [];
-  const mutationsResolversToAdd: CreateMutationsOutput["mutationsResolversToAdd"] = [];
-  if (mutations === null) {
+  const mutations: CreateMutationsOutput["mutations"] = [];
+  if (mutationDefinitions === null) {
     // user explicitely disabled mutations
-    return { mutationsResolversToAdd, mutationsToAdd };
+    return { mutationResolvers, mutations };
   }
   // WE EXPECT mutations to be passed now
   // if mutations are undefined, use defaults
@@ -160,7 +155,7 @@ const createMutations = ({
   const { create, update } = fields;
 
   // create
-  if (mutations.create) {
+  if (mutationDefinitions.create) {
     // e.g. "createMovie(input: CreateMovieInput) : Movie"
     if (create.length === 0) {
       // eslint-disable-next-line no-console
@@ -169,17 +164,17 @@ const createMutations = ({
       );
     } else {
       //addGraphQLMutation(createMutationTemplate({ typeName }), mutations.create.description);
-      mutationsToAdd.push([
-        createMutationTemplate({ typeName }),
-        mutations.create.description,
-      ]);
-      mutationResolvers[`create${typeName}`] = mutations.create.mutation.bind(
-        mutations.create
-      );
+      mutations.push({
+        mutation: createMutationTemplate({ typeName }),
+        description: mutationDefinitions.create.description,
+      });
+      mutationResolvers[
+        `create${typeName}`
+      ] = mutationDefinitions.create.mutation.bind(mutationDefinitions.create);
     }
   }
   // update
-  if (mutations.update) {
+  if (mutationDefinitions.update) {
     // e.g. "updateMovie(input: UpdateMovieInput) : Movie"
     if (update.length === 0) {
       // eslint-disable-next-line no-console
@@ -187,18 +182,18 @@ const createMutations = ({
         `// Warning: you defined an "update" mutation for model ${modelName}, but it doesn't have any mutable fields, so no corresponding mutation types can be generated. Remove the "update" mutation or define a "canUpdate" property on a field to disable this warning`
       );
     } else {
-      mutationsToAdd.push([
-        updateMutationTemplate({ typeName }),
-        mutations.update.description,
-      ]);
+      mutations.push({
+        mutation: updateMutationTemplate({ typeName }),
+        description: mutationDefinitions.update.description,
+      });
       //addGraphQLMutation(updateMutationTemplate({ typeName }), mutations.update.description);
-      mutationResolvers[`update${typeName}`] = mutations.update.mutation.bind(
-        mutations.update
-      );
+      mutationResolvers[
+        `update${typeName}`
+      ] = mutationDefinitions.update.mutation.bind(mutationDefinitions.update);
     }
   }
   // upsert
-  if (mutations.upsert) {
+  if (mutationDefinitions.upsert) {
     // e.g. "upsertMovie(input: UpsertMovieInput) : Movie"
     if (update.length === 0) {
       // eslint-disable-next-line no-console
@@ -206,31 +201,30 @@ const createMutations = ({
         `// Warning: you defined an "upsert" mutation for model ${modelName}, but it doesn't have any mutable fields, so no corresponding mutation types can be generated. Remove the "upsert" mutation or define a "canUpdate" property on a field to disable this warning`
       );
     } else {
-      mutationsToAdd.push([
-        upsertMutationTemplate({ typeName }),
-        mutations.upsert.description,
-      ]);
+      mutations.push({
+        mutation: upsertMutationTemplate({ typeName }),
+        description: mutationDefinitions.upsert.description,
+      });
       //addGraphQLMutation(upsertMutationTemplate({ typeName }), mutations.upsert.description);
-      mutationResolvers[`upsert${typeName}`] = mutations.upsert.mutation.bind(
-        mutations.upsert
-      );
+      mutationResolvers[
+        `upsert${typeName}`
+      ] = mutationDefinitions.upsert.mutation.bind(mutationDefinitions.upsert);
     }
   }
   // delete
-  if (mutations.delete) {
+  if (mutationDefinitions.delete) {
     // e.g. "deleteMovie(input: DeleteMovieInput) : Movie"
     //addGraphQLMutation(deleteMutationTemplate({ typeName }), mutations.delete.description);
-    mutationsToAdd.push([
-      deleteMutationTemplate({ typeName }),
-      mutations.delete.description,
-    ]);
-    mutationResolvers[`delete${typeName}`] = mutations.delete.mutation.bind(
-      mutations.delete
-    );
+    mutations.push({
+      mutation: deleteMutationTemplate({ typeName }),
+      description: mutationDefinitions.delete.description,
+    });
+    mutationResolvers[
+      `delete${typeName}`
+    ] = mutationDefinitions.delete.mutation.bind(mutationDefinitions.delete);
   }
   //addGraphQLResolvers({ Mutation: { ...mutationResolvers } });
-  mutationsResolversToAdd.push({ Mutation: { ...mutationResolvers } });
-  return { mutationsResolversToAdd, mutationsToAdd };
+  return { mutationResolvers, mutations };
 };
 
 interface Fields {
@@ -391,10 +385,11 @@ const generateTypeDefs = ({
 };
 
 interface ParseModelOutput
-  extends Partial<CreateMutationsOutput>,
-    Partial<CreateResolversOutput> {
+  extends Partial<Pick<CreateMutationsOutput, "mutations">>,
+    Partial<Pick<CreateResolversOutput, "queries">> {
   typeDefs: string;
-  schemaResolvers?: ResolversDefinitions;
+  schemaResolvers?: Array<AnyResolverMap>;
+  resolvers?: ModelResolverMap;
 }
 export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
   const typeDefs = [];
@@ -406,8 +401,8 @@ export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
   //   resolvers,
   //   mutations,
   // } = getCollectionInfos(collection);
-  const resolvers = null; // TODO: get from Model?
-  const mutations = null; // TODO: get from Model?
+  const resolverDefinitions = null; // TODO: get from Model?
+  const mutationDefinitions = null; // TODO: get from Model?
   const { schema, name: modelName } = model;
   const { typeName, multiTypeName } = model.graphql;
 
@@ -449,27 +444,30 @@ export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
     }
   }
 
-  const { queriesToAdd, resolversToAdd } = createResolvers({
-    resolvers,
+  const { queries, queryResolvers } = createResolvers({
+    resolverDefinitions,
     typeName,
     multiTypeName,
   });
-  const { mutationsToAdd, mutationsResolversToAdd } = createMutations({
-    mutations,
+  const { mutations, mutationResolvers } = createMutations({
+    mutationDefinitions,
     typeName,
     modelName,
     fields,
   });
 
+  const resolvers = {
+    Query: queryResolvers,
+    Mutation: mutationResolvers,
+  };
   const mergedTypeDefs = typeDefs.join("\n\n") + "\n\n\n";
 
   return {
     typeDefs: mergedTypeDefs,
-    queriesToAdd,
+    queries,
+    mutations,
     schemaResolvers,
-    resolversToAdd,
-    mutationsToAdd,
-    mutationsResolversToAdd,
+    resolvers,
   };
 };
 

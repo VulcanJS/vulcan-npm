@@ -6,6 +6,7 @@ import { normalizeGraphQLSchema } from "../../testUtils";
 import { getGraphQLType } from "../../utils";
 import { parseSchema } from "../parseSchema";
 import { parseModel } from "../parseModel";
+import { parseAllModels } from "../parseAllModels";
 
 const FooModel = (schema): VulcanGraphqlModel =>
   createModel({
@@ -14,7 +15,7 @@ const FooModel = (schema): VulcanGraphqlModel =>
     extensions: [extendModel({ multiTypeName: "Foos", typeName: "Foo" })],
   }) as VulcanGraphqlModel;
 
-describe("graphq/typeDefs", () => {
+describe("graphql/typeDefs", () => {
   // TODO: handle the graphQL init better to fix those tests
   /*
   describe("generateResolversFromSchema - generate a secure resolver for each field", () => {
@@ -1035,4 +1036,37 @@ describe("graphq/typeDefs", () => {
     test.skip("use provided resolvers if any", () => {});
   });
   */
+
+  describe("graphql/parseAllModels", () => {
+    const Foo = createModel({
+      schema: {
+        foo: {
+          type: String,
+          canRead: ["guests"],
+          canCreate: ["guests"],
+          canUpdate: ["guests"],
+        },
+      },
+      name: "Foo",
+      extensions: [extendModel({ multiTypeName: "Foos", typeName: "Foo" })],
+    }) as VulcanGraphqlModel;
+    const Bar = createModel({
+      schema: {
+        bar: {
+          type: String,
+          canRead: ["guests"],
+          canCreate: ["guests"],
+          canUpdate: ["guests"],
+        },
+      },
+      name: "Bar",
+      extensions: [extendModel({ multiTypeName: "Bars", typeName: "Bar" })],
+    }) as VulcanGraphqlModel;
+    const models = [Foo, Bar];
+    test("generates correct typeDefs", () => {
+      const parsed = parseAllModels(models);
+      expect(parsed.typeDefs).toContain("type Foo");
+      expect(parsed.typeDefs).toContain("type Bar");
+    });
+  });
 });

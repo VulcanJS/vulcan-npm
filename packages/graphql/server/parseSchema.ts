@@ -21,7 +21,7 @@ import * as relations from "./relationResolvers";
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
 import { capitalize } from "@vulcanjs/utils";
-import { ResolversDefinitions } from "./typings";
+import { AnyResolverMap, ResolverMap } from "./typings";
 
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (
@@ -82,7 +82,7 @@ interface GetResolveAsFieldsOutput {
       direction: any;
     }>;
   };
-  resolvers: ResolversDefinitions;
+  resolvers: Array<AnyResolverMap>;
 }
 // Generate GraphQL fields and resolvers for a field with a specific resolveAs
 // resolveAs allow to generate "virtual" fields that are queryable in GraphQL but does not exist in the database
@@ -352,11 +352,14 @@ interface NestedFieldsOutput extends ParseSchemaOutput {
 export interface ParseSchemaOutput {
   fields: GraphqlFieldsDefinitions;
   nestedFieldsList: Array<NestedFieldsOutput>;
-  resolvers: ResolversDefinitions;
+  resolvers: Array<ResolverMap>;
 }
 // for a given schema, return main type fields, selector fields,
 // unique selector fields, sort fields, creatable fields, and updatable fields
-export const parseSchema = (schema: VulcanSchema, typeName: string) => {
+export const parseSchema = (
+  schema: VulcanSchema,
+  typeName: string
+): ParseSchemaOutput => {
   if (!schema) throw new Error(`No schema for typeName ${typeName}`);
   // result fields
   const fields: GraphqlFieldsDefinitions = {
