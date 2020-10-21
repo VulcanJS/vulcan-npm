@@ -17,7 +17,7 @@ import {
   getArrayChildSchema,
   hasArrayNestedChild,
 } from "@vulcanjs/schema";
-import * as relations from "./relationResolvers";
+import * as relations from "./resolvers/relationResolvers";
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
 import { capitalize } from "@vulcanjs/utils";

@@ -45,17 +45,12 @@ import {
   QuerySchema,
   MutationSchema,
   AnyResolverMap,
+  QueryResolverDefinitions,
+  MutationResolverDefinitions,
 } from "./typings";
 
-interface QueryResolverDefinition {
-  description?: string;
-  resolver: QueryResolver;
-}
 interface CreateResolversInput {
-  resolverDefinitions: {
-    single: QueryResolverDefinition;
-    multi: QueryResolverDefinition;
-  };
+  resolverDefinitions: QueryResolverDefinitions;
   typeName: string;
   multiTypeName: string;
 }

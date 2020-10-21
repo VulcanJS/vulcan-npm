@@ -6,11 +6,26 @@ type FilterFunction = (args: {
   filterArguments: any;
 }) => { selector: Object; options: Object };
 
-export interface PermissionsOptions {
-  canRead?: Array<Function | string>; // TODO: put in common permission related stuffs
-  canCreate?: Array<Function | string>; // TODO: put in common permission related stuffs
-  canUpdate?: Array<Function | string>; // TODO: put in common permission related stuffs
-  canDelete?: Array<Function | string>; // TODO: put in common permission related stuffs
+interface CanReadInput {
+  user: any;
+  document: any;
+  model: VulcanModel;
+  context: any;
+  operationName: string; // "foobar.read.multi";
+}
+type CanReadFunction = (input: CanReadInput) => boolean;
+type ArrayOrSingle<T> = Array<T> | T;
+// TODO: get those typings from a shared permission package (they are currently already defined in vulcan:graphql package but we can't import it here
+// to avoid a circular dependency)
+type GroupName = string;
+/**
+ * Permission for a model
+ */
+export interface ModelPermissionsOptions {
+  canRead?: CanReadFunction | ArrayOrSingle<GroupName>;
+  canCreate?: Function | ArrayOrSingle<GroupName>;
+  canUpdate?: Function | ArrayOrSingle<GroupName>;
+  canDelete?: Function | ArrayOrSingle<GroupName>;
 }
 
 /**
@@ -21,6 +36,6 @@ export interface VulcanModel {
   //customFilters: Array<{ name: string; filter: FilterFunction }>;
   description?: string;
   schema: VulcanSchema; // NOTE: the right type might be "Evalutated Schema" if we use new SimpleSchema(mySchema)._schema to get it
-  permissions: PermissionsOptions;
+  permissions: ModelPermissionsOptions;
   options?: any; // TODO: used to add "customFilters", but to be improved, we should avoid generic option and have only options per extension (graphql, mongo, filtering...)
 }

@@ -134,7 +134,7 @@ const getActions = (user: Users) => {
  * @param {Array} user
  * @param {String} group or array of groups
  */
-const isMemberOf = (
+export const isMemberOf = (
   user: User,
   groupOrGroups: Array<Group> | Group,
   document?: VulcanDocument
@@ -347,6 +347,8 @@ export const restrictDocument = (
   );
   return restrictedDocument;
 };
+
+type ArrayOrSingle<T> = Array<T> | T;
 /**
  * @summary For a given document or list of documents, keep only fields viewable by current user
  * @param {Object} user - The user performing the action
@@ -356,8 +358,8 @@ export const restrictDocument = (
 export const restrictViewableFields = (
   user,
   model: VulcanModel,
-  docOrDocs: Array<VulcanDocument> | VulcanDocument
-) => {
+  docOrDocs: ArrayOrSingle<VulcanDocument>
+): ArrayOrSingle<VulcanDocument> => {
   if (!docOrDocs) return {};
   const schema = model.schema;
   const restrictDoc = (document) => restrictDocument(document, schema, user);

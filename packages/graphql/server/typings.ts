@@ -31,3 +31,17 @@ export interface MutationSchema {
   description?: string;
   mutation: string;
 }
+
+//
+interface QueryResolverDefinition {
+  description?: string;
+  resolver: QueryResolver;
+}
+
+export interface QueryResolverDefinitions {
+  single?: QueryResolverDefinition;
+  multi?: QueryResolverDefinition;
+}
+
+// TODO
+export interface MutationResolverDefinitions {}
