@@ -4,11 +4,15 @@ Default mutations
 
 */
 
-import { createMutator, updateMutator, deleteMutator } from "./mutators.js";
-import { Connectors } from "./connectors.js";
-import { getCollectionByTypeName } from "../modules/collections.js";
-import get from "lodash/get";
-import { throwError } from "./errors.js";
+import { createMutator, updateMutator, deleteMutator } from "./mutators";
+import { getModelConnector } from "./connectors.js";
+import { throwError } from "./errors";
+
+import { ContextWithUser } from "./typings";
+import { ModelMutationPermissionOptions } from "@vulcanjs/model";
+import { VulcanDocument } from "@vulcanjs/schema";
+import { MutationResolverDefinitions } from "../typings";
+import { VulcanGraphqlModel } from "../../typings.js";
 
 const defaultOptions = {
   create: true,
@@ -22,32 +26,33 @@ const getUpdateMutationName = (typeName) => `update${typeName}`;
 const getDeleteMutationName = (typeName) => `delete${typeName}`;
 const getUpsertMutationName = (typeName) => `upsert${typeName}`;
 
-const operationChecks = {
+type OperationName = "create" | "update" | "delete";
+const operationChecks: {
+  [operationName in OperationName]: keyof ModelMutationPermissionOptions;
+} = {
   create: "canCreate",
   update: "canUpdate",
   delete: "canDelete",
 };
 
+interface MutationCheckOptions {
+  user: any;
+  document: VulcanDocument;
+  model: VulcanGraphqlModel;
+  context: any;
+  operationName: OperationName;
+}
 /*
 
 Perform security check before calling mutators
 
 */
-export const performMutationCheck = (options) => {
-  const {
-    user,
-    document,
-    collection,
-    context,
-    typeName,
-    operationName,
-  } = options;
+export const performMutationCheck = (options: MutationCheckOptions) => {
+  const { user, document, model, context, operationName } = options;
+  const { typeName } = model.graphql;
   const { Users } = context;
   const documentId = document._id;
-  const permissionsCheck = get(
-    collection,
-    `options.permissions.${operationChecks[operationName]}`
-  );
+  const permissionsCheck = model.permissions?.[operationChecks[operationName]];
   let allowOperation = false;
   const fullOperationName = `${typeName}:${operationName}`;
   const data = { documentId, operationName: fullOperationName };
@@ -73,40 +78,83 @@ export const performMutationCheck = (options) => {
   }
 };
 
+interface MutationOptions {
+  create?: boolean;
+  update?: boolean;
+  upsert?: boolean;
+  delete?: boolean;
+}
+interface BuildDefaultMutationResolversInput {
+  model: VulcanGraphqlModel;
+  options: MutationOptions;
+}
+
+interface GetMutationDocumentInput {
+  // TODO: put in common with the single resolver variables type, that have the same fields
+  variables: {
+    _id: string;
+    input?: any; // SingleInput
+  };
+  model: VulcanGraphqlModel;
+  context: any;
+}
+
+// get a single document based on the mutation params
+const getMutationDocument = async ({
+  variables,
+  model,
+  context,
+}: GetMutationDocumentInput): Promise<{
+  selector: Object;
+  document?: VulcanDocument;
+}> => {
+  const connector = getModelConnector(context, model);
+  let document;
+  let selector;
+  const { _id, input } = variables;
+  if (_id) {
+    // _id bypass input
+    document = await connector.findOneById(_id);
+  } else {
+    const filterParameters = await connector.filter(model, input, context);
+    selector = filterParameters.selector;
+    // get entire unmodified document from database
+    document = await connector.findOne(model, selector);
+  }
+  return { selector, document };
+};
 /*
 
 Default Mutations
 
 */
-export function getDefaultMutationResolvers({
-  typeName,
-  collectionName,
+export function buildDefaultMutationResolvers({
+  model,
   options,
-}) {
-  collectionName = collectionName || getCollectionByTypeName(typeName);
-  const mutationOptions = { ...defaultOptions, ...options };
+}: BuildDefaultMutationResolversInput): MutationResolverDefinitions {
+  const { typeName } = model.graphql;
 
-  const mutations = {};
+  const mutationOptions: MutationOptions = { ...defaultOptions, ...options };
+
+  const mutations: Partial<MutationResolverDefinitions> = {};
 
   if (mutationOptions.create) {
     mutations.create = {
       description: `Mutation for creating new ${typeName} documents`,
       name: getCreateMutationName(typeName),
-      async mutation(root, { data }, context) {
-        const collection = context[collectionName];
+      async mutation(root, { data }, context: ContextWithUser) {
         const { currentUser } = context;
 
         performMutationCheck({
           user: currentUser,
           document: data,
-          collection,
+          model,
           context,
-          typeName,
           operationName: "create",
         });
 
         return await createMutator({
-          collection,
+          model,
           data,
           currentUser: context.currentUser,
           validate: true,
@@ -115,26 +163,6 @@ export function getDefaultMutationResolvers({
       },
     };
   }
-
-  // get a single document based on the mutation params
-  const getMutationDocument = async ({ input, _id, collection }) => {
-    let document;
-    let selector;
-    if (_id) {
-      // _id bypass input
-      document = await collection.loader.load(_id);
-    } else {
-      const filterParameters = await Connectors.filter(
-        collection,
-        input,
-        context
-      );
-      selector = filterParameters.selector;
-      // get entire unmodified document from database
-      document = await Connectors.get(collection, selector);
-    }
-    return { selector, document };
-  };
 
   if (mutationOptions.update) {
     mutations.update = {
@@ -142,30 +170,32 @@ export function getDefaultMutationResolvers({
       name: getUpdateMutationName(typeName),
       async mutation(
         root,
-        { input, _id: argsId, selector: oldSelector, data },
-        context
+        { input, _id: argsId, data },
+        context: ContextWithUser
       ) {
         const { currentUser } = context;
-        const collection = context[collectionName];
         const _id = argsId || (data && typeof data === "object" && data._id); // use provided id or documentId if available
 
         const { document, selector } = await getMutationDocument({
-          input,
-          _id,
-          collection,
+          variables: {
+            input,
+            _id,
+          },
+          model,
+          context,
         });
 
         performMutationCheck({
           user: currentUser,
           document,
-          collection,
+          model,
           context,
           operationName: "update",
         });
 
         // call editMutator boilerplate function
         return await updateMutator({
-          collection,
+          model,
           selector,
           data,
           currentUser: context.currentUser,
@@ -177,36 +207,40 @@ export function getDefaultMutationResolvers({
     };
   }
 
-  if (mutationOptions.upsert) {
-    mutations.upsert = {
-      description: `Mutation for upserting a ${typeName} document`,
-      name: getUpsertMutationName(typeName),
-      async mutation(root, { input, _id: argsId, data }, context) {
-        const collection = context[collectionName];
-        const _id = argsId || (data && typeof data === "object" && data._id); // use provided id or documentId if available
-
-        // check if document exists already
-        const {
-          document: existingDocument,
-          selector,
-        } = await getMutationDocument({ input, _id, collection });
-
-        if (existingDocument) {
-          return await collection.options.mutations.update.mutation(
-            root,
-            { input, _id, selector, data },
-            context
-          );
-        } else {
-          return await collection.options.mutations.create.mutation(
-            root,
-            { data },
-            context
-          );
-        }
-      },
-    };
-  }
+  // TODO:
+  // if (mutationOptions.upsert) {
+  //   mutations.upsert = {
+  //     description: `Mutation for upserting a ${typeName} document`,
+  //     name: getUpsertMutationName(typeName),
+  //     async mutation(root, { input, _id: argsId, data }, context) {
+  //       const _id = argsId || (data && typeof data === "object" && data._id); // use provided id or documentId if available
+  //
+  //         // check if document exists already
+  //         const {
+  //           document: existingDocument,
+  //           selector,
+  //         } = await getMutationDocument({
+  //           variables: { input, _id },
+  //           model,
+  //           context,
+  //         });
+  //
+  //         if (existingDocument) {
+  //           return await collection.options.mutations.update.mutation(
+  //             root,
+  //             { input, _id, selector, data },
+  //             context
+  //           );
+  //         } else {
+  //           return await collection.options.mutations.create.mutation(
+  //             root,
+  //             { data },
+  //             context
+  //           );
+  //         }
+  //       },
+  //     };
+  //   }
 
   if (mutationOptions.delete) {
     mutations.delete = {
@@ -214,24 +248,26 @@ export function getDefaultMutationResolvers({
       name: getDeleteMutationName(typeName),
       async mutation(root, { input, _id }, context) {
         const { currentUser } = context;
-        const collection = context[collectionName];
 
         const { document /*selector*/ } = await getMutationDocument({
-          input,
-          _id,
-          collection,
+          variables: {
+            input,
+            _id,
+          },
+          model,
+          context,
         });
 
         performMutationCheck({
           user: currentUser,
           document,
-          collection,
+          model,
           context,
           operationName: "delete",
         });
 
         return await deleteMutator({
-          collection,
+          model,
           selector: { _id: document._id },
           currentUser: context.currentUser,
           validate: true,

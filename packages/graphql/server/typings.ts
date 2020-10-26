@@ -44,4 +44,14 @@ export interface QueryResolverDefinitions {
 }
 
 // TODO
-export interface MutationResolverDefinitions {}
+interface MutationResolverDefinition {
+  description?: string;
+  name?: string;
+  mutation: MutationResolver;
+}
+export interface MutationResolverDefinitions {
+  create?: MutationResolverDefinition;
+  update?: MutationResolverDefinition;
+  upsert?: MutationResolverDefinition;
+  delete?: MutationResolverDefinition;
+}

@@ -9,7 +9,6 @@ data sources and connectors in the graphql context. So here we don't care whethe
 use Mongo or whatever
 
 */
-import get from "lodash/get";
 import {
   canFilterDocument,
   checkFields,
@@ -19,9 +18,10 @@ import {
 import { VulcanGraphqlModel } from "../../typings.js";
 import { QueryResolverDefinitions } from "../typings.js";
 import { getModelConnector } from "./connectors.js";
-import { Connector } from "./typings";
+import { Connector, ContextWithUser } from "./typings";
 import debug from "debug";
 import { VulcanDocument } from "@vulcanjs/schema";
+import { throwError } from "./errors";
 const debugGraphql = debug("vulcan:graphql");
 
 const defaultOptions = {
@@ -39,13 +39,13 @@ interface MultiInput {
   enableCache?: boolean;
   enableTotal?: boolean;
 }
+interface MultiVariables {
+  input: MultiInput;
+}
 // TODO: probably need to be shared with react multi hook
 interface MultiResolverOutput<TModel> {
   totalCount?: number;
   results: Array<TModel>;
-}
-interface MultiVariables {
-  input: MultiInput;
 }
 // note: for some reason changing resolverOptions to "options" throws error
 interface BuildDefaultQueryResolversInput {
@@ -53,10 +53,18 @@ interface BuildDefaultQueryResolversInput {
   options: any;
 }
 
-interface ContextWithUser {
-  currentUser: any;
-  [key: string]: any;
+interface SingleInput {
+  enableCache?: boolean;
+  allowNull?: boolean;
 }
+interface SingleVariables {
+  _id?: string;
+  input?: SingleInput;
+}
+interface SingleResolverOutput<TModel> {
+  result: TModel;
+}
+
 export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
   model,
   options,
@@ -81,9 +89,6 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
         cacheControl.setCacheHint({ maxAge });
       }
 
-      // get currentUser and Users collection from context
-
-      // get collection based on collectionName argument
       const connector: Connector<TModel> = getModelConnector(context, model);
 
       const { currentUser } = context;
@@ -181,22 +186,25 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
   const single = {
     description: `A single ${typeName} document fetched by ID or slug`,
 
-    async resolver(root, { input = {}, _id }, context, { cacheControl }) {
+    async resolver(
+      root,
+      { input = {}, _id }: SingleVariables,
+      context: ContextWithUser,
+      { cacheControl }
+    ): Promise<SingleResolverOutput<TModel>> {
       const {
-        selector: oldSelector = {},
+        // selector: oldSelector = {},
         enableCache = false,
         allowNull = false,
       } = input;
       const operationName = `${typeName}.read.single`;
       //const { _id } = input; // _id is passed from the root
-      let doc;
+      let doc: VulcanDocument;
 
-      debug("");
-      debugGroup(
+      debugGraphql(
         `--------------- start \x1b[35m${typeName} Single Resolver\x1b[0m ---------------`
       );
-      debug(`Options: ${JSON.stringify(resolverOptions)}`);
-      debug(`Selector: ${JSON.stringify(oldSelector)}`);
+      debugGraphql(`Options: ${JSON.stringify(resolverOptions)}`);
 
       if (cacheControl && enableCache) {
         const maxAge =
@@ -204,31 +212,26 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
         cacheControl.setCacheHint({ maxAge });
       }
 
-      const { currentUser, Users } = context;
-      const collection = context[collectionName];
+      const { currentUser } = context;
+      const connector: Connector<TModel> = getModelConnector(context, model);
 
       // use Dataloader if doc is selected by _id
       if (_id) {
-        doc = await collection.loader.load(_id);
+        doc = await connector.findOneById(_id);
       } else {
-        let { selector, options, filteredFields } = await Connectors.filter(
-          collection,
+        let { selector, options, filteredFields } = await connector.filter(
+          model,
           input,
           context
         );
         // make sure all filtered fields are actually readable, for basic roles
-        Users.checkFields(currentUser, collection, filteredFields);
-        doc = await Connectors.get(collection, selector, options);
+        checkFields(currentUser, model, filteredFields);
+        doc = await connector.findOne(model, selector, options);
 
         // check again that the fields used for filtering were all valid, this time based on retrieved document
         // this second check is necessary for document based permissions like canRead:["owners", customFunctionThatNeedDoc]
         if (filteredFields.length) {
-          doc = Users.canFilterDocument(
-            currentUser,
-            collection,
-            filteredFields,
-            doc
-          )
+          doc = canFilterDocument(currentUser, model, filteredFields, doc)
             ? doc
             : null;
         }
@@ -238,16 +241,20 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
         if (allowNull) {
           return { result: null };
         } else {
-          throwError({
+          // TODO: figure out this
+          const errorInfo = {
             id: "app.missing_document",
             data: { documentId: _id, input },
-          });
+          };
+          const error = new Error(errorInfo.id);
+          (error as any).error = errorInfo;
+          throw error;
         }
       }
 
       // new API (Oct 2019)
       let canReadFunction;
-      const canRead = get(collection, "options.permissions.canRead");
+      const canRead = model.permissions?.canRead;
       if (canRead) {
         if (typeof canRead === "function") {
           // if canRead is a function, use it to check current document
@@ -256,7 +263,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
           // else if it's an array of groups, check if current user belongs to them
           // for the current document
           canReadFunction = ({ user, document }) =>
-            Users.isMemberOf(user, canRead, document);
+            isMemberOf(user, canRead, document);
         }
       } else {
         // default to allowing access to all documents
@@ -266,29 +273,26 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       if (
         !canReadFunction({
           user: currentUser,
-          document,
-          collection,
+          document: doc,
+          model,
           context,
           operationName,
         })
       ) {
-        throwError({
+        const errorInfo = {
           id: "app.operation_not_allowed",
-          data: { documentId: document._id, operationName },
-        });
+          data: { documentId: doc._id, operationName },
+        };
+        const error = new Error(errorInfo.id);
+        (error as any).error = errorInfo;
+        throw error;
       }
 
-      const restrictedDoc = Users.restrictViewableFields(
+      const restrictedDoc = restrictViewableFields(
         currentUser,
-        collection,
+        model,
         doc
-      );
-
-      debugGroupEnd();
-      debug(
-        `--------------- end \x1b[35m${typeName} Single Resolver\x1b[0m ---------------`
-      );
-      debug("");
+      ) as TModel;
 
       // filter out disallowed properties and return resulting document
       return { result: restrictedDoc };

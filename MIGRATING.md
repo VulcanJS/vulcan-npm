@@ -39,3 +39,7 @@ const schema = {
   },
 };
 ```
+
+## Connector API change
+
+Update connectors to match the new API
