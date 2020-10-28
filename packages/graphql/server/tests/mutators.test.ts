@@ -24,6 +24,7 @@ const test = it; // TODO: just before we switch to jest
 import { createModel } from "@vulcanjs/model";
 import { VulcanGraphqlModel } from "../../typings";
 import { Connector } from "../resolvers/typings";
+import { modifierToData } from "../resolvers/validation";
 
 const schema = {
   _id: {
@@ -138,7 +139,7 @@ describe("graphql/resolvers/mutators", function () {
       const dataOriginal = { ...data };
       await updateMutator({
         ...updateArgs,
-        documentId: data._id,
+        dataId: data._id,
         context: defaultContext,
         data,
       });
@@ -210,23 +211,55 @@ describe("graphql/resolvers/mutators", function () {
     });
   });
 
-  /*
-  describe("onCreate/onUpdate/onDelete", () => {
+  describe("field onCreate/onUpdate callbacks", () => {
+    const context = {
+      Foo: {
+        connector: {
+          create: async (model, data) => ({
+            ...data, // preserve provided data => this is needed to test the callbacks
+            id: "1",
+          }),
+          findOne: async () => ({
+            id: "1",
+            foo2: "bar",
+          }),
+          update: async (model, selector, modifier) => ({
+            id: "1",
+            ...modifierToData(modifier), // we need to preserve the existing document
+          }),
+        },
+      },
+    };
+    const defaultArgs = {
+      model: Foo,
+      document: { foo2: "bar" },
+      validate: false,
+      context,
+      // we test while being logged out
+      asAdmin: false,
+      currentUser: null,
+    };
+    const createArgs = {
+      ...defaultArgs,
+    };
+    const updateArgs = {
+      ...defaultArgs,
+    };
     test("run onCreate callbacks during creation and assign returned value", async () => {
       const { data: resultDocument } = await createMutator({
         ...createArgs,
-        document: { foo2: "bar" },
+        data: { foo2: "bar" },
       });
       expect(resultDocument.publicAuto).toEqual("CREATED");
     });
     test("run onUpdate callback during update and assign returned value", async () => {
       const { data: foo } = await createMutator({
         ...createArgs,
-        document: { foo2: "bar" },
+        data: { foo2: "bar" },
       });
       const { data: resultDocument } = await updateMutator({
         ...updateArgs,
-        documentId: foo._id,
+        dataId: foo._id,
         data: { foo2: "update" },
       });
       expect(resultDocument.publicAuto).toEqual("UPDATED");
@@ -235,39 +268,36 @@ describe("graphql/resolvers/mutators", function () {
     test("keep auto generated private fields ", async () => {
       const { data: resultDocument } = await createMutator({
         ...defaultArgs,
-        document: { foo2: "bar" },
+        data: { foo2: "bar" },
       });
       expect(resultDocument.privateAuto).not.toBeDefined();
     });
-    test("keep auto generated private fields ", async () => {
-      const { data: foo } = await createMutator({
-        ...defaultArgs,
-        document: { foo2: "bar" },
-      });
+    test("keep auto generated private fields during update ", async () => {
       const { data: resultDocument } = await updateMutator({
         ...defaultArgs,
-        documentId: foo._id,
+        dataId: "1",
         data: { foo2: "update" },
       });
       expect(resultDocument.privateAuto).not.toBeDefined();
     });
   });
+  /*
   describe("permissions", () => {
     test("filter out non allowed field before returning new document", async () => {
       const { data: resultDocument } = await createMutator({
         ...defaultArgs,
-        document: { foo2: "bar" },
+        data: { foo2: "bar" },
       });
       expect(resultDocument.privateAuto).not.toBeDefined();
     });
     test("filter out non allowed field before returning updated document", async () => {
       const { data: foo } = await createMutator({
         ...defaultArgs,
-        document: { foo2: "bar" },
+        data: { foo2: "bar" },
       });
       const { data: resultDocument } = await updateMutator({
         ...defaultArgs,
-        documentId: foo._id,
+        dataId: foo._id,
         data: { foo2: "update" },
       });
       expect(resultDocument.privateAuto).not.toBeDefined();

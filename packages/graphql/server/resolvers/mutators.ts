@@ -198,15 +198,13 @@ export const createMutator = async <TModel extends VulcanDocument>({
 
   */
   const connector = getModelConnector<TModel>(context, model);
-  data = await connector.create(model, data);
+  let document = await connector.create(model, data);
 
   /*
 
   After
 
   */
-  // note: query for document to get fresh document with collection-hooks effects applied
-  let document = await connector.findOneById(model, data._id);
   // new callback API (Oct 2019)
   // document = await runCallbacks({
   //   name: `${typeName.toLowerCase()}.create.after`,
@@ -252,9 +250,9 @@ export const createMutator = async <TModel extends VulcanDocument>({
 
 interface UpdateMutatorInput {
   model: VulcanGraphqlModel;
-  documentId: string;
   selector?: Object;
   data?: VulcanDocument;
+  dataId?: string;
   set?: Object;
   unset?: Object;
   currentUser?: any;
@@ -270,7 +268,7 @@ Update
 */
 export const updateMutator = async <TModel extends VulcanDocument>({
   model,
-  documentId,
+  dataId,
   selector,
   data,
   set = {},
@@ -289,7 +287,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   }
 
   // OpenCRUD backwards compatibility
-  selector = selector || { _id: documentId };
+  selector = selector || { _id: dataId };
   data = { ...data } || modifierToData({ $set: set, $unset: unset });
 
   // startDebugMutator(collectionName, "Update", { selector, data });
@@ -469,7 +467,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   // endDebugMutator(collectionName, "Update", { modifier });
 
   // filter out non readable fields if appliable
-  if (asAdmin) {
+  if (!asAdmin) {
     document = restrictViewableFields(currentUser, model, document) as TModel;
   }
 
