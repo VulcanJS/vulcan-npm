@@ -7,9 +7,10 @@
  */
 
 import { VulcanModel } from "@vulcanjs/model";
+import { VulcanDocument } from "@vulcanjs/schema";
 import { Connector } from "./typings";
 
-export const getModelConnector = <TModel>(
+export const getModelConnector = <TModel extends VulcanDocument>(
   context,
   model: VulcanModel
 ): Connector<TModel> => {

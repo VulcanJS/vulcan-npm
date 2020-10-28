@@ -346,7 +346,7 @@ describe("graphql/resolvers/mutators", function () {
           documentId: foo._id,
         },
       });
-      expect((resultDocument as any).privateAuto).not.toBeDefined();
+      expect(resultDocument.privateAuto).not.toBeDefined();
     });
   });
 

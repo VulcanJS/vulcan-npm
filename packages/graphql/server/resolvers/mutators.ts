@@ -277,7 +277,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   validate,
   asAdmin,
   context = {},
-}: UpdateMutatorInput) => {
+}: UpdateMutatorInput): Promise<{ data: TModel }> => {
   const { typeName } = model.graphql;
   const { schema } = model;
 
@@ -487,14 +487,14 @@ interface DeleteMutatorInput {
 Delete
 
 */
-export const deleteMutator = async ({
+export const deleteMutator = async <TModel extends VulcanDocument>({
   model,
   selector,
   currentUser,
   validate,
   asAdmin,
   context = {},
-}: DeleteMutatorInput) => {
+}: DeleteMutatorInput): Promise<{ data: TModel }> => {
   const { typeName } = model.graphql;
   const { schema } = model;
 
@@ -507,7 +507,7 @@ export const deleteMutator = async ({
     throw new Error("Selector cannot be empty");
   }
 
-  const connector = getModelConnector(context, model);
+  const connector = getModelConnector<TModel>(context, model);
 
   // get document from database
   let document = await connector.findOne(model, selector);
@@ -640,7 +640,7 @@ export const deleteMutator = async ({
 
   // filter out non readable fields if appliable
   if (!asAdmin) {
-    document = restrictViewableFields(currentUser, model, document);
+    document = restrictViewableFields(currentUser, model, document) as TModel;
   }
 
   return { data: document };

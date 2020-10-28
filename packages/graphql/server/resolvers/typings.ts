@@ -13,7 +13,7 @@ To be investigated after testing out the connector pattern
 /**
  * A database abstraction compatible with Vulcan
  */
-export interface Connector<TModel = any> {
+export interface Connector<TModel extends VulcanDocument = Object> {
   /**
    * Compute the relevant selectors
    */
