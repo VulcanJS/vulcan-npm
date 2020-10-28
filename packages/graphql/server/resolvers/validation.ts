@@ -1,7 +1,25 @@
 import pickBy from "lodash/pickBy";
 import mapValues from "lodash/mapValues";
-import { forEachDocumentField } from "./schema_utils";
-import { VulcanDocument } from "@vulcanjs/schema";
+import {
+  VulcanDocument,
+  forEachDocumentField,
+  VulcanSchema,
+} from "@vulcanjs/schema";
+import _forEach from "lodash/forEach";
+import { VulcanModel } from "@vulcanjs/model";
+import SimpleSchema from "simpl-schema";
+import { ContextWithUser } from "./typings";
+import { canCreateField, canUpdateField } from "../../permissions";
+
+export interface ValidationError {
+  id: "errors.disallowed_property_detected" | string;
+  path: string;
+  properties: {
+    modelName?: string;
+    name?: string; // field name
+    [key: string]: any; // other error props
+  };
+}
 
 interface Modifier {
   $set?: Object;
@@ -30,15 +48,15 @@ export const modifierToData = (modifier: Modifier): VulcanDocument => ({
  * @param {*} currentPath current path for recursive calls (nested, nested[0].foo, ...)
  */
 const validateDocumentPermissions = (
-  fullDocument,
-  documentToValidate,
-  schema,
-  context,
-  mode = "create",
-  currentPath = ""
-) => {
+  fullDocument: VulcanDocument,
+  documentToValidate: VulcanDocument,
+  schema: VulcanSchema,
+  context: ContextWithUser,
+  mode = "create"
+  // currentPath = ""
+): Array<ValidationError> => {
   let validationErrors = [];
-  const { Users, currentUser } = context;
+  const { currentUser } = context;
   forEachDocumentField(
     documentToValidate,
     schema,
@@ -52,8 +70,8 @@ const validateDocumentPermissions = (
       if (
         !fieldSchema ||
         (mode === "create"
-          ? !Users.canCreateField(currentUser, fieldSchema)
-          : !Users.canUpdateField(currentUser, fieldSchema, fullDocument))
+          ? !canCreateField(currentUser, fieldSchema)
+          : !canUpdateField(currentUser, fieldSchema, fullDocument))
       ) {
         validationErrors.push({
           id: "errors.disallowed_property_detected",
@@ -75,12 +93,12 @@ const validateDocumentPermissions = (
 
 */
 export const validateDocument = (
-  document,
-  collection,
-  context,
-  validationContextName = "defaultContext"
-) => {
-  const schema = collection.simpleSchema()._schema;
+  document: VulcanDocument,
+  model: VulcanModel,
+  context: any,
+  validationContextName = "defaultContext" // TODO: what is this?
+): Array<ValidationError> => {
+  const { schema } = model;
 
   let validationErrors = [];
 
@@ -88,11 +106,11 @@ export const validateDocument = (
   validationErrors = validationErrors.concat(
     validateDocumentPermissions(document, document, schema, context, "create")
   );
-
+  // build the schema on the fly
+  // TODO: does it work with nested schema???
+  const simpleSchema = new SimpleSchema(schema);
   // run simple schema validation (will check the actual types, required fields, etc....)
-  const validationContext = collection
-    .simpleSchema()
-    .namedContext(validationContextName);
+  const validationContext = simpleSchema.namedContext(validationContextName);
   validationContext.validate(document);
 
   if (!validationContext.isValid()) {
@@ -108,8 +126,8 @@ export const validateDocument = (
           id: `errors.${error.type}`,
           path: error.name,
           properties: {
-            collectionName: collection.options.collectionName,
-            typeName: collection.options.typeName,
+            modelName: model.name,
+            // typeName: collection.options.typeName,
             ...error,
           },
         });
@@ -129,14 +147,13 @@ export const validateDocument = (
 
 */
 export const validateModifier = (
-  modifier,
-  data,
-  document,
-  collection,
+  modifier: Modifier,
+  document: VulcanDocument,
+  model: VulcanModel,
   context,
   validationContextName = "defaultContext"
 ) => {
-  const schema = collection.simpleSchema()._schema;
+  const { schema } = model;
   const set = modifier.$set;
   const unset = modifier.$unset;
 
@@ -144,13 +161,13 @@ export const validateModifier = (
 
   // 1. check that the current user has permission to edit each field
   validationErrors = validationErrors.concat(
-    validateDocumentPermissions(document, data, schema, context, "update")
+    validateDocumentPermissions(document, document, schema, context, "update")
   );
 
   // 2. run SS validation
-  const validationContext = collection
-    .simpleSchema()
-    .namedContext(validationContextName);
+  const validationContext = new SimpleSchema(schema).namedContext(
+    validationContextName
+  );
   validationContext.validate(
     { $set: set, $unset: unset },
     { modifier: true, extendedCustomContext: { documentId: document._id } }
@@ -170,8 +187,8 @@ export const validateModifier = (
           id: `errors.${error.type}`,
           path: error.name,
           properties: {
-            collectionName: collection.options.collectionName,
-            typeName: collection.options.typeName,
+            modelName: model.name,
+            // typeName: collection.options.typeName,
             ...error,
           },
         });
@@ -182,179 +199,10 @@ export const validateModifier = (
   return validationErrors;
 };
 
-export const validateData = (data, document, collection, context) => {
-  return validateModifier(
-    dataToModifier(data),
-    data,
-    document,
-    collection,
-    context
-  );
-};
-
-/*
-
-The following versions were written to be more SimpleSchema-agnostic, but
-are not currently used
-
-*/
-
-/*
-
-  If document is not trusted, run validation steps:
-
-  1. Check that the current user has permission to edit each field
-  2. Check field lengths
-  3. Check field types
-  4. Check for missing fields
-  5. Run SimpleSchema validation step (for now)
-
-*/
-export const validateDocumentNotUsed = (document, collection, context) => {
-  const { Users, currentUser } = context;
-  const schema = collection.simpleSchema()._schema;
-
-  let validationErrors = [];
-
-  // Check validity of inserted document
-  _.forEach(document, (value, fieldName) => {
-    const fieldSchema = schema[fieldName];
-
-    // 1. check that the current user has permission to insert each field
-    if (!fieldSchema || !Users.canCreateField(currentUser, fieldSchema)) {
-      validationErrors.push({
-        id: "app.disallowed_property_detected",
-        fieldName,
-      });
-    }
-
-    // 2. check field lengths
-    if (fieldSchema.limit && value.length > fieldSchema.limit) {
-      validationErrors.push({
-        id: "app.field_is_too_long",
-        data: { fieldName, limit: fieldSchema.limit },
-      });
-    }
-
-    // 3. check that fields have the proper type
-    // TODO
-  });
-
-  // 4. check that required fields have a value
-  _.keys(schema).forEach((fieldName) => {
-    const fieldSchema = schema[fieldName];
-
-    if (
-      (fieldSchema.required || !fieldSchema.optional) &&
-      typeof document[fieldName] === "undefined"
-    ) {
-      validationErrors.push({
-        id: "app.required_field_missing",
-        data: { fieldName },
-      });
-    }
-  });
-
-  // 5. still run SS validation for now for backwards compatibility
-  try {
-    collection.simpleSchema().validate(document);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(error);
-    validationErrors.push({
-      id: "app.schema_validation_error",
-      data: { message: error.message },
-    });
-  }
-
-  return validationErrors;
-};
-
-/*
-
-  If document is not trusted, run validation steps:
-
-  1. Check that the current user has permission to insert each field
-  2. Check field lengths
-  3. Check field types
-  4. Check for missing fields
-  5. Run SimpleSchema validation step (for now)
-
-*/
-export const validateModifierNotUsed = (
-  modifier,
-  document,
-  collection,
+export const validateData = (
+  data: VulcanDocument,
+  model: VulcanModel,
   context
 ) => {
-  const { Users, currentUser } = context;
-  const schema = collection.simpleSchema()._schema;
-  const set = modifier.$set;
-  const unset = modifier.$unset;
-
-  let validationErrors = [];
-
-  // 1. check that the current user has permission to edit each field
-  const modifiedProperties = _.keys(set).concat(_.keys(unset));
-  modifiedProperties.forEach(function (fieldName) {
-    var field = schema[fieldName];
-    if (!field || !Users.canUpdateField(currentUser, field, document)) {
-      validationErrors.push({
-        id: "app.disallowed_property_detected",
-        data: { name: fieldName },
-      });
-    }
-  });
-
-  // Check validity of set modifier
-  _.forEach(set, (value, fieldName) => {
-    const fieldSchema = schema[fieldName];
-
-    // 2. check field lengths
-    if (fieldSchema.limit && value.length > fieldSchema.limit) {
-      validationErrors.push({
-        id: "app.field_is_too_long",
-        data: { name: fieldName, limit: fieldSchema.limit },
-      });
-    }
-
-    // 3. check that fields have the proper type
-    // TODO
-  });
-
-  // 4. check that required fields have a value
-  // when editing, we only want to require fields that are actually part of the form
-  // so we make sure required keys are present in the $unset object
-  _.keys(schema).forEach((fieldName) => {
-    const fieldSchema = schema[fieldName];
-
-    if (
-      unset[fieldName] &&
-      (fieldSchema.required || !fieldSchema.optional) &&
-      typeof set[fieldName] === "undefined"
-    ) {
-      validationErrors.push({
-        id: "app.required_field_missing",
-        data: { name: fieldName },
-      });
-    }
-  });
-
-  // 5. still run SS validation for now for backwards compatibility
-  const validationContext = collection.simpleSchema().newContext();
-  validationContext.validate({ $set: set, $unset: unset }, { modifier: true });
-
-  if (!validationContext.isValid()) {
-    const errors = validationContext.validationErrors();
-    errors.forEach((error) => {
-      // eslint-disable-next-line no-console
-      // console.log(error);
-      validationErrors.push({
-        id: "app.schema_validation_error",
-        data: error,
-      });
-    });
-  }
-
-  return validationErrors;
+  return validateModifier(dataToModifier(data), data, model, context);
 };

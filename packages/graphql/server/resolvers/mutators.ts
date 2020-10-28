@@ -37,20 +37,19 @@ import {
   validateData,
   modifierToData,
   dataToModifier,
-} from "./validation.js";
+} from "./validation";
 // import { globalCallbacks } from "../modules/callbacks.js";
 // import { registerSetting } from "../modules/settings.js";
 // import { debug, debugGroup, debugGroupEnd } from "../modules/debug.js";
-import { throwError } from "./errors.js";
-import { getModelConnector } from "./connectors.js";
+import { throwError } from "./errors";
+import { getModelConnector } from "./connectors";
 import pickBy from "lodash/pickBy";
 import clone from "lodash/clone";
 import isEmpty from "lodash/isEmpty";
-import get from "lodash/get";
-import { Connector, ContextWithUser } from "./typings.js";
+import { Connector, ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
-import { VulcanGraphqlModel } from "../../typings.js";
-import { restrictViewableFields } from "../../permissions.js";
+import { VulcanGraphqlModel } from "../../typings";
+import { restrictViewableFields } from "../../permissions";
 
 // registerSetting("database", "mongo", "Which database to use for your back-end");
 
@@ -59,7 +58,7 @@ interface CreateMutatorInput {
   document: VulcanDocument;
   data: VulcanDocument;
   currentUser: any;
-  validate?: boolean; // run validation
+  validate?: boolean; // run validation, can be bypassed when calling from a server
   context: ContextWithUser;
 }
 /*
@@ -74,7 +73,6 @@ export const createMutator = async <TModel extends VulcanDocument>({
   validate,
   context = {},
 }: CreateMutatorInput): Promise<{ data: TModel }> => {
-  // OpenCRUD backwards compatibility: accept either data or document
   // we don't want to modify the original document
   let data = clone(originalData);
 
@@ -85,15 +83,6 @@ export const createMutator = async <TModel extends VulcanDocument>({
     currentUser = context.currentUser;
   }
 
-  // startDebugMutator(collectionName, "Create", { validate, data });
-
-  /*
-
-  Properties
-
-  Note: keep newDocument for backwards compatibility
-  
-  */
   const properties = {
     data,
     originalData,
@@ -108,11 +97,12 @@ export const createMutator = async <TModel extends VulcanDocument>({
   Validation
 
   */
-  // if (validate) {
-  //   let validationErrors = [];
-  //   validationErrors = validationErrors.concat(
-  //     validateDocument(data, model, context)
-  //   );
+  if (validate) {
+    let validationErrors = [];
+    validationErrors = validationErrors.concat(
+      validateDocument(data, model, context)
+    );
+  }
   //   // TODO: reenable local callbacks and then global callbacks
   //   // new callback API (Oct 2019)
   //   // validationErrors = await runCallbacks({
@@ -338,35 +328,34 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   Validation
 
   */
-  //if (validate) {
-  //  let validationErrors = [];
-  //
-  //    validationErrors = validationErrors.concat(
-  //      validateData(data, document, model, context)
-  //    );
-  //
-  // new callback API (Oct 2019)
-  // validationErrors = await runCallbacks({
-  //   name: `${typeName.toLowerCase()}.update.validate`,
-  //   callbacks: get(collection, "options.callbacks.update.validate", []),
-  //   iterator: validationErrors,
-  //   properties,
-  // });
-  // validationErrors = await runCallbacks({
-  //   name: "*.update.validate",
-  //   callbacks: get(globalCallbacks, "update.validate", []),
-  //   iterator: validationErrors,
-  //   properties,
-  // });
+  if (validate) {
+    let validationErrors = [];
 
-  //    if (validationErrors.length) {
-  //      console.log(validationErrors); // eslint-disable-line no-console
-  //      throwError({
-  //        id: "app.validation_error",
-  //        data: { break: true, errors: validationErrors },
-  //      });
-  //    }
-  //  }
+    validationErrors = validationErrors.concat(
+      validateData(data, model, context)
+    );
+    //
+    // new callback API (Oct 2019)
+    // validationErrors = await runCallbacks({
+    //   name: `${typeName.toLowerCase()}.update.validate`,
+    //   callbacks: get(collection, "options.callbacks.update.validate", []),
+    //   iterator: validationErrors,
+    //   properties,
+    // });
+    // validationErrors = await runCallbacks({
+    //   name: "*.update.validate",
+    //   callbacks: get(globalCallbacks, "update.validate", []),
+    //   iterator: validationErrors,
+    //   properties,
+    // });
+    if (validationErrors.length) {
+      console.log(validationErrors); // eslint-disable-line no-console
+      throwError({
+        id: "app.validation_error",
+        data: { break: true, errors: validationErrors },
+      });
+    }
+  }
 
   /*
 
@@ -534,31 +523,31 @@ export const deleteMutator = async ({
   Validation
 
   */
-  //   if (validate) {
-  //     let validationErrors = [];
-  //
-  //     // new API (Oct 2019)
-  //     validationErrors = await runCallbacks({
-  //       name: `${typeName.toLowerCase()}.delete.validate`,
-  //       callbacks: get(collection, "options.callbacks.delete.validate", []),
-  //       iterator: validationErrors,
-  //       properties,
-  //     });
-  //     validationErrors = await runCallbacks({
-  //       name: "*.delete.validate",
-  //       callbacks: get(globalCallbacks, "delete.validate", []),
-  //       iterator: validationErrors,
-  //       properties,
-  //     });
-  //
-  //   if (validationErrors.length) {
-  //     console.log(validationErrors); // eslint-disable-line no-console
-  //     throwError({
-  //       id: "app.validation_error",
-  //       data: { break: true, errors: validationErrors },
-  //     });
-  //   }
-  // }
+  if (validate) {
+    let validationErrors = [];
+    //
+    //     // new API (Oct 2019)
+    //     validationErrors = await runCallbacks({
+    //       name: `${typeName.toLowerCase()}.delete.validate`,
+    //       callbacks: get(collection, "options.callbacks.delete.validate", []),
+    //       iterator: validationErrors,
+    //       properties,
+    //     });
+    //     validationErrors = await runCallbacks({
+    //       name: "*.delete.validate",
+    //       callbacks: get(globalCallbacks, "delete.validate", []),
+    //       iterator: validationErrors,
+    //       properties,
+    //     });
+    //
+    if (validationErrors.length) {
+      console.log(validationErrors); // eslint-disable-line no-console
+      throwError({
+        id: "app.validation_error",
+        data: { break: true, errors: validationErrors },
+      });
+    }
+  }
 
   /*
 

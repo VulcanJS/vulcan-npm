@@ -11,7 +11,7 @@ import _isEmpty from "lodash/isEmpty";
 import _omit from "lodash/omit";
 import moment from "moment-timezone";
 // import SimpleSchema from "simpl-schema";
-import { VulcanFieldSchema } from "./typings";
+import { VulcanDocument, VulcanFieldSchema, VulcanSchema } from "./typings";
 
 export const formattedDateResolver = (fieldName) => {
   return (document = {}, args: any = {}, context: any = {}) => {
@@ -205,6 +205,15 @@ export const isCollectionType = (typeName) =>
       c.options.typeName === typeName || `[${c.options.typeName}]` === typeName
   );
 */
+
+interface ForEachFieldInput {
+  fieldName: string;
+  fieldSchema: VulcanFieldSchema;
+  currentPath?: string;
+  document: VulcanDocument;
+  schema: VulcanSchema; // the global schema
+  isNested?: boolean;
+}
 /**
  * Iterate over a document fields and run a callback with side effect
  * Works recursively for nested fields and arrays of objects (but excluding blackboxed objects, native JSON, and arrays of native values)
@@ -215,11 +224,11 @@ export const isCollectionType = (typeName) =>
  * @param {*} isNested Differentiate nested fields
  */
 export const forEachDocumentField = (
-  document,
-  schema,
-  callback,
-  currentPath = ""
-) => {
+  document: VulcanDocument,
+  schema: VulcanSchema,
+  callback: (input: ForEachFieldInput) => void,
+  currentPath: string = "" // for recursive call
+): void => {
   if (!document) return;
 
   Object.keys(document).forEach((fieldName) => {
