@@ -281,8 +281,41 @@ describe("graphql/resolvers/mutators", function () {
       expect(resultDocument.privateAuto).not.toBeDefined();
     });
   });
-  /*
   describe("permissions", () => {
+    const context = {
+      Foo: {
+        connector: {
+          create: async (model, data) => ({
+            ...data, // preserve provided data => this is needed to test the callbacks
+            id: "1",
+          }),
+          findOne: async () => ({
+            id: "1",
+            foo2: "bar",
+          }),
+          update: async (model, selector, modifier) => ({
+            id: "1",
+            ...modifierToData(modifier), // we need to preserve the existing document
+          }),
+          delete: async () => null,
+        },
+      },
+    };
+    const defaultArgs = {
+      model: Foo,
+      document: { foo2: "bar" },
+      validate: false,
+      context,
+      // we test while being logged out
+      asAdmin: false,
+      currentUser: null,
+    };
+    const createArgs = {
+      ...defaultArgs,
+    };
+    const updateArgs = {
+      ...defaultArgs,
+    };
     test("filter out non allowed field before returning new document", async () => {
       const { data: resultDocument } = await createMutator({
         ...defaultArgs,
@@ -305,7 +338,7 @@ describe("graphql/resolvers/mutators", function () {
     test("filter out non allowed field before returning deleted document", async () => {
       const { data: foo } = await createMutator({
         ...defaultArgs,
-        document: { foo2: "bar" },
+        data: { foo2: "bar" },
       });
       const { data: resultDocument } = await deleteMutator({
         ...defaultArgs,
@@ -313,10 +346,11 @@ describe("graphql/resolvers/mutators", function () {
           documentId: foo._id,
         },
       });
-      expect(resultDocument.privateAuto).not.toBeDefined();
+      expect((resultDocument as any).privateAuto).not.toBeDefined();
     });
   });
 
+  /*
   describe("create callbacks", () => {
     // before
     test.skip("run before callback before document is saved", function () {
