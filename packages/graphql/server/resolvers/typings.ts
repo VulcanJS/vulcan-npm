@@ -48,14 +48,15 @@ export interface Connector<TModel = any> {
   count: (model: VulcanModel, selector: Object) => Promise<number>;
   // TODO: should we keep supporting loader.load and get? or
   // Mutations
-  create: (model: VulcanModel, data: VulcanDocument) => Promise<string>;
+  create: (model: VulcanModel, data: VulcanDocument) => Promise<TModel>;
   update: (
     model: VulcanModel,
     selector: Object,
     modifier: Object,
     { removeEmptyStrings: boolean }
   ) => Promise<TModel>;
-  delete: (model: VulcanModel, selector: Object) => Promise<any>;
+  // Returns the delete object
+  delete: (model: VulcanModel, selector: Object) => Promise<TModel>;
 }
 
 export interface ContextWithUser {

@@ -1,5 +1,6 @@
 /*
 
+
 Mutations have five steps:
 
 1. Validation
@@ -57,9 +58,10 @@ interface CreateMutatorInput {
   model: VulcanGraphqlModel;
   document: VulcanDocument;
   data: VulcanDocument;
-  currentUser: any;
-  validate?: boolean; // run validation, can be bypassed when calling from a server
   context: ContextWithUser;
+  currentUser?: any; // allow to impersonate an user from server directly
+  asAdmin?: boolean; // bypass security checks like field restriction
+  validate?: boolean; // run validation, can be bypassed when calling from a server
 }
 /*
 
@@ -71,10 +73,11 @@ export const createMutator = async <TModel extends VulcanDocument>({
   data: originalData,
   currentUser,
   validate,
+  asAdmin,
   context = {},
 }: CreateMutatorInput): Promise<{ data: TModel }> => {
   // we don't want to modify the original document
-  let data = clone(originalData);
+  let data: VulcanDocument = clone(originalData);
 
   const { schema } = model;
 
@@ -194,8 +197,8 @@ export const createMutator = async <TModel extends VulcanDocument>({
   DB Operation
 
   */
-  const connector: Connector<TModel> = getModelConnector(context, model);
-  data._id = await connector.create(model, data);
+  const connector = getModelConnector<TModel>(context, model);
+  data = await connector.create(model, data);
 
   /*
 
@@ -238,7 +241,9 @@ export const createMutator = async <TModel extends VulcanDocument>({
   //   properties,
   // });
 
-  document = restrictViewableFields(currentUser, model, document) as TModel;
+  if (!asAdmin) {
+    document = restrictViewableFields(currentUser, model, document) as TModel;
+  }
 
   // endDebugMutator(collectionName, "Create", { document });
 
@@ -253,7 +258,8 @@ interface UpdateMutatorInput {
   set?: Object;
   unset?: Object;
   currentUser?: any;
-  validate;
+  validate?: boolean;
+  asAdmin?: boolean;
   context: ContextWithUser;
 }
 
@@ -271,6 +277,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   unset = {},
   currentUser,
   validate,
+  asAdmin,
   context = {},
 }: UpdateMutatorInput) => {
   const { typeName } = model.graphql;
@@ -283,7 +290,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 
   // OpenCRUD backwards compatibility
   selector = selector || { _id: documentId };
-  data = data || modifierToData({ $set: set, $unset: unset });
+  data = { ...data } || modifierToData({ $set: set, $unset: unset });
 
   // startDebugMutator(collectionName, "Update", { selector, data });
 
@@ -462,7 +469,9 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   // endDebugMutator(collectionName, "Update", { modifier });
 
   // filter out non readable fields if appliable
-  document = restrictViewableFields(currentUser, model, document) as TModel;
+  if (asAdmin) {
+    document = restrictViewableFields(currentUser, model, document) as TModel;
+  }
 
   return { data: document };
 };
@@ -473,6 +482,7 @@ interface DeleteMutatorInput {
   currentUser?: any;
   context: ContextWithUser;
   validate?: boolean;
+  asAdmin?: boolean;
 }
 /*
 
@@ -484,6 +494,7 @@ export const deleteMutator = async ({
   selector,
   currentUser,
   validate,
+  asAdmin,
   context = {},
 }: DeleteMutatorInput) => {
   const { typeName } = model.graphql;
@@ -630,7 +641,9 @@ export const deleteMutator = async ({
   // endDebugMutator(collectionName, "Delete");
 
   // filter out non readable fields if appliable
-  document = restrictViewableFields(currentUser, model, document);
+  if (!asAdmin) {
+    document = restrictViewableFields(currentUser, model, document);
+  }
 
   return { data: document };
 };

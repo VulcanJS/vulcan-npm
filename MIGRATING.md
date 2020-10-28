@@ -43,3 +43,7 @@ const schema = {
 ## Connector API change
 
 Update connectors to match the new API
+
+## Mutators
+
+`createMutator` is now returning the created object and not just the \_id
