@@ -19,6 +19,7 @@ interface VulcanField {
   canRead?: PermissionDefinition | Array<PermissionDefinition>;
   canCreate?: PermissionDefinition | Array<PermissionDefinition>;
   canUpdate?: PermissionDefinition | Array<PermissionDefinition>;
+  blackbox?: boolean; // FIXME: we had to put it again because sometimes its not reckognized
   // viewableBy, Deprecated, do not exist anymore in Vulcan
   // insertableBy,
   // editableBy,

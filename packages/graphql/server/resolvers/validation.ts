@@ -7,9 +7,9 @@ import {
 } from "@vulcanjs/schema";
 import _forEach from "lodash/forEach";
 import { VulcanModel } from "@vulcanjs/model";
-import SimpleSchema from "simpl-schema";
 import { ContextWithUser } from "./typings";
 import { canCreateField, canUpdateField } from "../../permissions";
+import { toSimpleSchema } from "@vulcanjs/schema";
 
 export interface ValidationError {
   id: "errors.disallowed_property_detected" | string;
@@ -108,13 +108,13 @@ export const validateDocument = (
   );
   // build the schema on the fly
   // TODO: does it work with nested schema???
-  const simpleSchema = new SimpleSchema(schema);
+  const simpleSchema = toSimpleSchema(schema);
   // run simple schema validation (will check the actual types, required fields, etc....)
   const validationContext = simpleSchema.namedContext(validationContextName);
   validationContext.validate(document);
 
   if (!validationContext.isValid()) {
-    const errors = validationContext.validationErrors();
+    const errors = (validationContext as any).validationErrors();
     errors.forEach((error) => {
       // eslint-disable-next-line no-console
       // console.log(error);
@@ -165,7 +165,7 @@ export const validateModifier = (
   );
 
   // 2. run SS validation
-  const validationContext = new SimpleSchema(schema).namedContext(
+  const validationContext = toSimpleSchema(schema).namedContext(
     validationContextName
   );
   validationContext.validate(
