@@ -30,7 +30,7 @@ export const hasOne: RelationResolver = async ({
   const relatedDocument = await getModelConnector(
     context,
     relatedModel
-  ).findOneById(documentId);
+  ).findOneById(relatedModel, documentId);
   // filter related document to restrict viewable fields
   return restrictViewableFields(
     context.currentUser,
