@@ -5,14 +5,14 @@ Default mutations
 */
 
 import { createMutator, updateMutator, deleteMutator } from "./mutators";
-import { getModelConnector } from "./connectors.js";
+import { getModelConnector } from "./connectors";
 import { throwError } from "./errors";
 
 import { ContextWithUser } from "./typings";
-import { ModelMutationPermissionOptions } from "@vulcanjs/model";
+import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { MutationResolverDefinitions } from "../typings";
-import { VulcanGraphqlModel } from "../../typings.js";
+import { VulcanGraphqlModel } from "../../typings";
 
 const defaultOptions = {
   create: true,
@@ -28,7 +28,7 @@ const getUpsertMutationName = (typeName) => `upsert${typeName}`;
 
 type OperationName = "create" | "update" | "delete";
 const operationChecks: {
-  [operationName in OperationName]: keyof ModelMutationPermissionOptions;
+  [operationName in OperationName]: keyof ModelMutationPermissionsOptions;
 } = {
   create: "canCreate",
   update: "canUpdate",
@@ -114,7 +114,7 @@ const getMutationDocument = async ({
   const { _id, input } = variables;
   if (_id) {
     // _id bypass input
-    document = await connector.findOneById(_id);
+    document = await connector.findOneById(model, _id);
   } else {
     const filterParameters = await connector.filter(model, input, context);
     selector = filterParameters.selector;
@@ -201,7 +201,7 @@ export function buildDefaultMutationResolvers({
           currentUser: context.currentUser,
           validate: true,
           context,
-          document,
+          // document,
         });
       },
     };
@@ -272,7 +272,7 @@ export function buildDefaultMutationResolvers({
           currentUser: context.currentUser,
           validate: true,
           context,
-          document,
+          // document,
         });
       },
     };

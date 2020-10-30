@@ -23,10 +23,10 @@ export interface Connector<TModel extends VulcanDocument = Object> {
     context: any
   ) => {
     // mongo like selector
-    selector: any;
+    selector: Object;
     //
     options: any;
-    filteredFields: any;
+    filteredFields: Array<any>; // TODO: in defaultQueryResolvers we do filteredFields = Object.keys(selector), so what is this parameter?
   };
   // replaces collection.loader.load
   // @see https://github.com/GraphQLGuide/apollo-datasource-mongodb/#findonebyid

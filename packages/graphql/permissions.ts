@@ -209,6 +209,10 @@ export const canReadField = function (
   if (!canRead) {
     return false;
   }
+  // make all fields readable by admin
+  if (isAdmin(user)) {
+    return true;
+  }
   if (typeof canRead === "function") {
     // if canRead is a function, execute it with user and document passed. it must return a boolean
     return (canRead as Function)(user, document); // TODO: we should not need the explicit case thanks to the typecguard
@@ -315,7 +319,7 @@ export const checkFields = (
 export const canFilterDocument = (
   user: User,
   model: VulcanModel,
-  fields: Array<any>,
+  fields: Array<string>,
   document: VulcanDocument
 ) => {
   const viewableFields = getReadableFields(user, model, document);

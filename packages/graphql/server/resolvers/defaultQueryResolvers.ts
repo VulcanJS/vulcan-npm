@@ -14,14 +14,13 @@ import {
   checkFields,
   isMemberOf,
   restrictViewableFields,
-} from "../../permissions.js";
-import { VulcanGraphqlModel } from "../../typings.js";
-import { QueryResolverDefinitions } from "../typings.js";
-import { getModelConnector } from "./connectors.js";
+} from "../../permissions";
+import { VulcanGraphqlModel } from "../../typings";
+import { QueryResolverDefinitions } from "../typings";
 import { Connector, ContextWithUser } from "./typings";
+import { getModelConnector } from "./connectors";
 import debug from "debug";
 import { VulcanDocument } from "@vulcanjs/schema";
-import { throwError } from "./errors";
 const debugGraphql = debug("vulcan:graphql");
 
 const defaultOptions = {
@@ -162,13 +161,6 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       // prime the cache
       // restrictedDocs.forEach((doc) => collection.loader.prime(doc._id, doc));
 
-      debugGraphql(
-        `\x1b[33m=> ${restrictedDocs.length} documents returned\x1b[0m`
-      );
-      debugGraphql(
-        `--------------- end \x1b[35m${typeName} Multi Resolver\x1b[0m ---------------`
-      );
-
       const data: MultiResolverOutput<TModel> = { results: restrictedDocs };
 
       if (enableTotal) {
@@ -217,7 +209,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
 
       // use Dataloader if doc is selected by _id
       if (_id) {
-        doc = await connector.findOneById(_id);
+        doc = await connector.findOneById(model, _id);
       } else {
         let { selector, options, filteredFields } = await connector.filter(
           model,

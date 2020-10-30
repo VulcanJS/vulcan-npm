@@ -56,7 +56,7 @@ import { restrictViewableFields } from "../../permissions";
 
 interface CreateMutatorInput {
   model: VulcanGraphqlModel;
-  document: VulcanDocument;
+  document?: VulcanDocument;
   data: VulcanDocument;
   context: ContextWithUser;
   currentUser?: any; // allow to impersonate an user from server directly
