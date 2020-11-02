@@ -1,4 +1,3 @@
-import { VulcanModel } from "@vulcanjs/model";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { getModelConnector } from "./context";
 /*
@@ -7,12 +6,13 @@ Default Relation Resolvers
 
 */
 import { restrictViewableFields } from "../../permissions";
+import { VulcanGraphqlModel } from "../../typings";
 
 interface RelationResolverInput {
   document: VulcanDocument;
   fieldName: string;
   context: any;
-  relatedModel: VulcanModel;
+  relatedModel: VulcanGraphqlModel;
 }
 type RelationResolver = (input: RelationResolverInput) => VulcanDocument;
 
