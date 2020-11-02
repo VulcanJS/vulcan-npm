@@ -132,6 +132,7 @@ declare module "simpl-schema" {
     clean?: boolean;
     filter?: boolean;
     upsertextendedCustomContext?: boolean;
+    extendedCustomContext: any;
   }
 
   interface SimpleSchemaValidationContext {
@@ -152,6 +153,8 @@ declare module "simpl-schema" {
     keyErrorMessage(name: any): string;
 
     getErrorObject(): any;
+
+    validationErrors(): Array<{ type?: string; name?: string }>;
   }
 
   class ValidationContext {

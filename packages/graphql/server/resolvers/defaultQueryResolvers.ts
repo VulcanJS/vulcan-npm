@@ -86,7 +86,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       context: ContextWithUser,
       { cacheControl }: any
     ): Promise<MultiResolverOutput<TModel>> {
-      const model = context[typeName];
+      const model = getModel(context, typeName);
       const { enableCache = false, enableTotal = true } = input;
       const operationName = `${typeName}.read.multi`;
 

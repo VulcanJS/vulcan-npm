@@ -47,7 +47,7 @@ import { getModelConnector } from "./context";
 import pickBy from "lodash/pickBy";
 import clone from "lodash/clone";
 import isEmpty from "lodash/isEmpty";
-import { Connector, ContextWithUser } from "./typings";
+import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { VulcanGraphqlModel } from "../../typings";
 import { restrictViewableFields } from "../../permissions";
@@ -271,13 +271,16 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   dataId,
   selector,
   data,
-  set = {},
+  set,
+  // FIXME: babel does build, probably because "set" is reserved
+  // set = {},
   unset = {},
   currentUser,
   validate,
   asAdmin,
   context = {},
 }: UpdateMutatorInput): Promise<{ data: TModel }> => {
+  set = set || {};
   const { typeName } = model.graphql;
   const { schema } = model;
 

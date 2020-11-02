@@ -34,5 +34,15 @@ export const getModelConnector = <TModel extends VulcanDocument>(
  * @param typeName The model typeName
  */
 export const getModel = (context, typeName: string): VulcanGraphqlModel => {
+  if (!context[typeName]) {
+    throw new Error(
+      `No model found in the GraphQL context for typeName ${typeName}`
+    );
+  }
+  if (!context[typeName]?.model) {
+    throw new Error(
+      `TypeName ${typeName} found in the GraphQL context but it doesn't contain a "model" field.`
+    );
+  }
   return context[typeName].model;
 };
