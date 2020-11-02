@@ -134,7 +134,7 @@ const getActions = (user: Users) => {
  * @param {Array} user
  * @param {String} group or array of groups
  */
-const isMemberOf = (
+export const isMemberOf = (
   user: User,
   groupOrGroups: Array<Group> | Group,
   document?: VulcanDocument
@@ -200,7 +200,7 @@ const isAdmin = function (user: User) {
  * @param {Object} field - The full document of the collection
  * @returns {Boolean} - true if the user can read the field, false if not
  */
-const canReadField = function (
+export const canReadField = function (
   user: User,
   field: Pick<VulcanFieldSchema, "canRead">,
   document: Object
@@ -208,6 +208,10 @@ const canReadField = function (
   const canRead = field.canRead;
   if (!canRead) {
     return false;
+  }
+  // make all fields readable by admin
+  if (isAdmin(user)) {
+    return true;
   }
   if (typeof canRead === "function") {
     // if canRead is a function, execute it with user and document passed. it must return a boolean
@@ -315,7 +319,7 @@ export const checkFields = (
 export const canFilterDocument = (
   user: User,
   model: VulcanModel,
-  fields: Array<any>,
+  fields: Array<string>,
   document: VulcanDocument
 ) => {
   const viewableFields = getReadableFields(user, model, document);
@@ -347,6 +351,8 @@ export const restrictDocument = (
   );
   return restrictedDocument;
 };
+
+type ArrayOrSingle<T> = Array<T> | T;
 /**
  * @summary For a given document or list of documents, keep only fields viewable by current user
  * @param {Object} user - The user performing the action
@@ -356,8 +362,8 @@ export const restrictDocument = (
 export const restrictViewableFields = (
   user,
   model: VulcanModel,
-  docOrDocs: Array<VulcanDocument> | VulcanDocument
-) => {
+  docOrDocs: ArrayOrSingle<VulcanDocument>
+): ArrayOrSingle<VulcanDocument> => {
   if (!docOrDocs) return {};
   const schema = model.schema;
   const restrictDoc = (document) => restrictDocument(document, schema, user);

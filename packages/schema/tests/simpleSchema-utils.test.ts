@@ -1,12 +1,10 @@
-import SimpleSchema from "simpl-schema";
-import { isBlackbox } from "../dist";
 import {
   getFieldTypeName,
-  getFieldType,
   hasNestedSchema,
+  isBlackbox,
 } from "../simpleSchema-utils";
 describe("schema/simpleSchema-utils", () => {
-  describe("getFieldType/TypeName", () => {
+  describe("getFieldTypeName", () => {
     test.each([
       ["String", String],
       ["Number", Number],
@@ -21,8 +19,7 @@ describe("schema/simpleSchema-utils", () => {
         },
       };
       const field = schema["foo"];
-      const fieldType = getFieldType(field);
-      const fieldTypeName = getFieldTypeName(fieldType);
+      const fieldTypeName = getFieldTypeName(field);
       expect(fieldTypeName).toEqual(expectedTypeName);
     });
   });

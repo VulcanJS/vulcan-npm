@@ -1,3 +1,9 @@
+import { Schema } from "inspector";
+import SimpleSchema, {
+  SchemaDefinition,
+  EvaluatedSchemaDefinition,
+} from "simpl-schema";
+import { forEachDocumentField } from "./schema-utils";
 /**
  * Helpers specific to Simple Schema
  * See "schema_utils" for more generic methods
@@ -21,18 +27,6 @@ export const hasAllowedValues = (field) => {
   }
   return !!allowedValues;
 };
-
-export const isArrayChildField = (fieldName) => fieldName.indexOf("$") !== -1;
-
-const isJSON = (field: VulcanFieldSchema) =>
-  field.typeName === "JSON" ||
-  getFieldTypeName(getFieldType(field)) === "JSON" ||
-  (getFieldTypeName(getFieldType(field)) === "Object" && field.blackbox);
-export const hasNestedSchema = (field: VulcanFieldSchema) =>
-  getFieldTypeName(getFieldType(field)) === "Object" && !isJSON(field);
-
-export const isBlackbox = (field: VulcanFieldSchema): boolean =>
-  !!field.blackbox;
 //export const isBlackbox = (fieldName, schema) => {
 //    const field = schema[fieldName];
 //    // for array field, check parent recursively to find a blackbox
@@ -44,13 +38,8 @@ export const isBlackbox = (field: VulcanFieldSchema): boolean =>
 //};
 
 // TODO: it would be easier to compute it from a normal schema definition instead of the evaluated version
-export const getFieldType = (
-  field: VulcanFieldSchema
-): VulcanFieldSchema["type"] => field.type;
-
-export const getFieldTypeName = (
-  fieldType: VulcanFieldSchema["type"]
-): FieldTypeName => {
+export const getFieldTypeName = (field: VulcanFieldSchema): FieldTypeName => {
+  const fieldType = field.type;
   if (fieldType === Object) {
     // explicitely a blackbox JSON
     return "JSON";
@@ -64,8 +53,67 @@ export const getFieldTypeName = (
   return fieldType;
 };
 
-export const getArrayChild = (fieldName, schema) => schema[`${fieldName}.$`];
+// Nested objets and arrays
+
+/**
+ * Differentiate a blackbox JSON scalar to an entity that should appear in the GraphQL schema
+ * @param field
+ */
+const isJSON = (field: VulcanFieldSchema): boolean =>
+  field.typeName === "JSON" ||
+  getFieldTypeName(field) === "JSON" ||
+  (getFieldTypeName(field) === "Object" && field.blackbox);
+
+export const isBlackbox = (field: VulcanFieldSchema): boolean =>
+  !!field.blackbox;
+
+// foobar.$
+export const isArrayChildField = (fieldName) => fieldName.indexOf("$") !== -1;
+
+// foobar: { ... }
+export const hasNestedSchema = (field: VulcanFieldSchema): boolean =>
+  getFieldTypeName(field) === "Object" && !isJSON(field);
+
+export const getArrayChild = (
+  fieldName: string,
+  schema: VulcanSchema
+): VulcanFieldSchema => schema[`${fieldName}.$`];
+export const hasArrayChild = (
+  fieldName: string,
+  schema: VulcanSchema
+): boolean => !!getArrayChild(fieldName, schema);
 
 export const getNestedSchema = (
   field: VulcanFieldSchema // TODO: we should be able to have a generic on this type to tell that the input should be a field with a nested schema
 ): VulcanSchema => field.type as VulcanSchema;
+
+export const getArrayChildSchema = (fieldName, schema) => {
+  return getNestedSchema(getArrayChild(fieldName, schema));
+};
+export const hasArrayNestedChild = (fieldName, schema) =>
+  hasArrayChild(fieldName, schema) && !!getArrayChildSchema(fieldName, schema);
+
+/**
+ * Convert the Vulcan schema to an evaluated schema
+ * Calling new SimpleSchema around a Vulcan is not sufficient
+ * We also need to call it for children fields
+ *
+ *
+ * /!\ Supports only one level of nesting
+ * @param schema
+ */
+export const toSimpleSchema = (schema: VulcanSchema): SimpleSchema => {
+  let parsedSchema = {};
+  // run new SimpleSchema for all nested fields
+  Object.keys(schema).map((fieldName) => {
+    const field = schema[fieldName];
+    if (hasNestedSchema(field)) {
+      parsedSchema[fieldName] = new SimpleSchema(field.type as VulcanSchema);
+    } else {
+      // normal fields are left as is
+      parsedSchema[fieldName] = field;
+    }
+  });
+  // run new SimpleSchema for the new object
+  return new SimpleSchema(parsedSchema);
+};

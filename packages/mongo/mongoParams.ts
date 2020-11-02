@@ -72,7 +72,7 @@ interface FilterFunctionInput {
 export const filterFunction = async (
   model: VulcanModel,
   input: FilterFunctionInput = {},
-  context
+  context?: any
 ) => {
   // eslint-disable-next-line no-unused-vars
   const {

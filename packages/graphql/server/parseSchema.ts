@@ -1,5 +1,6 @@
 /**
- * Generate graphQL resolvers
+ * Parse the Vulcan schema to prepare the graphql schema generation
+ *
  */
 /* eslint-disable no-console */
 // import { isIntlField, isIntlDataField } from "../../modules/intl.js";
@@ -13,42 +14,26 @@ import {
   VulcanFieldSchema,
   VulcanSchema,
   hasNestedSchema,
+  getArrayChildSchema,
+  hasArrayNestedChild,
 } from "@vulcanjs/schema";
-import * as relations from "./relationResolvers";
+import * as relations from "./resolvers/relationResolvers";
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
-
-const capitalize = (word) => {
-  if (!word) return word;
-  const [first, ...rest] = word;
-  return [first.toUpperCase(), ...rest].join("");
-};
+import { capitalize } from "@vulcanjs/utils";
+import { AnyResolverMap, ResolverMap } from "./typings";
 
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (
   typeName: string,
   fieldName: string,
   isInput?: boolean
-) =>
+): string =>
   `${typeName}${capitalize(unarrayfyFieldName(fieldName))}${
     isInput ? "Input" : ""
   }`;
 
-//const isObject = field => getFieldTypeName(getFieldType(field));
-const hasTypeName = (field) => !!(field || {}).typeName;
-
-const hasArrayChild = (fieldName, schema) => !!getArrayChild(fieldName, schema);
-
-const getArrayChildSchema = (fieldName, schema) => {
-  return getNestedSchema(getArrayChild(fieldName, schema));
-};
-const hasArrayNestedChild = (fieldName, schema) =>
-  hasArrayChild(fieldName, schema) && !!getArrayChildSchema(fieldName, schema);
-
-//const getArrayChildTypeName = (fieldName, schema) =>
-//  (getArrayChild(fieldName, schema) || {}).typeName;
-//const hasArrayReferenceChild = (fieldName, schema) =>
-//  hasArrayChild(fieldName, schema) && !!getArrayChildTypeName(fieldName, schema);
+const hasTypeName = (field: VulcanFieldSchema): boolean => !!field.typeName;
 
 const hasPermissions = (field) =>
   field.canRead || field.canCreate || field.canUpdate;
@@ -97,11 +82,11 @@ interface GetResolveAsFieldsOutput {
       direction: any;
     }>;
   };
-  resolvers: Array<any>;
+  resolvers: Array<AnyResolverMap>;
 }
 // Generate GraphQL fields and resolvers for a field with a specific resolveAs
 // resolveAs allow to generate "virtual" fields that are queryable in GraphQL but does not exist in the database
-export const getResolveAsFields = ({
+export const parseFieldResolvers = ({
   typeName,
   field,
   fieldName,
@@ -206,21 +191,23 @@ interface GetPermissionFieldsInput {
   inputFieldType: any;
   hasNesting?: boolean;
 }
+// Parsed representation of a field
 interface FieldDefinition {
   name: string;
-  type: string;
+  type: string; // graphql type
   required?: boolean;
-  description?: string;
+  description?: string; // optional description
   args?: any;
   directive?: string;
 }
-export interface MutationDefinitionsMap {
+
+export interface MutableFieldsDefinitions {
   create: Array<FieldDefinition>;
   update: Array<FieldDefinition>;
   upsert?: Array<any>;
   delete?: Array<any>;
 }
-interface FieldDefinitionsMap extends MutationDefinitionsMap {
+export interface QueriableFieldsDefinitions {
   selector: Array<FieldDefinition>;
   selectorUnique: Array<FieldDefinition>;
   sort: Array<FieldDefinition>;
@@ -230,28 +217,28 @@ interface FieldDefinitionsMap extends MutationDefinitionsMap {
 /**
  * JS Representation of the fields to include in the executable schema
  */
-interface FullFieldDefinitionsMap
-  extends FieldDefinitionsMap,
-    MutationDefinitionsMap {
+export interface GraphqlFieldsDefinitions
+  extends MutableFieldsDefinitions,
+    QueriableFieldsDefinitions {
   mainType: Array<FieldDefinition>;
   // enums: Array<FieldDefinition>;
 }
+
 // handle querying/updating permissions
-export const getPermissionFields = ({
+/**
+ * Parse fields depending on their mutability (create, update)
+ * @param param0
+ */
+export const parseMutable = ({
   field,
   fieldName,
   fieldType,
   inputFieldType,
   hasNesting = false,
-}: GetPermissionFieldsInput): FieldDefinitionsMap => {
-  const fields = {
+}: GetPermissionFieldsInput): MutableFieldsDefinitions => {
+  const fields: MutableFieldsDefinitions = {
     create: [],
     update: [],
-    selector: [],
-    selectorUnique: [],
-    sort: [],
-    readable: [],
-    filterable: [],
   };
   const { canRead, canCreate, canUpdate, selectable, unique, apiOnly } = field;
   const createInputFieldType = hasNesting
@@ -260,21 +247,6 @@ export const getPermissionFields = ({
   const updateInputFieldType = hasNesting
     ? suffixType(prefixType("Update", fieldType), "DataInput")
     : inputFieldType;
-
-  // if field is readable, make it filterable/orderable too
-  if (canRead) {
-    fields.readable.push({
-      name: fieldName,
-      type: fieldType,
-    });
-    // we can only filter based on fields that actually exist in the db
-    if (!apiOnly) {
-      fields.filterable.push({
-        name: fieldName,
-        type: fieldType,
-      });
-    }
-  }
 
   if (canCreate) {
     fields.create.push({
@@ -308,6 +280,50 @@ export const getPermissionFields = ({
   //   });
   // }
 
+  return fields;
+};
+
+/**
+ * Parse fields depending on whether they can be queried and how
+ * @param param0
+ */
+export const parseQueriable = ({
+  field,
+  fieldName,
+  fieldType,
+  inputFieldType,
+  hasNesting = false,
+}: GetPermissionFieldsInput): QueriableFieldsDefinitions => {
+  const fields: QueriableFieldsDefinitions = {
+    selector: [],
+    selectorUnique: [],
+    sort: [],
+    readable: [],
+    filterable: [],
+  };
+  const { canRead, canCreate, canUpdate, selectable, unique, apiOnly } = field;
+  const createInputFieldType = hasNesting
+    ? suffixType(prefixType("Create", fieldType), "DataInput")
+    : inputFieldType;
+  const updateInputFieldType = hasNesting
+    ? suffixType(prefixType("Update", fieldType), "DataInput")
+    : inputFieldType;
+
+  // if field is readable, make it filterable/orderable too
+  if (canRead) {
+    fields.readable.push({
+      name: fieldName,
+      type: fieldType,
+    });
+    // we can only filter based on fields that actually exist in the db
+    if (!apiOnly) {
+      fields.filterable.push({
+        name: fieldName,
+        type: fieldType,
+      });
+    }
+  }
+
   if (selectable) {
     fields.selector.push({
       name: fieldName,
@@ -326,37 +342,40 @@ export const getPermissionFields = ({
 };
 
 // For nested fields we also need the parent typeName
-interface NestedFieldsOutput extends GetSchemaFieldsOutput {
+interface NestedFieldsOutput extends ParseSchemaOutput {
   typeName: string; // the parent typeName for the nested field
 }
-interface GetSchemaFieldsOutput {
-  fields: FullFieldDefinitionsMap;
+
+/**
+ * Parsed representation of a Vulcan schema, ready for graphql typedefs and resolvers generation
+ */
+export interface ParseSchemaOutput {
+  fields: GraphqlFieldsDefinitions;
   nestedFieldsList: Array<NestedFieldsOutput>;
-  resolvers: any;
+  resolvers: Array<ResolverMap>;
 }
 // for a given schema, return main type fields, selector fields,
 // unique selector fields, sort fields, creatable fields, and updatable fields
-export const getSchemaFields = (
-  schemaDefinition: VulcanSchema,
+export const parseSchema = (
+  schema: VulcanSchema,
   typeName: string
-) => {
-  if (!schemaDefinition)
-    console.log("/////////////////////", typeName, "/////////////////////");
-  const fields: FullFieldDefinitionsMap = {
+): ParseSchemaOutput => {
+  if (!schema) throw new Error(`No schema for typeName ${typeName}`);
+  // result fields
+  const fields: GraphqlFieldsDefinitions = {
     mainType: [],
-    create: [],
-    update: [],
     selector: [],
     selectorUnique: [],
     sort: [],
     // enums: [],
     readable: [],
+    create: [],
+    update: [],
     filterable: [],
   };
   const nestedFieldsList = [];
   const resolvers = [];
 
-  const schema = schemaDefinition; // TODO: make it possible to call on the schema directly
   Object.keys(schema).forEach((fieldName) => {
     const field: VulcanFieldSchema = schema[fieldName]; // TODO: remove the need to call SimpleSchema
     const fieldType = getGraphQLType({
@@ -380,7 +399,8 @@ export const getSchemaFields = (
       !isIntlField(field) &&
       !isIntlDataField(field);
     const isReferencedObject = hasTypeName(field);
-    const isReferencedArray = hasTypeName(getArrayChild(fieldName, schema));
+    const arrayChild = getArrayChild(fieldName, schema);
+    const isReferencedArray = arrayChild && hasTypeName(arrayChild);
     const hasNesting =
       !isBlackbox(field) &&
       (isNestedArray ||
@@ -406,7 +426,7 @@ export const getSchemaFields = (
         const {
           fields: resolveAsFields,
           resolvers: resolveAsResolvers,
-        } = getResolveAsFields({
+        } = parseFieldResolvers({
           typeName,
           field: field as ResolveAsField,
           fieldName,
@@ -450,20 +470,27 @@ export const getSchemaFields = (
       } 
       */
 
-      const permissionsFields = getPermissionFields({
+      const mutableDefinitions = parseMutable({
         field,
         fieldName,
         fieldType,
         inputFieldType,
         hasNesting,
       });
-      fields.create.push(...permissionsFields.create);
-      fields.update.push(...permissionsFields.update);
-      fields.selector.push(...permissionsFields.selector);
-      fields.selectorUnique.push(...permissionsFields.selectorUnique);
-      fields.sort.push(...permissionsFields.sort);
-      fields.readable.push(...permissionsFields.readable);
-      fields.filterable.push(...permissionsFields.filterable);
+      const queriableDefinitions = parseQueriable({
+        field,
+        fieldName,
+        fieldType,
+        inputFieldType,
+        hasNesting,
+      });
+      fields.create.push(...mutableDefinitions.create);
+      fields.update.push(...mutableDefinitions.update);
+      fields.selector.push(...queriableDefinitions.selector);
+      fields.selectorUnique.push(...queriableDefinitions.selectorUnique);
+      fields.sort.push(...queriableDefinitions.sort);
+      fields.readable.push(...queriableDefinitions.readable);
+      fields.filterable.push(...queriableDefinitions.filterable);
 
       // check for nested fields if the field does not reference an existing type
       if (!field.typeName && isNestedObject) {
@@ -472,7 +499,7 @@ export const getSchemaFields = (
         const nestedSchema = getNestedSchema(field);
         const nestedTypeName = getNestedGraphQLType(typeName, fieldName);
         //const nestedInputTypeName = `${ nestedTypeName }Input`;
-        const nestedFields: Partial<NestedFieldsOutput> = getSchemaFields(
+        const nestedFields: Partial<NestedFieldsOutput> = parseSchema(
           nestedSchema,
           nestedTypeName
         );
@@ -487,7 +514,7 @@ export const getSchemaFields = (
         //console.log('detected a field with an array child', fieldName);
         const arrayNestedSchema = getArrayChildSchema(fieldName, schema);
         const arrayNestedTypeName = getNestedGraphQLType(typeName, fieldName);
-        const arrayNestedFields: Partial<NestedFieldsOutput> = getSchemaFields(
+        const arrayNestedFields: Partial<NestedFieldsOutput> = parseSchema(
           arrayNestedSchema,
           arrayNestedTypeName
         );
@@ -504,4 +531,4 @@ export const getSchemaFields = (
   };
 };
 
-export default getSchemaFields;
+export default parseSchema;

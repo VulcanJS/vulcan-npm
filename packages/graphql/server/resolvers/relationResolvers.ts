@@ -1,11 +1,12 @@
 import { VulcanModel } from "@vulcanjs/model";
 import { VulcanDocument } from "@vulcanjs/schema";
+import { getModelConnector } from "./context";
 /*
 
 Default Relation Resolvers
 
 */
-import { restrictViewableFields } from "../permissions";
+import { restrictViewableFields } from "../../permissions";
 
 interface RelationResolverInput {
   document: VulcanDocument;
@@ -26,9 +27,10 @@ export const hasOne: RelationResolver = async ({
   const documentId = document[fieldName];
   // get related collection
   // get related document
-  const relatedDocument = await context[
-    relatedModel.name
-  ].connector.findOneById(documentId);
+  const relatedDocument = await getModelConnector(
+    context,
+    relatedModel
+  ).findOneById(relatedModel, documentId);
   // filter related document to restrict viewable fields
   return restrictViewableFields(
     context.currentUser,

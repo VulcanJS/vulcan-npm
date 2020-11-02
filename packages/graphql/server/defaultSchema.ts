@@ -1,50 +1,14 @@
 /**
- * Generate GraphQL typedefs
+ * Common resolvers for scalar and typedefs
  */
+import GraphQLJSON from "graphql-type-json";
+import GraphQLDate from "graphql-date";
 
-
-// schema generation
-const generateQueryType = (queries = []) => 
-  queries.length === 0
-  ? ''
-  : `type Query {
-${queries
-      .map(
-        q =>
-          `${
-          q.description
-            ? `  # ${q.description}
-`
-            : ''
-          }  ${q.query}
-  `
-      )
-      .join('\n')}
-}
-  `;
-
-const generateMutationType = (mutations = []) => 
-  mutations.length === 0
-  ? ''
-  : `type Mutation {
-${mutations
-              .map(
-                m =>
-                  `${
-                    m.description
-                      ? `  # ${m.description}
-`
-                      : ''
-                  }  ${m.mutation}
-`
-              )
-              .join('\n')}
-}
-`;
-
-// typeDefs
-export const generateTypeDefs = (GraphQLSchema) => [
-  `
+export const defaultResolvers = {
+  JSON: GraphQLJSON,
+  Date: GraphQLDate,
+};
+export const defaultTypeDefs = `
 scalar JSON
 scalar Date
 
@@ -146,15 +110,4 @@ input OptionsInput {
   enableCache: Boolean
   # For single document queries, return null instead of throwing MissingDocumentError
   allowNull: Boolean
-}
-
-${GraphQLSchema.getAdditionalSchemas()}
-
-${GraphQLSchema.getCollectionsSchemas()}
-
-${generateQueryType(GraphQLSchema.queries)}
-
-${generateMutationType(GraphQLSchema.mutations)}
-
-`,
-];
+}`;

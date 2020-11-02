@@ -2,7 +2,6 @@ import { capitalize } from "@vulcanjs/utils";
 import {
   isBlackbox,
   unarrayfyFieldName,
-  getFieldType,
   getFieldTypeName,
   VulcanSchema,
   VulcanFieldSchema,
@@ -31,8 +30,7 @@ export const getGraphQLType = ({
 
   if (field.typeName) return field.typeName; // respect typeName provided by user
 
-  const fieldType = getFieldType(field);
-  const fieldTypeName = getFieldTypeName(fieldType);
+  const fieldTypeName = getFieldTypeName(field);
 
   /**
    * Expected GraphQL Schema:
@@ -98,7 +96,7 @@ export const getGraphQLType = ({
       // - a nested Schema,
       // - a referenced schema, or an actual JSON
       if (isParentBlackbox) return "JSON";
-      if (!isBlackbox(field) && fieldType) {
+      if (!isBlackbox(field)) {
         return getNestedGraphQLType(typeName, fieldName, isInput);
       }
 

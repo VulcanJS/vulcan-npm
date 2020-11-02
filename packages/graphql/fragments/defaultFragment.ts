@@ -6,12 +6,10 @@
  * - Default name is "FooDefaultFragment" (singular) instead of plural "FoosDefaultFragment"
  */
 import {
-  getFieldType,
   getFieldTypeName,
   getFragmentFieldNames,
   getNestedSchema,
   hasNestedSchema,
-  isBlackbox,
 } from "@vulcanjs/schema";
 import { VulcanSchema } from "@vulcanjs/schema";
 import { VulcanGraphqlModelSkeleton } from "../typings";
@@ -69,7 +67,7 @@ export const getFieldFragment = ({
   if (fieldName === "_id") return fieldName;
   const field = schema[fieldName];
 
-  const fieldTypeName = getFieldTypeName(getFieldType(field));
+  const fieldTypeName = getFieldTypeName(field);
 
   switch (fieldTypeName) {
     case "Object":
@@ -89,9 +87,7 @@ export const getFieldFragment = ({
       // note: make sure field has an associated array item field
       if (arrayItemField) {
         // child will either be native value or a an object (first case)
-        const arrayItemFieldType = getFieldTypeName(
-          getFieldType(arrayItemField)
-        );
+        const arrayItemFieldType = getFieldTypeName(arrayItemField);
         if (hasNestedSchema(arrayItemField)) {
           return (
             getObjectFragmentArg({
