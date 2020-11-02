@@ -13,8 +13,8 @@ interface CreateModelSharedOptions {
   multiTypeName: string; // Plural version, to be defined manually (automated pluralization leads to unexpected results)
 }
 interface CreateModelServerOptions {
-  resolvers?: any;
-  mutations?: any;
+  queryResolvers?: any;
+  mutationResolvers?: any;
 }
 interface CreateModelOptions
   extends CreateModelSharedOptions,
@@ -25,7 +25,12 @@ export const extendModel = (
   model: VulcanModel
 ): VulcanGraphqlModel => {
   const name = model.name;
-  const { typeName = name, multiTypeName } = options;
+  const {
+    typeName = name,
+    multiTypeName,
+    queryResolvers,
+    mutationResolvers,
+  } = options;
 
   const singleResolverName = camelCaseify(typeName);
   const multiResolverName = camelCaseify(multiTypeName);
@@ -47,15 +52,13 @@ export const extendModel = (
   const defaultFragmentName = getDefaultFragmentName(extendedModel);
 
   // server-only
-  const defaultQueryResolvers = null;
-  const defaultMutationResolvers = null;
   const extendedGraphqlModel = {
     ...graphqlModel,
     defaultFragment,
     defaultFragmentName,
     // server-only
-    resolvers: defaultQueryResolvers,
-    mutations: defaultMutationResolvers,
+    queryResolvers,
+    mutationResolvers,
   };
   const finalModel: VulcanGraphqlModel = {
     ...model,

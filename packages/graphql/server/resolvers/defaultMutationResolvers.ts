@@ -86,7 +86,7 @@ interface MutationOptions {
 }
 interface BuildDefaultMutationResolversInput {
   typeName: string;
-  options: MutationOptions;
+  options?: MutationOptions;
 }
 
 interface GetMutationDocumentInput {
@@ -132,7 +132,10 @@ export function buildDefaultMutationResolvers({
   typeName,
   options,
 }: BuildDefaultMutationResolversInput): MutationResolverDefinitions {
-  const mutationOptions: MutationOptions = { ...defaultOptions, ...options };
+  const mutationOptions: MutationOptions = {
+    ...defaultOptions,
+    ...(options || {}),
+  };
 
   const mutations: Partial<MutationResolverDefinitions> = {};
 

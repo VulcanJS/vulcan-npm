@@ -10,6 +10,7 @@ import parseModel from "./parseModel";
 import { VulcanGraphqlModel } from "../typings";
 import { mergeResolvers } from "graphql-tools";
 import _flatten from "lodash/flatten";
+import { generateQueryTypeDefs, generateMutationTypeDefs } from "./typedefs";
 
 disableFragmentWarnings();
 
@@ -29,9 +30,9 @@ export const parseAllModels = (
   const modelsTypeDefs = parsedModels.map((m) => m.typeDefs).join();
   const mergedTypeDefs = `${modelsTypeDefs}
 
-${queryTypeDefs}
+${generateQueryTypeDefs(queryTypeDefs)}
 
-${mutationTypeDefs}`;
+${generateMutationTypeDefs(mutationTypeDefs)}`;
 
   const resolvers = parsedModels.map((m) => m.resolvers);
   // schema resolvers are a list of map of resolvers, so we need an additional merge step

@@ -5,7 +5,7 @@ import extendModel from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
 const test = it;
 
-describe("graphql/defaultMutationResolvers", function () {
+describe("graphql/mutation resolvers", function () {
   const Foo = createModel({
     name: "Foo",
     schema: { _id: { type: String, canRead: ["admins"] } },
@@ -13,7 +13,7 @@ describe("graphql/defaultMutationResolvers", function () {
   }) as VulcanGraphqlModel;
   test("returns mutations", function () {
     const mutations = buildDefaultMutationResolvers({
-      model: Foo,
+      typeName: "Foo",
       options: {},
     });
     expect(mutations.create).toBeDefined();

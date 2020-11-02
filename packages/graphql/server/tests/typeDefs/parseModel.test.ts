@@ -1,13 +1,17 @@
+/**
+ * Test automatic graphql schema generation
+ * (= type definitions)
+ */
 import { createModel } from "@vulcanjs/model";
 
-import extendModel from "../../extendModel";
-import { VulcanGraphqlModel } from "../../typings";
-import { normalizeGraphQLSchema } from "../../testUtils";
-import { getGraphQLType } from "../../utils";
-import { parseSchema } from "../parseSchema";
-import { parseModel } from "../parseModel";
-import { parseAllModels } from "../parseAllModels";
-import { buildDefaultQueryResolvers } from "../resolvers/defaultQueryResolvers";
+import extendModel from "../../../extendModel";
+import { VulcanGraphqlModel } from "../../../typings";
+import { normalizeGraphQLSchema } from "../../../testUtils";
+import { parseSchema } from "../../parseSchema";
+import { parseModel } from "../../parseModel";
+import { buildDefaultMutationResolvers } from "../../resolvers/defaultMutationResolvers";
+import { buildDefaultQueryResolvers } from "../../resolvers/defaultQueryResolvers";
+import { getGraphQLType } from "../../../utils";
 
 const FooModel = (schema): VulcanGraphqlModel =>
   createModel({
@@ -1038,8 +1042,8 @@ describe("graphql/typeDefs", () => {
   });
   */
 
-  describe("Query/Mutation", () => {
-    test("generate Query type", () => {
+  describe("model resolvers", () => {
+    test("generate query resolver types", () => {
       const Foo = createModel({
         schema: {
           foo: {
@@ -1054,44 +1058,49 @@ describe("graphql/typeDefs", () => {
           extendModel({
             multiTypeName: "Foos",
             typeName: "Foo",
-            resolvers: buildDefaultQueryResolvers({ typeName: "Foo" }),
+            // you have to explicitely pass the default query resolvers if you want some
+            queryResolvers: buildDefaultQueryResolvers({ typeName: "Foo" }),
           }),
         ],
       }) as VulcanGraphqlModel;
+      const { queries } = parseModel(Foo);
+      expect(queries).toHaveLength(2); // single and multi
+      const single = queries[0];
+      const multi = queries[1];
+      expect(single.query).toContain("foo(");
+      expect(multi.query).toContain("foos(");
     });
-    test("generate Mutation type", () => {});
-  });
+    test("generate mutation resolver types", () => {
+      const Foo = createModel({
+        schema: {
+          foo: {
+            type: String,
+            canRead: ["guests"],
+            canCreate: ["guests"],
+            canUpdate: ["guests"],
+          },
+        },
+        name: "Foo",
+        extensions: [
+          extendModel({
+            multiTypeName: "Foos",
+            typeName: "Foo",
+            // you have to explicitely pass the default query resolvers if you want some
+            mutationResolvers: buildDefaultMutationResolvers({
+              typeName: "Foo",
+            }),
+          }),
+        ],
+      }) as VulcanGraphqlModel;
+      const { mutations } = parseModel(Foo);
+      expect(mutations).toHaveLength(3); // create, update, delete
+      const create = mutations[0];
+      const update = mutations[1];
+      const deleteMutation = mutations[2];
 
-  describe("graphql/parseAllModels", () => {
-    const Foo = createModel({
-      schema: {
-        foo: {
-          type: String,
-          canRead: ["guests"],
-          canCreate: ["guests"],
-          canUpdate: ["guests"],
-        },
-      },
-      name: "Foo",
-      extensions: [extendModel({ multiTypeName: "Foos", typeName: "Foo" })],
-    }) as VulcanGraphqlModel;
-    const Bar = createModel({
-      schema: {
-        bar: {
-          type: String,
-          canRead: ["guests"],
-          canCreate: ["guests"],
-          canUpdate: ["guests"],
-        },
-      },
-      name: "Bar",
-      extensions: [extendModel({ multiTypeName: "Bars", typeName: "Bar" })],
-    }) as VulcanGraphqlModel;
-    const models = [Foo, Bar];
-    test("generates correct typeDefs", () => {
-      const parsed = parseAllModels(models);
-      expect(parsed.typeDefs).toContain("type Foo");
-      expect(parsed.typeDefs).toContain("type Bar");
+      expect(create.mutation).toContain("createFoo(");
+      expect(update.mutation).toContain("updateFoo(");
+      expect(deleteMutation.mutation).toContain("deleteFoo(");
     });
   });
 });

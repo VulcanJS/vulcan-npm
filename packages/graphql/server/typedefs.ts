@@ -1,11 +1,11 @@
 /**
  * Generate GraphQL final typedefs
  */
-import { MutationSchema, QuerySchema } from "./typings";
+import { MutationTypeDefinition, QueryTypeDefinition } from "./typings";
 
 // schema generation
 export const generateQueryTypeDefs = (
-  queries: Array<QuerySchema> = []
+  queries: Array<QueryTypeDefinition> = []
 ): string =>
   queries.length === 0
     ? ""
@@ -26,7 +26,7 @@ ${queries
   `;
 
 export const generateMutationTypeDefs = (
-  mutations: Array<MutationSchema> = []
+  mutations: Array<MutationTypeDefinition> = []
 ): string =>
   mutations.length === 0
     ? ""

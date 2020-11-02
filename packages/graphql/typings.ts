@@ -1,4 +1,8 @@
 import { VulcanModel } from "@vulcanjs/model";
+import {
+  MutationResolverDefinitions,
+  QueryResolverDefinitions,
+} from "./server/typings";
 
 // Wrap input type, so the input is in the "input" field as an object
 export interface ApolloVariables<TInput> {
@@ -17,8 +21,8 @@ interface GraphqlSharedModel {
   defaultFragmentName: string;
 }
 interface GraphqlServerModel {
-  resolvers: any;
-  mutations: any;
+  queryResolvers: QueryResolverDefinitions;
+  mutationResolvers: MutationResolverDefinitions;
 }
 export interface GraphqlModel extends GraphqlSharedModel, GraphqlServerModel {}
 export interface VulcanGraphqlModel extends VulcanModel {

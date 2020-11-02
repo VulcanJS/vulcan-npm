@@ -23,11 +23,11 @@ export interface TopLevelResolverMap extends ModelResolverMap {
   [typeName: string]: any;
 }
 
-export interface QuerySchema {
+export interface QueryTypeDefinition {
   description?: string;
   query: string;
 }
-export interface MutationSchema {
+export interface MutationTypeDefinition {
   description?: string;
   mutation: string;
 }

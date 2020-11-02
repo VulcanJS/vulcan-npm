@@ -5,7 +5,7 @@ import { VulcanGraphqlModel } from "../../typings";
 import { Connector } from "../resolvers/typings";
 import merge from "lodash/merge";
 
-describe("vulcan:core/default_resolvers", function () {
+describe("graphql/query resolvers", function () {
   const createDummyModel = (schema, options = {}) =>
     createModel({
       name: "Dummy",
