@@ -6,6 +6,7 @@ import { VulcanGraphqlModel } from "../typings";
 import { parseAllModels } from "./parseAllModels";
 import { defaultTypeDefs, defaultResolvers } from "./defaultSchema";
 import { mergeResolvers } from "./utils";
+import isEmpty from "lodash/isEmpty";
 
 export const buildApolloSchema = (
   models: Array<VulcanGraphqlModel>
@@ -18,6 +19,10 @@ export const buildApolloSchema = (
   const mergedTypeDefs = `${defaultTypeDefs}
 ${typeDefs}`;
   const mergedResolvers = mergeResolvers([defaultResolvers, resolvers]);
+  // Special case if there are no Query or Mutation content
+  if (isEmpty(mergedResolvers.Query)) delete mergedResolvers.Query;
+  if (isEmpty(mergedResolvers.Mutation)) delete mergedResolvers.Mutation;
+
   return {
     resolvers: mergedResolvers,
     typeDefs: mergedTypeDefs,

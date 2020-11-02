@@ -1,6 +1,6 @@
 import { VulcanModel } from "@vulcanjs/model";
 import { VulcanDocument } from "@vulcanjs/schema";
-import { getModelConnector } from "./connectors";
+import { getModelConnector } from "./context";
 /*
 
 Default Relation Resolvers

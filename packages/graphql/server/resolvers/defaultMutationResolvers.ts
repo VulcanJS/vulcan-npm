@@ -5,7 +5,7 @@ Default mutations
 */
 
 import { createMutator, updateMutator, deleteMutator } from "./mutators";
-import { getModelConnector } from "./connectors";
+import { getModel, getModelConnector } from "./context";
 import { throwError } from "./errors";
 
 import { ContextWithUser } from "./typings";
@@ -85,7 +85,7 @@ interface MutationOptions {
   delete?: boolean;
 }
 interface BuildDefaultMutationResolversInput {
-  model: VulcanGraphqlModel;
+  typeName: string;
   options: MutationOptions;
 }
 
@@ -129,11 +129,9 @@ Default Mutations
 
 */
 export function buildDefaultMutationResolvers({
-  model,
+  typeName,
   options,
 }: BuildDefaultMutationResolversInput): MutationResolverDefinitions {
-  const { typeName } = model.graphql;
-
   const mutationOptions: MutationOptions = { ...defaultOptions, ...options };
 
   const mutations: Partial<MutationResolverDefinitions> = {};
@@ -143,6 +141,7 @@ export function buildDefaultMutationResolvers({
       description: `Mutation for creating new ${typeName} documents`,
       name: getCreateMutationName(typeName),
       async mutation(root, { data }, context: ContextWithUser) {
+        const model = getModel(context, typeName);
         const { currentUser } = context;
 
         performMutationCheck({
@@ -173,6 +172,7 @@ export function buildDefaultMutationResolvers({
         { input, _id: argsId, data },
         context: ContextWithUser
       ) {
+        const model = getModel(context, typeName);
         const { currentUser } = context;
         const _id = argsId || (data && typeof data === "object" && data._id); // use provided id or documentId if available
 
@@ -207,46 +207,12 @@ export function buildDefaultMutationResolvers({
     };
   }
 
-  // TODO:
-  // if (mutationOptions.upsert) {
-  //   mutations.upsert = {
-  //     description: `Mutation for upserting a ${typeName} document`,
-  //     name: getUpsertMutationName(typeName),
-  //     async mutation(root, { input, _id: argsId, data }, context) {
-  //       const _id = argsId || (data && typeof data === "object" && data._id); // use provided id or documentId if available
-  //
-  //         // check if document exists already
-  //         const {
-  //           document: existingDocument,
-  //           selector,
-  //         } = await getMutationDocument({
-  //           variables: { input, _id },
-  //           model,
-  //           context,
-  //         });
-  //
-  //         if (existingDocument) {
-  //           return await collection.options.mutations.update.mutation(
-  //             root,
-  //             { input, _id, selector, data },
-  //             context
-  //           );
-  //         } else {
-  //           return await collection.options.mutations.create.mutation(
-  //             root,
-  //             { data },
-  //             context
-  //           );
-  //         }
-  //       },
-  //     };
-  //   }
-
   if (mutationOptions.delete) {
     mutations.delete = {
       description: `Mutation for deleting a ${typeName} document`,
       name: getDeleteMutationName(typeName),
       async mutation(root, { input, _id }, context) {
+        const model = getModel(context, typeName);
         const { currentUser } = context;
 
         const { document /*selector*/ } = await getMutationDocument({

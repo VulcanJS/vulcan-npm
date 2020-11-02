@@ -7,6 +7,7 @@ import { getGraphQLType } from "../../utils";
 import { parseSchema } from "../parseSchema";
 import { parseModel } from "../parseModel";
 import { parseAllModels } from "../parseAllModels";
+import { buildDefaultQueryResolvers } from "../resolvers/defaultQueryResolvers";
 
 const FooModel = (schema): VulcanGraphqlModel =>
   createModel({
@@ -1036,6 +1037,30 @@ describe("graphql/typeDefs", () => {
     test.skip("use provided resolvers if any", () => {});
   });
   */
+
+  describe("Query/Mutation", () => {
+    test("generate Query type", () => {
+      const Foo = createModel({
+        schema: {
+          foo: {
+            type: String,
+            canRead: ["guests"],
+            canCreate: ["guests"],
+            canUpdate: ["guests"],
+          },
+        },
+        name: "Foo",
+        extensions: [
+          extendModel({
+            multiTypeName: "Foos",
+            typeName: "Foo",
+            resolvers: buildDefaultQueryResolvers({ typeName: "Foo" }),
+          }),
+        ],
+      }) as VulcanGraphqlModel;
+    });
+    test("generate Mutation type", () => {});
+  });
 
   describe("graphql/parseAllModels", () => {
     const Foo = createModel({

@@ -18,9 +18,10 @@ import {
 import { VulcanGraphqlModel } from "../../typings";
 import { QueryResolverDefinitions } from "../typings";
 import { Connector, ContextWithUser } from "./typings";
-import { getModelConnector } from "./connectors";
+import { getModelConnector } from "./context";
 import debug from "debug";
 import { VulcanDocument } from "@vulcanjs/schema";
+import { getModel } from "./context";
 const debugGraphql = debug("vulcan:graphql");
 
 const defaultOptions = {
@@ -48,8 +49,8 @@ interface MultiResolverOutput<TModel> {
 }
 // note: for some reason changing resolverOptions to "options" throws error
 interface BuildDefaultQueryResolversInput {
-  model: VulcanGraphqlModel;
-  options: any;
+  typeName: string;
+  options?: any;
 }
 
 interface SingleInput {
@@ -64,12 +65,18 @@ interface SingleResolverOutput<TModel> {
   result: TModel;
 }
 
+/**
+ * Expect
+ * - context[typeName].model to contain the model (this way we don't need to have the model when we create the resolvers,
+ * this solves the problem of circular dependency)
+ * - context[typeName].connector to contain the connector for this model
+ * @param param0
+ */
 export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
-  model,
+  typeName,
   options,
 }: BuildDefaultQueryResolversInput): QueryResolverDefinitions {
-  const resolverOptions = { ...defaultOptions, ...options };
-  const { typeName } = model.graphql;
+  const resolverOptions = { ...defaultOptions, ...(options || {}) };
 
   const multi = {
     description: `A list of ${typeName} documents matching a set of query terms`,
@@ -79,6 +86,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       context: ContextWithUser,
       { cacheControl }: any
     ): Promise<MultiResolverOutput<TModel>> {
+      const model = context[typeName];
       const { enableCache = false, enableTotal = true } = input;
       const operationName = `${typeName}.read.multi`;
 
@@ -88,7 +96,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
         cacheControl.setCacheHint({ maxAge });
       }
 
-      const connector: Connector<TModel> = getModelConnector(context, model);
+      const connector = getModelConnector(context, model);
 
       const { currentUser } = context;
       // get selector and options from terms and perform Mongo query
@@ -193,11 +201,6 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       //const { _id } = input; // _id is passed from the root
       let doc: VulcanDocument;
 
-      debugGraphql(
-        `--------------- start \x1b[35m${typeName} Single Resolver\x1b[0m ---------------`
-      );
-      debugGraphql(`Options: ${JSON.stringify(resolverOptions)}`);
-
       if (cacheControl && enableCache) {
         const maxAge =
           resolverOptions.cacheMaxAge || defaultOptions.cacheMaxAge;
@@ -205,6 +208,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       }
 
       const { currentUser } = context;
+      const model = getModel(context, typeName);
       const connector: Connector<TModel> = getModelConnector(context, model);
 
       // use Dataloader if doc is selected by _id

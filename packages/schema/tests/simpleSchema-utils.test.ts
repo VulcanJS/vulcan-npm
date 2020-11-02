@@ -1,5 +1,8 @@
-import { isBlackbox } from "../dist";
-import { getFieldTypeName, hasNestedSchema } from "../simpleSchema-utils";
+import {
+  getFieldTypeName,
+  hasNestedSchema,
+  isBlackbox,
+} from "../simpleSchema-utils";
 describe("schema/simpleSchema-utils", () => {
   describe("getFieldTypeName", () => {
     test.each([

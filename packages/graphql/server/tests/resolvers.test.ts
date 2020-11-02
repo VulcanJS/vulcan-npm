@@ -3,6 +3,7 @@ import extendModel from "../../extendModel";
 import { createModel } from "@vulcanjs/model";
 import { VulcanGraphqlModel } from "../../typings";
 import { Connector } from "../resolvers/typings";
+import merge from "lodash/merge";
 
 describe("vulcan:core/default_resolvers", function () {
   const createDummyModel = (schema, options = {}) =>
@@ -21,13 +22,16 @@ describe("vulcan:core/default_resolvers", function () {
     },
   });
   const resolversOptions = {
-    model: Dummy,
+    typeName: "Dummy",
     options: {},
   };
   const adminUser = { _id: "foobar", groups: [], isAdmin: true };
   const loggedInUser = { _id: "foobar", groups: [], isAdmin: false };
   const defaultContext = {
     currentUser: adminUser,
+    Dummy: {
+      model: Dummy,
+    },
   };
   const defaultConnector: Partial<Connector> = {
     filter: () => ({ selector: {}, options: {}, filteredFields: [] }),
@@ -55,12 +59,11 @@ describe("vulcan:core/default_resolvers", function () {
       const document = { _id: documentId };
       const input = { selector: { documentId } };
       // non empty db
-      const context = {
-        ...defaultContext,
+      const context = merge(defaultContext, {
         Dummy: {
           connector: { ...defaultConnector, findOne: async () => document },
         },
-      };
+      });
       const res = await resolver(null, { input }, context, lastArg);
       return expect(res).toEqual({ result: document });
     });
@@ -72,14 +75,13 @@ describe("vulcan:core/default_resolvers", function () {
       // no documentId
       const input = { selector: {} };
       // non empty db
-      const context = {
-        ...defaultContext,
+      const context = merge(defaultContext, {
         Dummy: {
           connector: {
             findOne: async () => ({ _id: "my-document" }),
           },
         },
-      };
+      });
       const res = resolver(null, { input }, context, lastArg);
       return expect(res).resolves.toEqual({ result: null });
     });
@@ -88,12 +90,11 @@ describe("vulcan:core/default_resolvers", function () {
       const documentId = "bad-document";
       const input = { selector: { documentId }, allowNull: true };
       // empty db
-      const context = {
-        ...defaultContext,
+      const context = merge(defaultContext, {
         Dummy: {
           connector: { ...defaultConnector, findOne: async () => null },
         },
-      };
+      });
       const res = await resolver(null, { input }, context, lastArg);
       return expect(res).toEqual({ result: null });
     });
@@ -102,10 +103,11 @@ describe("vulcan:core/default_resolvers", function () {
       const documentId = "bad-document";
       const input = { selector: { documentId } };
       // empty db
-      const context = {
-        ...defaultContext,
-        Dummy: { connector: { filter: () => ({}) } },
-      };
+      const context = merge(defaultContext, {
+        Dummy: {
+          connector: { filter: () => ({}) },
+        },
+      });
       await expect(
         resolver(null, { input }, context, lastArg)
       ).rejects.toThrow();

@@ -43,7 +43,7 @@ import {
 // import { registerSetting } from "../modules/settings.js";
 // import { debug, debugGroup, debugGroupEnd } from "../modules/debug.js";
 import { throwError } from "./errors";
-import { getModelConnector } from "./connectors";
+import { getModelConnector } from "./context";
 import pickBy from "lodash/pickBy";
 import clone from "lodash/clone";
 import isEmpty from "lodash/isEmpty";

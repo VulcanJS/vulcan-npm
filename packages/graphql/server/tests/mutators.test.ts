@@ -7,6 +7,7 @@ import {
   updateMutator,
   deleteMutator,
 } from "../resolvers/mutators";
+import merge from "lodash/merge";
 //import StubCollections from 'meteor/hwillson:stub-collections';
 // import Users from "meteor/vulcan:users";
 
@@ -101,11 +102,17 @@ describe("graphql/resolvers/mutators", function () {
   const updateArgs = {
     ...defaultArgs,
   };
+  const defaultContext = {
+    model: Foo,
+  };
 
   describe("create and update mutator", () => {
     // create fake context
-    const defaultContext: { Foo: { connector: Partial<Connector> } } = {
+    const defaultContext: {
+      Foo: { connector: Partial<Connector>; model: VulcanGraphqlModel };
+    } = {
       Foo: {
+        model: Foo,
         connector: {
           create: async () => "1", // returns the new doc id
           findOneById: async () => ({
@@ -184,7 +191,7 @@ describe("graphql/resolvers/mutators", function () {
       const validSlugSelector = { slug: "foobar" };
       const foo = { hello: "world" };
 
-      const context = {
+      const context = merge(defaultContext, {
         Foo: {
           connector: {
             findOne: async () => foo,
@@ -192,7 +199,7 @@ describe("graphql/resolvers/mutators", function () {
           },
         },
         currentUser, // need a currentUser
-      };
+      });
 
       const params = {
         ...defaultParams,
@@ -212,7 +219,7 @@ describe("graphql/resolvers/mutators", function () {
   });
 
   describe("field onCreate/onUpdate callbacks", () => {
-    const context = {
+    const context = merge(defaultContext, {
       Foo: {
         connector: {
           create: async (model, data) => ({
@@ -229,7 +236,7 @@ describe("graphql/resolvers/mutators", function () {
           }),
         },
       },
-    };
+    });
     const defaultArgs = {
       model: Foo,
       document: { foo2: "bar" },
