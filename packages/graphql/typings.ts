@@ -20,11 +20,34 @@ interface GraphqlSharedModel {
   defaultFragment: string;
   defaultFragmentName: string;
 }
+
+// type CreateCallback = (document: VulcanDocument) => VulcanDocument | Promise<VulcanDocument>
+export interface MutationCallbackDefinitions {
+  create?: {
+    validate?: Array<Function>,
+    before?: Array<Function>,
+    after?: Array<Function>,
+    async?: Array<Function>,
+  },
+  update?: {
+    validate?: Array<Function>,
+    before?: Array<Function>,
+    after?: Array<Function>,
+    async?: Array<Function>,
+  },
+  delete?: {
+    validate?: Array<Function>,
+    before?: Array<Function>,
+    after?: Array<Function>,
+    async?: Array<Function>,
+  }
+}
 interface GraphqlServerModel {
   queryResolvers: QueryResolverDefinitions;
   mutationResolvers: MutationResolverDefinitions;
+  callbacks?: MutationCallbackDefinitions;
 }
-export interface GraphqlModel extends GraphqlSharedModel, GraphqlServerModel {}
+export interface GraphqlModel extends GraphqlSharedModel, GraphqlServerModel { }
 export interface VulcanGraphqlModel extends VulcanModel {
   graphql: GraphqlModel;
 }

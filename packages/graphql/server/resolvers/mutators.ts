@@ -42,6 +42,8 @@ import {
 // import { globalCallbacks } from "../modules/callbacks.js";
 // import { registerSetting } from "../modules/settings.js";
 // import { debug, debugGroup, debugGroupEnd } from "../modules/debug.js";
+import { runCallbacks } from "../../callbacks";
+
 import { throwError } from "./errors";
 import { getModelConnector } from "./context";
 import pickBy from "lodash/pickBy";
@@ -52,7 +54,6 @@ import { VulcanDocument } from "@vulcanjs/schema";
 import { VulcanGraphqlModel } from "../../typings";
 import { restrictViewableFields } from "../../permissions";
 
-// registerSetting("database", "mongo", "Which database to use for your back-end");
 
 interface CreateMutatorInput {
   model: VulcanGraphqlModel;
@@ -206,12 +207,14 @@ export const createMutator = async <TModel extends VulcanDocument>({
 
   */
   // new callback API (Oct 2019)
-  // document = await runCallbacks({
-  //   name: `${typeName.toLowerCase()}.create.after`,
-  //   callbacks: get(collection, "options.callbacks.create.after", []),
-  //   iterator: document,
-  //   properties,
-  // });
+  document = await runCallbacks({
+    hookName: `${model.graphql.typeName.toLowerCase()}.create.after`,
+    callbacks: model.graphql?.callbacks?.create?.after || [],
+    item: document,
+    args: properties,
+  });
+  // We don't support global callbacks anymore
+  // Thats a practice to avoid
   // document = await runCallbacks({
   //   name: "*.create.after",
   //   callbacks: get(globalCallbacks, "create.after", []),
