@@ -278,6 +278,38 @@ describe("graphql/resolvers/mutators", function () {
       expect(resultDocument.privateAuto).not.toBeDefined();
     });
   });
+  describe("ownership", () => {
+    test("add userId if currentUser is defined and schema accept it", async () => {
+      const schema = {
+        _id: {
+          type: String,
+        },
+        userId: {
+          type: String,
+          canRead: ["guests"],
+        },
+      };
+      const Foo = createModel({
+        schema,
+        name: "Foo",
+        extensions: [extendModel({ typeName: "Foo", multiTypeName: "Foos" })],
+      }) as VulcanGraphqlModel;
+      const context = merge({}, defaultContext, {
+        currentUser: { _id: "42" },
+        Foo: {
+          model: Foo,
+          connector: { create: async (model, data) => ({ _id: 1, ...data }) },
+        },
+      });
+      const { data: resultDocument } = await createMutator({
+        ...defaultArgs,
+        model: Foo,
+        context,
+        data: {},
+      });
+      expect(resultDocument.userId).toEqual("42");
+    });
+  });
   describe("permissions", () => {
     const context = {
       Foo: {
@@ -306,12 +338,6 @@ describe("graphql/resolvers/mutators", function () {
       // we test while being logged out
       asAdmin: false,
       currentUser: null,
-    };
-    const createArgs = {
-      ...defaultArgs,
-    };
-    const updateArgs = {
-      ...defaultArgs,
     };
     test("filter out non allowed field before returning new document", async () => {
       const { data: resultDocument } = await createMutator({
