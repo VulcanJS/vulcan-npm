@@ -11,16 +11,23 @@ const schema = {
     canRead: ["guests"],
     optional: true,
   },
-  foo2: {
-    type: String,
-    canCreate: ["guests"],
+  createdAfter: {
+    optional: true,
+    type: Number,
     canRead: ["guests"],
-    canUpdate: ["guests"],
+  },
+  createdBefore: {
+    optional: true,
+    type: Number,
+    canRead: ["guests"],
   },
 };
-const Foo = createModel({
+const defaultModelOptions = {
   schema,
   name: "Foo",
+};
+const Foo = createModel({
+  ...defaultModelOptions,
   extensions: [extendModel({ typeName: "Foo", multiTypeName: "Foos" })],
 }) as VulcanGraphqlModel;
 describe("graphql/resolvers/mutators callbacks", function () {
@@ -31,7 +38,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
     } = {
       Foo: {
         connector: {
-          create: async () => "1", // returns the new doc id
+          create: async () => ({ _id: "1" }),
           findOneById: async () => ({
             id: "1",
           }),
@@ -42,7 +49,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
     };
     const defaultArgs = {
       model: Foo,
-      document: { foo2: "bar" },
+      data: {},
       validate: false,
       // we test while being logged out
       asAdmin: false,
@@ -56,118 +63,151 @@ describe("graphql/resolvers/mutators callbacks", function () {
       // TODO get the document in the database
     });
     //after
-    test("run after callback before document is returned", async function () {
-      const after1 = jest.fn((doc) => ({ ...doc, after1: 1 }));
-      const after2 = jest.fn((doc) => ({ ...doc, after2: 2 }));
-      const Foo = createModel({
-        schema,
-        name: "Foo",
-        extensions: [
-          extendModel({
-            typeName: "Foo",
-            multiTypeName: "Foos",
-            callbacks: {
-              create: {
-                after: [after1, after2],
-              },
-            },
-          }),
-        ],
-      }) as VulcanGraphqlModel;
-      const context = merge(defaultPartialContext, { Foo: { model: Foo } });
-      const { data: resultDocument } = await createMutator({
-        ...createArgs,
-        model: Foo,
-        context,
-        data: { foo2: "bar" },
+    const modelGraphqlOptions = {
+      typeName: "Foo",
+      multiTypeName: "Foos",
+    };
+    describe("after", () => {
+      test("run asynchronous 'after' callback before document is returned", async function () {
+        const after = jest.fn(async (doc) => ({ ...doc, createdAfter: 1 }));
+        const create = jest.fn(async (model, data) => ({ _id: 1, ...data }));
+        const Foo = createModel({
+          schema,
+          name: "Foo",
+          extensions: [
+            extendModel(
+              merge({}, modelGraphqlOptions, {
+                callbacks: {
+                  create: {
+                    after: [after],
+                  },
+                },
+              })
+            ),
+          ],
+        }) as VulcanGraphqlModel;
+        const context = merge({}, defaultPartialContext, {
+          Foo: { model: Foo, connector: { create } },
+        });
+        const data = {};
+        const { data: resultDocument } = await createMutator({
+          ...createArgs,
+          model: Foo,
+          context,
+          data,
+        });
+        expect((create.mock.calls[0] as any)[1]).toEqual(data); // callback is NOT yet acalled
+        expect(after).toHaveBeenCalledTimes(1);
+        expect(resultDocument.createdAfter).toBe(1); // callback is called
       });
-      expect(after1).toHaveBeenCalledTimes(1);
-      expect(after2).toHaveBeenCalledTimes(1);
-      // expect(resultDocument.after1).toBe(1);
-      // expect(resultDocument.after2).toBe(2);
     });
-    /*
-      // async
-      test("run async callback", async function () {
-        // TODO need a sinon stub
-        const asyncSpy = sinon.spy();
-        addCallback("foo2.create.async", (properties) => {
-          asyncSpy(properties);
-          // TODO need a sinon stub
-          //expect(originalData.after).toBeUndefined()
+    describe("before", () => {
+      test("run asynchronous 'before' callback before document is saved", async function () {
+        const before = jest.fn(async (doc) => ({ ...doc, createdBefore: 1 }));
+        const create = jest.fn(async (model, data) => ({ _id: 1, ...data }));
+        const Foo = createModel({
+          schema,
+          name: "Foo",
+          extensions: [
+            extendModel(
+              merge({}, modelGraphqlOptions, {
+                callbacks: {
+                  create: {
+                    before: [before],
+                  },
+                },
+              })
+            ),
+          ],
+        }) as VulcanGraphqlModel;
+        const context = merge({}, defaultPartialContext, {
+          Foo: { model: Foo, connector: { create } },
         });
+        const data = {};
         const { data: resultDocument } = await createMutator({
           ...createArgs,
-          document: { foo2: "bar" },
+          model: Foo,
+          context,
+          data,
         });
-        expect(asyncSpy.calledOnce).toBe(true);
+        expect((create.mock.calls[0] as any)[1]).toEqual({
+          ...data,
+          createdBefore: 1,
+        }); // callback is called already
+        expect(before).toHaveBeenCalledTimes(1);
+        expect(resultDocument.createdBefore).toBe(1); // callback is called
       });
-      test.skip("provide initial data to async callbacks", async function () {
-        const asyncSpy = sinon.spy();
-        addCallback("foo2.create.after", (document) => {
-          document.after = true;
-          return document;
+    });
+    describe("async", () => {
+      test("run asynchronous side effect", async () => {
+        // NOTE: if this test fails because of timeout => it means the mutator is waiting, while it should not
+        const asyncLong = jest.fn(
+          () =>
+            new Promise((resolve, reject) =>
+              setTimeout(() => resolve(true), 10000)
+            )
+        );
+        const Foo = createModel({
+          ...defaultModelOptions,
+          extensions: [
+            extendModel(
+              merge({}, modelGraphqlOptions, {
+                callbacks: {
+                  create: {
+                    async: [asyncLong],
+                  },
+                },
+              })
+            ),
+          ],
+        }) as VulcanGraphqlModel;
+        const context = merge({}, defaultPartialContext, {
+          Foo: { model: Foo },
         });
-        addCallback("foo2.create.async", (properties) => {
-          asyncSpy(properties);
-          // TODO need a sinon stub
-          //expect(originalData.after).toBeUndefined()
-        });
+        const data = {};
         const { data: resultDocument } = await createMutator({
           ...createArgs,
-          document: { foo2: "bar" },
+          model: Foo,
+          context,
+          data,
         });
-        expect(asyncSpy.calledOnce).toBe(true);
-        // TODO: check result
+        expect(asyncLong).toHaveBeenCalledTimes(1);
       });
-   
-      test("should run createMutator", async function () {
-        const { data: resultDocument } = await createMutator(defaultArgs);
-        expect(resultDocument).toBeDefined();
-      });
-      // before
-      test.skip("run before callback before document is saved", function () {
-        // TODO get the document in the database
-      });
-      //after
-      test("run after callback  before document is returned", async function () {
-        const afterSpy = sinon.spy();
-        addCallback("foo2.create.after", (document) => {
-          afterSpy();
-          document.after = true;
-          return document;
+    });
+    describe("validate", () => {
+      test("return a custom validation error", async () => {
+        const validate = jest.fn(() => ["ERROR"]);
+        const Foo = createModel({
+          ...defaultModelOptions,
+          extensions: [
+            extendModel(
+              merge({}, modelGraphqlOptions, {
+                callbacks: {
+                  create: {
+                    validate: [validate],
+                  },
+                },
+              })
+            ),
+          ],
+        }) as VulcanGraphqlModel;
+        const context = merge({}, defaultPartialContext, {
+          Foo: { model: Foo },
         });
-        const { data: resultDocument } = await createMutator(defaultArgs);
-        expect(afterSpy.calledOnce).toBe(true);
-        expect(resultDocument.after).toBe(true);
+        const data = {};
+
+        expect.assertions(1); // should throw 1 exception
+        try {
+          const { data: resultDocument } = await createMutator({
+            ...createArgs,
+            model: Foo,
+            context,
+            data,
+            validate: true, // enable document validation
+          });
+        } catch (e) {}
+        expect(validate).toHaveBeenCalledTimes(1);
       });
-      // async
-      test("run async callback", async function () {
-        // TODO need a sinon stub
-        const asyncSpy = sinon.spy();
-        addCallback("foo2.create.async", (properties) => {
-          asyncSpy(properties);
-          // TODO need a sinon stub
-          //expect(originalData.after).toBeUndefined()
-        });
-        const { data: resultDocument } = await createMutator(defaultArgs);
-        expect(asyncSpy.calledOnce).toBe(true);
-      });
-      test.skip("provide initial data to async callbacks", async function () {
-        const asyncSpy = sinon.spy();
-        addCallback("foo2.create.after", (document) => {
-          document.after = true;
-          return document;
-        });
-        addCallback("foo2.create.async", (properties) => {
-          asyncSpy(properties);
-          // TODO need a sinon stub
-          //expect(originalData.after).toBeUndefined()
-        });
-        const { data: resultDocument } = await createMutator(defaultArgs);
-        expect(asyncSpy.calledOnce).toBe(true);
-        // TODO: check result
-      });
-    */
+    });
   });
 });

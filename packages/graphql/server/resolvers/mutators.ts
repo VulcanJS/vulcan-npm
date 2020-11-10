@@ -54,7 +54,6 @@ import { VulcanDocument } from "@vulcanjs/schema";
 import { VulcanGraphqlModel } from "../../typings";
 import { restrictViewableFields } from "../../permissions";
 
-
 interface CreateMutatorInput {
   model: VulcanGraphqlModel;
   document?: VulcanDocument;
@@ -96,6 +95,8 @@ export const createMutator = async <TModel extends VulcanDocument>({
     schema,
   };
 
+  const hookNameRoot = model.graphql.typeName.toLowerCase();
+  const mutatorName = "create";
   /*
 
   Validation
@@ -103,41 +104,27 @@ export const createMutator = async <TModel extends VulcanDocument>({
   */
   if (validate) {
     let validationErrors = [];
+    // simple schema validation
     validationErrors = validationErrors.concat(
-      validateDocument(data, model, context)
+      validateDocument(data, model, context),
+      await runCallbacks({
+        hookName: `${hookNameRoot}.${mutatorName}.validate`,
+        iterator: validationErrors,
+        callbacks: model?.graphql?.callbacks?.create?.validate || [],
+        args: [properties],
+      })
     );
+    if (validationErrors.length) {
+      throwError({
+        id: "app.validation_error",
+        data: { break: true, errors: validationErrors },
+      });
+    }
   }
-  //   // TODO: reenable local callbacks and then global callbacks
-  //   // new callback API (Oct 2019)
-  //   // validationErrors = await runCallbacks({
-  //   //   name: `${typeName.toLowerCase()}.create.validate`,
-  //   //   callbacks: get(collection, "options.callbacks.create.validate", []),
-  //   //   iterator: validationErrors,
-  //   //   properties,
-  //   // });
-  //   // validationErrors = await runCallbacks({
-  //   //   name: "*.create.validate",
-  //   //   callbacks: get(globalCallbacks, "create.validate", []),
-  //   //   iterator: validationErrors,
-  //   //   properties,
-  //   // });
-  //   if (validationErrors.length) {
-  //     console.log(validationErrors); // eslint-disable-line no-console
-  //     throwError({
-  //       id: "app.validation_error",
-  //       data: { break: true, errors: validationErrors },
-  //     });
-  //   }
-  // }
-  //
-  /*
 
-  userId
-
-  If user is logged in, check if userId field is in the schema and add it to document if needed
-
-  */
+  /* If user is logged in, check if userId field is in the schema and add it to document if needed */
   if (currentUser) {
+    // TODO: clean this using "has"
     const userIdInSchema = Object.keys(schema).find((key) => key === "userId");
     if (!!userIdInSchema && !data.userId) data.userId = currentUser._id;
   }
@@ -167,87 +154,36 @@ export const createMutator = async <TModel extends VulcanDocument>({
       console.log(e);
     }
   }
-  // TODO: find that info in GraphQL mutations
-  // if (Meteor.isServer && this.connection) {
-  //   post.userIP = this.connection.clientAddress;
-  //   post.userAgent = this.connection.httpHeaders['user-agent'];
-  // }
+  /* Before */
+  data = await runCallbacks({
+    hookName: `${hookNameRoot}.${mutatorName}.before`,
+    callbacks: model.graphql?.callbacks?.create?.before || [],
+    iterator: data,
+    args: [properties],
+  });
 
-  /*
-
-  Before
-  
-  */
-  // new callback API (Oct 2019)
-  // data = await runCallbacks({
-  //   name: `${typeName.toLowerCase()}.create.before`,
-  //   callbacks: get(collection, "options.callbacks.create.before", []),
-  //   iterator: data,
-  //   properties,
-  // });
-  // data = await runCallbacks({
-  //   name: "*.create.before",
-  //   callbacks: get(globalCallbacks, "create.before", []),
-  //   iterator: data,
-  //   properties,
-  // });
-  // // old callback API
-
-  /*
-
-  DB Operation
-
-  */
+  /* DB Operation */
   const connector = getModelConnector<TModel>(context, model);
   let document = await connector.create(model, data);
 
-  /*
-
-  After
-
-  */
-  // new callback API (Oct 2019)
+  /* After */
   document = await runCallbacks({
-    hookName: `${model.graphql.typeName.toLowerCase()}.create.after`,
+    hookName: `${hookNameRoot}.${mutatorName}.after`,
     callbacks: model.graphql?.callbacks?.create?.after || [],
-    item: document,
-    args: properties,
+    iterator: document,
+    args: [properties],
   });
-  // We don't support global callbacks anymore
-  // Thats a practice to avoid
-  // document = await runCallbacks({
-  //   name: "*.create.after",
-  //   callbacks: get(globalCallbacks, "create.after", []),
-  //   iterator: document,
-  //   properties,
-  // });
 
-  // update document object in properties object
-  // properties.document = document;
-
-  /*
-
-  Async
-
-  */
-  // new callback API (Oct 2019)
-  // await runCallbacksAsync({
-  //   name: `${typeName.toLowerCase()}.create.async`,
-  //   callbacks: get(collection, "options.callbacks.create.async", []),
-  //   properties,
-  // });
-  // await runCallbacksAsync({
-  //   name: "*.create.async",
-  //   callbacks: get(globalCallbacks, "create.async", []),
-  //   properties,
-  // });
+  /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
+  runCallbacks({
+    hookName: `${model.graphql.typeName.toLowerCase()}.create.async`,
+    callbacks: model.graphql?.callbacks?.create?.async || [],
+    args: [properties],
+  });
 
   if (!asAdmin) {
     document = restrictViewableFields(currentUser, model, document) as TModel;
   }
-
-  // endDebugMutator(collectionName, "Create", { document });
-
   return { data: document };
 };
 

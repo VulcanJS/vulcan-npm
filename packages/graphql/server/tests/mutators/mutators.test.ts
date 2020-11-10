@@ -181,7 +181,7 @@ describe("graphql/resolvers/mutators", function () {
       const validSlugSelector = { slug: "foobar" };
       const foo = { hello: "world" };
 
-      const context = merge(defaultContext, {
+      const context = merge({}, defaultContext, {
         Foo: {
           connector: {
             findOne: async () => foo,
@@ -209,7 +209,7 @@ describe("graphql/resolvers/mutators", function () {
   });
 
   describe("field onCreate/onUpdate callbacks", () => {
-    const context = merge(defaultContext, {
+    const context = merge({}, defaultContext, {
       Foo: {
         connector: {
           create: async (model, data) => ({

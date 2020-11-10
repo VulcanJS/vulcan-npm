@@ -59,7 +59,7 @@ describe("graphql/query resolvers", function () {
       const document = { _id: documentId };
       const input = { selector: { documentId } };
       // non empty db
-      const context = merge(defaultContext, {
+      const context = merge({}, defaultContext, {
         Dummy: {
           connector: { ...defaultConnector, findOne: async () => document },
         },
@@ -75,7 +75,7 @@ describe("graphql/query resolvers", function () {
       // no documentId
       const input = { selector: {} };
       // non empty db
-      const context = merge(defaultContext, {
+      const context = merge({}, defaultContext, {
         Dummy: {
           connector: {
             findOne: async () => ({ _id: "my-document" }),
@@ -90,7 +90,7 @@ describe("graphql/query resolvers", function () {
       const documentId = "bad-document";
       const input = { selector: { documentId }, allowNull: true };
       // empty db
-      const context = merge(defaultContext, {
+      const context = merge({}, defaultContext, {
         Dummy: {
           connector: { ...defaultConnector, findOne: async () => null },
         },
@@ -103,7 +103,7 @@ describe("graphql/query resolvers", function () {
       const documentId = "bad-document";
       const input = { selector: { documentId } };
       // empty db
-      const context = merge(defaultContext, {
+      const context = merge({}, defaultContext, {
         Dummy: {
           connector: { filter: () => ({}) },
         },
