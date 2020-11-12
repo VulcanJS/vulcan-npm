@@ -8,7 +8,8 @@ import { disableFragmentWarnings } from "graphql-tag";
 
 import parseModel from "./parseModel";
 import { VulcanGraphqlModel } from "../typings";
-import { mergeResolvers } from "graphql-tools";
+// import { mergeResolvers } from "graphql-tools"; // not very useful + can cause issues
+import { mergeResolvers } from "./utils";
 import _flatten from "lodash/flatten";
 import { generateQueryTypeDefs, generateMutationTypeDefs } from "./typedefs";
 

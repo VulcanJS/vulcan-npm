@@ -12,7 +12,6 @@
     "@vulcanjs/utils": "^0.1.0",
     "apollo-server": "^2.18.2",
     "graphql-date": "^1.0.3",
-    "graphql-tools": "^6.2.4",
     "graphql-type-json": "^0.3.2",
     "simpl-schema": "^1.10.2"
   },
