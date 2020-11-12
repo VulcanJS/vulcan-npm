@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/meteor-legacy",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "Vulcan Meteor bindings",
   "main": "./dist/index.js",
   "author": "eric-burel <eb@lebrun-burel.com>",
@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.2.0",
-    "@vulcanjs/graphql": "^0.0.7",
-    "@vulcanjs/model": "^0.0.7",
+    "@vulcanjs/graphql": "^0.1.0",
+    "@vulcanjs/model": "^0.1.0",
     "graphql": "^15.3.0"
   },
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
