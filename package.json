@@ -7,8 +7,7 @@
     "link": "lerna exec yarn link && ./scripts/link-duplicates.sh",
     "clean": "rm -Rf ./node_modules ./packages/*/dist ./packages/*/node_modules",
     "test": "jest",
-    "coverage": "jest --coverage",
-    "publish": "lerna publish # Lerna will handle version numbers too"
+    "coverage": "jest --coverage"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

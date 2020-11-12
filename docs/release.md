@@ -2,13 +2,17 @@
 
 Work in progress
 
-Make packages public by adding this config in every publick package:
+## Solve "error Package marked as private, not publishing."
+
+Make packages public by adding this config in every public package:
 
 ```
  "publishConfig": {
     "access": "public"
   }
 ```
+
+## Script
 
 ```sh
 # Merge potential hotfixes
@@ -22,5 +26,6 @@ yarn build
 # Unit test
 yarn test
 # Deploy (Lerna will prompt questions for versionning)
-yarn publish
+# NOTE: "yarn publish" already has a meaning so we can't override it, we need to call "yarn lerna publish"
+yarn lerna publish
 ```
