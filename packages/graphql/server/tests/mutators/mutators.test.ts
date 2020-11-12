@@ -1,31 +1,21 @@
 import expect from "expect";
 // import sinon from "sinon/pkg/sinon.js";
-import { extendModel } from "../../extendModel";
+import { extendModel } from "../../../extendModel";
 
 import {
   createMutator,
   updateMutator,
   deleteMutator,
-} from "../resolvers/mutators";
+} from "../../resolvers/mutators";
 import merge from "lodash/merge";
 //import StubCollections from 'meteor/hwillson:stub-collections';
 // import Users from "meteor/vulcan:users";
 
 const test = it; // TODO: just before we switch to jest
-
-// stub collection
-// import {
-//   getDefaultResolvers,
-//   getDefaultMutations,
-//   addCallback,
-//   removeAllCallbacks,
-//   createCollection,
-// } from "meteor/vulcan:core";
-// import { initServerTest } from "meteor/vulcan:test";
 import { createModel } from "@vulcanjs/model";
-import { VulcanGraphqlModel } from "../../typings";
-import { Connector } from "../resolvers/typings";
-import { modifierToData } from "../resolvers/validation";
+import { VulcanGraphqlModel } from "../../../typings";
+import { Connector } from "../../resolvers/typings";
+import { modifierToData } from "../../resolvers/validation";
 
 const schema = {
   _id: {
@@ -191,7 +181,7 @@ describe("graphql/resolvers/mutators", function () {
       const validSlugSelector = { slug: "foobar" };
       const foo = { hello: "world" };
 
-      const context = merge(defaultContext, {
+      const context = merge({}, defaultContext, {
         Foo: {
           connector: {
             findOne: async () => foo,
@@ -219,7 +209,7 @@ describe("graphql/resolvers/mutators", function () {
   });
 
   describe("field onCreate/onUpdate callbacks", () => {
-    const context = merge(defaultContext, {
+    const context = merge({}, defaultContext, {
       Foo: {
         connector: {
           create: async (model, data) => ({
@@ -288,6 +278,38 @@ describe("graphql/resolvers/mutators", function () {
       expect(resultDocument.privateAuto).not.toBeDefined();
     });
   });
+  describe("ownership", () => {
+    test("add userId if currentUser is defined and schema accept it", async () => {
+      const schema = {
+        _id: {
+          type: String,
+        },
+        userId: {
+          type: String,
+          canRead: ["guests"],
+        },
+      };
+      const Foo = createModel({
+        schema,
+        name: "Foo",
+        extensions: [extendModel({ typeName: "Foo", multiTypeName: "Foos" })],
+      }) as VulcanGraphqlModel;
+      const context = merge({}, defaultContext, {
+        currentUser: { _id: "42" },
+        Foo: {
+          model: Foo,
+          connector: { create: async (model, data) => ({ _id: 1, ...data }) },
+        },
+      });
+      const { data: resultDocument } = await createMutator({
+        ...defaultArgs,
+        model: Foo,
+        context,
+        data: {},
+      });
+      expect(resultDocument.userId).toEqual("42");
+    });
+  });
   describe("permissions", () => {
     const context = {
       Foo: {
@@ -316,12 +338,6 @@ describe("graphql/resolvers/mutators", function () {
       // we test while being logged out
       asAdmin: false,
       currentUser: null,
-    };
-    const createArgs = {
-      ...defaultArgs,
-    };
-    const updateArgs = {
-      ...defaultArgs,
     };
     test("filter out non allowed field before returning new document", async () => {
       const { data: resultDocument } = await createMutator({
@@ -356,109 +372,4 @@ describe("graphql/resolvers/mutators", function () {
       expect(resultDocument.privateAuto).not.toBeDefined();
     });
   });
-
-  /*
-  describe("create callbacks", () => {
-    // before
-    test.skip("run before callback before document is saved", function () {
-      // TODO get the document in the database
-    });
-    //after
-    test("run after callback  before document is returned", async function () {
-      const afterSpy = sinon.spy();
-      addCallback("foo2.create.after", (document) => {
-        afterSpy();
-        document.after = true;
-        return document;
-      });
-      const { data: resultDocument } = await createMutator({
-        ...createArgs,
-        document: { foo2: "bar" },
-      });
-      expect(afterSpy.calledOnce).toBe(true);
-      expect(resultDocument.after).toBe(true);
-    });
-    // async
-    test("run async callback", async function () {
-      // TODO need a sinon stub
-      const asyncSpy = sinon.spy();
-      addCallback("foo2.create.async", (properties) => {
-        asyncSpy(properties);
-        // TODO need a sinon stub
-        //expect(originalData.after).toBeUndefined()
-      });
-      const { data: resultDocument } = await createMutator({
-        ...createArgs,
-        document: { foo2: "bar" },
-      });
-      expect(asyncSpy.calledOnce).toBe(true);
-    });
-    test.skip("provide initial data to async callbacks", async function () {
-      const asyncSpy = sinon.spy();
-      addCallback("foo2.create.after", (document) => {
-        document.after = true;
-        return document;
-      });
-      addCallback("foo2.create.async", (properties) => {
-        asyncSpy(properties);
-        // TODO need a sinon stub
-        //expect(originalData.after).toBeUndefined()
-      });
-      const { data: resultDocument } = await createMutator({
-        ...createArgs,
-        document: { foo2: "bar" },
-      });
-      expect(asyncSpy.calledOnce).toBe(true);
-      // TODO: check result
-    });
-
-    test("should run createMutator", async function () {
-      const { data: resultDocument } = await createMutator(defaultArgs);
-      expect(resultDocument).toBeDefined();
-    });
-    // before
-    test.skip("run before callback before document is saved", function () {
-      // TODO get the document in the database
-    });
-    //after
-    test("run after callback  before document is returned", async function () {
-      const afterSpy = sinon.spy();
-      addCallback("foo2.create.after", (document) => {
-        afterSpy();
-        document.after = true;
-        return document;
-      });
-      const { data: resultDocument } = await createMutator(defaultArgs);
-      expect(afterSpy.calledOnce).toBe(true);
-      expect(resultDocument.after).toBe(true);
-    });
-    // async
-    test("run async callback", async function () {
-      // TODO need a sinon stub
-      const asyncSpy = sinon.spy();
-      addCallback("foo2.create.async", (properties) => {
-        asyncSpy(properties);
-        // TODO need a sinon stub
-        //expect(originalData.after).toBeUndefined()
-      });
-      const { data: resultDocument } = await createMutator(defaultArgs);
-      expect(asyncSpy.calledOnce).toBe(true);
-    });
-    test.skip("provide initial data to async callbacks", async function () {
-      const asyncSpy = sinon.spy();
-      addCallback("foo2.create.after", (document) => {
-        document.after = true;
-        return document;
-      });
-      addCallback("foo2.create.async", (properties) => {
-        asyncSpy(properties);
-        // TODO need a sinon stub
-        //expect(originalData.after).toBeUndefined()
-      });
-      const { data: resultDocument } = await createMutator(defaultArgs);
-      expect(asyncSpy.calledOnce).toBe(true);
-      // TODO: check result
-    });
-  });
-  */
 });

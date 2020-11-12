@@ -32,16 +32,14 @@ to the client.
 
 */
 
-// import { runCallbacks, runCallbacksAsync } from "../modules/index.js";
 import {
   validateDocument,
   validateData,
   modifierToData,
   dataToModifier,
 } from "./validation";
-// import { globalCallbacks } from "../modules/callbacks.js";
-// import { registerSetting } from "../modules/settings.js";
-// import { debug, debugGroup, debugGroupEnd } from "../modules/debug.js";
+import { runCallbacks } from "../../callbacks";
+
 import { throwError } from "./errors";
 import { getModelConnector } from "./context";
 import pickBy from "lodash/pickBy";
@@ -49,10 +47,8 @@ import clone from "lodash/clone";
 import isEmpty from "lodash/isEmpty";
 import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
-import { VulcanGraphqlModel } from "../../typings";
+import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
 import { restrictViewableFields } from "../../permissions";
-
-// registerSetting("database", "mongo", "Which database to use for your back-end");
 
 interface CreateMutatorInput {
   model: VulcanGraphqlModel;
@@ -63,6 +59,50 @@ interface CreateMutatorInput {
   asAdmin?: boolean; // bypass security checks like field restriction
   validate?: boolean; // run validation, can be bypassed when calling from a server
 }
+
+/**
+ * Throws if some data are invalid
+ */
+const validateMutationData = async ({
+  model,
+  data,
+  mutatorName,
+  context,
+  properties,
+  validationFunction,
+}: {
+  model: VulcanGraphqlModel; // data model
+  mutatorName: DefaultMutatorName;
+  context: Object; // Graphql context
+  properties: Object; // arguments of the callback, can vary depending on the mutator
+  data?: any; // data to validate
+  validationFunction?: Function;
+}): Promise<void> => {
+  const { typeName } = model.graphql;
+  // basic simple schema validatio
+  const simpleSchemaValidationErrors = data
+    ? validationFunction
+      ? validationFunction(data, model, context) // for update, we use validateData instead of validateDocument
+      : validateDocument(data, model, context)
+    : []; // delete mutator has no data, so we skip the simple schema validation
+  // custom validation
+  const customValidationErrors = await runCallbacks({
+    hookName: `${typeName}.${mutatorName}.validate`,
+    iterator: [],
+    callbacks: model?.graphql?.callbacks?.[mutatorName]?.validate || [],
+    args: [properties],
+  });
+  const validationErrors = [
+    ...simpleSchemaValidationErrors,
+    customValidationErrors,
+  ];
+  if (validationErrors.length) {
+    throwError({
+      id: "app.validation_error",
+      data: { break: true, errors: validationErrors },
+    });
+  }
+};
 /*
 
 Create
@@ -95,49 +135,24 @@ export const createMutator = async <TModel extends VulcanDocument>({
     schema,
   };
 
-  /*
+  const { typeName } = model.graphql;
+  const mutatorName = "create";
 
-  Validation
-
-  */
+  /* Validation */
   if (validate) {
-    let validationErrors = [];
-    validationErrors = validationErrors.concat(
-      validateDocument(data, model, context)
-    );
+    await validateMutationData({
+      model,
+      data,
+      mutatorName,
+      context,
+      properties,
+    });
   }
-  //   // TODO: reenable local callbacks and then global callbacks
-  //   // new callback API (Oct 2019)
-  //   // validationErrors = await runCallbacks({
-  //   //   name: `${typeName.toLowerCase()}.create.validate`,
-  //   //   callbacks: get(collection, "options.callbacks.create.validate", []),
-  //   //   iterator: validationErrors,
-  //   //   properties,
-  //   // });
-  //   // validationErrors = await runCallbacks({
-  //   //   name: "*.create.validate",
-  //   //   callbacks: get(globalCallbacks, "create.validate", []),
-  //   //   iterator: validationErrors,
-  //   //   properties,
-  //   // });
-  //   if (validationErrors.length) {
-  //     console.log(validationErrors); // eslint-disable-line no-console
-  //     throwError({
-  //       id: "app.validation_error",
-  //       data: { break: true, errors: validationErrors },
-  //     });
-  //   }
-  // }
-  //
-  /*
 
-  userId
-
-  If user is logged in, check if userId field is in the schema and add it to document if needed
-
-  */
+  /* If user is logged in, check if userId field is in the schema and add it to document if needed */
   if (currentUser) {
-    const userIdInSchema = Object.keys(schema).find((key) => key === "userId");
+    // TODO: clean this using "has"
+    const userIdInSchema = "userId" in schema;
     if (!!userIdInSchema && !data.userId) data.userId = currentUser._id;
   }
   /* 
@@ -166,85 +181,36 @@ export const createMutator = async <TModel extends VulcanDocument>({
       console.log(e);
     }
   }
-  // TODO: find that info in GraphQL mutations
-  // if (Meteor.isServer && this.connection) {
-  //   post.userIP = this.connection.clientAddress;
-  //   post.userAgent = this.connection.httpHeaders['user-agent'];
-  // }
+  /* Before */
+  data = await runCallbacks({
+    hookName: `${typeName}.${mutatorName}.before`,
+    callbacks: model.graphql?.callbacks?.[mutatorName]?.before || [],
+    iterator: data,
+    args: [properties],
+  });
 
-  /*
-
-  Before
-  
-  */
-  // new callback API (Oct 2019)
-  // data = await runCallbacks({
-  //   name: `${typeName.toLowerCase()}.create.before`,
-  //   callbacks: get(collection, "options.callbacks.create.before", []),
-  //   iterator: data,
-  //   properties,
-  // });
-  // data = await runCallbacks({
-  //   name: "*.create.before",
-  //   callbacks: get(globalCallbacks, "create.before", []),
-  //   iterator: data,
-  //   properties,
-  // });
-  // // old callback API
-
-  /*
-
-  DB Operation
-
-  */
+  /* DB Operation */
   const connector = getModelConnector<TModel>(context, model);
   let document = await connector.create(model, data);
 
-  /*
+  /* After */
+  document = await runCallbacks({
+    hookName: `${typeName}.${mutatorName}.after`,
+    callbacks: model.graphql?.callbacks?.[mutatorName]?.after || [],
+    iterator: document,
+    args: [properties],
+  });
 
-  After
-
-  */
-  // new callback API (Oct 2019)
-  // document = await runCallbacks({
-  //   name: `${typeName.toLowerCase()}.create.after`,
-  //   callbacks: get(collection, "options.callbacks.create.after", []),
-  //   iterator: document,
-  //   properties,
-  // });
-  // document = await runCallbacks({
-  //   name: "*.create.after",
-  //   callbacks: get(globalCallbacks, "create.after", []),
-  //   iterator: document,
-  //   properties,
-  // });
-
-  // update document object in properties object
-  // properties.document = document;
-
-  /*
-
-  Async
-
-  */
-  // new callback API (Oct 2019)
-  // await runCallbacksAsync({
-  //   name: `${typeName.toLowerCase()}.create.async`,
-  //   callbacks: get(collection, "options.callbacks.create.async", []),
-  //   properties,
-  // });
-  // await runCallbacksAsync({
-  //   name: "*.create.async",
-  //   callbacks: get(globalCallbacks, "create.async", []),
-  //   properties,
-  // });
+  /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
+  runCallbacks({
+    hookName: `${model.graphql.typeName.toLowerCase()}.${mutatorName}.async`,
+    callbacks: model.graphql?.callbacks?.[mutatorName]?.async || [],
+    args: [properties],
+  });
 
   if (!asAdmin) {
     document = restrictViewableFields(currentUser, model, document) as TModel;
   }
-
-  // endDebugMutator(collectionName, "Create", { document });
-
   return { data: document };
 };
 
@@ -282,6 +248,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 }: UpdateMutatorInput): Promise<{ data: TModel }> => {
   set = set || {};
   const { typeName } = model.graphql;
+  const mutatorName = "update";
   const { schema } = model;
 
   // get currentUser from context if possible
@@ -290,6 +257,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   }
 
   // OpenCRUD backwards compatibility
+  // TODO: what can we remove?
   selector = selector || { _id: dataId };
   data = { ...data } || modifierToData({ $set: set, $unset: unset });
 
@@ -331,38 +299,16 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     schema,
   };
 
-  /*
-
-  Validation
-
-  */
+  /* Validation */
   if (validate) {
-    let validationErrors = [];
-
-    validationErrors = validationErrors.concat(
-      validateData(data, model, context)
-    );
-    //
-    // new callback API (Oct 2019)
-    // validationErrors = await runCallbacks({
-    //   name: `${typeName.toLowerCase()}.update.validate`,
-    //   callbacks: get(collection, "options.callbacks.update.validate", []),
-    //   iterator: validationErrors,
-    //   properties,
-    // });
-    // validationErrors = await runCallbacks({
-    //   name: "*.update.validate",
-    //   callbacks: get(globalCallbacks, "update.validate", []),
-    //   iterator: validationErrors,
-    //   properties,
-    // });
-    if (validationErrors.length) {
-      console.log(validationErrors); // eslint-disable-line no-console
-      throwError({
-        id: "app.validation_error",
-        data: { break: true, errors: validationErrors },
-      });
-    }
+    await validateMutationData({
+      model,
+      data,
+      mutatorName,
+      context,
+      properties,
+      validationFunction: validateData, // TODO: update uses validateData instead of validateDocument => why?
+    });
   }
 
   /*
@@ -380,24 +326,13 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     }
   }
 
-  /*
-
-  Before
-
-  */
-  // new callback API (Oct 2019)
-  // data = await runCallbacks({
-  //   name: `${typeName.toLowerCase()}.update.before`,
-  //   callbacks: get(collection, "options.callbacks.update.before", []),
-  //   iterator: data,
-  //   properties,
-  // });
-  // data = await runCallbacks({
-  //   name: "*.update.before",
-  //   callbacks: get(globalCallbacks, "update.before", []),
-  //   iterator: data,
-  //   properties,
-  // });
+  /* Before */
+  data = await runCallbacks({
+    hookName: `${typeName}.${mutatorName}.before`,
+    callbacks: model.graphql?.callbacks?.[mutatorName]?.before || [],
+    iterator: data,
+    args: [properties],
+  });
 
   // update connector requires a modifier, so get it from data
   const modifier = dataToModifier(data);
@@ -431,43 +366,20 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     // }
   }
 
-  /*
+  /* After */
+  document = await runCallbacks({
+    hookName: `${typeName}.${mutatorName}.after`,
+    callbacks: model.graphql?.callbacks?.[mutatorName]?.after || [],
+    iterator: document,
+    args: [properties],
+  });
 
-  After
-
-  // */
-  // // new callback API (Oct 2019)
-  // document = await runCallbacks({
-  //   name: `${typeName.toLowerCase()}.update.after`,
-  //   callbacks: get(collection, "options.callbacks.update.after", []),
-  //   iterator: document,
-  //   properties,
-  // });
-  // document = await runCallbacks({
-  //   name: "*.update.after",
-  //   callbacks: get(globalCallbacks, "update.after", []),
-  //   iterator: document,
-  //   properties,
-  // });
-
-  /*
-
-  Async
-
-  */
-  // new callback API (Oct 2019)
-  // await runCallbacksAsync({
-  //   name: `${typeName.toLowerCase()}.update.async`,
-  //   callbacks: get(collection, "options.callbacks.update.async", []),
-  //   properties,
-  // });
-  // await runCallbacksAsync({
-  //   name: "*.update.async",
-  //   callbacks: get(globalCallbacks, "update.async", []),
-  //   properties,
-  // });
-
-  // endDebugMutator(collectionName, "Update", { modifier });
+  /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
+  runCallbacks({
+    hookName: `${model.graphql.typeName.toLowerCase()}.${mutatorName}.async`,
+    callbacks: model.graphql?.callbacks?.[mutatorName]?.async || [],
+    args: [properties],
+  });
 
   // filter out non readable fields if appliable
   if (!asAdmin) {
@@ -498,6 +410,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   asAdmin,
   context = {},
 }: DeleteMutatorInput): Promise<{ data: TModel }> => {
+  const mutatorName = "delete";
   const { typeName } = model.graphql;
   const { schema } = model;
 
@@ -530,116 +443,48 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   */
   const properties = { document, currentUser, model, context, schema };
 
-  /*
-
-  Validation
-
-  */
+  /* Validation */
   if (validate) {
-    let validationErrors = [];
-    //
-    //     // new API (Oct 2019)
-    //     validationErrors = await runCallbacks({
-    //       name: `${typeName.toLowerCase()}.delete.validate`,
-    //       callbacks: get(collection, "options.callbacks.delete.validate", []),
-    //       iterator: validationErrors,
-    //       properties,
-    //     });
-    //     validationErrors = await runCallbacks({
-    //       name: "*.delete.validate",
-    //       callbacks: get(globalCallbacks, "delete.validate", []),
-    //       iterator: validationErrors,
-    //       properties,
-    //     });
-    //
-    if (validationErrors.length) {
-      console.log(validationErrors); // eslint-disable-line no-console
-      throwError({
-        id: "app.validation_error",
-        data: { break: true, errors: validationErrors },
-      });
-    }
+    await validateMutationData({
+      model,
+      mutatorName,
+      context,
+      properties,
+    });
   }
 
-  /*
-
-  Run fields onDelete
-
-  */
+  /* Run fields onDelete */
   for (let fieldName of Object.keys(schema)) {
     if (schema[fieldName].onDelete) {
       await schema[fieldName].onDelete(properties); // eslint-disable-line no-await-in-loop
     }
   }
 
-  /*
+  /* Before */
+  document = await runCallbacks({
+    hookName: `${typeName}.${mutatorName}.before`,
+    callbacks: model.graphql?.callbacks?.[mutatorName]?.before || [],
+    iterator: document,
+    args: [properties],
+  });
 
-  Before
-
-  */
-  // new API (Oct 2019)
-  // document = await runCallbacks({
-  //   name: `${typeName.toLowerCase()}.delete.before`,
-  //   callbacks: get(collection, "options.callbacks.delete.before", []),
-  //   iterator: document,
-  //   properties,
-  // });
-  // document = await runCallbacks({
-  //   name: "*.delete.before",
-  //   callbacks: get(globalCallbacks, "delete.before", []),
-  //   iterator: document,
-  //   properties,
-  // });
-
-  /*
-
-  DB Operation
-
-  */
+  /* DB Operation */
   await connector.delete(model, selector);
 
-  /*
+  /* After */
+  document = await runCallbacks({
+    hookName: `${typeName}.${mutatorName}.after`,
+    callbacks: model.graphql?.callbacks?.[mutatorName]?.after || [],
+    iterator: document,
+    args: [properties],
+  });
 
-  After
-
-  */
-  // new API (Oct 2019)
-  // document = await runCallbacks({
-  //   name: `${typeName.toLowerCase()}.delete.after`,
-  //   callbacks: get(collection, "options.callbacks.delete.after", []),
-  //   iterator: document,
-  //   properties,
-  // });
-  // document = await runCallbacks({
-  //   name: "*.delete.after",
-  //   callbacks: get(globalCallbacks, "delete.after", []),
-  //   iterator: document,
-  //   properties,
-  // });
-
-  // TODO: add support for caching by other indexes to Dataloader
-  // clear cache if needed
-  // if (selector.documentId && collection.loader) {
-  //   collection.loader.clear(selector.documentId);
-  // }
-
-  /*
-
-  Async
-
-  */
-  // new API (Oct 2019)
-  // await runCallbacksAsync({
-  //   name: `${typeName.toLowerCase()}.delete.async`,
-  //   callbacks: get(collection, "options.callbacks.delete.async", []),
-  //   properties,
-  // });
-  // await runCallbacksAsync({
-  //   name: "*.delete.async",
-  //   callbacks: get(globalCallbacks, "delete.async", []),
-  //   properties,
-  // });
-  // endDebugMutator(collectionName, "Delete");
+  /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
+  runCallbacks({
+    hookName: `${model.graphql.typeName.toLowerCase()}.${mutatorName}.async`,
+    callbacks: model.graphql?.callbacks?.[mutatorName]?.async || [],
+    args: [properties],
+  });
 
   // filter out non readable fields if appliable
   if (!asAdmin) {
