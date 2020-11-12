@@ -72,8 +72,8 @@ const getInitialPaginationInput = (options, props) => {
  * @param {*} state
  * @param {*} props
  */
-export const buildMultiQueryOptions = <TData>(
-  options: Partial<UseMultiOptions<TData, MultiVariables>>,
+export const buildMultiQueryOptions = <TModel, TData>(
+  options: Partial<UseMultiOptions<TModel, TData, MultiVariables>>,
   paginationInput: any = {},
   props
 ): Partial<QueryHookOptions<TData, MultiVariables>> => {
@@ -144,7 +144,7 @@ export const fetchMoreUpdateQuery = (resolverName: string) => (
 };
 
 const buildMultiResult = <TModel, TData, TVariables>(
-  options: UseMultiOptions<TData, TVariables>,
+  options: UseMultiOptions<TModel, TData, TVariables>,
   { fragmentName, fragment, resolverName },
   { setPaginationInput, paginationInput, initialPaginationInput },
   queryResult: QueryResult<TData>
@@ -200,15 +200,16 @@ const buildMultiResult = <TModel, TData, TVariables>(
   };
 };
 
-interface UseMultiOptions<TData, TVariables>
+interface UseMultiOptions<TModel, TData, TVariables>
   extends QueryHookOptions<TData, TVariables> {
   model: VulcanGraphqlModel;
-  input?: MultiInput;
+  input?: MultiInput<TModel>;
   fragment?: string;
   fragmentName?: string;
   extraQueries?: string; // Get more data alongside the objects
   queryOptions?: QueryHookOptions<TData, TVariables>;
 } // & useQuery options?
+
 interface MultiQueryResult<TModel = any, TData = any>
   extends QueryResult<TData> {
   graphQLErrors: any;
@@ -225,13 +226,13 @@ interface MultiQueryResult<TModel = any, TData = any>
   documents?: Array<TModel>;
 }
 
-interface MultiInput extends QueryInput {}
-interface MultiVariables extends OperationVariables {
-  input: MultiInput;
+interface MultiInput<TModel = any> extends QueryInput<TModel> {}
+interface MultiVariables<TModel = any> extends OperationVariables {
+  input: MultiInput<TModel>;
 }
 
 export const useMulti = <TModel = any, TData = any>(
-  options: UseMultiOptions<TData, MultiVariables>,
+  options: UseMultiOptions<TModel, TData, MultiVariables>,
   props = {}
 ): MultiQueryResult<TModel> => {
   const initialPaginationInput = getInitialPaginationInput(options, props);
@@ -256,7 +257,7 @@ export const useMulti = <TModel = any, TData = any>(
     fragment,
   });
 
-  const queryOptions = buildMultiQueryOptions<TData>(
+  const queryOptions = buildMultiQueryOptions<TModel, TData>(
     options,
     paginationInput,
     props

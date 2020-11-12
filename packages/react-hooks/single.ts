@@ -105,13 +105,13 @@ interface SingleResult<TModel = any, TData = any> extends QueryResult<TData> {
   fragment: string;
   document: TModel; // shortcut to get the document
 }
-interface SingleInput extends QueryInput {
+interface SingleInput<TModel = any> extends QueryInput<TModel> {
   id?: string;
   allowNull?: boolean; // if false, throw an error when not found
 }
-interface UseSingleOptions {
+interface UseSingleOptions<TModel> {
   model: VulcanGraphqlModel;
-  input?: SingleInput;
+  input?: SingleInput<TModel>;
   fragment?: string;
   fragmentName?: string;
   extraQueries?: string;
@@ -123,7 +123,7 @@ interface UseSingleOptions {
  * @param props
  */
 export const useSingle = <TModel = any>(
-  options: UseSingleOptions,
+  options: UseSingleOptions<TModel>,
   props = {}
 ): SingleResult<TModel> => {
   let {
