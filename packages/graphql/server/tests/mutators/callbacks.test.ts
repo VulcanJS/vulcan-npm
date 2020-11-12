@@ -70,7 +70,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
     describe("after", () => {
       test("run asynchronous 'after' callback before document is returned", async function () {
         const after = jest.fn(async (doc) => ({ ...doc, createdAfter: 1 }));
-        const create = jest.fn(async (model, data) => ({ _id: 1, ...data }));
+        const create = jest.fn(async (data) => ({ _id: 1, ...data }));
         const Foo = createModel({
           schema,
           name: "Foo",
@@ -96,7 +96,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
           context,
           data,
         });
-        expect((create.mock.calls[0] as any)[1]).toEqual(data); // callback is NOT yet acalled
+        expect((create.mock.calls[0] as any)[0]).toEqual(data); // callback is NOT yet acalled
         expect(after).toHaveBeenCalledTimes(1);
         expect(resultDocument.createdAfter).toBe(1); // callback is called
       });
@@ -104,7 +104,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
     describe("before", () => {
       test("run asynchronous 'before' callback before document is saved", async function () {
         const before = jest.fn(async (doc) => ({ ...doc, createdBefore: 1 }));
-        const create = jest.fn(async (model, data) => ({ _id: 1, ...data }));
+        const create = jest.fn(async (data) => ({ _id: 1, ...data }));
         const Foo = createModel({
           schema,
           name: "Foo",
@@ -130,7 +130,8 @@ describe("graphql/resolvers/mutators callbacks", function () {
           context,
           data,
         });
-        expect((create.mock.calls[0] as any)[1]).toEqual({
+        const dataArg = (create.mock.calls[0] as any)[0];
+        expect(dataArg).toEqual({
           ...data,
           createdBefore: 1,
         }); // callback is called already

@@ -191,7 +191,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
 
   /* DB Operation */
   const connector = getModelConnector<TModel>(context, model);
-  let document = await connector.create(model, data);
+  let document = await connector.create(data);
 
   /* After */
   document = await runCallbacks({
@@ -354,7 +354,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   if (!isEmpty(modifier)) {
     // update document
     // and get fresh copy of document from db
-    document = await connector.update(model, selector, modifier, {
+    document = await connector.update(selector, modifier, {
       removeEmptyStrings: false,
     });
 
@@ -469,7 +469,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   });
 
   /* DB Operation */
-  await connector.delete(model, selector);
+  await connector.delete(selector);
 
   /* After */
   document = await runCallbacks({

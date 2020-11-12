@@ -212,7 +212,7 @@ describe("graphql/resolvers/mutators", function () {
     const context = merge({}, defaultContext, {
       Foo: {
         connector: {
-          create: async (model, data) => ({
+          create: async (data) => ({
             ...data, // preserve provided data => this is needed to test the callbacks
             id: "1",
           }),
@@ -220,7 +220,7 @@ describe("graphql/resolvers/mutators", function () {
             id: "1",
             foo2: "bar",
           }),
-          update: async (model, selector, modifier) => ({
+          update: async (selector, modifier) => ({
             id: "1",
             ...modifierToData(modifier), // we need to preserve the existing document
           }),
@@ -298,7 +298,7 @@ describe("graphql/resolvers/mutators", function () {
         currentUser: { _id: "42" },
         Foo: {
           model: Foo,
-          connector: { create: async (model, data) => ({ _id: 1, ...data }) },
+          connector: { create: async (data) => ({ _id: 1, ...data }) },
         },
       });
       const { data: resultDocument } = await createMutator({
@@ -314,7 +314,7 @@ describe("graphql/resolvers/mutators", function () {
     const context = {
       Foo: {
         connector: {
-          create: async (model, data) => ({
+          create: async (data) => ({
             ...data, // preserve provided data => this is needed to test the callbacks
             id: "1",
           }),
@@ -322,7 +322,7 @@ describe("graphql/resolvers/mutators", function () {
             id: "1",
             foo2: "bar",
           }),
-          update: async (model, selector, modifier) => ({
+          update: async (selector, modifier) => ({
             id: "1",
             ...modifierToData(modifier), // we need to preserve the existing document
           }),

@@ -114,9 +114,9 @@ const getMutationDocument = async ({
   const { _id, input } = variables;
   if (_id) {
     // _id bypass input
-    document = await connector.findOneById(model, _id);
+    document = await connector.findOneById(_id);
   } else {
-    const filterParameters = await connector.filter(model, input, context);
+    const filterParameters = await connector.filter(input, context);
     selector = filterParameters.selector;
     // get entire unmodified document from database
     document = await connector.findOne(model, selector);

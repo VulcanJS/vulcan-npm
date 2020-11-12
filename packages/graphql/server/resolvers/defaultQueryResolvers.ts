@@ -101,7 +101,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       const { currentUser } = context;
       // get selector and options from terms and perform Mongo query
 
-      let { selector, options } = await connector.filter(model, input, context);
+      let { selector, options } = await connector.filter(input, context);
       const filteredFields = Object.keys(selector);
 
       // make sure all filtered fields are allowed, before fetching the document
@@ -112,7 +112,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
 
       debugGraphql({ selector, options });
 
-      const docs = await connector.find(model, selector, options);
+      const docs = await connector.find(selector, options);
       // in restrictViewableFields, null value will return {} instead of [] (because it works both for array and single doc)
       let viewableDocs = [];
 
@@ -173,7 +173,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
 
       if (enableTotal) {
         // get total count of documents matching the selector
-        data.totalCount = await connector.count(model, selector);
+        data.totalCount = await connector.count(selector);
       } else {
         data.totalCount = null;
       }
@@ -213,16 +213,15 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
 
       // use Dataloader if doc is selected by _id
       if (_id) {
-        doc = await connector.findOneById(model, _id);
+        doc = await connector.findOneById(_id);
       } else {
         let { selector, options, filteredFields } = await connector.filter(
-          model,
           input,
           context
         );
         // make sure all filtered fields are actually readable, for basic roles
         checkFields(currentUser, model, filteredFields);
-        doc = await connector.findOne(model, selector, options);
+        doc = await connector.findOne(selector, options);
 
         // check again that the fields used for filtering were all valid, this time based on retrieved document
         // this second check is necessary for document based permissions like canRead:["owners", customFunctionThatNeedDoc]
