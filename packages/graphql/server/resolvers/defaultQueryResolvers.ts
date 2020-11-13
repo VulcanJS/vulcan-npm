@@ -15,13 +15,13 @@ import {
   isMemberOf,
   restrictViewableFields,
 } from "../../permissions";
-import { VulcanGraphqlModel } from "../../typings";
 import { QueryResolverDefinitions } from "../typings";
 import { Connector, ContextWithUser } from "./typings";
 import { getModelConnector } from "./context";
 import debug from "debug";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { getModel } from "./context";
+import { throwError } from "./errors";
 const debugGraphql = debug("vulcan:graphql");
 
 const defaultOptions = {
@@ -121,36 +121,36 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       // new API (Oct 2019)
       // TODO: use a reusable function instead
       const canRead = model.permissions.canRead;
-      if (canRead) {
-        if (typeof canRead === "function") {
-          // if canRead is a function, use it to filter list of documents
+      if (!canRead) {
+        return throwError(
+          `No canRead permission is set for model ${model.name}, multi resolver can't work.`
+        );
+      }
+      if (typeof canRead === "function") {
+        // if canRead is a function, use it to filter list of documents
+        viewableDocs = docs.filter((doc) =>
+          canRead({
+            user: currentUser,
+            document: doc,
+            model,
+            context,
+            operationName,
+          })
+        );
+      } else if (Array.isArray(canRead)) {
+        // we need to check for property
+        if (canRead.includes("owners")) {
+          // if canReady array includes the owners group, test each document
+          // to see if it's owned by the current user
           viewableDocs = docs.filter((doc) =>
-            canRead({
-              user: currentUser,
-              document: doc,
-              model,
-              context,
-              operationName,
-            })
+            isMemberOf(currentUser, canRead as Array<string>, doc)
           );
-        } else if (Array.isArray(canRead)) {
-          // we need to check for property
-          if (canRead.includes("owners")) {
-            // if canReady array includes the owners group, test each document
-            // to see if it's owned by the current user
-            viewableDocs = docs.filter((doc) =>
-              isMemberOf(currentUser, canRead as Array<string>, doc)
-            );
-          } else if (typeof canRead === "string") {
-            // else, we don't need a per-document check and just allow or disallow
-            // access to all documents at once
-            viewableDocs = isMemberOf(currentUser, canRead as string)
-              ? docs
-              : [];
-          }
+        } else {
+          // else, we don't need a per-document check and just allow or disallow
+          // access to all documents at once
+          viewableDocs = isMemberOf(currentUser, canRead) ? docs : [];
         }
       }
-
       // check again that the fields used for filtering were all valid, this time based on documents
       // this second check is necessary for document based permissions like canRead:["owners", customFunctionThatNeedDoc]
       if (filteredFields.length) {

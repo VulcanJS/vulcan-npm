@@ -117,7 +117,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
   context = {},
 }: CreateMutatorInput): Promise<{ data: TModel }> => {
   // we don't want to modify the original document
-  let data: VulcanDocument = clone(originalData);
+  let data: Partial<TModel> = clone(originalData);
 
   const { schema } = model;
 
@@ -174,7 +174,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
         autoValue = await schema[fieldName].onCreate(properties); // eslint-disable-line no-await-in-loop
       }
       if (typeof autoValue !== "undefined") {
-        data[fieldName] = autoValue;
+        data[fieldName as keyof TModel] = autoValue;
       }
     } catch (e) {
       console.log(`// Autovalue error on field ${fieldName}`);

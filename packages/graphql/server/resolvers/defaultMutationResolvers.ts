@@ -119,7 +119,7 @@ const getMutationDocument = async ({
     const filterParameters = await connector.filter(input, context);
     selector = filterParameters.selector;
     // get entire unmodified document from database
-    document = await connector.findOne(model, selector);
+    document = await connector.findOne(selector);
   }
   return { selector, document };
 };

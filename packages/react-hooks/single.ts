@@ -81,7 +81,7 @@ const buildQueryOptions = <TData = any, TVariables = OperationVariables>(
 };
 
 const buildSingleResult = <TModel = any, TData = any>(
-  options: UseSingleOptions,
+  options: UseSingleOptions<TModel>,
   { fragmentName, fragment, resolverName },
   queryResult: QueryResult<TData>
 ): SingleResult<TData> => {
