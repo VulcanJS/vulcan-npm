@@ -1,5 +1,11 @@
+import { RelationDefinition, VulcanFieldSchema } from "@vulcanjs/schema";
 import { CreateVariables, UpdateVariables } from "../typings";
-export type QueryResolver = Function;
+export type QueryResolver = (
+  root: any,
+  args: any,
+  context: any,
+  info?: any
+) => Promise<any>;
 export type MutationResolver<TVariables = any, TResult = any> = (
   root: any,
   variables: TVariables,

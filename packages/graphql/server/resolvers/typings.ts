@@ -1,4 +1,3 @@
-import { VulcanModel } from "@vulcanjs/model";
 import { VulcanDocument } from "@vulcanjs/schema";
 // NOTE: vulcan/graphql CAN'T depend on vulcan/mongo or mongo so do not move this code in vulcan/mongo
 // we use Mongo syntax but this is not a real dependency to Mongo, just a convenience, we only need the typings from Mongo
@@ -44,4 +43,11 @@ export interface Connector<TModel extends VulcanDocument = any> {
 export interface ContextWithUser {
   currentUser?: any;
   [key: string]: any;
+}
+
+// TODO: this also belong more to the concept of "Model" than "Schema"
+export interface RelationDefinition {
+  fieldName: string;
+  typeName: string;
+  kind: "hasOne" | "hasMany";
 }

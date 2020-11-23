@@ -1,32 +1,30 @@
-import { VulcanDocument } from "@vulcanjs/schema";
-import { getModelConnector } from "./context";
+import { RelationDefinition, VulcanDocument } from "@vulcanjs/schema";
+import { getModel, getModelConnector } from "./context";
 /*
 
 Default Relation Resolvers
 
 */
 import { restrictViewableFields } from "../../permissions";
-import { VulcanGraphqlModel } from "../../typings";
+import { QueryResolver } from "../typings";
 
-interface RelationResolverInput {
-  document: VulcanDocument;
+interface RelationInput {
+  // The initial field name (fooId)
   fieldName: string;
-  context: any;
-  relatedModel: VulcanGraphqlModel;
+  // The relation (resolved field name and type)
+  relation: RelationDefinition;
 }
-type RelationResolver = (input: RelationResolverInput) => VulcanDocument;
 
-export const hasOne: RelationResolver = async ({
-  document,
+export const hasOne = ({
   fieldName,
-  context,
-  relatedModel,
-}) => {
+  relation,
+}: RelationInput): QueryResolver => async (document, args, context) => {
   // if document doesn't have a "foreign key" field, return null
   if (!document[fieldName]) return null;
   const documentId = document[fieldName];
   // get related collection
   // get related document
+  const relatedModel = getModel(context, relation.typeName);
   const relatedDocument = await getModelConnector(
     context,
     relatedModel
@@ -39,17 +37,16 @@ export const hasOne: RelationResolver = async ({
   ) as VulcanDocument;
 };
 
-export const hasMany: RelationResolver = async ({
-  document,
+export const hasMany = ({
   fieldName,
-  context,
-  relatedModel,
-}) => {
+  relation,
+}: RelationInput): QueryResolver => async (document, args, context) => {
   // if document doesn't have a "foreign key" field, return null
   if (!document[fieldName]) return null;
   const documentId = document[fieldName];
   // get related collection
   // get related documents
+  const relatedModel = getModel(context, relation.typeName);
   const relatedDocuments = await context[
     relatedModel.name
   ].connector.findOneById(documentId);

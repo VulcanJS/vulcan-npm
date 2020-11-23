@@ -50,13 +50,27 @@ interface OnDeleteInput<TModel = any> {
   schema: VulcanSchema;
 }
 
-// TODO: this also belong more to the concept of "Model" than "Schema"
-interface Relation {
+type QueryResolver = (
+  root: any,
+  args: any,
+  context: any,
+  info?: any
+) => Promise<any>;
+export interface ResolveAsDefinition {
+  fieldName?: string;
+  typeName?: string;
+  type?: string;
+  description: string;
+  arguments: any;
+  resolver?: QueryResolver;
+  addOriginalField?: boolean;
+}
+
+export interface RelationDefinition {
   fieldName: string;
   typeName: string;
   kind: "hasOne" | "hasMany";
 }
-
 interface VulcanField<TField = any> {
   canRead?: PermissionDefinition | Array<PermissionDefinition>;
   canCreate?: PermissionDefinition | Array<PermissionDefinition>;
@@ -66,7 +80,6 @@ interface VulcanField<TField = any> {
   // insertableBy,
   // editableBy,
   // Field-level resolver
-  resolveAs?: any;
   // TODO: review those fields
   // Field is hidden in forms
   hidden?: boolean;
@@ -74,7 +87,7 @@ interface VulcanField<TField = any> {
   form?: any; // extra form properties
   inputProperties?: any; // extra form properties
   itemProperties?: any; // extra properties for the form row
-  input?: "textarea" | any; // SmartForm control (String or React component)
+  input?: "textarea" | "select" | any; // SmartForm control (String or React component)
   control?: any; // SmartForm control (String or React component) (legacy)
   order?: any; // position in the form
   group?: any; // form fieldset group
@@ -99,12 +112,16 @@ interface VulcanField<TField = any> {
   sortable?: boolean; // field can be used to order results when querying for data
 
   apiOnly?: boolean; // field should not be inserted in database
-  relation?: Relation; // define a relation to another model
 
   intl?: boolean; // set to `true` to make a field international
   isIntlData?: boolean; // marker for the actual schema fields that hold intl strings
   intlId?: boolean; // set an explicit i18n key for a field
+
+  // GRAPHQL
+  resolveAs?: Array<ResolveAsDefinition> | ResolveAsDefinition;
+  relation?: RelationDefinition; // define a relation to another model
 }
+
 export interface VulcanFieldSchema<T = any>
   extends VulcanField,
     SchemaDefinition<T> {

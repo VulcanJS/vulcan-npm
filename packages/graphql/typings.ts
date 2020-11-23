@@ -65,6 +65,13 @@ interface GraphqlServerModel {
   callbacks?: MutationCallbackDefinitions;
 }
 export interface GraphqlModel extends GraphqlSharedModel, GraphqlServerModel {}
+
+// TODO: not used yet. A schema for graphql might contain those additional fields.
+// export interface VulcanFieldSchemaGraphql extends VulcanFieldSchema {
+//   relation;
+//   resolveAs;
+// }
+// Extended model
 export interface VulcanGraphqlModel extends VulcanModel {
   graphql: GraphqlModel;
 }

@@ -535,9 +535,9 @@ describe("graphql/typeDefs", () => {
       );
     });
   });
-
+*/
   describe("resolveAs", () => {
-    test("generate a type for a field with resolveAs", () => {
+    test("generate a type for a field with resolveAs and custom resolver", () => {
       const model = FooModel({
         field: {
           type: String,
@@ -545,7 +545,7 @@ describe("graphql/typeDefs", () => {
           resolveAs: {
             fieldName: "field",
             type: "Bar",
-            resolver: async (user, args, { Users }) => {
+            resolver: async (document, args, { Users }) => {
               return "bar";
             },
           },
@@ -558,7 +558,7 @@ describe("graphql/typeDefs", () => {
       const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
       expect(normalizedSchema).toMatch("type Foo { field: Bar }");
     });
-    test("generate a type for a field with addOriginalField=true", () => {
+    test("generate a type for a resolved field with addOriginalField=true", () => {
       const model = FooModel({
         field: {
           type: String,
@@ -567,7 +567,7 @@ describe("graphql/typeDefs", () => {
           resolveAs: {
             fieldName: "resolvedField",
             type: "Bar",
-            resolver: (collection, args, context) => {
+            resolver: (document, args, context) => {
               return "bar";
             },
             addOriginalField: true,
@@ -608,6 +608,29 @@ describe("graphql/typeDefs", () => {
       expect(normalizedSchema).toMatch(
         "type Foo { field: String resolvedField: Bar anotherResolvedField: Bar }"
       );
+    });
+  });
+  describe("resolveAs - relation", () => {
+    describe("hasOne", () => {
+      test("generate a type for a field with an hasOne relation", () => {
+        const model = FooModel({
+          fieldId: {
+            type: String,
+            canRead: ["admins"],
+            relation: {
+              fieldName: "field",
+              typeName: "Bar",
+              kind: "hasOne",
+            },
+          },
+        });
+        const res = parseModel(model);
+        expect(res.typeDefs).toBeDefined();
+        // debug
+        //console.log(res.typeDefs);
+        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
+        expect(normalizedSchema).toMatch("type Foo { field: Bar }");
+      });
     });
   });
   /*
