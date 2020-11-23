@@ -140,11 +140,12 @@ export const parseFieldResolvers = ({
     };
     resolvers.push(resolverDefinition);
     // TODO: is this needed for relation?
+    // => it seems to add "Foo { resolvedField }"
     fields.mainType.push({
       //description: resolveAs.description,
       name: resolverName,
       //args: resolveAs.arguments,
-      type: fieldType,
+      type: relation.typeName, //,
       //type: fieldGraphQLType,
     });
     // resolveAs with custom resolution(s)
