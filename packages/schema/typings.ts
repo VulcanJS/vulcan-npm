@@ -15,7 +15,49 @@ export type FieldTypeName =
   | "JSON" // explicitely a JSON
   | "Date";
 type PermissionDefinition = String | Function;
-interface VulcanField {
+
+type ContextWithUser = { currentUser?: any };
+
+// TODO: did not manage to type the "model" field, because model depends on schema, so importing "VulcanModel" would create a circular dep
+// This means that field callbacks probably belong to another intermediate package, for example vulcan-graphql
+// (given that those callbacks are meant to be called by graphql mutators)
+interface OnCreateInput<TModel = any> {
+  // Data passed for creation
+  data: Partial<TModel>;
+  // originalData: VulcanDocument; // Data and original data are the same when this callback is called
+  currentUser: any;
+  model: any;
+  context: ContextWithUser;
+  schema: VulcanSchema;
+}
+interface OnUpdateInput<TModel = any> {
+  // Data passed for
+  data: Partial<TModel>; // VulcanDocument;
+  // originalData: any;
+  // Document from the database
+  originalDocument: TModel;
+  currentUser: any;
+  model: any;
+  context: ContextWithUser;
+  schema: VulcanSchema;
+}
+interface OnDeleteInput<TModel = any> {
+  // Document fetched from the database
+  document: TModel;
+  currentUser: any;
+  model: any;
+  context: ContextWithUser;
+  schema: VulcanSchema;
+}
+
+// TODO: this also belong more to the concept of "Model" than "Schema"
+interface Relation {
+  fieldName: string;
+  typeName: string;
+  kind: "hasOne" | "hasMany";
+}
+
+interface VulcanField<TField = any> {
   canRead?: PermissionDefinition | Array<PermissionDefinition>;
   canCreate?: PermissionDefinition | Array<PermissionDefinition>;
   canUpdate?: PermissionDefinition | Array<PermissionDefinition>;
@@ -32,15 +74,15 @@ interface VulcanField {
   form?: any; // extra form properties
   inputProperties?: any; // extra form properties
   itemProperties?: any; // extra properties for the form row
-  input?: any; // SmartForm control (String or React component)
+  input?: "textarea" | any; // SmartForm control (String or React component)
   control?: any; // SmartForm control (String or React component) (legacy)
   order?: any; // position in the form
   group?: any; // form fieldset group
   arrayItem?: any; // properties for array items
 
-  onCreate?: Function; // field insert callback, called server-side
-  onUpdate?: Function; // field edit callback, called server-side
-  onDelete?: Function; // field remove callback, called server-side
+  onCreate?: (input: OnCreateInput) => Promise<TField> | TField; // field insert callback, called server-side
+  onUpdate?: (input: OnUpdateInput) => Promise<TField> | TField; // field edit callback, called server-side
+  onDelete?: (input: OnDeleteInput) => Promise<void> | TField; // field remove callback, called server-side
 
   typeName?: string; // the GraphQL type to resolve the field with
   searchable?: boolean; // whether a field is searchable
@@ -57,7 +99,7 @@ interface VulcanField {
   sortable?: boolean; // field can be used to order results when querying for data
 
   apiOnly?: boolean; // field should not be inserted in database
-  relation?: any; // define a relation to another model
+  relation?: Relation; // define a relation to another model
 
   intl?: boolean; // set to `true` to make a field international
   isIntlData?: boolean; // marker for the actual schema fields that hold intl strings
@@ -84,6 +126,9 @@ export type VulcanSchema = {
 //   [key: string]: VulcanFieldSchemaEvaluated;
 // };
 
+/**
+ * A Vulcan Document
+ */
 export interface VulcanDocument {
   // Special fields
   _id?: string;

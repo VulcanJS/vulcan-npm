@@ -122,7 +122,7 @@ interface UseSingleOptions<TModel> {
  * @param options
  * @param props
  */
-export const useSingle = <TModel = any>(
+export const useSingle = <TModel = any, TName = any>(
   options: UseSingleOptions<TModel>,
   props = {}
 ): SingleResult<TModel> => {

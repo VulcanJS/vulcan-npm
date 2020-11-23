@@ -43,6 +43,22 @@ export interface MutationCallbackDefinitions {
     async?: Array<Function>;
   };
 }
+
+// Mutation/Hooks typings
+export interface CreateInput<TModel = any> {
+  data: TModel;
+}
+export interface CreateVariables<TModel = any> {
+  input: CreateInput<TModel>;
+}
+export interface UpdateInput<TModel> {
+  data: TModel;
+  id?: string;
+}
+export interface UpdateVariables<TModel = any> {
+  input: UpdateInput<TModel>;
+}
+
 interface GraphqlServerModel {
   queryResolvers: QueryResolverDefinitions;
   mutationResolvers: MutationResolverDefinitions;

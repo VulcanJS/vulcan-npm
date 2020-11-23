@@ -32,9 +32,10 @@ import { useMutation, MutationResult, gql, FetchResult } from "@apollo/client";
 import { updateClientTemplate } from "@vulcanjs/graphql";
 
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
-import { computeQueryVariables } from "./variables";
+// import { computeQueryVariables } from "./variables";
 import { computeNewDataAfterCreate } from "./create";
 import { VulcanMutationHookOptions } from "./typings";
+import { UpdateVariables } from "@vulcanjs/graphql"; // TODO: import client code only
 
 // We can reuse the same function to compute the new list after an element update
 const computeNewDataAfterUpdate: ComputeNewDataFunc = computeNewDataAfterCreate;
@@ -49,14 +50,6 @@ export const buildUpdateQuery = ({ typeName, fragmentName, fragment }) =>
     ${fragment}
   `;
 
-// Describe the update input, can be provided to the hook or the update function
-interface UpdateInput<TModel> {
-  data: TModel;
-  id?: string;
-}
-interface UpdateVariables<TModel = any> {
-  input: UpdateInput<TModel>;
-}
 // Options of the hook
 interface UseUpdateOptions<TModel = any>
   extends VulcanMutationHookOptions,
@@ -107,9 +100,10 @@ export const useUpdate = <TModel = any>(
 
   const extendedUpdateFunc = async (variables: UpdateVariables<TModel>) => {
     const executionResult = await updateFunc({
-      variables: {
+      variables,
+      /*: {
         ...computeQueryVariables(options, variables),
-      },
+      },*/
     });
     const { data } = executionResult;
     return { ...executionResult, document: data?.[resolverName]?.data };

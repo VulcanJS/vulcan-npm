@@ -165,7 +165,8 @@ Users.canDo = (user, actionOrActions) => {
  * @param {Object|string} userOrUserId - The user or their userId
  * @param {Object} document - The document to check (post, comment, user object, etc.)
  */
-export const owns = function (user: User, document: VulcanDocument) {
+export const owns = function (user: User | null, document: VulcanDocument) {
+  if (!user) return false;
   try {
     if (!!document.userId) {
       // case 1: document is a post or a comment, use userId to check
@@ -177,7 +178,7 @@ export const owns = function (user: User, document: VulcanDocument) {
         : user._id === document._id;
     }
   } catch (e) {
-    return false; // user not logged in
+    return false;
   }
 };
 
@@ -185,7 +186,7 @@ export const owns = function (user: User, document: VulcanDocument) {
  * @summary Check if a user is an admin
  * @param {Object|string} userOrUserId - The user or their userId
  */
-const isAdmin = function (user: User) {
+const isAdmin = function (user?: User) {
   try {
     return !!user && !!user.isAdmin;
   } catch (e) {
@@ -201,7 +202,7 @@ const isAdmin = function (user: User) {
  * @returns {Boolean} - true if the user can read the field, false if not
  */
 export const canReadField = function (
-  user: User,
+  user: User | null,
   field: Pick<VulcanFieldSchema, "canRead">,
   document: Object
 ) {
@@ -336,7 +337,7 @@ export const canFilterDocument = (
 export const restrictDocument = (
   document: VulcanDocument,
   schema: VulcanSchema,
-  currentUser: User
+  currentUser: User | null
 ): VulcanDocument => {
   let restrictedDocument = cloneDeep(document);
   forEachDocumentField(

@@ -1,5 +1,10 @@
+import { CreateVariables, UpdateVariables } from "../typings";
 export type QueryResolver = Function;
-export type MutationResolver = Function;
+export type MutationResolver<TVariables = any, TResult = any> = (
+  root: any,
+  variables: TVariables,
+  context: any
+) => Promise<TResult>;
 export type Resolver = QueryResolver | MutationResolver;
 export type QueryResolverMap = {
   [resolverName in string]: QueryResolver;
@@ -44,14 +49,14 @@ export interface QueryResolverDefinitions {
 }
 
 // TODO
-interface MutationResolverDefinition {
+interface MutationResolverDefinition<TArgs = any, TResult = any> {
   description?: string;
   name?: string;
-  mutation: MutationResolver;
+  mutation: MutationResolver<TArgs, TResult>;
 }
 export interface MutationResolverDefinitions {
-  create?: MutationResolverDefinition;
-  update?: MutationResolverDefinition;
+  create?: MutationResolverDefinition<CreateVariables>;
+  update?: MutationResolverDefinition<UpdateVariables>;
   upsert?: MutationResolverDefinition;
   delete?: MutationResolverDefinition;
 }
