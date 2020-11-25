@@ -3,7 +3,7 @@
  */
 import { VulcanDocument } from "@vulcanjs/schema";
 import { VulcanGraphqlModel } from "../../typings";
-import { Connector } from "./typings";
+import { Connector } from "./connector";
 
 /**
  * We expect the connectors to be already in the context

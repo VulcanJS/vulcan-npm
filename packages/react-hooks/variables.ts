@@ -1,5 +1,8 @@
 /**
  * Compute variables for mutation hooks
+ *
+ *
+ * TODO: do we still need this or can we put everything into "input" for "update" mutation?
  */
 import _merge from "lodash/merge";
 
@@ -9,7 +12,7 @@ interface VulcanMutationOptions {
 }
 /**
  * Compute the _id or input based on default options of the hooks
- * + dynamic props (for single) or dynamic arguments (for update)
+ * + dynamic props (for single) ggor dynamic arguments (for update)
  * @param {*} options
  * @param {*} argsOrProps
  */

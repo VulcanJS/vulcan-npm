@@ -35,6 +35,7 @@ import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { VulcanMutationHookOptions } from "./typings";
 
 import { addToData, matchSelector } from "./cacheUpdate";
+import { CreateVariables } from "@vulcanjs/graphql"; // TODO: we should depend only on client code
 
 import debug from "debug";
 const debugApollo = debug("vn:apollo");
@@ -99,13 +100,8 @@ const buildResult = <TModel = any>(
   return props;
 };
 
-interface CreateInput<TData = any> {
-  data: TData;
-}
-interface CreateVariables<TData = any> {
-  input: CreateInput<TData>;
-}
-interface UseCreateOptions extends VulcanMutationHookOptions {}
+interface UseCreateOptions<TData, TVariables>
+  extends VulcanMutationHookOptions<TData, TVariables> {}
 /**
  * Result of the actual create function
  */
@@ -122,7 +118,7 @@ type UseCreateResult<TModel = any, TData = any> = [
   MutationResult<TData>
 ]; // return the usual useMutation result, but with an abstracted creation function
 export const useCreate = <TModel = any>(
-  options: UseCreateOptions
+  options: UseCreateOptions<any, CreateVariables>
 ): UseCreateResult<TModel> => {
   const {
     model,
@@ -137,19 +133,22 @@ export const useCreate = <TModel = any>(
 
   const resolverName = `create${typeName}`;
 
-  const [createFunc, ...rest] = useMutation(query, {
-    update: multiQueryUpdaterAfterCreate({
-      model,
-      fragment,
-      fragmentName,
-      resolverName,
-    }),
-    ...mutationOptions,
-  });
+  const [createFunc, ...rest] = useMutation<any, CreateVariables<TModel>>(
+    query,
+    {
+      update: multiQueryUpdaterAfterCreate({
+        model,
+        fragment,
+        fragmentName,
+        resolverName,
+      }),
+      ...mutationOptions,
+    }
+  );
 
-  const extendedCreateFunc = async (args: CreateVariables) => {
+  const extendedCreateFunc = async (variables: CreateVariables<TModel>) => {
     const executionResult = await createFunc({
-      variables: { input: args.input },
+      variables: { input: variables.input },
     });
     return buildResult<TModel>(options, resolverName, executionResult);
   };

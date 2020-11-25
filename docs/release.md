@@ -28,8 +28,8 @@ yarn test
 # Deploy (Lerna will prompt questions for versionning)
 # NOTE: "yarn publish" already has a meaning so we can't override it, we need to call "yarn lerna publish"
  # NOTE: directly calling learn publish might publish only changed package, but change detection is not always reliable
- # so we force publish
-yarn lerna publish --force-publish
+ # so we may use force publish
+yarn lerna publish # --force-publish
 # Changelog update
 yarn run auto-changelog
 git commit -am "bump version"

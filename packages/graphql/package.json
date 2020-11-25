@@ -15,6 +15,9 @@
     "graphql-type-json": "^0.3.2",
     "simpl-schema": "^1.10.2"
   },
+  "peerDependencies": {
+    "apollo-server": "^2.18.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/VulcanJS/vulcan-npm.git"

@@ -4,7 +4,11 @@
  */
 import _merge from "lodash/merge";
 
-import { singleClientTemplate, VulcanGraphqlModel } from "@vulcanjs/graphql";
+import {
+  singleClientTemplate,
+  VulcanGraphqlModel,
+  SingleInput,
+} from "@vulcanjs/graphql";
 
 import { computeQueryVariables } from "./variables";
 import {
@@ -14,7 +18,6 @@ import {
   gql,
   QueryResult,
 } from "@apollo/client";
-import { QueryInput } from "./typings";
 
 const defaultInput = {
   enableCache: false,
@@ -104,10 +107,6 @@ interface SingleResult<TModel = any, TData = any> extends QueryResult<TData> {
   fragmentName: string;
   fragment: string;
   document: TModel; // shortcut to get the document
-}
-interface SingleInput<TModel = any> extends QueryInput<TModel> {
-  id?: string;
-  allowNull?: boolean; // if false, throw an error when not found
 }
 interface UseSingleOptions<TModel> {
   model: VulcanGraphqlModel;

@@ -10,18 +10,16 @@ Differences with Vulcan Meteor:
 => user has to provide a multiTypeName in the model (could be improved but automated pluralization must be avoided)
 */
 
-import {
-  useQuery,
-  gql,
-  QueryResult,
-  OperationVariables,
-  QueryHookOptions,
-} from "@apollo/client";
+import { useQuery, gql, QueryResult, QueryHookOptions } from "@apollo/client";
 import { useState } from "react";
-import { multiClientTemplate, VulcanGraphqlModel } from "@vulcanjs/graphql";
+import {
+  multiClientTemplate,
+  VulcanGraphqlModel,
+  MultiVariables,
+  MultiInput,
+} from "@vulcanjs/graphql";
 import merge from "lodash/merge";
 import get from "lodash/get";
-import { QueryInput } from "./typings";
 
 // default query input object
 const defaultInput = {
@@ -224,11 +222,6 @@ interface MultiQueryResult<TModel = any, TData = any>
   fragment: string;
   fragmentName: string;
   documents?: Array<TModel>;
-}
-
-interface MultiInput<TModel = any> extends QueryInput<TModel> {}
-interface MultiVariables<TModel = any> extends OperationVariables {
-  input: MultiInput<TModel>;
 }
 
 export const useMulti = <TModel = any, TData = any>(

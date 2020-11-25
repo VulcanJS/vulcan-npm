@@ -9,14 +9,19 @@ import merge from "lodash/merge";
 import { FindOneOptions } from "mongodb";
 import { isEmptyOrUndefined } from "@vulcanjs/utils";
 import { VulcanModel } from "@vulcanjs/model";
+import { SingleInput } from "../graphql/typings";
 
 // import { getSetting } from "./settings.js";
 // convert GraphQL selector into Mongo-compatible selector
 // TODO: add support for more than just documentId/_id and slug, potentially making conversion unnecessary
 // see https://github.com/VulcanJS/Vulcan/issues/2000
+/*
 export const convertSelector = (selector) => {
   return selector;
 };
+*/
+// Legacy support for documentId, not used anymore
+/*
 export const convertUniqueSelector = (selector) => {
   if (selector.documentId) {
     selector._id = selector.documentId;
@@ -24,6 +29,7 @@ export const convertUniqueSelector = (selector) => {
   }
   return selector;
 };
+*/
 /*
 
 Filtering
@@ -60,18 +66,9 @@ const getFieldNames = (expressionArray) => {
   });
 };
 
-interface FilterFunctionInput {
-  filter?: any;
-  limit?: any;
-  sort?: Object;
-  search?: string;
-  filterArguments?: Object;
-  offset?: any;
-  id?: string;
-}
 export const filterFunction = async (
   model: VulcanModel,
-  input: FilterFunctionInput = {},
+  input: SingleInput,
   context?: any
 ) => {
   // eslint-disable-next-line no-unused-vars
@@ -84,7 +81,7 @@ export const filterFunction = async (
     id,
   } = input;
   let selector = {};
-  let options: FindOneOptions = {
+  let options: FindOneOptions<any> = {
     sort: {},
   }; // TODO: check if FindOneOptions is the right type for this
   let filteredFields = [];

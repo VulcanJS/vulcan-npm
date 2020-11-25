@@ -94,7 +94,7 @@ const validateMutationData = async ({
   });
   const validationErrors = [
     ...simpleSchemaValidationErrors,
-    customValidationErrors,
+    ...customValidationErrors,
   ];
   if (validationErrors.length) {
     throwError({
@@ -170,7 +170,6 @@ export const createMutator = async <TModel extends VulcanDocument>({
       let autoValue;
       // TODO: run for nested
       if (schema[fieldName].onCreate) {
-        // OpenCRUD backwards compatibility: keep both newDocument and data for now, but phase out newDocument eventually
         autoValue = await schema[fieldName].onCreate(properties); // eslint-disable-line no-await-in-loop
       }
       if (typeof autoValue !== "undefined") {
@@ -203,7 +202,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
 
   /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
   runCallbacks({
-    hookName: `${model.graphql.typeName.toLowerCase()}.${mutatorName}.async`,
+    hookName: `${typeName}.${mutatorName}.async`,
     callbacks: model.graphql?.callbacks?.[mutatorName]?.async || [],
     args: [properties],
   });
@@ -236,7 +235,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   model,
   dataId,
   selector,
-  data,
+  data: dataInput,
   set,
   // FIXME: babel does build, probably because "set" is reserved
   // set = {},
@@ -259,7 +258,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   // OpenCRUD backwards compatibility
   // TODO: what can we remove?
   selector = selector || { _id: dataId };
-  data = { ...data } || modifierToData({ $set: set, $unset: unset });
+  let data = { ...dataInput } || modifierToData({ $set: set, $unset: unset });
 
   // startDebugMutator(collectionName, "Update", { selector, data });
 
@@ -269,7 +268,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 
   // get original document from database or arguments
   const connector = getModelConnector(context, model);
-  const currentDocument = connector.findOne(model, selector);
+  const currentDocument = await connector.findOne(model, selector);
 
   if (!currentDocument) {
     throw new Error(

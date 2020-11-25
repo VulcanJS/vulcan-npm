@@ -13,6 +13,7 @@ import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { MutationResolverDefinitions } from "../typings";
 import { VulcanGraphqlModel } from "../../typings";
+import { isMemberOf } from "../../permissions";
 
 const defaultOptions = {
   create: true,
@@ -36,8 +37,8 @@ const operationChecks: {
 };
 
 interface MutationCheckOptions {
-  user: any;
-  document: VulcanDocument;
+  user?: any;
+  document?: VulcanDocument;
   model: VulcanGraphqlModel;
   context: any;
   operationName: OperationName;
@@ -51,12 +52,11 @@ export const performMutationCheck = (options: MutationCheckOptions) => {
   const { user, document, model, context, operationName } = options;
   const { typeName } = model.graphql;
   const { Users } = context;
-  const documentId = document._id;
   const permissionsCheck = model.permissions?.[operationChecks[operationName]];
   let allowOperation = false;
   const fullOperationName = `${typeName}:${operationName}`;
+  const documentId = document?._id;
   const data = { documentId, operationName: fullOperationName };
-
   // 1. if no permission has been defined, throw error
   if (!permissionsCheck) {
     throwError({ id: "app.no_permissions_defined", data });
@@ -69,7 +69,7 @@ export const performMutationCheck = (options: MutationCheckOptions) => {
   if (typeof permissionsCheck === "function") {
     allowOperation = permissionsCheck(options);
   } else if (Array.isArray(permissionsCheck)) {
-    allowOperation = Users.isMemberOf(user, permissionsCheck, document);
+    allowOperation = isMemberOf(user, permissionsCheck, document);
   }
 
   // 3. if permission check is defined but fails, disallow operation
@@ -143,7 +143,7 @@ export function buildDefaultMutationResolvers({
     mutations.create = {
       description: `Mutation for creating new ${typeName} documents`,
       name: getCreateMutationName(typeName),
-      async mutation(root, { data }, context: ContextWithUser) {
+      async mutation(root, { input: { data } }, context: ContextWithUser) {
         const model = getModel(context, typeName);
         const { currentUser } = context;
 
@@ -170,14 +170,11 @@ export function buildDefaultMutationResolvers({
     mutations.update = {
       description: `Mutation for updating a ${typeName} document`,
       name: getUpdateMutationName(typeName),
-      async mutation(
-        root,
-        { input, _id: argsId, data },
-        context: ContextWithUser
-      ) {
+      async mutation(root, { input }, context: ContextWithUser) {
         const model = getModel(context, typeName);
         const { currentUser } = context;
-        const _id = argsId || (data && typeof data === "object" && data._id); // use provided id or documentId if available
+        const data = input.data;
+        const _id = input.id || (data && typeof data === "object" && data._id); // use provided id or documentId if available
 
         const { document, selector } = await getMutationDocument({
           variables: {

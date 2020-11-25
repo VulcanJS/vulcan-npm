@@ -16,32 +16,20 @@ import {
   restrictViewableFields,
 } from "../../permissions";
 import { QueryResolverDefinitions } from "../typings";
-import { Connector, ContextWithUser } from "./typings";
+import { Connector } from "./connector";
+import { ContextWithUser } from "./typings";
 import { getModelConnector } from "./context";
 import debug from "debug";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { getModel } from "./context";
 import { throwError } from "./errors";
+import { MultiVariables, SingleVariables } from "../../typings";
 const debugGraphql = debug("vulcan:graphql");
 
 const defaultOptions = {
   cacheMaxAge: 300,
 };
 
-// TODO: check if we can unify with the corresponding hook typings
-interface MultiInput {
-  filter?: Object;
-  sort?: Object;
-  limit?: number;
-  offset?: number;
-  search?: string;
-  _id?: string;
-  enableCache?: boolean;
-  enableTotal?: boolean;
-}
-interface MultiVariables {
-  input: MultiInput;
-}
 // TODO: probably need to be shared with react multi hook
 interface MultiResolverOutput<TModel> {
   totalCount?: number;
@@ -53,14 +41,6 @@ interface BuildDefaultQueryResolversInput {
   options?: any;
 }
 
-interface SingleInput {
-  enableCache?: boolean;
-  allowNull?: boolean;
-}
-interface SingleVariables {
-  _id?: string;
-  input?: SingleInput;
-}
 interface SingleResolverOutput<TModel> {
   result: TModel;
 }

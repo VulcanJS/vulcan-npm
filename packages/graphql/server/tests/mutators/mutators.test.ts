@@ -310,7 +310,7 @@ describe("graphql/resolvers/mutators", function () {
       expect(resultDocument.userId).toEqual("42");
     });
   });
-  describe("permissions", () => {
+  describe("permissions and validation", () => {
     const context = {
       Foo: {
         connector: {
@@ -339,37 +339,51 @@ describe("graphql/resolvers/mutators", function () {
       asAdmin: false,
       currentUser: null,
     };
-    test("filter out non allowed field before returning new document", async () => {
-      const { data: resultDocument } = await createMutator({
-        ...defaultArgs,
-        data: { foo2: "bar" },
+    describe("fields filtering", () => {
+      test("filter out non allowed field before returning new document", async () => {
+        const { data: resultDocument } = await createMutator({
+          ...defaultArgs,
+          data: { foo2: "bar" },
+        });
+        expect(resultDocument.privateAuto).not.toBeDefined();
       });
-      expect(resultDocument.privateAuto).not.toBeDefined();
+      test("filter out non allowed field before returning updated document", async () => {
+        const { data: foo } = await createMutator({
+          ...defaultArgs,
+          data: { foo2: "bar" },
+        });
+        const { data: resultDocument } = await updateMutator({
+          ...defaultArgs,
+          dataId: foo._id,
+          data: { foo2: "update" },
+        });
+        expect(resultDocument.privateAuto).not.toBeDefined();
+      });
+      test("filter out non allowed field before returning deleted document", async () => {
+        const { data: foo } = await createMutator({
+          ...defaultArgs,
+          data: { foo2: "bar" },
+        });
+        const { data: resultDocument } = await deleteMutator({
+          ...defaultArgs,
+          selector: {
+            documentId: foo._id,
+          },
+        });
+        expect(resultDocument.privateAuto).not.toBeDefined();
+      });
     });
-    test("filter out non allowed field before returning updated document", async () => {
-      const { data: foo } = await createMutator({
-        ...defaultArgs,
-        data: { foo2: "bar" },
+    describe("schema based validation", () => {
+      const rawDocument = { foo2: "bar" };
+      const expectedDocument = { foo2: "bar", publicAuto: "CREATED" };
+      test("can create a valid document with no permission error", async () => {
+        const { data: createdDocument } = await createMutator({
+          ...defaultArgs,
+          validate: true,
+          data: rawDocument,
+        });
+        expect(createdDocument).toEqual(expectedDocument);
       });
-      const { data: resultDocument } = await updateMutator({
-        ...defaultArgs,
-        dataId: foo._id,
-        data: { foo2: "update" },
-      });
-      expect(resultDocument.privateAuto).not.toBeDefined();
-    });
-    test("filter out non allowed field before returning deleted document", async () => {
-      const { data: foo } = await createMutator({
-        ...defaultArgs,
-        data: { foo2: "bar" },
-      });
-      const { data: resultDocument } = await deleteMutator({
-        ...defaultArgs,
-        selector: {
-          documentId: foo._id,
-        },
-      });
-      expect(resultDocument.privateAuto).not.toBeDefined();
     });
   });
 });

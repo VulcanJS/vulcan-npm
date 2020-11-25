@@ -16,12 +16,15 @@ import {
   hasNestedSchema,
   getArrayChildSchema,
   hasArrayNestedChild,
+  RelationDefinition,
 } from "@vulcanjs/schema";
-import * as relations from "./resolvers/relationResolvers";
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
 import { capitalize } from "@vulcanjs/utils";
-import { AnyResolverMap, ResolverMap } from "./typings";
+import { AnyResolverMap, QueryResolver, ResolverMap } from "./typings";
+// import { buildResolveAsResolver } from "./resolvers/resolveAsResolver";
+import * as relations from "./resolvers/relationResolvers";
+import { withFieldPermissionCheckResolver } from "./resolvers/fieldResolver";
 
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (
@@ -53,8 +56,7 @@ interface ResolveAsCommon {
   type?: string;
   description: string;
   arguments: any;
-  resolver?: Function;
-  relation?: any;
+  resolver?: QueryResolver;
 }
 interface ResolveAsRelation extends ResolveAsCommon {}
 interface ResolveAsCustom extends ResolveAsCommon {}
@@ -84,6 +86,7 @@ interface GetResolveAsFieldsOutput {
   };
   resolvers: Array<AnyResolverMap>;
 }
+
 // Generate GraphQL fields and resolvers for a field with a specific resolveAs
 // resolveAs allow to generate "virtual" fields that are queryable in GraphQL but does not exist in the database
 export const parseFieldResolvers = ({
@@ -100,68 +103,93 @@ export const parseFieldResolvers = ({
   };
   const resolvers = [];
 
-  const resolveAsArray = Array.isArray(field.resolveAs)
-    ? field.resolveAs
-    : [field.resolveAs];
+  const relation = field.relation;
+  const resolveAsArray = field.resolveAs
+    ? Array.isArray(field.resolveAs)
+      ? field.resolveAs
+      : [field.resolveAs]
+    : [];
 
-  // check if original (main schema) field should be added to GraphQL schema
-  const addOriginalField = shouldAddOriginalField(fieldName, field);
-  if (addOriginalField) {
-    fields.mainType.push({
-      description: fieldDescription,
-      name: fieldName,
-      args: fieldArguments,
-      type: fieldType,
-      directive: fieldDirective,
-    });
+  if (!(resolveAsArray.length || relation)) {
+    throw new Error(
+      `Neither resolver nor relation is defined for field ${fieldName} of model ${typeName}.`
+    );
+  }
+  // NOTE: technically, we could support it as long as the resolveAs are creating fields that don't
+  // clash with the relation
+  // But until we have a more powerful check for this we might prefer to protect the user from misuse
+  if (resolveAsArray.length && relation) {
+    throw new Error(
+      `Defined both a custom resolver and a relation for field ${fieldName} of model ${typeName}.`
+    );
   }
 
-  resolveAsArray.forEach((resolveAs) => {
-    // get resolver name from resolveAs object, or else default to field name
-    const resolverName = resolveAs.fieldName || fieldName;
-
-    // use specified GraphQL type or else convert schema type
-    const fieldGraphQLType = resolveAs.typeName || resolveAs.type || fieldType;
-
-    // if resolveAs is an object, first push its type definition
-    // include arguments if there are any
-    // note: resolved fields are not internationalized
-    fields.mainType.push({
-      description: resolveAs.description,
-      name: resolverName,
-      args: resolveAs.arguments,
-      type: fieldGraphQLType,
+  // relation
+  if (relation) {
+    const relationResolver = relations[relation.kind]({
+      fieldName,
+      relation,
     });
-
+    const resolver = withFieldPermissionCheckResolver(field, relationResolver);
     // then build actual resolver object and pass it to addGraphQLResolvers
-    const resolver = {
+    const resolverName = relation.fieldName;
+    const resolverDefinition = {
       [typeName]: {
-        [resolverName]: (document, args, context, info) => {
-          const { Users, currentUser } = context;
-          // check that current user has permission to access the original non-resolved field
-          const canReadField = Users.canReadField(currentUser, field, document);
-          const { resolver, relation } = resolveAs;
-          if (canReadField) {
-            if (resolver) {
-              return resolver(document, args, context, info);
-            } else if (relation) {
-              return relations[relation]({
-                document,
-                args,
-                context,
-                info,
-                fieldName,
-                typeName: fieldGraphQLType,
-              });
-            }
-          } else {
-            return null;
-          }
-        },
+        [resolverName]: resolver,
       },
     };
-    resolvers.push(resolver);
-  });
+    resolvers.push(resolverDefinition);
+    // TODO: is this needed for relation?
+    // => it seems to add "Foo { resolvedField }"
+    fields.mainType.push({
+      //description: resolveAs.description,
+      name: resolverName,
+      //args: resolveAs.arguments,
+      type: relation.typeName, //,
+      //type: fieldGraphQLType,
+    });
+    // resolveAs with custom resolution(s)
+  } else if (resolveAsArray) {
+    // check if original (main schema) field should be added to GraphQL schema
+    const addOriginalField = shouldAddOriginalField(fieldName, field);
+    if (addOriginalField) {
+      fields.mainType.push({
+        description: fieldDescription,
+        name: fieldName,
+        args: fieldArguments,
+        type: fieldType,
+        directive: fieldDirective,
+      });
+    }
+
+    resolveAsArray.forEach((resolveAs) => {
+      // get resolver name from resolveAs object, or else default to field name
+      const resolverName = resolveAs.fieldName || fieldName;
+      const customResolver = resolveAs.resolver;
+
+      // use specified GraphQL type or else convert schema type
+      const fieldGraphQLType =
+        resolveAs.typeName || resolveAs.type || fieldType;
+
+      // if resolveAs is an object, first push its type definition
+      // include arguments if there are any
+      // note: resolved fields are not internationalized
+      fields.mainType.push({
+        description: resolveAs.description,
+        name: resolverName,
+        args: resolveAs.arguments,
+        type: fieldGraphQLType,
+      });
+      // then build actual resolver object and pass it to addGraphQLResolvers
+      const resolver = withFieldPermissionCheckResolver(field, customResolver);
+      const resolverDefinition = {
+        [typeName]: {
+          [resolverName]: resolver,
+        },
+      };
+      resolvers.push(resolverDefinition);
+    });
+  }
   return { fields, resolvers };
 };
 
@@ -421,8 +449,8 @@ export const parseSchema = (
         ? [{ name: "locale", type: "String" }]
         : [];
 
-      // if field has a resolveAs, push it to schema
-      if (field.resolveAs) {
+      // if field has a resolveAs or relation, push it to schema
+      if (field.resolveAs || field.relation) {
         const {
           fields: resolveAsFields,
           resolvers: resolveAsResolvers,
