@@ -13,16 +13,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@apollo/client": "^3.2.0",
     "@vulcanjs/graphql": "^0.1.6-alpha.2",
     "graphql-tag": "^2.11.0",
     "lodash": "^4.17.20",
     "mingo": "^3.0.6"
   },
   "peerDependencies": {
-    "@apollo/client": "^3.2.0",
-    "react": "^16.13.1 || ^17.0.01",
-    "react-dom": "^16.13.1 || ^17.0.1"
+    "@apollo/client": ">= 3.2.0",
+    "react": ">= 16.13.1",
+    "react-dom": ">= 16.13.1"
   },
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {

@@ -629,7 +629,9 @@ describe("graphql/typeDefs", () => {
         // debug
         //console.log(res.typeDefs);
         const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
-        expect(normalizedSchema).toMatch("type Foo { field: Bar }");
+        expect(normalizedSchema).toMatch(
+          "type Foo { fieldId: String field: Bar }"
+        );
       });
     });
   });

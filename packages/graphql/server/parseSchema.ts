@@ -139,8 +139,15 @@ export const parseFieldResolvers = ({
       },
     };
     resolvers.push(resolverDefinition);
-    // TODO: is this needed for relation?
-    // => it seems to add "Foo { resolvedField }"
+    // add the original field systematically for relations
+    fields.mainType.push({
+      description: fieldDescription,
+      name: fieldName,
+      args: fieldArguments,
+      type: fieldType,
+      directive: fieldDirective,
+    });
+    // add the resolved field "Foo { resolvedField }"
     fields.mainType.push({
       //description: resolveAs.description,
       name: resolverName,
