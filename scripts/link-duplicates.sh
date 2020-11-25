@@ -5,5 +5,5 @@
 # This guarantees we use the same peer dependencies when running the packages
 cd ./node_modules/react && yarn link && cd ../..
 cd ./node_modules/react-dom && yarn link && cd ../..
-cd ./node_modules/@apollo/client && yarn link && cd ../..
+cd ./node_modules/@apollo/client && yarn link && cd ../../..
 cd ./node_modules/mongoose && yarn link && cd ../..

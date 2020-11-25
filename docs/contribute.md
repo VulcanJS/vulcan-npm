@@ -59,3 +59,54 @@ You either forgot to call `yarn build` or did a direct import (`import foobar fr
 
 Don't forget to build the code.
 If you write a test for package "React Hooks", and discover and fix a bug in package "GraphQL", you'll need to rebuild the "GraphQL" package to get the freshest version.
+
+#### Weird behaviour when linking with React, Apollo, Mongoose.
+
+Define Peer Dependencies correctly. Many packages have side effects that are problematic if you duplicate them. Those packages should be
+peer-dependencies in the relevant `package.json`. You may add them at the root of the project too in development.
+
+##### Example with Mongoose
+
+###### Make it a peer dependency
+
+In `packages/mongo/package.json`:
+
+```
+peerDependencies: {
+    mongoose: "> 5"
+}
+```
+
+The end application will have only 1 version of Mongoose thanks to this.
+In `./package.json`:
+
+```
+devDependencies: {
+    "mongoose": "^5.10.16"
+}
+```
+
+###### Setup for local install
+
+This install `mongoose` as a global dev dependency so we can write unit tests for instance.
+
+And now enable local development:
+In `scripts/link-duplicates`:
+
+```
+cd ./node_modules/@apollo/client && yarn link && cd ../..
+```
+
+When you link the packages for local development, the `mongoose` from `vulcan-npm` will be used. This prevents potential conflicts.
+
+In your app:
+
+```
+yarn link mongoose
+```
+
+It forces your app to use the `mongoose` install from `vulcan-npm`.
+
+This guarantees that you use one and only one version of Mongoose.
+
+Note: we'd like to simplify this process in the future, maybe by detecting peer dependencies automatically.
