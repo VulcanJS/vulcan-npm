@@ -27,5 +27,8 @@ yarn build
 yarn test
 # Deploy (Lerna will prompt questions for versionning)
 # NOTE: "yarn publish" already has a meaning so we can't override it, we need to call "yarn lerna publish"
-yarn lerna publish
+yarn lerna version patch --force-publish=* # update all versions, replace "patch" by minor/major if necessary
+yarn lerna publish from-git --yes
+ # publish all packages based on version
+ # NOTE: directly calling learn publish might publish only changed package, but change detection is not always reliable
 ```
