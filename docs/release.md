@@ -34,4 +34,5 @@ yarn lerna publish # --force-publish
 yarn run auto-changelog
 git commit -am "bump version"
 git push
+git push --tags
 ```

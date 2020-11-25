@@ -2,6 +2,9 @@
   "name": "@vulcanjs/graphql",
   "version": "0.1.4",
   "main": "./dist/index.js",
+  "files": [
+    "./dist"
+  ],
   "description": "Vulcan graphQL schema generator",
   "author": "eric-burel <eb@lebrun-burel.com>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",

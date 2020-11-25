@@ -3,7 +3,7 @@
   "version": "0.1.4",
   "description": "Connect to an existing Vulcan backend using hooks",
   "main": "./dist/index.js",
-  "exports": [
+  "files": [
     "./dist"
   ],
   "scripts": {

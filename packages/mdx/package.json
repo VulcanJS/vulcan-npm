@@ -3,6 +3,9 @@
   "version": "0.1.3",
   "description": "Vulcan MDX (Markdown + JSX) helpers",
   "main": "./dist/index.js",
+  "files": [
+    "./dist"
+  ],
   "author": "eric-burel <eb@lebrun-burel.com>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
