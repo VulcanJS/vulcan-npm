@@ -59,6 +59,60 @@ export interface UpdateVariables<TModel = any> {
   input: UpdateInput<TModel>;
 }
 
+type MongoLikeSortOption = "asc" | "desc";
+type MongoLikeCondition =
+  | "_eq"
+  | "_gt"
+  | "_gte"
+  | "_in"
+  | "_lt"
+  | "_lte"
+  | "_neq"
+  | "_nin"
+  | "_is_null"
+  | "_is"
+  | "_contains"
+  | "_like";
+
+type MongoLikeOperator = "_and" | "_or" | "_not";
+
+import { OperationVariables } from "@apollo/client";
+type MongoLikeSelector = {
+  [key in MongoLikeCondition]?: any;
+} &
+  {
+    [key in MongoLikeOperator]?: Array<any>;
+  };
+export interface SingleInput<TModel = any> extends QueryInput<TModel> {
+  id?: string;
+  allowNull?: boolean; // if false, throw an error when not found
+  filterArguments?: Object;
+}
+export interface SingleVariables<TModel = any> extends OperationVariables {
+  _id?: string;
+  input?: SingleInput;
+}
+export interface MultiInput<TModel = any> extends QueryInput<TModel> {
+  enableTotal?: boolean;
+}
+export interface MultiVariables<TModel = any> extends OperationVariables {
+  input: MultiInput<TModel>;
+}
+// Generic query inputs
+export interface QueryInput<TModel = any> extends FilterableInput<TModel> {
+  enableCache?: boolean; // cache the query, server-side
+}
+// Minimum API for filter function
+export interface FilterableInput<TModel = any> {
+  id?: string;
+  filter?: MongoLikeSelector &
+    { [fieldName in keyof TModel]?: MongoLikeSelector };
+  sort?: { [fieldName in keyof TModel]?: MongoLikeSortOption };
+  limit?: number;
+  search?: string;
+  offset?: number;
+}
+
 interface GraphqlServerModel {
   queryResolvers: QueryResolverDefinitions;
   mutationResolvers: MutationResolverDefinitions;

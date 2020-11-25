@@ -99,8 +99,13 @@ describe("vulcan/mongo/connector", () => {
       const foundDoc = await connector.findOne({ _id: createdDocs[1]._id });
       expect(foundDoc).toEqual(createdDocs[1]);
     });
-    test.skip("filter", async () => {
-      throw new Error("not yet implemented");
+    test("filter", async () => {
+      const result = await connector.filter({}, {});
+      expect(result).toEqual({
+        filteredFields: [],
+        options: { limit: 1000, sort: { createdAt: -1 } },
+        selector: {},
+      });
     });
     test("update", async () => {
       const docToCreate = { text: "hello" };

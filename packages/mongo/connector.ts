@@ -1,4 +1,4 @@
-import { Connector, MongoSelector } from "@vulcanjs/graphql";
+import { Connector } from "@vulcanjs/graphql";
 import { VulcanModel } from "@vulcanjs/model";
 // Compute a Mongo selector
 import { filterFunction } from "./mongoParams";
@@ -49,7 +49,7 @@ export const createMongooseConnector = <TModel = any>(
       return await filterFunction(model, input, context);
       //return { selector: {}, filteredFields: [], options: {} };
     },
-    count: async (selector?: MongoSelector) => {
+    count: async (selector) => {
       const count = await MongooseModel.count(selector);
       return count;
     },

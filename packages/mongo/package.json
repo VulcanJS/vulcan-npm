@@ -18,6 +18,7 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
+    "@vulcanjs/graphql": "^0.1.0",
     "@vulcanjs/model": "^0.1.0",
     "@vulcanjs/utils": "^0.1.0",
     "lodash": "^4.17.20",

@@ -1,7 +1,11 @@
 import { VulcanDocument } from "@vulcanjs/schema";
+import { FilterableInput } from "../../typings";
+
 // NOTE: vulcan/graphql CAN'T depend on vulcan/mongo or mongo so do not move this code in vulcan/mongo
 // we use Mongo syntax but this is not a real dependency to Mongo, just a convenience, we only need the typings from Mongo
+// Converted from a MongoLikeSelector
 export type MongoSelector = Object;
+export type Foo = "bar";
 
 /**
  * A database abstraction compatible with Vulcan
@@ -11,10 +15,10 @@ export interface Connector<TModel extends VulcanDocument = any> {
    * Compute the relevant selectors
    */
   filter: (
-    input: any,
+    input: FilterableInput<TModel>,
     context: any
   ) => Promise<{
-    selector: MongoSelector;
+    selector: MongoSelector; // MongoLikeSelector is the input, MongoSelector the output
     options: any;
     filteredFields: Array<any>; // TODO: in defaultQueryResolvers we do filteredFields = Object.keys(selector), so what is this parameter?
   }>;
