@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/model",
-  "version": "0.1.6-alpha.1",
+  "version": "0.1.6-alpha.2",
   "description": "Vulcan domain models built from schema",
   "main": "./dist/index.js",
   "files": [

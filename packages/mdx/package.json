@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/mdx",
-  "version": "0.1.6-alpha.1",
+  "version": "0.1.6-alpha.2",
   "description": "Vulcan MDX (Markdown + JSX) helpers",
   "main": "./dist/index.js",
   "files": [
