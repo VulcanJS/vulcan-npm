@@ -10,10 +10,12 @@
     "@vulcanjs/model": "^0.1.0",
     "@vulcanjs/schema": "^0.1.0",
     "@vulcanjs/utils": "^0.1.0",
-    "apollo-server": "^2.18.2",
     "graphql-date": "^1.0.3",
     "graphql-type-json": "^0.3.2",
     "simpl-schema": "^1.10.2"
+  },
+  "peerDependencies": {
+    "apollo-server": "^2.18.2"
   },
   "repository": {
     "type": "git",
