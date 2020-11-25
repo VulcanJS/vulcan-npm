@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap && yarn run build",
     "build": "lerna run build",
     "link": "lerna exec yarn link && ./scripts/link-duplicates.sh",
     "clean": "rm -Rf ./node_modules ./packages/*/dist ./packages/*/node_modules",
