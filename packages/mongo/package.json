@@ -21,10 +21,15 @@
     "@vulcanjs/model": "^0.1.0",
     "@vulcanjs/utils": "^0.1.0",
     "lodash": "^4.17.20",
-    "mongodb": "^3.6.2"
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.15"
   },
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.10.1",
+    "mongodb-memory-server": "^6.9.2"
   }
 }
