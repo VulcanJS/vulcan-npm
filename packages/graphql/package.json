@@ -3,7 +3,7 @@
   "version": "0.1.6-alpha.0",
   "main": "./dist/index.js",
   "files": [
-    "./dist/*"
+    "./dist/**/*"
   ],
   "description": "Vulcan graphQL schema generator",
   "author": "eric-burel <eb@lebrun-burel.com>",

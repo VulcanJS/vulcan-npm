@@ -4,7 +4,7 @@
   "description": "Vulcan helpers",
   "main": "./dist/index.js",
   "files": [
-    "./dist/*"
+    "./dist/**/*"
   ],
   "author": "eric-burel <eb@lebrun-burel.com>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
