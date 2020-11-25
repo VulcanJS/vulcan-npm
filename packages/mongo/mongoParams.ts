@@ -84,7 +84,7 @@ export const filterFunction = async (
     id,
   } = input;
   let selector = {};
-  let options: FindOneOptions = {
+  let options: FindOneOptions<any> = {
     sort: {},
   }; // TODO: check if FindOneOptions is the right type for this
   let filteredFields = [];

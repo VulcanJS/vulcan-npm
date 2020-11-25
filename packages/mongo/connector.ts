@@ -1,4 +1,4 @@
-import { Connector } from "@vulcanjs/graphql";
+import { Connector, MongoSelector } from "@vulcanjs/graphql";
 import { VulcanModel } from "@vulcanjs/model";
 // Compute a Mongo selector
 import { filterFunction } from "./mongoParams";
@@ -49,7 +49,7 @@ export const createMongooseConnector = <TModel = any>(
       return await filterFunction(model, input, context);
       //return { selector: {}, filteredFields: [], options: {} };
     },
-    count: async (selector) => {
+    count: async (selector?: MongoSelector) => {
       const count = await MongooseModel.count(selector);
       return count;
     },
@@ -58,11 +58,27 @@ export const createMongooseConnector = <TModel = any>(
       const createdDocument = await mongooseDocument.save();
       return createdDocument && createdDocument.toJSON();
     },
-    update: async () => {
-      throw new Error("update not yet implemented in Mongoose connector");
+    update: async (selector, modifier, options) => {
+      if (options) {
+        console.warn(
+          "update do not implement options yet",
+          "selector:",
+          selector,
+          "options:",
+          options
+        );
+      }
+      /*const updateResult = */ await MongooseModel.update(selector, modifier);
+      // NOTE: update result is NOT the updated document but the number of updated docs
+      // we need to fetch it again
+      const updatedDocument = await MongooseModel.findOne(selector).exec();
+      return updatedDocument && updatedDocument.toJSON();
     },
-    delete: async () => {
-      throw new Error("delete not yet implemented in Mongoose connector");
+    delete: async (selector) => {
+      const deletedRawDocument = await MongooseModel.findOne(selector).exec();
+      const deletedDocument = deletedRawDocument && deletedRawDocument.toJSON();
+      await MongooseModel.remove(selector);
+      return deletedDocument;
     },
   };
 };
