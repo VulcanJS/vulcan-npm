@@ -1,3 +1,4 @@
+import { DocumentNode } from "graphql";
 import { MutationHookOptions } from "@apollo/client";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 
@@ -6,7 +7,7 @@ export interface VulcanMutationHookOptions<
   TVariables = Record<string, any>
 > {
   model: VulcanGraphqlModel;
-  fragment?: string;
+  fragment?: string | DocumentNode;
   fragmentName?: string;
   mutationOptions?: MutationHookOptions<TData, TVariables>;
 }

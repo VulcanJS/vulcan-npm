@@ -10,6 +10,7 @@ Differences with Vulcan Meteor:
 => user has to provide a multiTypeName in the model (could be improved but automated pluralization must be avoided)
 */
 
+import { DocumentNode } from "graphql";
 import { useQuery, gql, QueryResult, QueryHookOptions } from "@apollo/client";
 import { useState } from "react";
 import {
@@ -31,7 +32,7 @@ const defaultInput = {
 interface BuildMultiQueryArgs {
   model: VulcanGraphqlModel;
   fragmentName?: string;
-  fragment?: string;
+  fragment?: string | DocumentNode;
   extraQueries?: string;
 }
 export const buildMultiQuery = ({
@@ -202,7 +203,7 @@ interface UseMultiOptions<TModel, TData, TVariables>
   extends QueryHookOptions<TData, TVariables> {
   model: VulcanGraphqlModel;
   input?: MultiInput<TModel>;
-  fragment?: string;
+  fragment?: string | DocumentNode;
   fragmentName?: string;
   extraQueries?: string; // Get more data alongside the objects
   queryOptions?: QueryHookOptions<TData, TVariables>;
