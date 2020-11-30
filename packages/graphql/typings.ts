@@ -22,12 +22,35 @@ interface GraphqlSharedModel {
 }
 
 export type DefaultMutatorName = "create" | "update" | "delete";
+
+// Callbacks typings
+type MaybeAsync<T> = T | Promise<T>;
+interface CreateProperties {
+  data: any;
+  originalData: VulcanDocument;
+  currentUser: any;
+  model: VulcanGraphqlModel;
+  context: ContextWithUser;
+  schema: VulcanSchema;
+}
+type CreateBeforeCb = (
+  data: VulcanDocument,
+  properties: CreateProperties
+) => MaybeAsync<VulcanDocument>;
+type CreateAfterCb = (
+  data: VulcanDocument,
+  properties: CreateProperties
+) => MaybeAsync<VulcanDocument>;
+type CreateAsyncCb = (
+  data: any, // TODO: not sure what happens when no iterator is provided in runCallbacks
+  properties: CreateProperties
+) => MaybeAsync<void>;
 // type CreateCallback = (document: VulcanDocument) => VulcanDocument | Promise<VulcanDocument>
 export interface MutationCallbackDefinitions {
   create?: {
     validate?: Array<Function>;
-    before?: Array<Function>;
-    after?: Array<Function>;
+    before?: Array<CreateBeforeCb>;
+    after?: Array<CreateAfterCb>;
     async?: Array<Function>;
   };
   update?: {
@@ -77,6 +100,8 @@ type MongoLikeCondition =
 type MongoLikeOperator = "_and" | "_or" | "_not";
 
 import { OperationVariables } from "@apollo/client";
+import { VulcanDocument, VulcanSchema } from "@vulcanjs/schema";
+import { ContextWithUser } from "./server/resolvers";
 type MongoLikeSelector = {
   [key in MongoLikeCondition]?: any;
 } &

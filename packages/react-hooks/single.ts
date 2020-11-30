@@ -16,8 +16,9 @@ import {
   useQuery,
   QueryOptions,
   gql,
-  QueryResult,, DocumentNode
+  QueryResult,
 } from "@apollo/client";
+import { Fragment } from "./typings";
 
 const defaultInput = {
   enableCache: false,
@@ -32,7 +33,7 @@ export const buildSingleQuery = ({
 }: {
   typeName: string;
   fragmentName: string;
-  fragment: string;
+  fragment: Fragment;
   extraQueries?: string;
 }) => {
   const query = gql`
@@ -111,7 +112,7 @@ interface SingleResult<TModel = any, TData = any> extends QueryResult<TData> {
 interface UseSingleOptions<TModel> {
   model: VulcanGraphqlModel;
   input?: SingleInput<TModel>;
-  fragment?: string | DocumentNode;
+  fragment?: Fragment;
   fragmentName?: string;
   extraQueries?: string;
 }

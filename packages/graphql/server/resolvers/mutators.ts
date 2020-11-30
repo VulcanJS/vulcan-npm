@@ -54,7 +54,7 @@ interface CreateMutatorInput {
   model: VulcanGraphqlModel;
   document?: VulcanDocument;
   data: VulcanDocument;
-  context: ContextWithUser;
+  context?: ContextWithUser;
   currentUser?: any; // allow to impersonate an user from server directly
   asAdmin?: boolean; // bypass security checks like field restriction
   validate?: boolean; // run validation, can be bypassed when calling from a server
@@ -223,7 +223,7 @@ interface UpdateMutatorInput {
   currentUser?: any;
   validate?: boolean;
   asAdmin?: boolean;
-  context: ContextWithUser;
+  context?: ContextWithUser;
 }
 
 /*
@@ -392,7 +392,7 @@ interface DeleteMutatorInput {
   model: VulcanGraphqlModel;
   selector: Object;
   currentUser?: any;
-  context: ContextWithUser;
+  context?: ContextWithUser;
   validate?: boolean;
   asAdmin?: boolean;
 }

@@ -87,7 +87,7 @@ interface VulcanField<TField = any> {
   form?: any; // extra form properties
   inputProperties?: any; // extra form properties
   itemProperties?: any; // extra properties for the form row
-  input?: "textarea" | "select" | any; // SmartForm control (String or React component)
+  input?: "textarea" | "select" | "text" | "checkboxgroup" | any; // SmartForm control (String or React component)
   control?: any; // SmartForm control (String or React component) (legacy)
   order?: any; // position in the form
   group?: any; // form fieldset group

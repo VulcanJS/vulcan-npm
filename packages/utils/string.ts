@@ -160,13 +160,6 @@ export const checkNested = function (obj /*, level1, level2, ... levelN*/) {
   return true;
 };
 
-// see http://stackoverflow.com/questions/8051975/access-object-child-properties-using-a-dot-notation-string
-export const getNestedProperty = function (obj, desc) {
-  var arr = desc.split(".");
-  while (arr.length && (obj = obj[arr.shift()]));
-  return obj;
-};
-
 export const getFieldLabel = (fieldName, collection) => {
   const label = collection.simpleSchema()._schema[fieldName].label;
   const nameWithSpaces = camelToSpaces(fieldName);

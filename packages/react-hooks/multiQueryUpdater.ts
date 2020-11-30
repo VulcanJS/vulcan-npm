@@ -6,6 +6,7 @@ import { getVariablesListFromCache } from "./cacheUpdate";
 // import { getApolloClient } from "@vulcanjs/next-apollo";
 import debug from "debug";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
+import { Fragment } from "./typings";
 const debugApollo = debug("vn:apollo");
 
 interface ComputeNewDataArgs {
@@ -26,7 +27,7 @@ export const multiQueryUpdater = (computeNewData) => ({
   resolverName,
 }: {
   model: VulcanGraphqlModel;
-  fragment: string;
+  fragment: Fragment;
   fragmentName: string;
   resolverName: string;
 }) => {
