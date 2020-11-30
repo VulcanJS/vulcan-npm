@@ -3,13 +3,13 @@ import { VulcanModel } from "@vulcanjs/model";
 // Compute a Mongo selector
 import { filterFunction } from "./mongoParams";
 
-import * as mongoose from "mongoose";
+import mongoose from "mongoose";
 export const createMongooseConnector = <TModel = any>(
   model: VulcanModel
 ): Connector<TModel> => {
   // 1. retrieve or create the mongoose model
   // TODO: get a better key than "model.name" eg "model.mongo.collectionName"
-  let MongooseModel = mongoose.models[model.name];
+  let MongooseModel = mongoose.models?.[model.name];
   if (!MongooseModel) {
     // TODO: compute a Mongoose schema from a VulcanSchema automatically
     // TODO: remove the strict: false option! It bypassed Mongoose schema system until we are able to autocompute the Mongoose schema
