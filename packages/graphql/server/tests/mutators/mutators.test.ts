@@ -1,6 +1,4 @@
 import expect from "expect";
-// import sinon from "sinon/pkg/sinon.js";
-import { extendModel } from "../../../extendModel";
 
 import {
   createMutator,
@@ -8,14 +6,11 @@ import {
   deleteMutator,
 } from "../../resolvers/mutators";
 import merge from "lodash/merge";
-//import StubCollections from 'meteor/hwillson:stub-collections';
-// import Users from "meteor/vulcan:users";
 
-const test = it; // TODO: just before we switch to jest
-import { createModel } from "@vulcanjs/model";
 import { VulcanGraphqlModel } from "../../../typings";
-import { Connector } from "../../resolvers/typings";
+import { Connector } from "../../resolvers";
 import { modifierToData } from "../../resolvers/validation";
+import { createGraphqlModel } from "../../../extendModel";
 
 const schema = {
   _id: {
@@ -71,11 +66,11 @@ const schema = {
     },
   },
 };
-const Foo = createModel({
+const Foo = createGraphqlModel({
   schema,
   name: "Foo",
-  extensions: [extendModel({ typeName: "Foo", multiTypeName: "Foos" })],
-}) as VulcanGraphqlModel;
+  graphql: { typeName: "Foo", multiTypeName: "Foos" },
+});
 
 const currentUser = {};
 
@@ -289,11 +284,11 @@ describe("graphql/resolvers/mutators", function () {
           canRead: ["guests"],
         },
       };
-      const Foo = createModel({
+      const Foo = createGraphqlModel({
         schema,
         name: "Foo",
-        extensions: [extendModel({ typeName: "Foo", multiTypeName: "Foos" })],
-      }) as VulcanGraphqlModel;
+        graphql: { typeName: "Foo", multiTypeName: "Foos" },
+      });
       const context = merge({}, defaultContext, {
         currentUser: { _id: "42" },
         Foo: {

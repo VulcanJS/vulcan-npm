@@ -1,20 +1,17 @@
 import { buildDefaultQueryResolvers } from "../resolvers/defaultQueryResolvers";
-import extendModel from "../../extendModel";
-import { createModel } from "@vulcanjs/model";
-import { VulcanGraphqlModel } from "../../typings";
-import { Connector } from "../resolvers/typings";
+import { createGraphqlModel } from "../../extendModel";
+import { Connector } from "../resolvers";
 import merge from "lodash/merge";
 
 describe("graphql/query resolvers", function () {
   const createDummyModel = (schema, options = {}) =>
-    createModel({
+    createGraphqlModel({
       name: "Dummy",
       schema,
       ...options,
-      extensions: [
-        extendModel({ typeName: "Dummy", multiTypeName: "Dummies" }),
-      ],
-    }) as VulcanGraphqlModel;
+      graphql: { typeName: "Dummy", multiTypeName: "Dummies" },
+    });
+
   const Dummy = createDummyModel({
     _id: {
       type: String,
@@ -34,7 +31,7 @@ describe("graphql/query resolvers", function () {
     },
   };
   const defaultConnector: Partial<Connector> = {
-    filter: () => ({ selector: {}, options: {}, filteredFields: [] }),
+    filter: async () => ({ selector: {}, options: {}, filteredFields: [] }),
   };
   // TODO: what's the name of this argument? handles cache
   const lastArg = { cacheControl: {} };

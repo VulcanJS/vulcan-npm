@@ -35,7 +35,7 @@ interface CreateGraphqlModelOptions
     CreateGraphqlModelServerOptions {}
 
 // Reusable model extension function
-export const extendModel = (
+const extendModel = (
   options: CreateGraphqlModelOptions
 ) /*: ExtendModelFunc<VulcanGraphqlModel>*/ => (
   model: VulcanModel

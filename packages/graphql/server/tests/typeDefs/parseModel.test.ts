@@ -2,9 +2,8 @@
  * Test automatic graphql schema generation
  * (= type definitions)
  */
-import { createModel } from "@vulcanjs/model";
 
-import extendModel from "../../../extendModel";
+import { createGraphqlModel } from "../../../extendModel";
 import { VulcanGraphqlModel } from "../../../typings";
 import { normalizeGraphQLSchema } from "../../../testUtils";
 import { parseSchema } from "../../parseSchema";
@@ -14,11 +13,11 @@ import { buildDefaultQueryResolvers } from "../../resolvers/defaultQueryResolver
 import { getGraphQLType } from "../../../utils";
 
 const FooModel = (schema): VulcanGraphqlModel =>
-  createModel({
+  createGraphqlModel({
     schema,
     name: "Foo",
-    extensions: [extendModel({ multiTypeName: "Foos", typeName: "Foo" })],
-  }) as VulcanGraphqlModel;
+    graphql: { multiTypeName: "Foos", typeName: "Foo" },
+  });
 
 describe("graphql/typeDefs", () => {
   // TODO: handle the graphQL init better to fix those tests
@@ -1069,7 +1068,7 @@ describe("graphql/typeDefs", () => {
 
   describe("model resolvers", () => {
     test("generate query resolver types", () => {
-      const Foo = createModel({
+      const Foo = createGraphqlModel({
         schema: {
           foo: {
             type: String,
@@ -1079,15 +1078,13 @@ describe("graphql/typeDefs", () => {
           },
         },
         name: "Foo",
-        extensions: [
-          extendModel({
-            multiTypeName: "Foos",
-            typeName: "Foo",
-            // you have to explicitely pass the default query resolvers if you want some
-            queryResolvers: buildDefaultQueryResolvers({ typeName: "Foo" }),
-          }),
-        ],
-      }) as VulcanGraphqlModel;
+        graphql: {
+          multiTypeName: "Foos",
+          typeName: "Foo",
+          // you have to explicitely pass the default query resolvers if you want some
+          queryResolvers: buildDefaultQueryResolvers({ typeName: "Foo" }),
+        },
+      });
       const { queries } = parseModel(Foo);
       expect(queries).toHaveLength(2); // single and multi
       const single = queries[0];
@@ -1096,7 +1093,7 @@ describe("graphql/typeDefs", () => {
       expect(multi.query).toContain("foos(");
     });
     test("generate mutation resolver types", () => {
-      const Foo = createModel({
+      const Foo = createGraphqlModel({
         schema: {
           foo: {
             type: String,
@@ -1106,17 +1103,15 @@ describe("graphql/typeDefs", () => {
           },
         },
         name: "Foo",
-        extensions: [
-          extendModel({
-            multiTypeName: "Foos",
+        graphql: {
+          multiTypeName: "Foos",
+          typeName: "Foo",
+          // you have to explicitely pass the default query resolvers if you want some
+          mutationResolvers: buildDefaultMutationResolvers({
             typeName: "Foo",
-            // you have to explicitely pass the default query resolvers if you want some
-            mutationResolvers: buildDefaultMutationResolvers({
-              typeName: "Foo",
-            }),
           }),
-        ],
-      }) as VulcanGraphqlModel;
+        },
+      });
       const { mutations } = parseModel(Foo);
       expect(mutations).toHaveLength(3); // create, update, delete
       const create = mutations[0];

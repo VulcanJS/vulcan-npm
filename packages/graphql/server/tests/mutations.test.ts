@@ -3,16 +3,15 @@ import {
   performMutationCheck,
 } from "../resolvers/defaultMutationResolvers";
 import expect from "expect";
-import { createModel } from "@vulcanjs/model";
-import extendModel from "../../extendModel";
+import { createGraphqlModel } from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
 const test = it;
 
 describe("graphql/mutation resolvers", function () {
-  const Foo = createModel({
+  const Foo = createGraphqlModel({
     name: "Foo",
     schema: { _id: { type: String, canRead: ["admins"] } },
-    extensions: [extendModel({ typeName: "Foo", multiTypeName: "Foos" })],
+    graphql: { typeName: "Foo", multiTypeName: "Foos" },
     permissions: {
       canCreate: ["members"],
       canUpdate: ["members"],

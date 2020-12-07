@@ -1,13 +1,12 @@
-import { createModel } from "@vulcanjs/model";
-import extendModel from "../../extendModel";
+import { createGraphqlModel } from "../../extendModel";
 import { getModel, getModelConnector } from "../resolvers/context";
 
 describe("graphql/context", () => {
   test("get model from context using the GraphQL typeName", () => {
-    const model = createModel({
+    const model = createGraphqlModel({
       schema: {},
       name: "Banana", // the typeName should be used here, the model name can differ though it's not recommended
-      extensions: [extendModel({ typeName: "Foo", multiTypeName: "Foos" })],
+      graphql: { typeName: "Foo", multiTypeName: "Foos" },
     });
     const context = {
       Foo: {

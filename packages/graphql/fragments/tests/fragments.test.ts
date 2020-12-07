@@ -3,18 +3,18 @@ import { createModel } from "@vulcanjs/model";
 import expect from "expect";
 
 import SimpleSchema from "simpl-schema";
-import extendModel from "../../extendModel";
+import extendModel, { createGraphqlModel } from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
 import { normalizeGraphQLSchema } from "../../testUtils";
 import { getDefaultFragmentText } from "../defaultFragment";
 const test = it;
 
 const FooModel = (schema): VulcanGraphqlModel =>
-  createModel({
+  createGraphqlModel({
     schema,
     name: "Foo",
-    extensions: [extendModel({ multiTypeName: "Foos", typeName: "Foo" })],
-  }) as VulcanGraphqlModel;
+    graphql: { multiTypeName: "Foos", typeName: "Foo" },
+  });
 
 // NOTE: we consider that the "extendModel" function triggers the default fragment generation
 // We could also manually call "getDefaultFragmentText" on the model

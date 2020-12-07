@@ -1,8 +1,7 @@
-import { createModel } from "@vulcanjs/model";
-import extendModel from "../../../extendModel";
+import { createGraphqlModel } from "../../../extendModel";
 import { VulcanGraphqlModel } from "../../../typings";
 import { createMutator } from "../../resolvers/mutators";
-import { Connector } from "../../resolvers/typings";
+import { Connector } from "../../resolvers";
 import merge from "lodash/merge";
 
 const schema = {
@@ -26,10 +25,10 @@ const defaultModelOptions = {
   schema,
   name: "Foo",
 };
-const Foo = createModel({
+const Foo = createGraphqlModel({
   ...defaultModelOptions,
-  extensions: [extendModel({ typeName: "Foo", multiTypeName: "Foos" })],
-}) as VulcanGraphqlModel;
+  graphql: { typeName: "Foo", multiTypeName: "Foos" },
+});
 describe("graphql/resolvers/mutators callbacks", function () {
   describe("create callbacks", () => {
     // create fake context
@@ -71,21 +70,17 @@ describe("graphql/resolvers/mutators callbacks", function () {
       test("run asynchronous 'after' callback before document is returned", async function () {
         const after = jest.fn(async (doc) => ({ ...doc, createdAfter: 1 }));
         const create = jest.fn(async (data) => ({ _id: 1, ...data }));
-        const Foo = createModel({
+        const Foo = createGraphqlModel({
           schema,
           name: "Foo",
-          extensions: [
-            extendModel(
-              merge({}, modelGraphqlOptions, {
-                callbacks: {
-                  create: {
-                    after: [after],
-                  },
-                },
-              })
-            ),
-          ],
-        }) as VulcanGraphqlModel;
+          graphql: merge({}, modelGraphqlOptions, {
+            callbacks: {
+              create: {
+                after: [after],
+              },
+            },
+          }),
+        });
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo, connector: { create } },
         });
@@ -105,21 +100,17 @@ describe("graphql/resolvers/mutators callbacks", function () {
       test("run asynchronous 'before' callback before document is saved", async function () {
         const before = jest.fn(async (doc) => ({ ...doc, createdBefore: 1 }));
         const create = jest.fn(async (data) => ({ _id: 1, ...data }));
-        const Foo = createModel({
+        const Foo = createGraphqlModel({
           schema,
           name: "Foo",
-          extensions: [
-            extendModel(
-              merge({}, modelGraphqlOptions, {
-                callbacks: {
-                  create: {
-                    before: [before],
-                  },
-                },
-              })
-            ),
-          ],
-        }) as VulcanGraphqlModel;
+          graphql: merge({}, modelGraphqlOptions, {
+            callbacks: {
+              create: {
+                before: [before],
+              },
+            },
+          }),
+        });
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo, connector: { create } },
         });
@@ -148,20 +139,16 @@ describe("graphql/resolvers/mutators callbacks", function () {
               setTimeout(() => resolve(true), 10000)
             )
         );
-        const Foo = createModel({
+        const Foo = createGraphqlModel({
           ...defaultModelOptions,
-          extensions: [
-            extendModel(
-              merge({}, modelGraphqlOptions, {
-                callbacks: {
-                  create: {
-                    async: [asyncLong],
-                  },
-                },
-              })
-            ),
-          ],
-        }) as VulcanGraphqlModel;
+          graphql: merge({}, modelGraphqlOptions, {
+            callbacks: {
+              create: {
+                async: [asyncLong],
+              },
+            },
+          }),
+        });
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo },
         });
@@ -178,19 +165,15 @@ describe("graphql/resolvers/mutators callbacks", function () {
     describe("validate", () => {
       test("return a custom validation error", async () => {
         const validate = jest.fn(() => ["ERROR"]);
-        const Foo = createModel({
+        const Foo = createGraphqlModel({
           ...defaultModelOptions,
-          extensions: [
-            extendModel(
-              merge({}, modelGraphqlOptions, {
-                callbacks: {
-                  create: {
-                    validate: [validate],
-                  },
-                },
-              })
-            ),
-          ],
+          graphql: merge({}, modelGraphqlOptions, {
+            callbacks: {
+              create: {
+                validate: [validate],
+              },
+            },
+          }),
         }) as VulcanGraphqlModel;
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo },

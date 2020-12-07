@@ -1,11 +1,11 @@
 /**
  */
 import { VulcanModel, ExtendModelFunc } from "@vulcanjs/model";
-import {
-  getDefaultFragmentText,
-  getDefaultFragmentName,
-} from "../graphql/fragments/defaultFragment";
-import { camelCaseify } from "@vulcanjs/utils";
+// import {
+//   getDefaultFragmentText,
+//   getDefaultFragmentName,
+// } from "../graphql/fragments/defaultFragment";
+// import { camelCaseify } from "@vulcanjs/utils";
 
 interface MongoModel {
   collectionName: string;

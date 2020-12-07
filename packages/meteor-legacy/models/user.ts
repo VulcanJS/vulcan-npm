@@ -1,5 +1,59 @@
-import { createModel } from "@vulcanjs/model";
-import { extendModel as extendGraphqlModel } from "@vulcanjs/graphql";
+import { createGraphqlModel } from "@vulcanjs/graphql";
+
+export const User = createGraphqlModel({
+  name: "VulcanMeteorUser",
+  graphql: {
+    typeName: "VulcanMeteorUser", // TODO: automatically create from a modelName property
+    multiTypeName: "VulcanMeteorUsers",
+  },
+  schema: {
+    _id: {
+      type: String,
+      optional: true,
+      // canRead: ["guests"],
+    },
+    createdAt: {
+      type: Date,
+      optional: true,
+      // canRead: ["admins"],
+      // onCreate: () => {
+      //   return new Date();
+      // },
+    },
+    isAdmin: {
+      type: Boolean,
+      // label: "Admin",
+      // input: "checkbox",
+      // optional: true,
+      // canCreate: ["admins"],
+      // canUpdate: ["admins"],
+      // canRead: ["guests"],
+      // group: adminGroup,
+    },
+    // TODO
+  },
+});
+
+// @see packages/vulcan-users/lib/modules/fragments.js
+export const currentUserFragment = `
+  fragment UsersCurrent on User {
+    _id
+    username
+    createdAt
+    isAdmin
+    # displayName
+    # email
+    # emailHash
+    # slug
+    # groups
+    # services
+    # avatarUrl
+    # pageUrl
+    # locale
+  }
+`;
+
+export default User;
 // import SimpleSchema from "simpl-schema";
 // import {
 //   Utils,
@@ -382,59 +436,3 @@ const schema = {
   },
 };
 */
-export const User = createModel({
-  name: "VulcanMeteorUser",
-  extensions: [
-    extendGraphqlModel({
-      typeName: "VulcanMeteorUser", // TODO: automatically create from a modelName property
-      multiTypeName: "VulcanMeteorUsers",
-    }),
-  ],
-  schema: {
-    _id: {
-      type: String,
-      optional: true,
-      // canRead: ["guests"],
-    },
-    createdAt: {
-      type: Date,
-      optional: true,
-      // canRead: ["admins"],
-      // onCreate: () => {
-      //   return new Date();
-      // },
-    },
-    isAdmin: {
-      type: Boolean,
-      // label: "Admin",
-      // input: "checkbox",
-      // optional: true,
-      // canCreate: ["admins"],
-      // canUpdate: ["admins"],
-      // canRead: ["guests"],
-      // group: adminGroup,
-    },
-    // TODO
-  },
-});
-
-// @see packages/vulcan-users/lib/modules/fragments.js
-export const currentUserFragment = `
-  fragment UsersCurrent on User {
-    _id
-    username
-    createdAt
-    isAdmin
-    # displayName
-    # email
-    # emailHash
-    # slug
-    # groups
-    # services
-    # avatarUrl
-    # pageUrl
-    # locale
-  }
-`;
-
-export default User;

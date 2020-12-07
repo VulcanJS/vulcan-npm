@@ -7,22 +7,18 @@ import {
 import { buildUpdateQuery } from "../update";
 import { buildUpsertQuery } from "../upsert";
 import { buildDeleteQuery } from "../delete";
-import gql from "graphql-tag";
 // import sinon from "sinon";
-import { createModel } from "@vulcanjs/model";
-import {
-  VulcanGraphqlModel,
-  extendModel as extendModelGraphql,
-} from "@vulcanjs/graphql";
+import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { renderHook, act } from "@testing-library/react-hooks";
+import { createGraphqlModel } from "@vulcanjs/graphql/extendModel";
 
 const test = it;
 
 describe("react-hooks/mutations", () => {
   const typeName = "Foo";
   const multiTypeName = "Foos";
-  const Foo: VulcanGraphqlModel = createModel({
+  const Foo: VulcanGraphqlModel = createGraphqlModel({
     name: "Foo",
     schema: {
       id: {
@@ -34,13 +30,11 @@ describe("react-hooks/mutations", () => {
         canRead: ["guests"],
       },
     },
-    extensions: [
-      extendModelGraphql({
-        typeName,
-        multiTypeName,
-      }),
-    ],
-  }) as VulcanGraphqlModel;
+    graphql: {
+      typeName,
+      multiTypeName,
+    },
+  });
   const fragment = Foo.graphql.defaultFragment;
   const fragmentName = Foo.graphql.defaultFragmentName;
   const rawFoo = { hello: "world" };
@@ -57,14 +51,9 @@ describe("react-hooks/mutations", () => {
     });
   });
 
-  const hooksTest: Array<[
-    string,
-    Function,
-    MockedResponse,
-    Object,
-    Object,
-    Object
-  ]> = [
+  const hooksTest: Array<
+    [string, Function, MockedResponse, Object, Object, Object]
+  > = [
     [
       "create",
       useCreate,

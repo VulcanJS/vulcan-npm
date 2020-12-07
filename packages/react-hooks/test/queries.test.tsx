@@ -1,7 +1,7 @@
 import React from "react";
 import expect from "expect";
 import { MockedProvider } from "@apollo/client/testing";
-import { print } from "graphql";
+// import { print } from "graphql";
 
 //import gql from 'graphql-tag';
 //import { initComponentTest } from 'meteor/vulcan:test';
@@ -10,16 +10,13 @@ import { buildSingleQuery } from "../single";
 import { buildMultiQuery, buildMultiQueryOptions } from "../multi";
 import { renderHook, act } from "@testing-library/react-hooks";
 
-import { createModel } from "@vulcanjs/model";
-import {
-  extendModel as extendModelGraphql,
-  VulcanGraphqlModel,
-} from "@vulcanjs/graphql";
+import { VulcanGraphqlModel } from "@vulcanjs/graphql";
+import { createGraphqlModel } from "@vulcanjs/graphql/extendModel";
 
 describe("react-hooks/queries", function () {
   const typeName = "Foo";
   const multiTypeName = "Foos";
-  const Foo: VulcanGraphqlModel = createModel({
+  const Foo: VulcanGraphqlModel = createGraphqlModel({
     name: "Foo",
     schema: {
       id: {
@@ -31,13 +28,11 @@ describe("react-hooks/queries", function () {
         canRead: ["guests"],
       },
     },
-    extensions: [
-      extendModelGraphql({
-        typeName,
-        multiTypeName,
-      }),
-    ],
-  }) as VulcanGraphqlModel;
+    graphql: {
+      typeName,
+      multiTypeName,
+    },
+  });
 
   const fragment = Foo.graphql.defaultFragment;
   const fragmentName = Foo.graphql.defaultFragmentName;
