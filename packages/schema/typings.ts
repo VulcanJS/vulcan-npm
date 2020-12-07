@@ -2,8 +2,10 @@
  * A Vulcan Schema as a JSON object
  *
  * /*\ this is not the simpl-schema processed version, but the definition
+ * When calling SimpleSchema(schema), you get an EvaluatedSchemaDefinition. We do not
+ * use them in Vulcan core anymore.
  */
-import { SchemaDefinition, EvaluatedSchemaDefinition } from "simpl-schema";
+import { SchemaDefinition /*, EvaluatedSchemaDefinition*/ } from "simpl-schema";
 
 export type FieldTypeName =
   | "String"
@@ -50,27 +52,6 @@ interface OnDeleteInput<TModel = any> {
   schema: VulcanSchema;
 }
 
-type QueryResolver = (
-  root: any,
-  args: any,
-  context: any,
-  info?: any
-) => Promise<any>;
-export interface ResolveAsDefinition {
-  fieldName?: string;
-  typeName?: string;
-  type?: string;
-  description: string;
-  arguments: any;
-  resolver?: QueryResolver;
-  addOriginalField?: boolean;
-}
-
-export interface RelationDefinition {
-  fieldName: string;
-  typeName: string;
-  kind: "hasOne" | "hasMany";
-}
 interface VulcanField<TField = any> {
   canRead?: PermissionDefinition | Array<PermissionDefinition>;
   canCreate?: PermissionDefinition | Array<PermissionDefinition>;
@@ -97,7 +78,6 @@ interface VulcanField<TField = any> {
   onUpdate?: (input: OnUpdateInput) => Promise<TField> | TField; // field edit callback, called server-side
   onDelete?: (input: OnDeleteInput) => Promise<void> | TField; // field remove callback, called server-side
 
-  typeName?: string; // the GraphQL type to resolve the field with
   searchable?: boolean; // whether a field is searchable
   description?: string; // description/help
   beforeComponent?: any; // before form component
@@ -116,20 +96,17 @@ interface VulcanField<TField = any> {
   intl?: boolean; // set to `true` to make a field international
   isIntlData?: boolean; // marker for the actual schema fields that hold intl strings
   intlId?: boolean; // set an explicit i18n key for a field
-
-  // GRAPHQL
-  resolveAs?: Array<ResolveAsDefinition> | ResolveAsDefinition;
-  relation?: RelationDefinition; // define a relation to another model
 }
 
-export interface VulcanFieldSchema<T = any>
+export interface VulcanFieldSchema<TField = any>
   extends VulcanField,
-    SchemaDefinition<T> {
+    SchemaDefinition<TField> {
   type: SchemaDefinition<any>["type"] | VulcanFieldSchema;
 }
 
-export type VulcanSchema = {
-  [key: string]: VulcanFieldSchema;
+// Extendable Vulcan schema
+export type VulcanSchema<TSchemaFieldExtension = any> = {
+  [key: string]: VulcanFieldSchema & TSchemaFieldExtension;
 };
 
 /**

@@ -1,4 +1,8 @@
 /**
+ * Extendable Vulcan model creation
+ *
+ * End user is, usually, NOT supposed to use this.
+ * @vulcanjs/graphql exports a simpler `createGraphqlModel` which is equivalent to Meteor collections
  */
 import { VulcanModel, ModelPermissionsOptions } from "./typings";
 import { VulcanSchema } from "@vulcanjs/schema";
@@ -6,14 +10,16 @@ import { VulcanSchema } from "@vulcanjs/schema";
 export type ExtendModelFunc<TExtended extends VulcanModel = VulcanModel> = (
   model: VulcanModel
 ) => TExtended;
-interface CreateModelOptions {
-  schema: VulcanSchema;
+export interface CreateModelOptions<TSchema = VulcanSchema> {
+  schema: TSchema;
   name: string;
   permissions?: ModelPermissionsOptions;
   extensions?: Array<ExtendModelFunc>;
 }
-// TODO: typing is not correct, it returns a combination of the "extensions" calls
-export const createModel = (options: CreateModelOptions): VulcanModel => {
+// It can return a raw or an extended model type
+export const createModel = <TModelDefinition extends VulcanModel>(
+  options: CreateModelOptions
+): TModelDefinition => {
   const { schema, name, extensions = [], permissions = {} } = options;
 
   const model: VulcanModel = {
@@ -28,7 +34,7 @@ export const createModel = (options: CreateModelOptions): VulcanModel => {
       return extendFunction(currentExtendedModel);
     },
     model
-  );
+  ) as TModelDefinition;
   return extendedModel;
 };
 

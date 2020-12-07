@@ -1,4 +1,5 @@
-import { RelationDefinition, VulcanDocument } from "@vulcanjs/schema";
+import { VulcanDocument } from "@vulcanjs/schema";
+import { RelationDefinition } from "../../typings";
 import { getModel, getModelConnector } from "./context";
 /*
 

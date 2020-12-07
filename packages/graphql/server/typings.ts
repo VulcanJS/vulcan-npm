@@ -1,5 +1,5 @@
-import { RelationDefinition, VulcanFieldSchema } from "@vulcanjs/schema";
 import { CreateVariables, UpdateVariables } from "../typings";
+
 export type QueryResolver = (
   root: any,
   args: any,

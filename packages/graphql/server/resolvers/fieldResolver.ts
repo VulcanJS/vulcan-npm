@@ -1,11 +1,7 @@
 /**
  * Build resolver for a field, based on resolveAs or relation
  */
-import {
-  VulcanFieldSchema,
-  ResolveAsDefinition,
-  RelationDefinition,
-} from "@vulcanjs/schema";
+import { VulcanFieldSchema } from "@vulcanjs/schema";
 import { QueryResolver } from "../typings";
 import { canReadField } from "../../permissions";
 /**

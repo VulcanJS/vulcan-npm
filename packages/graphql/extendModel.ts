@@ -1,73 +1,104 @@
 /**
+ * Create a Vulcan model with graphql capabilities
+ *
+ * Implementation is based on an extension system
+ *
+ * End user is supposed to use only the "createGraphqlModel" function
  */
-import { VulcanGraphqlModel, MutationCallbackDefinitions } from "./typings";
-import { VulcanModel, ExtendModelFunc } from "@vulcanjs/model";
+import {
+  VulcanGraphqlModel,
+  MutationCallbackDefinitions,
+  VulcanGraphqlSchema,
+} from "./typings";
+import { VulcanModel, createModel, CreateModelOptions } from "@vulcanjs/model";
 import {
   getDefaultFragmentText,
   getDefaultFragmentName,
 } from "../graphql/fragments/defaultFragment";
 import { camelCaseify } from "@vulcanjs/utils";
-import { MutationResolverDefinitions, QueryResolverDefinitions } from "./server/typings";
+import {
+  MutationResolverDefinitions,
+  QueryResolverDefinitions,
+} from "./server/typings";
 
-interface CreateModelSharedOptions {
+interface CreateGraphqlModelSharedOptions {
   typeName: string; // Canonical name of the model = its graphQL type name
   multiTypeName: string; // Plural version, to be defined manually (automated pluralization leads to unexpected results)
 }
-interface CreateModelServerOptions {
+interface CreateGraphqlModelServerOptions {
   queryResolvers?: Partial<QueryResolverDefinitions>;
   mutationResolvers?: Partial<MutationResolverDefinitions>;
   callbacks?: MutationCallbackDefinitions;
 }
-interface CreateModelOptions
-  extends CreateModelSharedOptions,
-  CreateModelServerOptions { }
+interface CreateGraphqlModelOptions
+  extends CreateGraphqlModelSharedOptions,
+    CreateGraphqlModelServerOptions {}
+
+// Reusable model extension function
 export const extendModel = (
-  options: CreateModelOptions
+  options: CreateGraphqlModelOptions
 ) /*: ExtendModelFunc<VulcanGraphqlModel>*/ => (
   model: VulcanModel
 ): VulcanGraphqlModel => {
-    const name = model.name;
-    const {
-      typeName = name,
-      multiTypeName,
-      queryResolvers,
-      mutationResolvers,
-    } = options;
+  const name = model.name;
+  const {
+    typeName = name,
+    multiTypeName,
+    queryResolvers,
+    mutationResolvers,
+  } = options;
 
-    const singleResolverName = camelCaseify(typeName);
-    const multiResolverName = camelCaseify(multiTypeName);
+  const singleResolverName = camelCaseify(typeName);
+  const multiResolverName = camelCaseify(multiTypeName);
 
-    // compute base properties
-    const graphqlModel = {
-      typeName,
-      multiTypeName,
-      singleResolverName,
-      multiResolverName,
-      ...options,
-    };
-    // compute default fragment
-    const extendedModel = {
-      ...model,
-      graphql: graphqlModel,
-    };
-    const defaultFragment = getDefaultFragmentText(extendedModel);
-    const defaultFragmentName = getDefaultFragmentName(extendedModel);
-
-    // server-only
-    const extendedGraphqlModel = {
-      ...graphqlModel,
-      defaultFragment,
-      defaultFragmentName,
-      // server-only
-      queryResolvers,
-      mutationResolvers,
-    };
-    const finalModel: VulcanGraphqlModel = {
-      ...model,
-      graphql: extendedGraphqlModel,
-    };
-    return finalModel;
+  // compute base properties
+  const graphqlModel = {
+    typeName,
+    multiTypeName,
+    singleResolverName,
+    multiResolverName,
+    ...options,
   };
+  // compute default fragment
+  const extendedModel = {
+    ...model,
+    graphql: graphqlModel,
+  };
+  const defaultFragment = getDefaultFragmentText(extendedModel);
+  const defaultFragmentName = getDefaultFragmentName(extendedModel);
+
+  // server-only
+  const extendedGraphqlModel = {
+    ...graphqlModel,
+    defaultFragment,
+    defaultFragmentName,
+    // server-only
+    queryResolvers,
+    mutationResolvers,
+  };
+  const finalModel: VulcanGraphqlModel = {
+    ...model,
+    graphql: extendedGraphqlModel,
+  };
+  return finalModel;
+};
+
+/**
+ * Helper to simplify the syntax
+ */
+export const createGraphqlModel = (
+  options: CreateModelOptions<VulcanGraphqlSchema> & {
+    graphql: CreateGraphqlModelOptions;
+  }
+): VulcanGraphqlModel => {
+  // TODO:
+  const { graphql, ...baseOptions } = options;
+  const model = createModel({
+    ...baseOptions,
+    extensions: [extendModel(options.graphql)],
+  }) as VulcanGraphqlModel;
+  return model;
+};
 
 //// CODE FROM CREATE COLLECTION
 //import { Mongo } from "meteor/mongo";

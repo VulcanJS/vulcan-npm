@@ -1,17 +1,49 @@
 import { VulcanModel } from "@vulcanjs/model";
+import { OperationVariables } from "@apollo/client";
 import {
   MutationResolverDefinitions,
   QueryResolverDefinitions,
+  QueryResolver,
 } from "./server/typings";
+import {
+  VulcanDocument,
+  VulcanFieldSchema,
+  VulcanSchema,
+} from "@vulcanjs/schema";
+import { ContextWithUser } from "./server/resolvers";
 
-// Wrap input type, so the input is in the "input" field as an object
-export interface ApolloVariables<TInput> {
-  input: TInput;
+// SCHEMA TYPINGS
+// Custom resolver
+export interface ResolveAsDefinition {
+  fieldName?: string;
+  typeName?: string;
+  type?: string;
+  description: string;
+  arguments: any;
+  resolver?: QueryResolver;
+  addOriginalField?: boolean;
+}
+export interface RelationDefinition {
+  fieldName: string;
+  typeName: string;
+  kind: "hasOne" | "hasMany";
 }
 
+interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
+  // GRAPHQL
+  resolveAs?: Array<ResolveAsDefinition> | ResolveAsDefinition;
+  relation?: RelationDefinition; // define a relation to another model
+  typeName?: string; // the GraphQL type to resolve the field with
+}
+// Base schema + GraphQL Fields
+export type VulcanGraphqlSchema = VulcanSchema<VulcanGraphqlFieldSchema>;
+
+// MODEL TYPINGS
+// Those typings extends the raw model/schema system
 export interface VulcanGraphqlModelSkeleton extends VulcanModel {
   graphql: Pick<GraphqlModel, "typeName">;
 }
+// information relevant for server and client
 interface GraphqlSharedModel {
   typeName: string;
   multiTypeName: string; // plural name for the multi resolver
@@ -20,7 +52,30 @@ interface GraphqlSharedModel {
   defaultFragment: string;
   defaultFragmentName: string;
 }
+// Client only model fields
+interface GraphqlClientModel {}
+// Server only model fields
+interface GraphqlServerModel {
+  queryResolvers: QueryResolverDefinitions;
+  mutationResolvers: MutationResolverDefinitions;
+  callbacks?: MutationCallbackDefinitions;
+}
+// With client and server fields (at this point, we can't actually differentiate them)
+export type GraphqlModel = GraphqlSharedModel &
+  GraphqlServerModel &
+  GraphqlClientModel;
 
+// TODO: not used yet. A schema for graphql might contain those additional fields.
+// export interface VulcanFieldSchemaGraphql extends VulcanFieldSchema {
+//   relation;
+//   resolveAs;
+// }
+// Extended model with extended schema
+export interface VulcanGraphqlModel extends VulcanModel<VulcanGraphqlSchema> {
+  graphql: GraphqlModel;
+}
+
+// Mutations
 export type DefaultMutatorName = "create" | "update" | "delete";
 
 // Callbacks typings
@@ -67,6 +122,11 @@ export interface MutationCallbackDefinitions {
   };
 }
 
+// Wrap input type, so the input is in the "input" field as an object
+export interface ApolloVariables<TInput> {
+  input: TInput;
+}
+
 // Mutation/Hooks typings
 export interface CreateInput<TModel = any> {
   data: TModel;
@@ -82,6 +142,7 @@ export interface UpdateVariables<TModel = any> {
   input: UpdateInput<TModel>;
 }
 
+// Filtering
 type MongoLikeSortOption = "asc" | "desc";
 type MongoLikeCondition =
   | "_eq"
@@ -99,9 +160,6 @@ type MongoLikeCondition =
 
 type MongoLikeOperator = "_and" | "_or" | "_not";
 
-import { OperationVariables } from "@apollo/client";
-import { VulcanDocument, VulcanSchema } from "@vulcanjs/schema";
-import { ContextWithUser } from "./server/resolvers";
 type MongoLikeSelector = {
   [key in MongoLikeCondition]?: any;
 } &
@@ -136,21 +194,4 @@ export interface FilterableInput<TModel = any> {
   limit?: number;
   search?: string;
   offset?: number;
-}
-
-interface GraphqlServerModel {
-  queryResolvers: QueryResolverDefinitions;
-  mutationResolvers: MutationResolverDefinitions;
-  callbacks?: MutationCallbackDefinitions;
-}
-export interface GraphqlModel extends GraphqlSharedModel, GraphqlServerModel {}
-
-// TODO: not used yet. A schema for graphql might contain those additional fields.
-// export interface VulcanFieldSchemaGraphql extends VulcanFieldSchema {
-//   relation;
-//   resolveAs;
-// }
-// Extended model
-export interface VulcanGraphqlModel extends VulcanModel {
-  graphql: GraphqlModel;
 }

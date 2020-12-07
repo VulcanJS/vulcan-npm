@@ -16,7 +16,6 @@ import {
   hasNestedSchema,
   getArrayChildSchema,
   hasArrayNestedChild,
-  RelationDefinition,
 } from "@vulcanjs/schema";
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
