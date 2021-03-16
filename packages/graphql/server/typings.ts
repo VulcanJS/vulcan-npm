@@ -23,8 +23,8 @@ export interface ResolverMap {
 }
 
 export interface ModelResolverMap {
-  Query: QueryResolverMap;
-  Mutation: MutationResolverMap;
+  Query?: QueryResolverMap;
+  Mutation?: MutationResolverMap;
 }
 export interface AnyResolverMap {
   [typeName: string]: Resolver | any;

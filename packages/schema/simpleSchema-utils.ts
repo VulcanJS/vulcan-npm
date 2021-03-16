@@ -62,7 +62,7 @@ export const getFieldTypeName = (field: VulcanFieldSchema): FieldTypeName => {
 const isJSON = (field: VulcanFieldSchema): boolean =>
   field.typeName === "JSON" ||
   getFieldTypeName(field) === "JSON" ||
-  (getFieldTypeName(field) === "Object" && field.blackbox);
+  (getFieldTypeName(field) === "Object" && !!field.blackbox);
 
 export const isBlackbox = (field: VulcanFieldSchema): boolean =>
   !!field.blackbox;

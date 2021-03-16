@@ -226,7 +226,7 @@ describe("default fragment generation", () => {
         },
       });
       const fragment = getDefaultFragmentText(model);
-      expect(fragment).toBeNull(); // resolved field are not yet present in the fragment so it's null
+      expect(fragment).toBeUndefined(); // resolved field are not yet present in the fragment so it's null
       //const normalizedFragment = normalizeGraphQLSchema(fragment);
       //expect(normalizedFragment).toMatch('fragment FoosDefaultFragment on Foo { resolvedObject anotherResolvedObject }');
     });

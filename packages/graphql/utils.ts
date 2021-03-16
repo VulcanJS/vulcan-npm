@@ -17,6 +17,8 @@ interface GetGraphqlTypeInput {
 }
 /**
  * Get the graphql type of a field
+ *
+ * Return null if field must be ignored
  */
 export const getGraphQLType = ({
   fieldSchema,
@@ -25,7 +27,7 @@ export const getGraphQLType = ({
   typeName,
   isInput = false,
   isParentBlackbox = false,
-}: GetGraphqlTypeInput): string => {
+}: GetGraphqlTypeInput): string | null => {
   const field = fieldSchema || schema[fieldName];
 
   if (field.typeName) return field.typeName; // respect typeName provided by user

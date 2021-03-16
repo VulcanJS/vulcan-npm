@@ -170,6 +170,8 @@ export const createMutator = async <TModel extends VulcanDocument>({
       let autoValue;
       // TODO: run for nested
       if (schema[fieldName].onCreate) {
+        // TS is triggering an error for unknown reasons because there is already an if
+        // @ts-expect-error Cannot invoke an object which is possibly 'undefined'.
         autoValue = await schema[fieldName].onCreate(properties); // eslint-disable-line no-await-in-loop
       }
       if (typeof autoValue !== "undefined") {
@@ -318,6 +320,8 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   for (let fieldName of Object.keys(schema)) {
     let autoValue;
     if (schema[fieldName].onUpdate) {
+      // TS is triggering an error for unknown reasons because there is already an if
+      // @ts-expect-error Cannot invoke an object which is possibly 'undefined'.
       autoValue = await schema[fieldName].onUpdate(properties); // eslint-disable-line no-await-in-loop
     }
     if (typeof autoValue !== "undefined") {
@@ -455,6 +459,8 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   /* Run fields onDelete */
   for (let fieldName of Object.keys(schema)) {
     if (schema[fieldName].onDelete) {
+      // TS is triggering an error for unknown reasons because there is already an if
+      // @ts-expect-error Cannot invoke an object which is possibly 'undefined'.
       await schema[fieldName].onDelete(properties); // eslint-disable-line no-await-in-loop
     }
   }

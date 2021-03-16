@@ -7,7 +7,6 @@ describe("utils/string", () => {
     ["f", "F"],
     ["F", "F"],
     ["", ""],
-    [null, null],
   ])("capitalize %s returns %s", (entry, output) => {
     expect(capitalize(entry)).toEqual(output);
   });

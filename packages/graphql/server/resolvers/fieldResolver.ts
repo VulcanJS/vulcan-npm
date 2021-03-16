@@ -15,6 +15,6 @@ export const withFieldPermissionCheckResolver = (
   const { currentUser } = context;
   // check that current user has permission to access the original non-resolved field
   const userCanReadField = canReadField(currentUser, field, document);
-  if (!userCanReadField) return null;
+  if (!userCanReadField) return Promise.resolve(null);
   return resolver(document, args, context, info);
 };

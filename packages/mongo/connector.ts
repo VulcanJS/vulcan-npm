@@ -29,7 +29,7 @@ export const createMongooseConnector = <TModel = any>(
           options
         );
       }
-      const documents = await MongooseModel.find(selector).exec();
+      const documents = await MongooseModel.find(selector || {}).exec();
       return documents.map((d) => d.toJSON());
     },
     findOne: async (selector) => {
@@ -50,7 +50,7 @@ export const createMongooseConnector = <TModel = any>(
       //return { selector: {}, filteredFields: [], options: {} };
     },
     count: async (selector) => {
-      const count = await MongooseModel.count(selector);
+      const count = await MongooseModel.count(selector || {});
       return count;
     },
     create: async (document) => {

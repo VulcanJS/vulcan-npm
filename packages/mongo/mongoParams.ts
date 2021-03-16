@@ -84,7 +84,7 @@ export const filterFunction = async (
   let options: FindOneOptions<any> = {
     sort: {},
   }; // TODO: check if FindOneOptions is the right type for this
-  let filteredFields = [];
+  let filteredFields: Array<string> = [];
 
   const schema = model.schema;
 
@@ -141,21 +141,26 @@ export const filterFunction = async (
   }
 
   // filter
-  if (!isEmpty(filter)) {
+  if (!isEmpty(filter) && filter) {
+    // trick for TypeScript because isEmpty is not correctly typed
     Object.keys(filter).forEach((fieldName) => {
       switch (fieldName) {
         case "_and":
           filteredFields = filteredFields.concat(getFieldNames(filter._and));
+          // Bypass TypeScript check (_and is present if we reach this line)
+          // @ts-expect-error: Object is possibly 'undefined'.
           selector["$and"] = filter._and.map(convertExpression);
           break;
 
         case "_or":
           filteredFields = filteredFields.concat(getFieldNames(filter._or));
+          // @ts-expect-error: Object is possibly 'undefined'.
           selector["$or"] = filter._or.map(convertExpression);
           break;
 
         case "_not":
           filteredFields = filteredFields.concat(getFieldNames(filter._not));
+          // @ts-expect-error: Object is possibly 'undefined'.
           selector["$not"] = filter._not.map(convertExpression);
           break;
 

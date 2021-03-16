@@ -166,7 +166,7 @@ describe("react-hooks/queries", function () {
             variables: {
               ...defaultVariables,
               input: {
-                ...defaultVariables.input,
+                ...defaultVariables?.input,
                 limit: 1,
               },
             },

@@ -53,8 +53,6 @@ const extendModel = (
 
   // compute base properties
   const graphqlModel = {
-    typeName,
-    multiTypeName,
     singleResolverName,
     multiResolverName,
     ...options,
@@ -66,6 +64,13 @@ const extendModel = (
   };
   const defaultFragment = getDefaultFragmentText(extendedModel);
   const defaultFragmentName = getDefaultFragmentName(extendedModel);
+
+  if (!defaultFragment) {
+    // TODO: is this a normal scenario?
+    console.warn(
+      `Could not generate a default fragment for type ${graphqlModel.typeName}`
+    );
+  }
 
   // server-only
   const extendedGraphqlModel = {

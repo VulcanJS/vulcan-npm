@@ -27,8 +27,8 @@ export const multiQueryUpdater = (computeNewData) => ({
   resolverName,
 }: {
   model: VulcanGraphqlModel;
-  fragment: Fragment;
-  fragmentName: string;
+  fragment?: Fragment;
+  fragmentName?: string;
   resolverName: string;
 }) => {
   // update multi queries

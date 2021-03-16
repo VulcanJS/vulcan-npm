@@ -49,15 +49,15 @@ interface GraphqlSharedModel {
   multiTypeName: string; // plural name for the multi resolver
   multiResolverName: string;
   singleResolverName: string;
-  defaultFragment: string;
-  defaultFragmentName: string;
+  defaultFragment?: string;
+  defaultFragmentName?: string;
 }
 // Client only model fields
 interface GraphqlClientModel {}
 // Server only model fields
 interface GraphqlServerModel {
-  queryResolvers: QueryResolverDefinitions;
-  mutationResolvers: MutationResolverDefinitions;
+  queryResolvers?: QueryResolverDefinitions;
+  mutationResolvers?: MutationResolverDefinitions;
   callbacks?: MutationCallbackDefinitions;
 }
 // With client and server fields (at this point, we can't actually differentiate them)

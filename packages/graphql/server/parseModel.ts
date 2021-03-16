@@ -62,7 +62,7 @@ const generateTypeDefs = ({
   fields,
   isNested = false,
 }: GenerateSchemaFragmentsInput): Array<string> => {
-  const schemaFragments = [];
+  const schemaFragments: Array<string> = [];
   const {
     mainType,
     create,
@@ -75,7 +75,11 @@ const generateTypeDefs = ({
     // enums,
   } = fields;
 
-  const typeName = model ? model.graphql.typeName : typeNameArgs;
+  if (!(model?.graphql.typeName || typeNameArgs))
+    throw new Error(
+      `model.graphql.typeName is undefined, please provide typeName as arguments in generateTypeDefs`
+    );
+  const typeName = model ? model.graphql.typeName : (typeNameArgs as string);
 
   if (!mainType || mainType.length === 0) {
     throw new Error(
@@ -161,11 +165,11 @@ const generateTypeDefs = ({
 
   if (filterable.length) {
     // TODO: reneable customFilters?
-    const customFilters = undefined; //collection.options.customFilters;
+    const customFilters = []; //collection.options.customFilters;
     schemaFragments.push(
       fieldFilterInputTemplate({ typeName, fields: filterable, customFilters })
     );
-    if (customFilters) {
+    if (customFilters?.length) {
       customFilters.forEach((filter) => {
         schemaFragments.push(customFilterTemplate({ typeName, filter }));
       });
@@ -200,7 +204,7 @@ interface ParseModelOutput
   resolvers?: ModelResolverMap;
 }
 export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
-  const typeDefs = [];
+  const typeDefs: Array<string> = [];
 
   // const {
   //   collectionName,
@@ -243,7 +247,7 @@ export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
       typeDefs.push(
         ...generateTypeDefs({
           typeName: nestedFields.typeName,
-          fields: nestedFields.fields,
+          fields: nestedFields.fields as Fields,
           isNested: true,
         })
       );
@@ -251,24 +255,31 @@ export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
   }
 
   // resolvers
+  const resolvers: ModelResolverMap = {};
+  let queries;
+  let mutations;
   const queryDefinitions = model.graphql.queryResolvers; // TODO: get from Model?
   const mutationDefinitions = model.graphql.mutationResolvers; // TODO: get from Model?
-  const { queries, queryResolvers } = parseQueryResolvers({
-    queryResolverDefinitions: queryDefinitions,
-    typeName,
-    multiTypeName,
-  });
-  const { mutations, mutationResolvers } = parseMutationResolvers({
-    mutationDefinitions,
-    typeName,
-    modelName,
-    fields,
-  });
+  if (queryDefinitions) {
+    const parsedQueries = parseQueryResolvers({
+      queryResolverDefinitions: queryDefinitions,
+      typeName,
+      multiTypeName,
+    });
+    queries = parsedQueries.queries;
+    resolvers.Query = parsedQueries.queryResolvers;
+  }
+  if (mutationDefinitions) {
+    const parsedMutations = parseMutationResolvers({
+      mutationDefinitions,
+      typeName,
+      modelName,
+      fields,
+    });
+    mutations = parsedMutations.mutations;
+    resolvers.Mutation = parsedMutations.mutationResolvers;
+  }
 
-  const resolvers = {
-    Query: queryResolvers,
-    Mutation: mutationResolvers,
-  };
   const mergedTypeDefs = typeDefs.join("\n\n") + "\n\n\n";
 
   return {

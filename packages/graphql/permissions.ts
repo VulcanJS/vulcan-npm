@@ -79,7 +79,7 @@ class Group {
  * @param {Object} user
  */
 export const getGroups = (
-  user: User,
+  user: User | null,
   document?: VulcanDocument
 ): Array<Group> => {
   let userGroups = [
@@ -135,7 +135,7 @@ const getActions = (user: Users) => {
  * @param {String} group or array of groups
  */
 export const isMemberOf = (
-  user: User,
+  user: User | null,
   groupOrGroups: Array<Group> | Group,
   document?: VulcanDocument
 ) => {
@@ -186,7 +186,7 @@ export const owns = function (user: User | null, document: VulcanDocument) {
  * @summary Check if a user is an admin
  * @param {Object|string} userOrUserId - The user or their userId
  */
-const isAdmin = function (user?: User) {
+const isAdmin = function (user: User | null): boolean {
   try {
     return !!user && !!user.isAdmin;
   } catch (e) {
@@ -204,7 +204,7 @@ const isAdmin = function (user?: User) {
 export const canReadField = function (
   user: User | null,
   field: Pick<VulcanFieldSchema, "canRead">,
-  document: Object
+  document?: Object
 ) {
   const canRead = field.canRead;
   if (!canRead) {
@@ -230,7 +230,7 @@ export const canReadField = function (
 };
 
 export const getReadableFields = function (
-  user: User,
+  user: User | null,
   model: VulcanModel,
   document?: VulcanDocument
 ) {
@@ -288,7 +288,7 @@ export const getDocumentBasedPermissionFieldNames = function (
  * @param {Object} fields - The list of fields
  */
 export const checkFields = (
-  user: User,
+  user: User | null,
   model: VulcanModel,
   fields: Array<any>
 ) => {

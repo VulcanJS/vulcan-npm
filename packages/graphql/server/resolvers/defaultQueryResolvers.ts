@@ -32,7 +32,7 @@ const defaultOptions = {
 
 // TODO: probably need to be shared with react multi hook
 interface MultiResolverOutput<TModel> {
-  totalCount?: number;
+  totalCount?: number | null;
   results: Array<TModel>;
 }
 // note: for some reason changing resolverOptions to "options" throws error
@@ -42,7 +42,7 @@ interface BuildDefaultQueryResolversInput {
 }
 
 interface SingleResolverOutput<TModel> {
-  result: TModel;
+  result: TModel | null;
 }
 
 /**
@@ -94,7 +94,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
 
       const docs = await connector.find(selector, options);
       // in restrictViewableFields, null value will return {} instead of [] (because it works both for array and single doc)
-      let viewableDocs = [];
+      let viewableDocs: Array<VulcanDocument> = [];
 
       // check again if all fields used for filtering were actually allowed, this time based on actually retrieved documents
 
@@ -179,7 +179,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       } = input;
       const operationName = `${typeName}.read.single`;
       //const { _id } = input; // _id is passed from the root
-      let doc: VulcanDocument;
+      let doc: VulcanDocument | null;
 
       if (cacheControl && enableCache) {
         const maxAge =

@@ -1,5 +1,6 @@
 import { camelToSpaces } from "@vulcanjs/utils";
 import SimpleSchema from "simpl-schema";
+import { ValidationError } from "./server/resolvers/validation";
 
 export const defaultLocale = "en"; //getSetting('locale', 'en');
 
@@ -43,7 +44,7 @@ export const registerDomain = (locale, domain) => {
   Domains[domain] = locale;
 };
 
-export const Locales = [];
+export const Locales: Array<{ id?: string; required: boolean }> = [];
 
 export const registerLocale = (locale) => {
   Locales.push(locale);
@@ -111,7 +112,7 @@ See https://github.com/aldeed/simple-schema-js#custom-field-validation
 
 */
 export const validateIntlField = function () {
-  let errors = [];
+  let errors: Array<ValidationError> = [];
 
   // go through locales to check which one are required
   const requiredLocales = Locales.filter((locale) => locale.required);
@@ -169,7 +170,7 @@ export const getIntlLabel = (
   // if this is a description, just add .description at the end of the intl key
   const suffix = isDescription ? ".description" : "";
 
-  const intlKeys = [];
+  const intlKeys: Array<string> = [];
   if (intlId) {
     intlKeys.push(intlId);
   }

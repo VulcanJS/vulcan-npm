@@ -231,6 +231,10 @@ export function buildDefaultMutationResolvers({
           context,
           operationName: "delete",
         });
+        if (!document?._id)
+          throw new Error(
+            "Perform mutation check did not catch an empty document._id during a delete mutation"
+          ); // should not happen with the check, defnesive code
 
         return await deleteMutator({
           model,

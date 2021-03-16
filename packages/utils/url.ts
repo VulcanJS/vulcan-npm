@@ -117,7 +117,9 @@ export const getShortUrl = function (post) {
 
 export const getDomain = function (url) {
   try {
-    return urlObject.parse(url).hostname.replace("www.", "");
+    const parsedUrl = urlObject.parse(url);
+    if (!parsedUrl.hostname) return null;
+    return parsedUrl.hostname.replace("www.", "");
   } catch (error) {
     return null;
   }

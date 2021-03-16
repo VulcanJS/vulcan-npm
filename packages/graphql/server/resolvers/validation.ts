@@ -13,7 +13,7 @@ import { toSimpleSchema } from "@vulcanjs/schema";
 
 export interface ValidationError {
   id: "errors.disallowed_property_detected" | string;
-  path: string;
+  path?: string;
   properties: {
     modelName?: string;
     name?: string; // field name
@@ -55,7 +55,7 @@ const validateDocumentPermissions = (
   mode = "create"
   // currentPath = ""
 ): Array<ValidationError> => {
-  let validationErrors = [];
+  let validationErrors: Array<ValidationError> = [];
   const { currentUser } = context;
   forEachDocumentField(
     documentToValidate,
@@ -100,7 +100,7 @@ export const validateDocument = (
 ): Array<ValidationError> => {
   const { schema } = model;
 
-  let validationErrors = [];
+  let validationErrors: Array<ValidationError> = [];
 
   // validate creation permissions (and other Vulcan-specific constraints)
   validationErrors = validationErrors.concat(
@@ -157,7 +157,7 @@ export const validateModifier = (
   const set = modifier.$set;
   const unset = modifier.$unset;
 
-  let validationErrors = [];
+  let validationErrors: Array<ValidationError> = [];
 
   // 1. check that the current user has permission to edit each field
   validationErrors = validationErrors.concat(
@@ -178,7 +178,7 @@ export const validateModifier = (
     errors.forEach((error) => {
       // eslint-disable-next-line no-console
       // console.log(error);
-      if (error.type.includes("intlError")) {
+      if (error?.type?.includes("intlError")) {
         validationErrors = validationErrors.concat(
           JSON.parse(error.type.replace("intlError|", ""))
         );

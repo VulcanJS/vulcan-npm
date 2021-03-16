@@ -124,7 +124,7 @@ export const getDefaultFragmentText = (
         model.graphql.typeName
       }`,
       options,
-    }) || null
+    }) || undefined
   );
 };
 

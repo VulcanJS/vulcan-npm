@@ -1087,6 +1087,7 @@ describe("graphql/typeDefs", () => {
       });
       const { queries } = parseModel(Foo);
       expect(queries).toHaveLength(2); // single and multi
+      if (queries.length !== 2) return; // to make ts happy
       const single = queries[0];
       const multi = queries[1];
       expect(single.query).toContain("foo(");
@@ -1114,6 +1115,7 @@ describe("graphql/typeDefs", () => {
       });
       const { mutations } = parseModel(Foo);
       expect(mutations).toHaveLength(3); // create, update, delete
+      if (mutations.length !== 3) return; // make ts happy
       const create = mutations[0];
       const update = mutations[1];
       const deleteMutation = mutations[2];

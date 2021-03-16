@@ -76,12 +76,13 @@ export const buildMultiQueryOptions = <TModel, TData>(
   paginationInput: any = {},
   props
 ): Partial<QueryHookOptions<TData, MultiVariables>> => {
+  let pollInterval: number | null = null;
   let {
     input: optionsInput,
-    pollInterval = 20000,
     // generic graphQL options
     queryOptions = {},
   } = options;
+  pollInterval = options.pollInterval ?? 20000; // nullish coalescing will keep the value 0, to deactivate polling explicitely
 
   // get dynamic input from props
   const { input: propsInput = {} } = props;
@@ -107,7 +108,7 @@ export const buildMultiQueryOptions = <TModel, TData>(
       input: mergedInput,
     },
     // note: pollInterval can be set to 0 to disable polling (20s by default)
-    pollInterval,
+    pollInterval: pollInterval ?? undefined,
   };
 
   // see https://www.apollographql.com/docs/react/features/error-handling/#error-policies

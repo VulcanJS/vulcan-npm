@@ -32,8 +32,8 @@ export const buildSingleQuery = ({
   extraQueries,
 }: {
   typeName: string;
-  fragmentName: string;
-  fragment: Fragment;
+  fragmentName?: string;
+  fragment?: Fragment;
   extraQueries?: string;
 }) => {
   const query = gql`

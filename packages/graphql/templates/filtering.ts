@@ -63,6 +63,11 @@ export const fieldFilterInputTemplate = ({
   fields,
   customFilters = [],
   customSorts = [],
+}: {
+  typeName: string;
+  fields: Array<any>;
+  customFilters?: Array<any>;
+  customSorts?: Array<any>;
 }) =>
   `input ${filterInputType(typeName)} {
   _and: [${filterInputType(typeName)}]

@@ -12,6 +12,7 @@ import { VulcanGraphqlModel } from "../typings";
 import { mergeResolvers } from "./utils";
 import _flatten from "lodash/flatten";
 import { generateQueryTypeDefs, generateMutationTypeDefs } from "./typedefs";
+import { ModelResolverMap, TopLevelResolverMap } from "./typings";
 
 disableFragmentWarnings();
 
@@ -35,11 +36,17 @@ ${generateQueryTypeDefs(queryTypeDefs)}
 
 ${generateMutationTypeDefs(mutationTypeDefs)}`;
 
-  const resolvers = parsedModels.map((m) => m.resolvers);
+  const resolvers = parsedModels
+    .map((m) => m.resolvers)
+    .filter((r) => !!r) as ModelResolverMap[];
   // schema resolvers are a list of map of resolvers, so we need an additional merge step
-  const schemaResolvers = parsedModels.map((m) =>
-    mergeResolvers(m.schemaResolvers)
-  );
+  const schemaResolvers = parsedModels
+    .map((model) => model.schemaResolvers)
+    .filter((sr) => !!sr) // remove undefined values
+    .map((schemaResolvers) =>
+      mergeResolvers(schemaResolvers as Partial<TopLevelResolverMap>[])
+    );
+
   const mergedResolvers = mergeResolvers([...resolvers, ...schemaResolvers]);
   return {
     typeDefs: mergedTypeDefs,

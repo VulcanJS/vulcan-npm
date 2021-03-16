@@ -19,7 +19,7 @@ export const listMdxFiles = async ({
     relativePath: path.join(dir, fileName),
     fileName,
   }));
-  let mdFiles = [];
+  let mdFiles: Array<MdxFile> = [];
   //let folders = [];
   files.forEach((file) => {
     if (file.fileName.match(/.mdx?$/)) {

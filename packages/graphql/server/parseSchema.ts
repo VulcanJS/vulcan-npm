@@ -20,7 +20,12 @@ import {
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "../intl";
 import { capitalize } from "@vulcanjs/utils";
-import { AnyResolverMap, QueryResolver, ResolverMap } from "./typings";
+import {
+  AnyResolverMap,
+  QueryResolver,
+  QueryResolverDefinitions,
+  ResolverMap,
+} from "./typings";
 // import { buildResolveAsResolver } from "./resolvers/resolveAsResolver";
 import * as relations from "./resolvers/relationResolvers";
 import { withFieldPermissionCheckResolver } from "./resolvers/fieldResolver";
@@ -68,20 +73,23 @@ interface GetResolveAsFieldsInput {
   typeName: string;
   field: ResolveAsField;
   fieldName: string;
-  fieldType: string;
-  fieldDescription: string;
+  fieldType?: string;
+  fieldDescription?: string;
   fieldDirective: any;
   fieldArguments: any;
 }
+interface MainTypeDefinition {
+  description?: string;
+  name: string;
+  args?: any;
+  type: string;
+  direction?: any;
+  directive?: any;
+}
+
 interface GetResolveAsFieldsOutput {
   fields: {
-    mainType: Array<{
-      description: string;
-      name: string;
-      args: any;
-      type: string;
-      direction: any;
-    }>;
+    mainType: Array<MainTypeDefinition>;
   };
   resolvers: Array<AnyResolverMap>;
 }
@@ -97,10 +105,10 @@ export const parseFieldResolvers = ({
   fieldDirective,
   fieldArguments,
 }: GetResolveAsFieldsInput): GetResolveAsFieldsOutput => {
-  const fields = {
+  const fields: GetResolveAsFieldsOutput["fields"] = {
     mainType: [],
   };
-  const resolvers = [];
+  const resolvers: Array<QueryResolverDefinitions> = [];
 
   const relation = field.relation;
   const resolveAsArray = field.resolveAs
@@ -139,13 +147,15 @@ export const parseFieldResolvers = ({
     };
     resolvers.push(resolverDefinition);
     // add the original field systematically for relations
-    fields.mainType.push({
-      description: fieldDescription,
-      name: fieldName,
-      args: fieldArguments,
-      type: fieldType,
-      directive: fieldDirective,
-    });
+    if (fieldType) {
+      fields.mainType.push({
+        description: fieldDescription,
+        name: fieldName,
+        args: fieldArguments,
+        type: fieldType,
+        directive: fieldDirective,
+      });
+    }
     // add the resolved field "Foo { resolvedField }"
     fields.mainType.push({
       //description: resolveAs.description,
@@ -158,7 +168,7 @@ export const parseFieldResolvers = ({
   } else if (resolveAsArray) {
     // check if original (main schema) field should be added to GraphQL schema
     const addOriginalField = shouldAddOriginalField(fieldName, field);
-    if (addOriginalField) {
+    if (addOriginalField && fieldType) {
       fields.mainType.push({
         description: fieldDescription,
         name: fieldName,
@@ -180,14 +190,18 @@ export const parseFieldResolvers = ({
       // if resolveAs is an object, first push its type definition
       // include arguments if there are any
       // note: resolved fields are not internationalized
-      fields.mainType.push({
-        description: resolveAs.description,
-        name: resolverName,
-        args: resolveAs.arguments,
-        type: fieldGraphQLType,
-      });
+      if (fieldGraphQLType) {
+        fields.mainType.push({
+          description: resolveAs.description,
+          name: resolverName,
+          args: resolveAs.arguments,
+          type: fieldGraphQLType,
+        });
+      }
       // then build actual resolver object and pass it to addGraphQLResolvers
-      const resolver = withFieldPermissionCheckResolver(field, customResolver);
+      const resolver =
+        customResolver &&
+        withFieldPermissionCheckResolver(field, customResolver);
       const resolverDefinition = {
         [typeName]: {
           [resolverName]: resolver,
@@ -385,7 +399,7 @@ interface NestedFieldsOutput extends ParseSchemaOutput {
  */
 export interface ParseSchemaOutput {
   fields: GraphqlFieldsDefinitions;
-  nestedFieldsList: Array<NestedFieldsOutput>;
+  nestedFieldsList: Array<Partial<NestedFieldsOutput>>;
   resolvers: Array<ResolverMap>;
 }
 // for a given schema, return main type fields, selector fields,
@@ -407,8 +421,8 @@ export const parseSchema = (
     update: [],
     filterable: [],
   };
-  const nestedFieldsList = [];
-  const resolvers = [];
+  const nestedFieldsList: Array<Partial<NestedFieldsOutput>> = [];
+  const resolvers: Array<AnyResolverMap> = [];
 
   Object.keys(schema).forEach((fieldName) => {
     const field: VulcanFieldSchema = schema[fieldName]; // TODO: remove the need to call SimpleSchema
@@ -417,6 +431,7 @@ export const parseSchema = (
       fieldName,
       typeName,
     });
+    if (!fieldType) return;
     const inputFieldType = getGraphQLType({
       schema,
       fieldName,
@@ -473,15 +488,13 @@ export const parseSchema = (
         fields.mainType.push(...resolveAsFields.mainType);
       } else {
         // try to guess GraphQL type
-        if (fieldType) {
-          fields.mainType.push({
-            description: fieldDescription,
-            name: fieldName,
-            args: fieldArguments,
-            type: fieldType,
-            directive: fieldDirective,
-          });
-        }
+        fields.mainType.push({
+          description: fieldDescription,
+          name: fieldName,
+          args: fieldArguments,
+          type: fieldType,
+          directive: fieldDirective,
+        });
       }
 
       // Support for enums from allowedValues has been removed (counter-productive)

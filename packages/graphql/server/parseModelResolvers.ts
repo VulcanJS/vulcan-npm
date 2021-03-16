@@ -40,7 +40,7 @@ export const parseQueryResolvers = ({
   multiTypeName,
 }: CreateResolversInput): ParsedModelQueryResolvers => {
   const queryResolvers: QueryResolverMap = {};
-  const queries: Array<{ description: string; query: string }> = [];
+  const queries: Array<{ description?: string; query: string }> = [];
   if (!queryResolverDefinitions) {
     return { queries, queryResolvers };
   }
