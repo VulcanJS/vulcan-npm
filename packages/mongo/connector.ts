@@ -3,10 +3,17 @@ import { VulcanModel } from "@vulcanjs/model";
 // Compute a Mongo selector
 import { filterFunction } from "./mongoParams";
 
-import mongoose from "mongoose";
+import mongoose, { QueryFindOptions, FilterQuery } from "mongoose";
+
+export type MongooseConnector<TModel = any> = Connector<
+  TModel,
+  FilterQuery<TModel>,
+  QueryFindOptions
+>;
+
 export const createMongooseConnector = <TModel = any>(
   model: VulcanModel
-): Connector<TModel> => {
+): MongooseConnector<TModel> => {
   // 1. retrieve or create the mongoose model
   // TODO: get a better key than "model.name" eg "model.mongo.collectionName"
   let MongooseModel = mongoose.models?.[model.name];
@@ -20,16 +27,11 @@ export const createMongooseConnector = <TModel = any>(
   // 2. create the connector
   return {
     find: async (selector, options) => {
-      if (options) {
-        console.warn(
-          "find do not implement options yet",
-          "selector:",
-          selector,
-          "options:",
-          options
-        );
-      }
-      const documents = await MongooseModel.find(selector || {}).exec();
+      const documents = await MongooseModel.find(
+        selector || {},
+        null,
+        options
+      ).exec();
       return documents.map((d) => d.toJSON());
     },
     findOne: async (selector) => {
@@ -40,14 +42,6 @@ export const createMongooseConnector = <TModel = any>(
       const document = await MongooseModel.findById(id).exec();
       return document && document.toJSON();
       //throw new Error("findOneById not yet implemented in Mongoose connector");
-    },
-    // TODO: not sure if this should really be part of the connector
-    // because it is not dependent on the chosen database
-    // We would probably use the same filtering function with SQL, because Mongo Selector
-    // is the common representation for filters in Vulcan, whether we actually use Mongo or not
-    filter: async (input, context) => {
-      return await filterFunction(model, input, context);
-      //return { selector: {}, filteredFields: [], options: {} };
     },
     count: async (selector) => {
       const count = await MongooseModel.count(selector || {});
@@ -79,6 +73,11 @@ export const createMongooseConnector = <TModel = any>(
       const deletedDocument = deletedRawDocument && deletedRawDocument.toJSON();
       await MongooseModel.remove(selector);
       return deletedDocument;
+    },
+    // This function is meant at generating options for Find and select
+    _filter: async (input, context) => {
+      return await filterFunction(model, input, context);
+      //return { selector: {}, filteredFields: [], options: {} };
     },
   };
 };

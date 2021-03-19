@@ -143,8 +143,8 @@ export interface UpdateVariables<TModel = any> {
 }
 
 // Filtering
-type MongoLikeSortOption = "asc" | "desc";
-type MongoLikeCondition =
+type VulcanSelectorSortOption = "asc" | "desc";
+type VulcanSelectorCondition =
   | "_eq"
   | "_gt"
   | "_gte"
@@ -158,13 +158,13 @@ type MongoLikeCondition =
   | "_contains"
   | "_like";
 
-type MongoLikeOperator = "_and" | "_or" | "_not";
+type VulcanSelectorOperator = "_and" | "_or" | "_not";
 
-type MongoLikeSelector = {
-  [key in MongoLikeCondition]?: any;
+type VulcanSelectorSelector = {
+  [key in VulcanSelectorCondition]?: any;
 } &
   {
-    [key in MongoLikeOperator]?: Array<any>;
+    [key in VulcanSelectorOperator]?: Array<any>;
   };
 export interface SingleInput<TModel = any> extends QueryInput<TModel> {
   id?: string;
@@ -188,9 +188,9 @@ export interface QueryInput<TModel = any> extends FilterableInput<TModel> {
 // Minimum API for filter function
 export interface FilterableInput<TModel = any> {
   id?: string;
-  filter?: MongoLikeSelector &
-    { [fieldName in keyof TModel]?: MongoLikeSelector };
-  sort?: { [fieldName in keyof TModel]?: MongoLikeSortOption };
+  filter?: VulcanSelectorSelector &
+    { [fieldName in keyof TModel]?: VulcanSelectorSelector };
+  sort?: { [fieldName in keyof TModel]?: VulcanSelectorSortOption };
   limit?: number;
   search?: string;
   offset?: number;

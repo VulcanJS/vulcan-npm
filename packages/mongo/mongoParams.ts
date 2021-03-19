@@ -10,6 +10,8 @@ import { FindOneOptions } from "mongodb";
 import { isEmptyOrUndefined } from "@vulcanjs/utils";
 import { VulcanModel } from "@vulcanjs/model";
 import { SingleInput } from "../graphql/typings";
+import { FilterQuery, QueryFindOptions } from "mongoose";
+import { VulcanDocument } from "@vulcanjs/schema";
 
 // import { getSetting } from "./settings.js";
 // convert GraphQL selector into Mongo-compatible selector
@@ -66,11 +68,17 @@ const getFieldNames = (expressionArray) => {
   });
 };
 
+// TODO: should we use TModel or Vulcan document here??
+interface FilterFunctionOutput {
+  selector: FilterQuery<any>;
+  options: QueryFindOptions;
+  filteredFields: Array<string>;
+}
 export const filterFunction = async (
   model: VulcanModel,
   input: SingleInput,
   context?: any
-) => {
+): Promise<FilterFunctionOutput> => {
   // eslint-disable-next-line no-unused-vars
   const {
     filter,
@@ -80,8 +88,8 @@ export const filterFunction = async (
     /*filterArguments,*/ offset,
     id,
   } = input;
-  let selector = {};
-  let options: FindOneOptions<any> = {
+  let selector: FilterQuery<any> = {};
+  let options: QueryFindOptions = {
     sort: {},
   }; // TODO: check if FindOneOptions is the right type for this
   let filteredFields: Array<string> = [];

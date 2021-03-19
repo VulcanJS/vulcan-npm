@@ -25,6 +25,11 @@ describe("vulcan/mongo/connector", () => {
     schema: {
       text: {
         type: String,
+        optional: true,
+      },
+      number: {
+        type: Number,
+        optional: true,
       },
     },
   });
@@ -93,6 +98,33 @@ describe("vulcan/mongo/connector", () => {
       const foundDocs = await connector.find({}, {});
       expect(foundDocs).toEqual(createdDocs);
     });
+    test("find - sorted", async () => {
+      const docsToCreate = [{ number: 1 }, { number: 3 }, { number: 2 }];
+      const createdDocs = await Promise.all(docsToCreate.map(connector.create));
+      const foundDocs = await connector.find(
+        {},
+        {
+          sort: {
+            number: 1,
+          },
+        }
+      );
+      expect(foundDocs.map((d) => d.number)).toEqual([1, 2, 3]);
+    });
+    test("find - limit", async () => {
+      const docsToCreate = [{ number: 1 }, { number: 3 }, { number: 2 }];
+      const createdDocs = await Promise.all(docsToCreate.map(connector.create));
+      const foundDocs = await connector.find(
+        {},
+        {
+          sort: {
+            number: -1,
+          },
+          limit: 2,
+        }
+      );
+      expect(foundDocs.map((d) => d.number)).toEqual([3, 2]);
+    });
     test("findOne", async () => {
       const docsToCreate = [{ text: "hello" }, { text: "world" }];
       const createdDocs = await Promise.all(docsToCreate.map(connector.create));
@@ -100,7 +132,7 @@ describe("vulcan/mongo/connector", () => {
       expect(foundDoc).toEqual(createdDocs[1]);
     });
     test("filter", async () => {
-      const result = await connector.filter({}, {});
+      const result = await connector._filter({}, {});
       expect(result).toEqual({
         filteredFields: [],
         options: { limit: 1000, sort: { createdAt: -1 } },
