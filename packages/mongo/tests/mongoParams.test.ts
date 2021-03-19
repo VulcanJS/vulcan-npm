@@ -1,3 +1,4 @@
+import { VulcanSelector } from "@vulcanjs/graphql/typings";
 import { createModel } from "@vulcanjs/model";
 import expect from "expect";
 import { filterFunction } from "../mongoParams";
@@ -6,7 +7,7 @@ const test = it;
 
 describe("vulcan:lib/mongoParams", () => {
   test("keep multiple filters", async () => {
-    const filter = {
+    const filter: VulcanSelector<any> = {
       _id: { _gte: 1, _lte: 5 },
     };
     const input = {
@@ -39,9 +40,10 @@ describe("vulcan:lib/mongoParams", () => {
       },
     });
     test("handle _and at root", async () => {
-      const filter = {
+      const filter: VulcanSelector<{ name: string; length: number }> = {
         _and: [{ name: { _gte: "A" } }, { length: { _lte: 2 } }],
       };
+      const filter2: VulcanSelector = { _and: [] };
       const input = {
         filter,
       };

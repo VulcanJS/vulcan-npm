@@ -142,30 +142,75 @@ export interface UpdateVariables<TModel = any> {
   input: UpdateInput<TModel>;
 }
 
-// Filtering
+// Filtering and selectors
 type VulcanSelectorSortOption = "asc" | "desc";
-type VulcanSelectorCondition =
-  | "_eq"
-  | "_gt"
-  | "_gte"
-  | "_in"
-  | "_lt"
-  | "_lte"
-  | "_neq"
-  | "_nin"
-  | "_is_null"
-  | "_is"
-  | "_contains"
-  | "_like";
 
-type VulcanSelectorOperator = "_and" | "_or" | "_not";
+/**
+ * { foo:2}
+ * { foo: { _gt: 3}}
+ */
 
-type VulcanSelectorSelector = {
-  [key in VulcanSelectorCondition]?: any;
-} &
-  {
-    [key in VulcanSelectorOperator]?: Array<any>;
-  };
+type FieldSelector = {
+  [key: string]: string | number | boolean | null | ConditionSelector;
+} & { [key in PossibleOperators]?: never };
+const sampleFieldSelector: FieldSelector = {
+  foo: 2,
+};
+const sampleFieldAndConditionSelector: FieldSelector = {
+  foo: { _gt: 2, _gte: 3 },
+};
+
+type ConditionSelector = {
+  //[key in VulcanSelectorCondition]?: VulcanSelector<TModel>;
+  _eq?: any;
+  _gt?: string | number;
+  _gte?: string | number;
+  _in?: Array<any>;
+  _lt?: string | number;
+  _lte?: string | number;
+  _neq?: any;
+  _nin?: Array<any>;
+  _is_null?: any;
+  _is?: any;
+  _contains?: any;
+  _like?: string;
+};
+type PossibleConditions = keyof ConditionSelector;
+
+type PossibleOperators = "_and" | "_or" | "_not";
+type OperatorSelector<TModel = any> = {
+  [key in PossibleOperators]?: Array<FieldSelector>; // Array<VulcanSelector<TModel>>; //VulcanInnerSelector<TModel>>;
+};
+const sampleOperatorSelector: OperatorSelector = {
+  _or: [{ foo: 2 }, { bar: 3 }],
+};
+const sampleOperatorConditionSelector: OperatorSelector = {
+  _or: [{ foo: 2 }, { bar: { _gt: 3 } }],
+};
+
+// Field selector = { foo: 2} where foo is part of the model
+//type VulcanFieldSelector<TModel = any> = {
+//  [
+//    fieldName: string /*in Exclude<
+//    keyof TModel,
+//    VulcanPossibleConditions | VulcanPossibleOperators // field cannot be _gte, _and, etc.
+//  >*/
+//  ]: VulcanInnerSelector<TModel> | string | number | null | boolean; // can be a primirive value as well
+//} & { [key in VulcanPossibleConditions]?: never } &
+//  { [key in VulcanPossibleOperators]?: never };
+
+// Inner selector = field selector, operators and also conditions
+// type VulcanInnerSelector<TModel = any> = VulcanSelector<TModel> &
+//   VulcanConditionSelector; // nested selector also allow conditions { foobar: { _gt: 2}}
+
+/**
+ * Combination of field selectors, conditions and operators
+ * { _and: [{size:2}, {name: "hello"}], bar: 3}
+ */
+
+export type VulcanSelector<TModel = any> = FieldSelector | OperatorSelector;
+
+// Inputs
 export interface SingleInput<TModel = any> extends QueryInput<TModel> {
   id?: string;
   allowNull?: boolean; // if false, throw an error when not found
@@ -188,8 +233,8 @@ export interface QueryInput<TModel = any> extends FilterableInput<TModel> {
 // Minimum API for filter function
 export interface FilterableInput<TModel = any> {
   id?: string;
-  filter?: VulcanSelectorSelector &
-    { [fieldName in keyof TModel]?: VulcanSelectorSelector };
+  filter?: VulcanSelector<TModel>;
+
   sort?: { [fieldName in keyof TModel]?: VulcanSelectorSortOption };
   limit?: number;
   search?: string;

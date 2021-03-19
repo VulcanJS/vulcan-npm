@@ -6,12 +6,11 @@ import uniq from "lodash/uniq";
 import isEmpty from "lodash/isEmpty";
 import escapeStringRegexp from "escape-string-regexp";
 import merge from "lodash/merge";
-import { FindOneOptions } from "mongodb";
 import { isEmptyOrUndefined } from "@vulcanjs/utils";
 import { VulcanModel } from "@vulcanjs/model";
 import { SingleInput } from "../graphql/typings";
 import { FilterQuery, QueryFindOptions } from "mongoose";
-import { VulcanDocument } from "@vulcanjs/schema";
+import { FilterableInput } from "@vulcanjs/graphql";
 
 // import { getSetting } from "./settings.js";
 // convert GraphQL selector into Mongo-compatible selector
@@ -76,7 +75,7 @@ interface FilterFunctionOutput {
 }
 export const filterFunction = async (
   model: VulcanModel,
-  input: SingleInput,
+  input: FilterableInput<any>,
   context?: any
 ): Promise<FilterFunctionOutput> => {
   // eslint-disable-next-line no-unused-vars

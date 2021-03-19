@@ -16,7 +16,7 @@ export interface Connector<
     input: FilterableInput<TModel>,
     context: any
   ) => Promise<{
-    selector: TSelector; // VulcanSelectorSelector is the input, TSelector the output
+    selector: TSelector; // VulcanSelector is the input, TSelector the output
     options: TOptions;
     filteredFields: Array<any>; // TODO: in defaultQueryResolvers we do filteredFields = Object.keys(selector), so what is this parameter?
   }>;
