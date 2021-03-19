@@ -164,6 +164,9 @@ describe("graphql/resolvers/mutators callbacks", function () {
     });
     describe("validate", () => {
       test("return a custom validation error", async () => {
+        const errSpy = jest
+          .spyOn(console, "error")
+          .mockImplementationOnce(() => {}); // silences console.error
         const validate = jest.fn(() => ["ERROR"]);
         const Foo = createGraphqlModel({
           ...defaultModelOptions,
@@ -180,7 +183,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
         });
         const data = {};
 
-        expect.assertions(1); // should throw 1 exception
+        expect.assertions(2); // should throw 1 exception
         try {
           const { data: resultDocument } = await createMutator({
             ...createArgs,
@@ -191,6 +194,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
           });
         } catch (e) {}
         expect(validate).toHaveBeenCalledTimes(1);
+        expect(errSpy).toHaveBeenCalled();
       });
     });
   });

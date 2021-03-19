@@ -29,6 +29,9 @@ describe("graphql/mutation resolvers", function () {
   });
   describe("performMutationCheck", () => {
     test("throws a 'document not found' error if there is no document", () => {
+      const errSpy = jest
+        .spyOn(console, "error")
+        .mockImplementationOnce(() => {}); // silences console.error
       expect(() =>
         performMutationCheck({
           model: Foo,
@@ -39,8 +42,12 @@ describe("graphql/mutation resolvers", function () {
       ).toThrow(
         '[{"id":"app.document_not_found","data":{"operationName":"Foo:create"}}]'
       );
+      expect(errSpy).toHaveBeenCalled();
     });
     test("throws an 'operation not allowed' if permission are set but user is not allowed", () => {
+      const errSpy = jest
+        .spyOn(console, "error")
+        .mockImplementationOnce(() => {}); // silences console.error
       expect(() =>
         performMutationCheck({
           model: Foo,
@@ -51,6 +58,7 @@ describe("graphql/mutation resolvers", function () {
       ).toThrow(
         '[{"id":"app.operation_not_allowed","data":{"operationName":"Foo:create"}}]'
       );
+      expect(errSpy).toHaveBeenCalled();
     });
   });
   /*

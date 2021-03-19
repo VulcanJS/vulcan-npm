@@ -150,15 +150,10 @@ type VulcanSelectorSortOption = "asc" | "desc";
  * { foo: { _gt: 3}}
  */
 
-type FieldSelector = {
-  [key: string]: string | number | boolean | null | ConditionSelector;
-} & { [key in PossibleOperators]?: never };
-const sampleFieldSelector: FieldSelector = {
-  foo: 2,
-};
-const sampleFieldAndConditionSelector: FieldSelector = {
-  foo: { _gt: 2, _gte: 3 },
-};
+type FieldSelector<TModel = any> = {
+  [key in keyof TModel]?: string | number | boolean | null | ConditionSelector;
+} &
+  { [key in PossibleOperators]?: never };
 
 type ConditionSelector = {
   //[key in VulcanSelectorCondition]?: VulcanSelector<TModel>;
@@ -180,12 +175,6 @@ type PossibleConditions = keyof ConditionSelector;
 type PossibleOperators = "_and" | "_or" | "_not";
 type OperatorSelector<TModel = any> = {
   [key in PossibleOperators]?: Array<FieldSelector>; // Array<VulcanSelector<TModel>>; //VulcanInnerSelector<TModel>>;
-};
-const sampleOperatorSelector: OperatorSelector = {
-  _or: [{ foo: 2 }, { bar: 3 }],
-};
-const sampleOperatorConditionSelector: OperatorSelector = {
-  _or: [{ foo: 2 }, { bar: { _gt: 3 } }],
 };
 
 // Field selector = { foo: 2} where foo is part of the model

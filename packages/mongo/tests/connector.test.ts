@@ -96,7 +96,10 @@ describe("vulcan/mongo/connector", () => {
       const docsToCreate = [{ text: "hello" }, { text: "world" }];
       const createdDocs = await Promise.all(docsToCreate.map(connector.create));
       const foundDocs = await connector.find({}, {});
-      expect(foundDocs).toEqual(createdDocs);
+      // order is not guaranteed
+      expect(foundDocs.map((d) => d.text).sort()).toEqual(
+        createdDocs.map((d) => d.text).sort()
+      );
     });
     test("find - sorted", async () => {
       const docsToCreate = [{ number: 1 }, { number: 3 }, { number: 2 }];
