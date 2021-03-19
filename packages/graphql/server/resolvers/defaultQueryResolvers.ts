@@ -81,7 +81,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       const { currentUser } = context;
       // get selector and options from terms and perform Mongo query
 
-      let { selector, options } = await connector.filter(input, context);
+      let { selector, options } = await connector._filter(input, context);
       const filteredFields = Object.keys(selector);
 
       // make sure all filtered fields are allowed, before fetching the document
@@ -195,7 +195,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       if (_id) {
         doc = await connector.findOneById(_id);
       } else {
-        let { selector, options, filteredFields } = await connector.filter(
+        let { selector, options, filteredFields } = await connector._filter(
           input,
           context
         );

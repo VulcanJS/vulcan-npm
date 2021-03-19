@@ -31,7 +31,7 @@ describe("graphql/query resolvers", function () {
     },
   };
   const defaultConnector: Partial<Connector> = {
-    filter: async () => ({ selector: {}, options: {}, filteredFields: [] }),
+    _filter: async () => ({ selector: {}, options: {}, filteredFields: [] }),
   };
   // TODO: what's the name of this argument? handles cache
   const lastArg = { cacheControl: {} };
