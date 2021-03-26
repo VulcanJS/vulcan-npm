@@ -24,7 +24,7 @@ input String_Selector {
   _like: String
   #_lt: String
   #_lte: String
-  #_neq: String
+  _neq: String
   #_nilike: String
   #_nin: [String!]
   #_nlike: String
@@ -46,7 +46,7 @@ input Int_Selector {
   #_is_null: Boolean
   _lt: Int
   _lte: Int
-  #_neq: Int
+  _neq: Int
   #_nin: [Int!]
 }
 
@@ -63,7 +63,7 @@ input Float_Selector {
   #_is_null: Boolean
   _lt: Float
   _lte: Float
-  #_neq: Float
+  _neq: Float
   #_nin: [Float!]
 }
 
@@ -74,7 +74,7 @@ input Float_Array_Selector {
 
 input Boolean_Selector {
   _eq: Boolean
-  #_neq: Boolean
+  _neq: Boolean
 }
 
 input Boolean_Array_Selector {
@@ -90,7 +90,7 @@ input Date_Selector {
   #_is_null: Boolean
   _lt: Date
   _lte: Date
-  #_neq: Date
+  _neq: Date
   #_nin: [Date!]
 }
 
