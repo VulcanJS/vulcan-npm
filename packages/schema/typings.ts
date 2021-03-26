@@ -16,7 +16,12 @@ export type FieldTypeName =
   | "Object" // can be a nested schema OR a JSON in certain cases (depending on blackbox etc.)
   | "JSON" // explicitely a JSON
   | "Date";
-type PermissionDefinition = String | Function;
+
+type PermissionFunction = (
+  user: Object | null | undefined,
+  document: Object
+) => boolean;
+type PermissionDefinition = String | PermissionFunction | Function;
 
 type ContextWithUser = { currentUser?: any };
 
