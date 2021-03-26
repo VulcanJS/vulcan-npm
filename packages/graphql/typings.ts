@@ -151,7 +151,7 @@ type VulcanSelectorSortOption = "asc" | "desc";
  */
 
 type FieldSelector<TModel = any> = {
-  [key in keyof TModel]?: string | number | boolean | null | ConditionSelector;
+  [key in keyof TModel]?: ConditionSelector; // TODO: we cannot yet pass native values | string | number | boolean | null | ;
 } &
   { [key in PossibleOperators]?: never };
 
@@ -174,7 +174,7 @@ type PossibleConditions = keyof ConditionSelector;
 
 type PossibleOperators = "_and" | "_or" | "_not";
 type OperatorSelector<TModel = any> = {
-  [key in PossibleOperators]?: Array<FieldSelector>; // Array<VulcanSelector<TModel>>; //VulcanInnerSelector<TModel>>;
+  [key in PossibleOperators]?: Array<FieldSelector<TModel>>; // Array<VulcanSelector<TModel>>; //VulcanInnerSelector<TModel>>;
 };
 
 // Field selector = { foo: 2} where foo is part of the model
@@ -197,7 +197,9 @@ type OperatorSelector<TModel = any> = {
  * { _and: [{size:2}, {name: "hello"}], bar: 3}
  */
 
-export type VulcanSelector<TModel = any> = FieldSelector | OperatorSelector;
+export type VulcanSelector<TModel = any> =
+  | FieldSelector<TModel>
+  | OperatorSelector<TModel>;
 
 // Inputs
 export interface SingleInput<TModel = any> extends QueryInput<TModel> {
