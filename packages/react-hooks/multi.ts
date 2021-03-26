@@ -229,7 +229,7 @@ interface MultiQueryResult<TModel = any, TData = any>
 export const useMulti = <TModel = any, TData = any>(
   options: UseMultiOptions<TModel, TData, MultiVariables>,
   props = {}
-): MultiQueryResult<TModel> => {
+): MultiQueryResult<TModel, TData> => {
   const initialPaginationInput = getInitialPaginationInput(options, props);
   const [paginationInput, setPaginationInput] = useState(
     initialPaginationInput
@@ -257,7 +257,7 @@ export const useMulti = <TModel = any, TData = any>(
     paginationInput,
     props
   );
-  const queryResult: QueryResult = useQuery(query, queryOptions);
+  const queryResult = useQuery<TData>(query, queryOptions);
 
   const result = buildMultiResult<TModel, TData, MultiVariables>(
     options,
