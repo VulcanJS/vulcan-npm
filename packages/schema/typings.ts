@@ -19,7 +19,7 @@ export type FieldTypeName =
 
 type PermissionFunction = (
   user: Object | null | undefined,
-  document: Object
+  document?: Object
 ) => boolean;
 type PermissionDefinition = String | PermissionFunction | Function;
 

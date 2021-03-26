@@ -13,7 +13,7 @@ interface CanReadInput {
   context: any;
   operationName: string; // "foobar.read.multi";
 }
-type CanReadFunction = (input: CanReadInput) => boolean;
+export type CanReadFunction = (input: CanReadInput) => boolean;
 type ArrayOrSingle<T> = Array<T> | T;
 // TODO: get those typings from a shared permission package (they are currently already defined in vulcan:graphql package but we can't import it here
 // to avoid a circular dependency)
