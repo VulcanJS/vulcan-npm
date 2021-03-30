@@ -44,7 +44,7 @@ export const createMongooseConnector = <TModel = any>(
       //throw new Error("findOneById not yet implemented in Mongoose connector");
     },
     count: async (selector) => {
-      const count = await MongooseModel.count(selector || {});
+      const count = await MongooseModel.countDocuments(selector || {});
       return count;
     },
     create: async (document) => {
