@@ -132,6 +132,8 @@ export interface VulcanDocument {
   // Special fields
   _id?: string;
   userId?: string;
+  createdAt?: Date | string | null; // TODO: is it a date or a string in the context where we rely on VulcanDocument?
+  updatedAt?: Date | string | null;
   slug?: string;
   [key: string]: any;
 }
