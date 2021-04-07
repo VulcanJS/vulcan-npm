@@ -25,6 +25,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@vulcanjs/core": "^0.1.6-alpha.2"
+    "@vulcanjs/core": "^0.1.6-alpha.2",
+    "@vulcanjs/schema": "^0.1.10",
+    "@vulcanjs/utils": "^0.1.9"
   }
 }

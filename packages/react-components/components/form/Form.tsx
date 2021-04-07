@@ -12,27 +12,22 @@ This component expects:
 
 */
 
-/*import {
-  registerComponent,
-  Components,
-  runCallbacks,
-  getErrors,
-  getSetting,
-  Utils,
-  isIntlField,
-  mergeWithComponents,
-  formatLabel,
-  getIntlLabel,
-  getIntlKeys,
-} from "meteor/vulcan:core";*/
-import { getIntlKeys } from "../../lib/intl";
 import React, { Component } from "react";
 import SimpleSchema from "simpl-schema";
 import PropTypes from "prop-types";
-import { runCallbacks } from "@vulcanjs/core";
-import { intlShape } from "@vulcanjs/i18n";
+import { runCallbacks, getErrors } from "@vulcanjs/core";
+import {
+  intlShape,
+  isIntlField,
+  formatLabel,
+  getIntlKeys,
+  getIntlLabel,
+} from "@vulcanjs/i18n";
 import { capitalize, removeProperty } from "@vulcanjs/utils";
+import { VulcanFieldSchema, FieldGroup } from "@vulcanjs/schema";
 import cloneDeep from "lodash/cloneDeep";
+import sortBy from "lodash/sortBy";
+import map from "lodash/map";
 import get from "lodash/get";
 import set from "lodash/set";
 import unset from "lodash/unset";
@@ -60,7 +55,7 @@ import {
   getEditableFields,
   getInsertableFields,
 } from "./modules/schema_utils.js";
-import withCollectionProps from "./withCollectionProps";
+// import withCollectionProps from "./withCollectionProps";
 import { callbackProps } from "./propTypes";
 import _ from "underscore";
 
@@ -165,16 +160,95 @@ export interface FormState {
   disabled: any;
   success?: any;
   flatSchema: any;
+  originalSchema: any;
 }
 type PropsFromPropTypes = {
-  [key in keyof SmartForm["propTypes"]]: any;
+  [key in keyof SmartForm["propTypes"]]?: any;
 }; // dumb type just to remove errors, to be improved by replacing propTypes with ts
-export interface FormProps extends PropsFromPropTypes {
+export interface FormProps<TModel = { [key in string]: any }>
+  extends PropsFromPropTypes {
   refetch: any;
   history: any;
-  id: any;
-  components: any;
+  id?: string;
+  components?: {};
+  /* The collection in which to edit or insert a document. */
+  // TODO: replace by  a model
+  collection: any;
+  /* Instead of passing collection you can pass the name of the collection.*/
+  // collectionName?: string;
+  /*If present, the document to edit. If not present, the form will be a “new document” form.*/
+  documentId?: string;
+  /*An array of field names, if you want to restrict the form to a specific set of fields.*/
+  fields?: Array<keyof TModel>;
+  /*The text inside the submit button of the form.*/
+  submitLabel?: string;
+  /*A layout property used to control how the form fields are displayed. Defaults to horizontal.*/
+  layout: "horizontal" | "vertical";
+  /*Whether to show a “delete document” link on edit forms.*/
+  showRemove?: boolean;
+  /*A set of props used to prefill the form. */
+  prefilledProps: TModel & Object; // TODO: should it allow only fields from the Model or also additional fields?
+  /*Whether to repeat validation errors at the bottom of the form.*/
+  repeatErrors?: boolean;
+  //Callbacks
+  /*A callback called on form submission on the form data. Can return the submitted data object as well.*/
+  submitCallback: (data) => any;
+  /*A callback called on mutation success.*/
+  successCallback: (document, meta: { form: any }) => void;
+  /*A callback called on mutation failure.*/
+  errorCallback: (document, error, meta: { form: any }) => void;
+  /*If a cancelCallback function is provided, a “cancel” link will be shown next to the form’s submit button and the callback will be called on click.*/
+  cancelCallback: (document) => void;
+  /*A callback to call when a document is successfully removed (deleted).*/
+  removeSuccessCallback: (document) => void;
+
+  /*A callback called a every change or blur event inside the form.*/
+  changeCallback: (currentDocument) => void;
+  // Fragments
+  /*A GraphQL fragment used to specify the data to fetch to populate edit forms.
+If no fragment is passed, SmartForm will do its best to figure out what data to load based on the fields included in the form.
+*/
+  queryFragment?: string;
+  /*A GraphQL fragment used to specify the data to return once a mutation is complete.
+
+If no fragment is passed, SmartForm will only return fields used in the form, but note that this might sometimes lead to discrepancies when compared with documents already loaded on the client.
+
+An example would be a createdAt date added automatically on creation even though it’s not part of the actual form. If you’d like that field to be returned after the mutation, you can define a custom mutationFragment that includes it explicitly.*/
+  mutationFragment?: string;
 }
+
+// Parsed version of the field, easier to display
+interface FormField extends VulcanFieldSchema {
+  name: string; // = the field key name  in the schema
+  path?: string;
+  datatype: any; // ?
+  itemDatatype?: any; // TODO: we may reuse the logic from the graphql generator to get the type of a schema field
+  intlKeys?: Array<string>;
+  document?: any;
+  options?: any;
+  intlInput?: boolean;
+  help?: string;
+  layout?: "horizontal" | "vertical";
+}
+// Group of multiple fields (obtained by parsing the whole schema)
+interface GroupWithFields extends FieldGroup {
+  fields: Array<FormField>;
+}
+
+interface FormComponent {
+  // TODO: list the components here
+  FormLayout: React.ComponentType;
+  FormGroup: React.ComponentType;
+}
+// TODO: import components from the child files
+const defaultFormComponents: FormComponent = {
+  FormLayout: ({ children }) => <div>{children}</div>,
+  FormGroup: ({ children }) => <div>{children}</div>,
+};
+const mergeWithComponents = (components?: any) => {
+  return merge({}, defaultFormComponents, components);
+};
+
 class SmartForm extends Component<FormProps, FormState> {
   constructor(props) {
     super(props);
@@ -186,6 +260,7 @@ class SmartForm extends Component<FormProps, FormState> {
   }
 
   unblock: Function;
+  form: any;
 
   propTypes = {
     // main options
@@ -267,9 +342,9 @@ class SmartForm extends Component<FormProps, FormState> {
 
   defaultValues = {};
 
-  submitFormCallbacks = [];
-  successFormCallbacks = [];
-  failureFormCallbacks = [];
+  submitFormCallbacks: Array<Function> = [];
+  successFormCallbacks: Array<Function> = [];
+  failureFormCallbacks: Array<Function> = [];
 
   // --------------------------------------------------------------------- //
   // ------------------------------- Helpers ----------------------------- //
@@ -371,7 +446,7 @@ class SmartForm extends Component<FormProps, FormState> {
     data = runCallbacks({
       callbacks: this.submitFormCallbacks,
       iterator: data,
-      properties: { form: this },
+      args: [{ form: this }],
     });
 
     return data;
@@ -382,7 +457,7 @@ class SmartForm extends Component<FormProps, FormState> {
   Get form components, in case any has been overwritten for this specific form
 
   */
-  getMergedComponents = () => this.props.components;
+  getMergedComponents = () => mergeWithComponents(this.props.components);
 
   // --------------------------------------------------------------------- //
   // -------------------------------- Fields ----------------------------- //
@@ -400,40 +475,44 @@ class SmartForm extends Component<FormProps, FormState> {
       return this.createField(fieldName, this.state.schema);
     });
 
-    fields = _.sortBy(fields, "order");
+    fields = sortBy(fields, "order");
 
-    // get list of all unique groups (based on their name) used in current fields
-    let groups = _.compact(
-      uniqBy(_.pluck(fields, "group"), (g) => g && g.name)
+    // get list of all unique groups (based on their name) used in current fields, remove "empty" group
+    let groups = compact(
+      uniqBy(map(fields, "group"), (g) => (g ? g.name : ""))
     );
 
     // for each group, add relevant fields
-    groups = groups.map((group) => {
-      group.label =
+    let groupsWithFields = groups.map((group) => {
+      const label =
         group.label ||
         this.context.intl.formatMessage({ id: group.name }) ||
         capitalize(group.name);
-      group.fields = _.filter(fields, (field) => {
+      const groupFields = _.filter(fields, (field) => {
         return field.group && field.group.name === group.name;
       });
-      return group;
+      const groupWithFields: GroupWithFields = {
+        ...group,
+        label,
+        fields: groupFields,
+      };
+      return groupWithFields;
     });
 
     // add default group if necessary
     const defaultGroupFields = _filter(fields, (field) => !field.group);
     if (defaultGroupFields.length) {
-      groups = [
-        {
-          name: "default",
-          label: "default",
-          order: 0,
-          fields: defaultGroupFields,
-        },
-      ].concat(groups);
+      const defaultGroup: GroupWithFields = {
+        name: "default",
+        label: "default",
+        order: 0,
+        fields: defaultGroupFields,
+      };
+      groupsWithFields = [defaultGroup].concat(groupsWithFields);
     }
 
     // sort by order
-    groups = _.sortBy(groups, "order");
+    groups = sortBy(groups, "order");
 
     // console.log(groups);
 
@@ -514,12 +593,12 @@ class SmartForm extends Component<FormProps, FormState> {
     const isArray = get(fieldSchema, "type.0.type") === Array;
 
     // intialize properties
-    let field = {
-      ..._.pick(fieldSchema, formProperties),
+    let field: Partial<FormField> = {
+      ...pick(fieldSchema, formProperties),
       name: fieldName,
       datatype: fieldSchema.type,
-      layout: this.props.layout,
-      input: fieldSchema.input || fieldSchema.control,
+      layout: this.props.layout, // A layout property used to control how the form fields are displayed. Defaults to horizontal.
+      input: fieldSchema.input || fieldSchema.control, // TODO
     };
 
     // if this is an array field also store its array item type
@@ -579,9 +658,13 @@ class SmartForm extends Component<FormProps, FormState> {
       field.help = description;
     }
 
-    return field;
+    return field as FormField;
   };
-  handleFieldPath = (field, fieldName, parentPath) => {
+  handleFieldPath = (
+    field: FormField,
+    fieldName: string,
+    parentPath?: string
+  ) => {
     const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
     field.path = fieldPath;
     if (field.defaultValue) {
@@ -648,7 +731,7 @@ class SmartForm extends Component<FormProps, FormState> {
     schema: any,
     parentFieldName?: string,
     parentPath?: string
-  ) => {
+  ): FormField => {
     const fieldSchema = schema[fieldName];
     let field = this.initField(fieldName, fieldSchema);
     field = this.handleFieldPath(field, fieldName, parentPath);
@@ -688,7 +771,7 @@ class SmartForm extends Component<FormProps, FormState> {
    Get a field's label
 
    */
-  getLabel = (fieldName, fieldLocale) => {
+  getLabel = (fieldName: string, fieldLocale?: string) => {
     const collectionName = this.props.collectionName.toLowerCase();
     const label = formatLabel({
       intl: this.context.intl,
@@ -948,6 +1031,7 @@ class SmartForm extends Component<FormProps, FormState> {
         this.unblock();
       }
       // unblock browser change
+      // @ts-ignore
       window.onbeforeunload = undefined; //undefined instead of null to support IE
     }
   };
@@ -1073,8 +1157,11 @@ class SmartForm extends Component<FormProps, FormState> {
    *  Document to use as new initial document when values are cleared instead of
    *  the existing one. Note that prefilled props will be merged
    */
-  clearForm = ({ document } = {}) => {
-    document = document ? merge({}, this.props.prefilledProps, document) : null;
+  clearForm = (options: { document?: any } = {}) => {
+    const { document: optionsDocument } = options;
+    const document = optionsDocument
+      ? merge({}, this.props.prefilledProps, optionsDocument)
+      : null;
     this.setState((prevState) => ({
       errors: [],
       currentValues: {},
@@ -1112,7 +1199,7 @@ class SmartForm extends Component<FormProps, FormState> {
     document = runCallbacks({
       callbacks: this.successFormCallbacks,
       iterator: document,
-      properties: { form: this },
+      args: [{ form: this }],
     });
 
     // run success callback if it exists
@@ -1133,7 +1220,7 @@ class SmartForm extends Component<FormProps, FormState> {
     runCallbacks({
       callbacks: this.failureFormCallbacks,
       iterator: error,
-      properties: { error, form: this },
+      args: [{ error, form: this }],
     });
 
     if (!_.isEmpty(error)) {
@@ -1155,7 +1242,7 @@ class SmartForm extends Component<FormProps, FormState> {
   Submit form handler
 
   */
-  submitForm = async (event) => {
+  submitForm = async (event?: Event) => {
     event && event.preventDefault();
     event && event.stopPropagation();
 
@@ -1362,7 +1449,7 @@ class SmartForm extends Component<FormProps, FormState> {
   // --------------------------------------------------------------------- //
 
   render() {
-    const { formComponents, Components, successComponent } = this.props;
+    const { successComponent } = this.props;
     const FormComponents = this.getMergedComponents();
 
     return this.state.success && successComponent ? (

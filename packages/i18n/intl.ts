@@ -1,6 +1,11 @@
+// TODO: may need an update based on Vulcan packages/vulcan-lib/lib/modules/intl.js
 import { camelToSpaces } from "@vulcanjs/utils";
 import SimpleSchema from "simpl-schema";
-import { ValidationError } from "@vulcanjs/schema";
+import {
+  ValidationError,
+  VulcanFieldSchema,
+  VulcanSchema,
+} from "@vulcanjs/schema";
 
 export const defaultLocale = "en"; //getSetting('locale', 'en');
 
@@ -139,6 +144,38 @@ export const validateIntlField = function () {
   }
 };
 
+/*
+
+Get an array of intl keys to try for a field
+
+*/
+export const getIntlKeys = ({
+  fieldName,
+  collectionName,
+  schema,
+}: {
+  fieldName: string;
+  collectionName: string;
+  schema: VulcanSchema;
+}) => {
+  const fieldSchema =
+    schema && schema[fieldName] ? schema[fieldName] : ({} as VulcanFieldSchema);
+
+  const { intlId } = fieldSchema;
+
+  const intlKeys: Array<string> = [];
+  if (intlId) {
+    intlKeys.push(intlId);
+  }
+  if (collectionName) {
+    intlKeys.push(`${collectionName.toLowerCase()}.${fieldName}`);
+  }
+  intlKeys.push(`global.${fieldName}`);
+  intlKeys.push(fieldName);
+
+  return intlKeys;
+};
+
 /**
  * getIntlLabel - Get a label for a field, for a given collection, in the current language.
  * The evaluation is as follows :
@@ -156,10 +193,24 @@ export const validateIntlField = function () {
  * @return {string}                           The translated label
  */
 export const getIntlLabel = (
-  { intl, fieldName, collectionName, schema, isDescription },
-  values
+  {
+    intl,
+    fieldName,
+    collectionName,
+    schema,
+    isDescription,
+  }: {
+    intl?: any;
+    fieldName: string;
+    schema: VulcanSchema;
+    collectionName?: string;
+    isDescription?: boolean;
+  },
+  values?: any
 ) => {
-  const fieldSchema = (schema && schema[fieldName]) || {};
+  const fieldSchema = schema?.[fieldName]
+    ? schema[fieldName]
+    : ({} as VulcanFieldSchema);
   const { intlId } = fieldSchema;
   if (!fieldName) {
     throw new Error(
@@ -198,9 +249,19 @@ export const getIntlLabel = (
 Get intl label or fallback
 
 */
-export const formatLabel = (options, values) => {
+export const formatLabel = (
+  options: {
+    intl?: any;
+    fieldName: string;
+    schema: VulcanSchema;
+    collectionName?: string;
+  },
+  values?: any
+) => {
   const { fieldName, schema } = options;
-  const fieldSchema = (schema && schema[fieldName]) || {};
+  const fieldSchema = schema?.[fieldName]
+    ? schema[fieldName]
+    : ({} as VulcanFieldSchema);
   const { label: schemaLabel } = fieldSchema;
   return (
     getIntlLabel(options, values) || schemaLabel || camelToSpaces(fieldName)

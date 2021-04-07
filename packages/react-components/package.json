@@ -14,6 +14,9 @@
   "license": "MIT",
   "dependencies": {
     "@vulcanjs/core": "^0.1.6-alpha.2",
+    "@vulcanjs/i18n": "^0.1.10",
+    "@vulcanjs/schema": "^0.1.10",
+    "@vulcanjs/utils": "^0.1.9",
     "lodash": "^4.17.21"
   },
   "peerDependencies": {

@@ -84,7 +84,7 @@ declare module "simpl-schema" {
 
   export interface SchemaDefinition<T> {
     type: SchemaType;
-    label?: string | Function;
+    // label?: string | Function;
     optional?: boolean | Function;
     min?: number | boolean | Date | Function;
     max?: number | boolean | Date | Function;

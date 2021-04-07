@@ -23,7 +23,9 @@
   "dependencies": {
     "@vulcanjs/core": "^0.1.6-alpha.2",
     "@vulcanjs/graphql": "^0.1.10",
-    "@vulcanjs/model": "^0.1.10"
+    "@vulcanjs/model": "^0.1.10",
+    "@vulcanjs/schema": "^0.1.10",
+    "@vulcanjs/utils": "^0.1.9"
   },
   "peerDependencies": {
     "@apollo/client": ">= 3.2.0",

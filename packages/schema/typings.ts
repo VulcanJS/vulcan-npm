@@ -57,6 +57,17 @@ interface OnDeleteInput<TModel = any> {
   schema: VulcanSchema;
 }
 
+// Definition of the group in a Field
+export interface FieldGroup {
+  name: string;
+  label: string;
+  order?: number;
+  collapsible?: boolean; // The group can be collapsed
+  startCollapsed?: boolean; // If true, the group will start collapsed
+  adminsOnly?: boolean; // Lets you put fields that members canUpdate in a group that only admins can see
+  beforeComponent?: any; // Component to place at the start of the group
+  afterComponent?: any; // Component to place at the end of the group
+}
 interface VulcanField<TField = any> {
   canRead?: PermissionDefinition | Array<PermissionDefinition>;
   canCreate?: PermissionDefinition | Array<PermissionDefinition>;
@@ -73,10 +84,13 @@ interface VulcanField<TField = any> {
   form?: any; // extra form properties
   inputProperties?: any; // extra form properties
   itemProperties?: any; // extra properties for the form row
+  /*The form label. If not provided, the label will be generated based on the field name and the available language strings data. */
+  label?: string;
+  defaultValue?: TField;
   input?: "textarea" | "select" | "text" | "checkboxgroup" | any; // SmartForm control (String or React component)
   control?: any; // SmartForm control (String or React component) (legacy)
   order?: any; // position in the form
-  group?: any; // form fieldset group
+  group?: FieldGroup; // form fieldset group
   arrayItem?: any; // properties for array items
 
   onCreate?: (input: OnCreateInput) => Promise<TField> | TField; // field insert callback, called server-side
@@ -100,7 +114,7 @@ interface VulcanField<TField = any> {
 
   intl?: boolean; // set to `true` to make a field international
   isIntlData?: boolean; // marker for the actual schema fields that hold intl strings
-  intlId?: boolean; // set an explicit i18n key for a field
+  intlId?: string; // set an explicit i18n key for a field
 }
 
 export interface VulcanFieldSchema<TField = any>
