@@ -57,6 +57,10 @@ import { getEditableFields, getInsertableFields } from '../modules/schema_utils.
 import withCollectionProps from './withCollectionProps';
 import { callbackProps } from './propTypes';
 
+export interface FormProps {
+
+}
+
 // props that should trigger a form reset
 const RESET_PROPS = [
   'collection',

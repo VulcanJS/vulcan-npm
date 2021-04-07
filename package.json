@@ -7,7 +7,9 @@
     "link": "lerna exec yarn link && ./scripts/link-duplicates.sh",
     "clean": "rm -Rf ./node_modules ./packages/*/dist ./packages/*/node_modules",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "devDependencies": {
     "@apollo/client": "3.2.5",
@@ -16,6 +18,10 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
+    "@storybook/addon-actions": "^6.2.4",
+    "@storybook/addon-essentials": "^6.2.4",
+    "@storybook/addon-links": "^6.2.4",
+    "@storybook/react": "^6.2.4",
     "@types/jest": "^26.0.14",
     "@types/node": "^13.7.6",
     "@types/react": "^16.9.23",
@@ -39,5 +45,6 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {}
 }
