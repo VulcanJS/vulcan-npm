@@ -29,7 +29,9 @@ import { getIntlKeys } from "../../lib/intl";
 import React, { Component } from "react";
 import SimpleSchema from "simpl-schema";
 import PropTypes from "prop-types";
+import { runCallbacks } from "@vulcanjs/core";
 import { intlShape } from "@vulcanjs/i18n";
+import { capitalize, removeProperty } from "@vulcanjs/utils";
 import cloneDeep from "lodash/cloneDeep";
 import get from "lodash/get";
 import set from "lodash/set";
@@ -60,8 +62,7 @@ import {
 } from "./modules/schema_utils.js";
 import withCollectionProps from "./withCollectionProps";
 import { callbackProps } from "./propTypes";
-
-export interface FormProps {}
+import _ from "underscore";
 
 // props that should trigger a form reset
 const RESET_PROPS = [
@@ -124,7 +125,7 @@ const getInitialStateFromProps = (nextProps) => {
   });
 
   // remove all instances of the `__typename` property from document
-  Utils.removeProperty(initialDocument, "__typename");
+  removeProperty(initialDocument, "__typename");
 
   return {
     disabled: nextProps.disabled,
@@ -154,7 +155,26 @@ const getInitialStateFromProps = (nextProps) => {
 
 */
 
-class SmartForm extends Component {
+export interface FormState {
+  schema: any;
+  initialDocument: any;
+  currentDocument: any;
+  deletedValues: any;
+  errors: any;
+  currentValues: any;
+  disabled: any;
+  success?: any;
+}
+type PropsFromPropTypes = {
+  [key in keyof SmartForm["propTypes"]]: any;
+}; // dumb type just to remove errors, to be improved by replacing propTypes with ts
+export interface FormProps extends PropsFromPropTypes {
+  refetch: any;
+  history: any;
+  id: any;
+  components: any;
+}
+class SmartForm extends Component<FormProps, FormState> {
   constructor(props) {
     super(props);
     const state = getInitialStateFromProps(props);
@@ -163,6 +183,84 @@ class SmartForm extends Component {
     };
     if (props.initCallback) props.initCallback(state.currentDocument);
   }
+
+  propTypes = {
+    // main options
+    collection: PropTypes.object.isRequired,
+    collectionName: PropTypes.string.isRequired,
+    typeName: PropTypes.string.isRequired,
+
+    document: PropTypes.object, // if a document is passed, this will be an edit form
+    schema: PropTypes.object, // usually not needed
+
+    // graphQL
+    // => now mutations have dynamic names
+    //newMutation: PropTypes.func, // the new mutation
+    //editMutation: PropTypes.func, // the edit mutation
+    //removeMutation: PropTypes.func, // the remove mutation
+
+    // form
+    prefilledProps: PropTypes.object,
+    layout: PropTypes.string,
+    fields: PropTypes.arrayOf(PropTypes.string),
+    addFields: PropTypes.arrayOf(PropTypes.string),
+    removeFields: PropTypes.arrayOf(PropTypes.string),
+    hideFields: PropTypes.arrayOf(PropTypes.string), // OpenCRUD backwards compatibility
+    showRemove: PropTypes.bool,
+    showDelete: PropTypes.bool,
+    submitLabel: PropTypes.node,
+    cancelLabel: PropTypes.node,
+    revertLabel: PropTypes.node,
+    repeatErrors: PropTypes.bool,
+    warnUnsavedChanges: PropTypes.bool,
+    formComponents: PropTypes.object,
+    disabled: PropTypes.bool,
+    itemProperties: PropTypes.object,
+    successComponent: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.element,
+    ]),
+    contextName: PropTypes.string,
+
+    // callbacks
+    ...callbackProps,
+
+    currentUser: PropTypes.object,
+    client: PropTypes.object,
+  };
+
+  defaultProps = {
+    layout: "horizontal",
+    prefilledProps: {},
+    repeatErrors: false,
+    showRemove: true,
+    showDelete: true,
+  };
+
+  contextTypes = {
+    intl: intlShape,
+  };
+
+  childContextTypes = {
+    addToDeletedValues: PropTypes.func,
+    deletedValues: PropTypes.array,
+    addToSubmitForm: PropTypes.func,
+    addToFailureForm: PropTypes.func,
+    addToSuccessForm: PropTypes.func,
+    clearFormCallbacks: PropTypes.func,
+    updateCurrentValues: PropTypes.func,
+    setFormState: PropTypes.func,
+    throwError: PropTypes.func,
+    clearForm: PropTypes.func,
+    refetchForm: PropTypes.func,
+    isChanged: PropTypes.func,
+    initialDocument: PropTypes.object,
+    getDocument: PropTypes.func,
+    getLabel: PropTypes.func,
+    submitForm: PropTypes.func,
+    errors: PropTypes.array,
+    currentValues: PropTypes.object,
+  };
 
   defaultValues = {};
 
@@ -281,8 +379,7 @@ class SmartForm extends Component {
   Get form components, in case any has been overwritten for this specific form
 
   */
-  getMergedComponents = () =>
-    mergeWithComponents(this.props.components || this.props.formComponents);
+  getMergedComponents = () => this.props.components;
 
   // --------------------------------------------------------------------- //
   // -------------------------------- Fields ----------------------------- //
@@ -312,7 +409,7 @@ class SmartForm extends Component {
       group.label =
         group.label ||
         this.context.intl.formatMessage({ id: group.name }) ||
-        Utils.capitalize(group.name);
+        capitalize(group.name);
       group.fields = _.filter(fields, (field) => {
         return field.group && field.group.name === group.name;
       });
@@ -1277,85 +1374,10 @@ class SmartForm extends Component {
   }
 }
 
-SmartForm.propTypes = {
-  // main options
-  collection: PropTypes.object.isRequired,
-  collectionName: PropTypes.string.isRequired,
-  typeName: PropTypes.string.isRequired,
-
-  document: PropTypes.object, // if a document is passed, this will be an edit form
-  schema: PropTypes.object, // usually not needed
-
-  // graphQL
-  // => now mutations have dynamic names
-  //newMutation: PropTypes.func, // the new mutation
-  //editMutation: PropTypes.func, // the edit mutation
-  //removeMutation: PropTypes.func, // the remove mutation
-
-  // form
-  prefilledProps: PropTypes.object,
-  layout: PropTypes.string,
-  fields: PropTypes.arrayOf(PropTypes.string),
-  addFields: PropTypes.arrayOf(PropTypes.string),
-  removeFields: PropTypes.arrayOf(PropTypes.string),
-  hideFields: PropTypes.arrayOf(PropTypes.string), // OpenCRUD backwards compatibility
-  showRemove: PropTypes.bool,
-  showDelete: PropTypes.bool,
-  submitLabel: PropTypes.node,
-  cancelLabel: PropTypes.node,
-  revertLabel: PropTypes.node,
-  repeatErrors: PropTypes.bool,
-  warnUnsavedChanges: PropTypes.bool,
-  formComponents: PropTypes.object,
-  disabled: PropTypes.bool,
-  itemProperties: PropTypes.object,
-  successComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-  contextName: PropTypes.string,
-
-  // callbacks
-  ...callbackProps,
-
-  currentUser: PropTypes.object,
-  client: PropTypes.object,
-};
-
-SmartForm.defaultProps = {
-  layout: "horizontal",
-  prefilledProps: {},
-  repeatErrors: false,
-  showRemove: true,
-  showDelete: true,
-};
-
-SmartForm.contextTypes = {
-  intl: intlShape,
-};
-
-SmartForm.childContextTypes = {
-  addToDeletedValues: PropTypes.func,
-  deletedValues: PropTypes.array,
-  addToSubmitForm: PropTypes.func,
-  addToFailureForm: PropTypes.func,
-  addToSuccessForm: PropTypes.func,
-  clearFormCallbacks: PropTypes.func,
-  updateCurrentValues: PropTypes.func,
-  setFormState: PropTypes.func,
-  throwError: PropTypes.func,
-  clearForm: PropTypes.func,
-  refetchForm: PropTypes.func,
-  isChanged: PropTypes.func,
-  initialDocument: PropTypes.object,
-  getDocument: PropTypes.func,
-  getLabel: PropTypes.func,
-  submitForm: PropTypes.func,
-  errors: PropTypes.array,
-  currentValues: PropTypes.object,
-};
-
 export default SmartForm;
 
-registerComponent({
-  name: "Form",
-  component: SmartForm,
-  hocs: [withCollectionProps],
-});
+//registerComponent({
+//  name: "Form",
+//  component: SmartForm,
+//  hocs: [withCollectionProps],
+//});

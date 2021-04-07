@@ -4,12 +4,12 @@
  * See the accompanying LICENSE file for terms.
  */
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const { bool, number, string, func, object, oneOf, shape, any } = PropTypes;
-const localeMatcher = oneOf(['best fit', 'lookup']);
-const narrowShortLong = oneOf(['narrow', 'short', 'long']);
-const numeric2digit = oneOf(['numeric', '2-digit']);
+const localeMatcher = oneOf(["best fit", "lookup"]);
+const narrowShortLong = oneOf(["narrow", "short", "long"]);
+const numeric2digit = oneOf(["numeric", "2-digit"]);
 const funcReq = func.isRequired;
 
 export const intlConfigPropTypes = {
@@ -47,7 +47,7 @@ export const messageDescriptorPropTypes = {
 
 export const dateTimeFormatPropTypes = {
   localeMatcher,
-  formatMatcher: oneOf(['basic', 'best fit']),
+  formatMatcher: oneOf(["basic", "best fit"]),
 
   timeZone: string,
   hour12: bool,
@@ -55,20 +55,20 @@ export const dateTimeFormatPropTypes = {
   weekday: narrowShortLong,
   era: narrowShortLong,
   year: numeric2digit,
-  month: oneOf(['numeric', '2-digit', 'narrow', 'short', 'long']),
+  month: oneOf(["numeric", "2-digit", "narrow", "short", "long"]),
   day: numeric2digit,
   hour: numeric2digit,
   minute: numeric2digit,
   second: numeric2digit,
-  timeZoneName: oneOf(['short', 'long']),
+  timeZoneName: oneOf(["short", "long"]),
 };
 
 export const numberFormatPropTypes = {
   localeMatcher,
 
-  style: oneOf(['decimal', 'currency', 'percent']),
+  style: oneOf(["decimal", "currency", "percent"]),
   currency: string,
-  currencyDisplay: oneOf(['symbol', 'code', 'name']),
+  currencyDisplay: oneOf(["symbol", "code", "name"]),
   useGrouping: bool,
 
   minimumIntegerDigits: number,
@@ -79,10 +79,10 @@ export const numberFormatPropTypes = {
 };
 
 export const relativeFormatPropTypes = {
-  style: oneOf(['best fit', 'numeric']),
-  units: oneOf(['second', 'minute', 'hour', 'day', 'month', 'year']),
+  style: oneOf(["best fit", "numeric"]),
+  units: oneOf(["second", "minute", "hour", "day", "month", "year"]),
 };
 
 export const pluralFormatPropTypes = {
-  style: oneOf(['cardinal', 'ordinal']),
+  style: oneOf(["cardinal", "ordinal"]),
 };

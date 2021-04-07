@@ -38,7 +38,7 @@ import {
   modifierToData,
   dataToModifier,
 } from "./validation";
-import { runCallbacks } from "../../callbacks";
+import { runCallbacks } from "@vulcanjs/core";
 
 import { throwError } from "./errors";
 import { getModelConnector } from "./context";
