@@ -1,6 +1,6 @@
 import { camelToSpaces } from "@vulcanjs/utils";
 import SimpleSchema from "simpl-schema";
-import { ValidationError } from "./server/resolvers/validation";
+import { ValidationError } from "@vulcanjs/schema";
 
 export const defaultLocale = "en"; //getSetting('locale', 'en');
 

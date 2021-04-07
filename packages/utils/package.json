@@ -23,5 +23,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95"
+  "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
+  "dependencies": {
+    "@vulcanjs/core": "^0.1.6-alpha.2"
+  }
 }

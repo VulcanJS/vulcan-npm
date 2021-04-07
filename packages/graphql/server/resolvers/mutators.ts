@@ -117,7 +117,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
   context = {},
 }: CreateMutatorInput): Promise<{ data: TModel }> => {
   // we don't want to modify the original document
-  let data: Partial<TModel> = clone(originalData);
+  let data: Partial<TModel> = clone(originalData) as TModel;
 
   const { schema } = model;
 

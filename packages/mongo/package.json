@@ -21,6 +21,7 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
+    "@vulcanjs/core": "^0.1.6-alpha.2",
     "@vulcanjs/graphql": "^0.1.10",
     "@vulcanjs/model": "^0.1.10",
     "@vulcanjs/utils": "^0.1.9",

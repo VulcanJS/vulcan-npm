@@ -164,6 +164,7 @@ export interface FormState {
   currentValues: any;
   disabled: any;
   success?: any;
+  flatSchema: any;
 }
 type PropsFromPropTypes = {
   [key in keyof SmartForm["propTypes"]]: any;
@@ -183,6 +184,8 @@ class SmartForm extends Component<FormProps, FormState> {
     };
     if (props.initCallback) props.initCallback(state.currentDocument);
   }
+
+  unblock: Function;
 
   propTypes = {
     // main options
@@ -444,7 +447,7 @@ class SmartForm extends Component<FormProps, FormState> {
   Note: when submitting the form (getData()), do not include any extra fields.
 
   */
-  getFieldNames = (args) => {
+  getFieldNames = (args?: any) => {
     // we do this to avoid having default values in arrow functions, which breaks MS Edge support. See https://github.com/meteor/meteor/issues/10171
     let args0 = args || {};
     const {
@@ -640,7 +643,12 @@ class SmartForm extends Component<FormProps, FormState> {
   complete field object to be passed to the component
 
   */
-  createField = (fieldName, schema, parentFieldName, parentPath) => {
+  createField = (
+    fieldName: string,
+    schema: any,
+    parentFieldName?: string,
+    parentPath?: string
+  ) => {
     const fieldSchema = schema[fieldName];
     let field = this.initField(fieldName, fieldSchema);
     field = this.handleFieldPath(field, fieldName, parentPath);
@@ -874,7 +882,7 @@ class SmartForm extends Component<FormProps, FormState> {
   Manually update the current values of one or more fields(i.e. on change or blur).
 
   */
-  updateCurrentValues = (newValues, options = {}) => {
+  updateCurrentValues = (newValues, options: { mode?: string } = {}) => {
     // default to overwriting old value with new
     const { mode = "overwrite" } = options;
     const { changeCallback } = this.props;
@@ -950,11 +958,8 @@ class SmartForm extends Component<FormProps, FormState> {
    * Check if we must warn user on unsaved change
    */
   getWarnUnsavedChanges = () => {
-    let warnUnsavedChanges = getSetting("forms.warnUnsavedChanges");
-    if (typeof this.props.warnUnsavedChanges === "boolean") {
-      warnUnsavedChanges = this.props.warnUnsavedChanges;
-    }
-    return warnUnsavedChanges;
+    //let warnUnsavedChanges = getSetting("forms.warnUnsavedChanges");
+    return this.props.warnUnsavedChanges;
   };
 
   // check for route change, prevent form content loss
@@ -1141,7 +1146,8 @@ class SmartForm extends Component<FormProps, FormState> {
       this.props.errorCallback(document, error, { form: this });
 
     // scroll back up to show error messages
-    Utils.scrollIntoView(".flash-message");
+    // TODO: migrate this to scroll on top of the form
+    //Utils.scrollIntoView(".flash-message");
   };
 
   /*

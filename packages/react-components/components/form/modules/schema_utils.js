@@ -1,20 +1,22 @@
 /*
  * Schema converter/getters
  */
-import { Utils } from 'meteor/vulcan:core';
-import Users from 'meteor/vulcan:users';
-import _keys from 'lodash/keys';
-import _filter from 'lodash/filter';
+import { Utils } from "meteor/vulcan:core";
+import Users from "meteor/vulcan:users";
 
 /* getters */
 // filter out fields with "." or "$"
-export const getValidFields = schema => {
-  return Object.keys(schema).filter(fieldName => !fieldName.includes('$') && !fieldName.includes('.'));
+export const getValidFields = (schema) => {
+  return Object.keys(schema).filter(
+    (fieldName) => !fieldName.includes("$") && !fieldName.includes(".")
+  );
 };
 
-export const getReadableFields = schema => {
+export const getReadableFields = (schema) => {
   // OpenCRUD backwards compatibility
-  return getValidFields(schema).filter(fieldName => schema[fieldName].canRead || schema[fieldName].viewableBy);
+  return getValidFields(schema).filter(
+    (fieldName) => schema[fieldName].canRead || schema[fieldName].viewableBy
+  );
 };
 
 /*
@@ -29,8 +31,8 @@ If flatten = true, will create a flat object instead of nested tree
  * Get an array of all fields editable by a specific user for a given collection
  * @param {Object} user – the user for which to check field permissions
  */
-export const getInsertableFields = function(schema, user) {
-  const fields = _filter(_keys(schema), function(fieldName) {
+export const getInsertableFields = function (schema, user) {
+  const fields = Object.keys(schema).filter(function (fieldName) {
     var field = schema[fieldName];
     return Users.canCreateField(user, field);
   });
@@ -42,8 +44,8 @@ export const getInsertableFields = function(schema, user) {
  * Get an array of all fields editable by a specific user for a given collection (and optionally document)
  * @param {Object} user – the user for which to check field permissions
  */
-export const getEditableFields = function(schema, user, document) {
-  const fields = _.filter(_.keys(schema), function(fieldName) {
+export const getEditableFields = function (schema, user, document) {
+  const fields = Object.keys(schema).filter(function (fieldName) {
     var field = schema[fieldName];
     return Users.canUpdateField(user, field, document);
   });
@@ -51,15 +53,14 @@ export const getEditableFields = function(schema, user, document) {
 };
 
 export const convertSchema = (schema, options = {}) => {
-  
   const { flatten = false, removeArrays = true } = options;
 
   if (schema._schema) {
     let jsonSchema = {};
 
-    Object.keys(schema._schema).forEach(fieldName => {
+    Object.keys(schema._schema).forEach((fieldName) => {
       // exclude array fields
-      if (removeArrays && fieldName.includes('$')) {
+      if (removeArrays && fieldName.includes("$")) {
         return;
       }
 
@@ -71,7 +72,10 @@ export const convertSchema = (schema, options = {}) => {
       const subSchemaOrType = getNestedFieldSchemaOrType(fieldName, schema);
       if (subSchemaOrType) {
         // remember the subschema if it exists, allow to customize labels for each group of items for arrays of objects
-        jsonSchema[fieldName].arrayFieldSchema = getFieldSchema(`${fieldName}.$`, schema);
+        jsonSchema[fieldName].arrayFieldSchema = getFieldSchema(
+          `${fieldName}.$`,
+          schema
+        );
 
         // call convertSchema recursively on the subSchema
         const convertedSubSchema = convertSchema(subSchemaOrType, options);
@@ -103,7 +107,7 @@ Get a JSON object representing a field's schema
 */
 export const getFieldSchema = (fieldName, schema) => {
   let fieldSchema = {};
-  schemaProperties.forEach(property => {
+  schemaProperties.forEach((property) => {
     const propertyValue = schema.get(fieldName, property);
     if (propertyValue) {
       fieldSchema[property] = propertyValue;
@@ -123,7 +127,7 @@ const getArrayNestedSchema = (fieldName, schema) => {
 };
 // nested object fields type is of the form "type: new SimpleSchema({...})"
 // so they should possess a "_schema" prop
-const isNestedSchemaField = fieldSchema => {
+const isNestedSchemaField = (fieldSchema) => {
   const fieldType = getSchemaType(fieldSchema);
   //console.log('fieldType', typeof fieldType, fieldType._schema)
   return fieldType && !!fieldType._schema;
@@ -152,91 +156,91 @@ export const getNestedFieldSchemaOrType = (fieldName, schema) => {
 };
 
 export const schemaProperties = [
-  'type',
-  'label',
-  'optional',
-  'required',
-  'min',
-  'max',
-  'exclusiveMin',
-  'exclusiveMax',
-  'minCount',
-  'maxCount',
-  'allowedValues',
-  'regEx',
-  'blackbox',
-  'trim',
-  'custom',
-  'defaultValue',
-  'autoValue',
-  'hidden', // hidden: true means the field is never shown in a form no matter what
-  'mustComplete', // mustComplete: true means the field is required to have a complete profile
-  'form', // form placeholder
-  'inputProperties', // form placeholder
-  'itemProperties',
-  'control', // SmartForm control (String or React component)
-  'input', // SmartForm control (String or React component)
-  'autoform', // legacy form placeholder; backward compatibility (not used anymore)
-  'order', // position in the form
-  'group', // form fieldset group
-  'onCreate', // field insert callback
-  'onUpdate', // field edit callback
-  'onDelete', // field remove callback
-  'onInsert', // OpenCRUD backwards compatibility
-  'onEdit', // OpenCRUD backwards compatibility
-  'onRemove', // OpenCRUD backwards compatibility
-  'canRead',
-  'canCreate',
-  'canUpdate',
-  'viewableBy', // OpenCRUD backwards compatibility
-  'insertableBy', // OpenCRUD backwards compatibility
-  'editableBy', // OpenCRUD backwards compatibility
-  'resolveAs',
-  'searchable',
-  'description',
-  'beforeComponent',
-  'afterComponent',
-  'placeholder',
-  'options',
-  'query',
-  'queryWaitsForValue',
-  'autocompleteQuery',
-  'fieldProperties',
-  'intl',
-  'intlId',
+  "type",
+  "label",
+  "optional",
+  "required",
+  "min",
+  "max",
+  "exclusiveMin",
+  "exclusiveMax",
+  "minCount",
+  "maxCount",
+  "allowedValues",
+  "regEx",
+  "blackbox",
+  "trim",
+  "custom",
+  "defaultValue",
+  "autoValue",
+  "hidden", // hidden: true means the field is never shown in a form no matter what
+  "mustComplete", // mustComplete: true means the field is required to have a complete profile
+  "form", // form placeholder
+  "inputProperties", // form placeholder
+  "itemProperties",
+  "control", // SmartForm control (String or React component)
+  "input", // SmartForm control (String or React component)
+  "autoform", // legacy form placeholder; backward compatibility (not used anymore)
+  "order", // position in the form
+  "group", // form fieldset group
+  "onCreate", // field insert callback
+  "onUpdate", // field edit callback
+  "onDelete", // field remove callback
+  "onInsert", // OpenCRUD backwards compatibility
+  "onEdit", // OpenCRUD backwards compatibility
+  "onRemove", // OpenCRUD backwards compatibility
+  "canRead",
+  "canCreate",
+  "canUpdate",
+  "viewableBy", // OpenCRUD backwards compatibility
+  "insertableBy", // OpenCRUD backwards compatibility
+  "editableBy", // OpenCRUD backwards compatibility
+  "resolveAs",
+  "searchable",
+  "description",
+  "beforeComponent",
+  "afterComponent",
+  "placeholder",
+  "options",
+  "query",
+  "queryWaitsForValue",
+  "autocompleteQuery",
+  "fieldProperties",
+  "intl",
+  "intlId",
 ];
 
 export const formProperties = [
-  'optional',
-  'required',
-  'min',
-  'max',
-  'exclusiveMin',
-  'exclusiveMax',
-  'minCount',
-  'maxCount',
-  'allowedValues',
-  'regEx',
-  'blackbox',
-  'trim',
-  'custom',
-  'defaultValue',
-  'autoValue',
-  'mustComplete', // mustComplete: true means the field is required to have a complete profile
-  'form', // form placeholder
-  'inputProperties', // form placeholder
-  'itemProperties',
-  'control', // SmartForm control (String or React component)
-  'input', // SmartForm control (String or React component)
-  'order', // position in the form
-  'group', // form fieldset group
-  'description',
-  'beforeComponent',
-  'afterComponent',
-  'placeholder',
-  'options',
-  'query',
-  'queryWaitsForValue',
-  'autocompleteQuery',
-  'fieldProperties',
+  "optional",
+  "required",
+  "min",
+  "max",
+  "exclusiveMin",
+  "exclusiveMax",
+  "minCount",
+  "maxCount",
+  "allowedValues",
+  "regEx",
+  "blackbox",
+  "trim",
+  "custom",
+  "defaultValue",
+  "autoValue",
+  "mustComplete", // mustComplete: true means the field is required to have a complete profile
+  "form", // form placeholder
+  "inputProperties", // form placeholder
+  "itemProperties",
+  "control", // SmartForm control (String or React component)
+  "input", // SmartForm control (String or React component)
+  "order", // position in the form
+  "group", // form fieldset group
+  "description",
+  "beforeComponent",
+  "afterComponent",
+  "placeholder",
+  "options",
+  "query",
+  "queryWaitsForValue",
+  "autocompleteQuery",
+  "fieldProperties",
 ];

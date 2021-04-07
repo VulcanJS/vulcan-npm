@@ -13,6 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@vulcanjs/core": "^0.1.6-alpha.2",
     "lodash": "^4.17.21"
   },
   "peerDependencies": {
@@ -23,6 +24,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.168",
     "@types/underscore": "^1.11.1"
   }
 }

@@ -13,6 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@vulcanjs/core": "^0.1.6-alpha.2",
     "@vulcanjs/graphql": "^0.1.10",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",

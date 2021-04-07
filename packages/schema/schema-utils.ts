@@ -169,7 +169,7 @@ export const shouldAddOriginalField = (
 };
 // list fields that can be included in the default fragment for a schema
 export const getFragmentFieldNames = ({ schema, options }) =>
-  _reject(_keys(schema), (fieldName) => {
+  Object.keys(schema).filter((fieldName) => {
     /*
    
     Exclude a field from the default fragment if
@@ -181,7 +181,7 @@ export const getFragmentFieldNames = ({ schema, options }) =>
     const field = schema[fieldName];
 
     // OpenCRUD backwards compatibility
-    return (
+    return !(
       (field.resolveAs && !shouldAddOriginalField(fieldName, field)) ||
       fieldName.includes("$") ||
       fieldName.includes(".") ||

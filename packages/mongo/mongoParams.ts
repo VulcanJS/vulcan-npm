@@ -203,17 +203,18 @@ export const filterFunction = async (
   }
 
   // sort
-  if (!isEmpty(sort)) {
+  if (sort && !isEmpty(sort)) {
     options.sort = merge(
       {},
       options.sort,
-      mapValues(sort, (order) => {
-        const mongoOrder = conversionTable[order];
+      Object.keys(sort).map((sortKey) => {
+        const order = sort[sortKey];
         if (!order) {
           throw new Error(
-            `Operator ${order} is not valid. Possible operators: asc, desc`
+            `Order not defined for key ${sortKey}. Possible operators: asc, desc.`
           );
         }
+        const mongoOrder = conversionTable[order];
         return mongoOrder;
       })
     );
@@ -222,7 +223,7 @@ export const filterFunction = async (
   }
 
   // search
-  if (!isEmpty(search)) {
+  if (search && !isEmpty(search)) {
     const searchQuery = escapeStringRegexp(search);
     const searchableFieldNames = Object.keys(schema).filter(
       // do not include intl fields here
