@@ -1,0 +1,20 @@
+{
+  "name": "@vulcanjs/i18n",
+  "version": "0.1.10",
+  "description": "Vulcan i18n helpers",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@vulcanjs/react-components",
+  "version": "0.1.10",
+  "description": "Vulcan components",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": ">= 16.13.1",
+    "react-dom": ">= 16.13.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {}
+}
