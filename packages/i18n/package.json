@@ -12,7 +12,9 @@
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "prop-types": "^15.7.2"
+  },
   "publishConfig": {
     "access": "public"
   },

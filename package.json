@@ -43,8 +43,16 @@
   "publishConfig": {
     "access": "public"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "@storybook",
+      "@storybook/addon-docs",
+      "**/@storybook",
+      "**/@storybook/**"
+    ]
+  },
   "dependencies": {}
 }
