@@ -1,44 +1,51 @@
-import { instantiateComponent, registerComponent } from 'meteor/vulcan:lib';
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
+import { useCoreComponents } from "./CoreComponentsContext";
+import { useFormComponents } from "./FormComponentsContext";
 
 // Replaceable layout, default implementation
-const FormNestedArrayLayout = props => {
+const FormNestedArrayLayout = (props) => {
   const {
     hasErrors,
     nestedArrayErrors,
     label,
     addItem,
-    beforeComponent,
-    afterComponent,
-    formComponents,
+    BeforeComponent,
+    AfterComponent,
     children,
   } = props;
-  const FormComponents = formComponents;
+  const FormComponents = useFormComponents();
+  const CoreComponents = useCoreComponents();
 
   return (
-    <div className={`form-group row form-nested ${hasErrors ? 'input-error' : ''}`}>
-      {instantiateComponent(beforeComponent, props)}
+    <div
+      className={`form-group row form-nested ${hasErrors ? "input-error" : ""}`}
+    >
+      {<BeforeComponent {...props} />}
 
       <label className="control-label col-sm-3">{label}</label>
 
       <div className="col-sm-9">
         {children}
         {addItem && (
-          <FormComponents.Button
+          <CoreComponents.Button
             className="form-nested-button form-nested-add"
             size="sm"
             variant="success"
-            onClick={addItem}>
+            onClick={addItem}
+          >
             <FormComponents.IconAdd height={12} width={12} />
-          </FormComponents.Button>
+          </CoreComponents.Button>
         )}
         {props.hasErrors ? (
-          <FormComponents.FieldErrors key="form-nested-errors" errors={nestedArrayErrors} />
+          <FormComponents.FieldErrors
+            key="form-nested-errors"
+            errors={nestedArrayErrors}
+          />
         ) : null}
       </div>
 
-      {instantiateComponent(afterComponent, props)}
+      {<AfterComponent {...props} />}
     </div>
   );
 };
@@ -54,10 +61,5 @@ FormNestedArrayLayout.propTypes = {
   formComponents: PropTypes.object,
   children: PropTypes.node,
 };
-
-registerComponent({
-  name: 'FormNestedArrayLayout',
-  component: FormNestedArrayLayout,
-});
 
 export default FormNestedArrayLayout;

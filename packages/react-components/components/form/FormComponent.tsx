@@ -1,10 +1,20 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { registerComponent, mergeWithComponents } from 'meteor/vulcan:core';
-import get from 'lodash/get';
-import isEqual from 'lodash/isEqual';
-import SimpleSchema from 'simpl-schema';
-import { isEmptyValue, getNullValue } from '../modules/utils.js';
+/**
+ * TODO: rename "FieldComponent" to clarify
+ * Change compared to Meteor:
+ * - custom inputs cannot be a reference anymore, you need to pass the whole component and not just the name
+ * - FormComponents context is limited to default component. Other components must be passed through the schema instead
+ * (it means you can't extend the SmartForm with new inputType, instead use a fully custom input)
+ */
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import get from "lodash/get";
+import isEqual from "lodash/isEqual";
+import SimpleSchema from "simpl-schema";
+import { isEmptyValue, getNullValue } from "./modules/utils";
+import {
+  withFormComponents,
+  PossibleFormComponents,
+} from "./FormComponentsContext";
 
 // extract this as a pure function so that it can be used inside getDerivedStateFromProps
 const getCharacterCounts = (value, max) => {
@@ -14,16 +24,96 @@ const getCharacterCounts = (value, max) => {
 
 // If this is an intl input, get _intl field instead
 // extract this as a pure function so that it can be used inside getDerivedStateFromProps
-const getPath = p => {
+const getPath = (p) => {
   return p.intlInput ? `${p.path}_intl` : p.path;
 };
 
-class FormComponent extends Component {
+type StandardInputType =
+  | "text"
+  | "password"
+  | "number"
+  | "url"
+  | "email"
+  | "textarea"
+  | "checkbox"
+  | "checkboxgroup"
+  | "radiogroup"
+  | "select"
+  | "selectmultiple"
+  | "datetime"
+  | "date"
+  | "date2"
+  | "time"
+  | "statictext"
+  | "likert"
+  | "autocomplete"
+  | "multiautocomplete";
+
+type Options<TField = any> = Array<{ label: string; value: TField }>;
+export interface FormComponentProps<TField> {
+  document: any;
+  deletedValues: Array<string>;
+  datatype: any; // TODO: type of the field, replace this by a cleaner value like we do in graphql to get the field type
+  disabled: boolean;
+  errors: Array<any>;
+  /** Help text for the form */
+  help: string;
+  /** Path of the field if nested */
+  path: string;
+  defaultValue?: TField;
+  max?: number;
+  locale: string;
+  /** Input for this field */
+  input?: StandardInputType | React.Component;
+  formType: "new" | "edit"; // new or edit
+  intlInput?: boolean;
+  nestedInput?: boolean;
+  /** Graphql query you can pass to fetch the options asynchronously */
+  query?: string;
+  options?: Options | ((fciProps?: any) => Options);
+  formComponents: PossibleFormComponents; // TODO: get from context after switching to a functional component
+
+  updateCurrentValues: Function; // TODO: move this to context to avoid props drilling
+  clearFieldErrors: Function;
+}
+interface FormComponentState {
+  charsRemaining?: number;
+}
+
+/**
+ * Component for the display of any field of the form
+ */
+class FormComponent<TField = any> extends Component<
+  FormComponentProps<TField>,
+  FormComponentState
+> {
   constructor(props) {
     super(props);
-
     this.state = {};
   }
+  static propTypes = {
+    document: PropTypes.object.isRequired,
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string,
+    value: PropTypes.any,
+    placeholder: PropTypes.string,
+    prefilledValue: PropTypes.any,
+    options: PropTypes.any,
+    input: PropTypes.any,
+    datatype: PropTypes.any,
+    path: PropTypes.string.isRequired,
+    disabled: PropTypes.bool,
+    nestedSchema: PropTypes.object,
+    currentValues: PropTypes.object.isRequired,
+    deletedValues: PropTypes.array.isRequired,
+    throwError: PropTypes.func.isRequired,
+    updateCurrentValues: PropTypes.func.isRequired,
+    errors: PropTypes.array.isRequired,
+    addToDeletedValues: PropTypes.func,
+    clearFieldErrors: PropTypes.func.isRequired,
+    currentUser: PropTypes.object,
+    prefilledProps: PropTypes.object,
+  };
 
   static getDerivedStateFromProps(props) {
     const { document, max } = props;
@@ -32,7 +122,10 @@ class FormComponent extends Component {
     }
     const path = getPath(props);
     const intlOrRegularValue = get(document, path);
-    const value = (intlOrRegularValue && typeof intlOrRegularValue === 'object') ? intlOrRegularValue.value : intlOrRegularValue;
+    const value =
+      intlOrRegularValue && typeof intlOrRegularValue === "object"
+        ? intlOrRegularValue.value
+        : intlOrRegularValue;
     return getCharacterCounts(value, max);
   }
 
@@ -46,16 +139,28 @@ class FormComponent extends Component {
     const path = getPath(this.props);
 
     // when checking for deleted values, both current path ('foo') and child path ('foo.0.bar') should trigger updates
-    const includesPathOrChildren = deletedValues => deletedValues.some(deletedPath => deletedPath.includes(path));
+    const includesPathOrChildren = (deletedValues) =>
+      deletedValues.some((deletedPath) => deletedPath.includes(path));
 
-    const valueChanged = !isEqual(get(document, path), get(this.props.document, path));
+    const valueChanged = !isEqual(
+      get(document, path),
+      get(this.props.document, path)
+    );
     const errorChanged = !isEqual(this.getErrors(errors), this.getErrors());
-    const deleteChanged = includesPathOrChildren(deletedValues) !== includesPathOrChildren(this.props.deletedValues);
+    const deleteChanged =
+      includesPathOrChildren(deletedValues) !==
+      includesPathOrChildren(this.props.deletedValues);
     const charsChanged = nextState.charsRemaining !== this.state.charsRemaining;
     const disabledChanged = nextProps.disabled !== this.props.disabled;
     const helpChanged = nextProps.help !== this.props.help;
 
-    const shouldUpdate = valueChanged || errorChanged || deleteChanged || charsChanged || disabledChanged || helpChanged;
+    const shouldUpdate =
+      valueChanged ||
+      errorChanged ||
+      deleteChanged ||
+      charsChanged ||
+      disabledChanged ||
+      helpChanged;
 
     return shouldUpdate;
   }
@@ -65,23 +170,23 @@ class FormComponent extends Component {
   Returns true if the passed input type is a custom
 
   */
-  isCustomInput = inputType => {
+  isCustomInput = (inputType) => {
     const isStandardInput = [
-      'nested',
-      'number',
-      'url',
-      'email',
-      'textarea',
-      'checkbox',
-      'checkboxgroup',
-      'radiogroup',
-      'select',
-      'selectmultiple',
-      'datetime',
-      'date',
-      'time',
-      'text',
-      'password',
+      "nested",
+      "number",
+      "url",
+      "email",
+      "textarea",
+      "checkbox",
+      "checkboxgroup",
+      "radiogroup",
+      "select",
+      "selectmultiple",
+      "datetime",
+      "date",
+      "time",
+      "text",
+      "password",
     ].includes(inputType);
     return !isStandardInput;
   };
@@ -91,9 +196,9 @@ class FormComponent extends Component {
   Function passed to form controls (always controlled) to update their value
 
   */
-  handleChange = value => {
+  handleChange = (value) => {
     // if value is an empty string, delete the field
-    if (value === '') {
+    if (value === "") {
       value = null;
     }
     // if this is a number field, convert value before sending it up to Form
@@ -104,9 +209,9 @@ class FormComponent extends Component {
     }
 
     if (value !== this.getValue()) {
-      const updateValue = this.props.locale ?
-          { locale: this.props.locale, value } :
-          value;
+      const updateValue = this.props.locale
+        ? { locale: this.props.locale, value }
+        : value;
       this.props.updateCurrentValues({ [getPath(this.props)]: updateValue });
       this.props.clearFieldErrors(getPath(this.props));
     }
@@ -122,7 +227,7 @@ class FormComponent extends Component {
   Updates the state of charsCount and charsRemaining as the users types
 
   */
-  updateCharacterCount = value => {
+  updateCharacterCount = (value) => {
     this.setState(getCharacterCounts(value, this.props.max));
   };
 
@@ -131,7 +236,7 @@ class FormComponent extends Component {
   Get value from Form state through document and currentValues props
 
   */
-  getValue = (props, context) => {
+  getValue = (props?: FormComponentProps<TField>, context?: any) => {
     const p = props || this.props;
     const c = context || this.context;
     const { locale, defaultValue, deletedValues, formType, datatype } = p;
@@ -139,14 +244,14 @@ class FormComponent extends Component {
     const currentDocument = c.getDocument();
     let value = get(currentDocument, path);
     // note: force intl fields to be treated like strings
-    const nullValue = locale ? '' : getNullValue(datatype);
+    const nullValue = locale ? "" : getNullValue(datatype);
 
     // handle deleted & empty value
     if (deletedValues.includes(path)) {
       value = nullValue;
     } else if (isEmptyValue(value)) {
       // replace empty value by the default value from the schema if it exists – for new forms only
-      value = formType === 'new' && defaultValue ? defaultValue : nullValue;
+      value = formType === "new" && defaultValue ? defaultValue : nullValue;
     }
     return value;
   };
@@ -156,9 +261,11 @@ class FormComponent extends Component {
   Whether to keep track of and show remaining chars
 
   */
-  showCharsRemaining = props => {
+  showCharsRemaining = (props?: FormComponentProps<TField>) => {
     const p = props || this.props;
-    return p.max && ['url', 'email', 'textarea', 'text'].includes(this.getInputType(p));
+    const inputType = this.getInputType(p);
+    if (typeof inputType !== "string") return false;
+    return p.max && ["url", "email", "textarea", "text"].includes(inputType);
   };
 
   /*
@@ -168,9 +275,11 @@ class FormComponent extends Component {
   Note: we use `includes` to get all errors from nested components, which have longer paths
 
   */
-  getErrors = errors => {
+  getErrors = (errors?: Array<any>) => {
     errors = errors || this.props.errors;
-    const fieldErrors = errors.filter(error => error.path && error.path.includes(this.props.path));
+    const fieldErrors = errors.filter(
+      (error) => error.path && error.path.includes(this.props.path)
+    );
     return fieldErrors;
   };
 
@@ -179,7 +288,7 @@ class FormComponent extends Component {
   Get field field value type
 
   */
-  getFieldType = props => {
+  getFieldType = (props?: FormComponentProps<TField>) => {
     const p = props || this.props;
     return p.datatype && p.datatype[0].type;
   };
@@ -189,17 +298,19 @@ class FormComponent extends Component {
   Get form input type, either based on input props, or by guessing based on form field type
 
   */
-  getInputType = props => {
+  getInputType = (
+    props?: FormComponentProps<TField>
+  ): FormComponentProps<TField>["input"] => {
     const p = props || this.props;
     const fieldType = this.getFieldType();
     const autoType =
       fieldType === Number || fieldType === SimpleSchema.Integer
-        ? 'number'
+        ? "number"
         : fieldType === Boolean
-        ? 'checkbox'
+        ? "checkbox"
         : fieldType === Date
-        ? 'date'
-        : 'text';
+        ? "date"
+        : "text";
     return p.input || autoType;
   };
 
@@ -208,7 +319,7 @@ class FormComponent extends Component {
   Function passed to form controls to clear their contents (set their value to null)
 
   */
-  clearField = event => {
+  clearField = (event) => {
     event.preventDefault();
     event.stopPropagation();
     this.props.updateCurrentValues({ [this.props.path]: null });
@@ -224,76 +335,76 @@ class FormComponent extends Component {
   */
   getFormInput = () => {
     const inputType = this.getInputType();
-    const FormComponents = mergeWithComponents(this.props.formComponents);
+    const FormComponents = this.props.formComponents;
 
     // if input is a React component, use it
-    if (typeof this.props.input === 'function') {
+    if (typeof this.props.input === "function") {
       const InputComponent = this.props.input;
       return InputComponent;
     } else {
       // else pick a predefined component
 
       switch (inputType) {
-        case 'text':
+        case "text":
           return FormComponents.FormComponentDefault;
 
-        case 'password':
+        case "password":
           return FormComponents.FormComponentPassword;
 
-        case 'number':
+        case "number":
           return FormComponents.FormComponentNumber;
 
-        case 'url':
+        case "url":
           return FormComponents.FormComponentUrl;
 
-        case 'email':
+        case "email":
           return FormComponents.FormComponentEmail;
 
-        case 'textarea':
+        case "textarea":
           return FormComponents.FormComponentTextarea;
 
-        case 'checkbox':
+        case "checkbox":
           return FormComponents.FormComponentCheckbox;
 
-        case 'checkboxgroup':
+        case "checkboxgroup":
           return FormComponents.FormComponentCheckboxGroup;
 
-        case 'radiogroup':
+        case "radiogroup":
           return FormComponents.FormComponentRadioGroup;
 
-        case 'select':
+        case "select":
           return FormComponents.FormComponentSelect;
 
-        case 'selectmultiple':
+        case "selectmultiple":
           return FormComponents.FormComponentSelectMultiple;
 
-        case 'datetime':
+        case "datetime":
           return FormComponents.FormComponentDateTime;
 
-        case 'date':
+        case "date":
           return FormComponents.FormComponentDate;
 
-        case 'date2':
+        case "date2":
           return FormComponents.FormComponentDate2;
 
-        case 'time':
+        case "time":
           return FormComponents.FormComponentTime;
 
-        case 'statictext':
+        case "statictext":
           return FormComponents.FormComponentStaticText;
 
-        case 'likert':
+        case "likert":
           return FormComponents.FormComponentLikert;
 
-        case 'autocomplete':
+        case "autocomplete":
           return FormComponents.FormComponentAutocomplete;
 
-        case 'multiautocomplete':
+        case "multiautocomplete":
           return FormComponents.FormComponentMultiAutocomplete;
 
         default:
-          const CustomComponent = FormComponents[this.props.input];
-          return CustomComponent ? CustomComponent : FormComponents.FormComponentDefault;
+          const CustomComponent = this.props.input;
+          return CustomComponent;
       }
     }
   };
@@ -307,7 +418,7 @@ class FormComponent extends Component {
   };
 
   render() {
-    const FormComponents = mergeWithComponents(this.props.formComponents);
+    const FormComponents = this.context.formComponents;
 
     if (this.props.intlInput) {
       return <FormComponents.FormIntl {...this.props} />;
@@ -349,45 +460,47 @@ class FormComponent extends Component {
 
     // if there is no query, handle options here; otherwise they will be handled by
     // the FormComponentLoader component
-    if (!this.props.query && typeof this.props.options === 'function') {
+    if (!this.props.query && typeof this.props.options === "function") {
       fciProps.options = this.props.options(fciProps);
     }
 
     const fci = <FormComponents.FormComponentInner {...fciProps} />;
 
-    return this.props.query ? <FormComponents.FormComponentLoader {...fciProps}>{fci}</FormComponents.FormComponentLoader> : fci;
+    return this.props.query ? (
+      <FormComponents.FormComponentLoader {...fciProps}>
+        {fci}
+      </FormComponents.FormComponentLoader>
+    ) : (
+      fci
+    );
   }
 }
 
-FormComponent.propTypes = {
-  document: PropTypes.object.isRequired,
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  value: PropTypes.any,
-  placeholder: PropTypes.string,
-  prefilledValue: PropTypes.any,
-  options: PropTypes.any,
-  input: PropTypes.any,
-  datatype: PropTypes.any,
-  path: PropTypes.string.isRequired,
-  disabled: PropTypes.bool,
-  nestedSchema: PropTypes.object,
-  currentValues: PropTypes.object.isRequired,
-  deletedValues: PropTypes.array.isRequired,
-  throwError: PropTypes.func.isRequired,
-  updateCurrentValues: PropTypes.func.isRequired,
-  errors: PropTypes.array.isRequired,
-  addToDeletedValues: PropTypes.func,
-  clearFieldErrors: PropTypes.func.isRequired,
-  currentUser: PropTypes.object,
-  prefilledProps: PropTypes.object,
-};
-
-FormComponent.contextTypes = {
+FormComponent.contextType = {
+  // @ts-expect-error
   getDocument: PropTypes.func.isRequired,
 };
 
+export const formComponentsDependencies = [
+  "FormComponentDefault",
+  "FormComponentPassword",
+  "FormComponentNumber",
+  "FormComponentUrl",
+  "FormComponentEmail",
+  "FormComponentTextarea",
+  "FormComponentCheckbox",
+  "FormComponentCheckboxGroup",
+  "FormComponentRadioGroup",
+  "FormComponentSelect",
+  "FormComponentSelectMultiple",
+  "FormComponentDateTime",
+  "FormComponentDate",
+  "FormComponentDate2",
+  "FormComponentTime",
+  "FormComponentStaticText",
+  "FormComponentLikert",
+  "FormComponentAutocomplete",
+  "FormComponentMultiAutocomplete",
+];
 //module.exports = FormComponent;
 export default FormComponent;
-
-registerComponent('FormComponent', FormComponent);

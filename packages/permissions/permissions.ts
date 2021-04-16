@@ -25,7 +25,7 @@ import {
 } from "@vulcanjs/schema";
 
 // TODO: define user as a specific VulcanModel? So we get the typing already
-interface User extends VulcanDocument {
+export interface User extends VulcanDocument {
   groups: Array<string>;
   isAdmin: boolean;
   _id: string;
@@ -186,12 +186,8 @@ export const owns = function (user: User | null, document: VulcanDocument) {
  * @summary Check if a user is an admin
  * @param {Object|string} userOrUserId - The user or their userId
  */
-const isAdmin = function (user: User | null): boolean {
-  try {
-    return !!user && !!user.isAdmin;
-  } catch (e) {
-    return false; // user not logged in
-  }
+export const isAdmin = function (user: User | null | undefined): boolean {
+  return !!user?.isAdmin;
 };
 
 /**

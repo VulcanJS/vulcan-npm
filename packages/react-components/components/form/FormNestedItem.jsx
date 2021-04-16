@@ -1,7 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Components, registerComponent, mergeWithComponents } from 'meteor/vulcan:core';
-import { intlShape } from 'meteor/vulcan:i18n';
+import React from "react";
+import PropTypes from "prop-types";
+import {
+  Components,
+  registerComponent,
+  mergeWithComponents,
+} from "meteor/vulcan:core";
+import { intlShape } from "meteor/vulcan:i18n";
 
 const FormNestedItemLayout = ({ content, removeButton }) => (
   <div className="form-nested-item">
@@ -13,25 +17,35 @@ const FormNestedItemLayout = ({ content, removeButton }) => (
       <div
         key="remove-button-overlay"
         className="form-nested-item-deleted-overlay"
-      />
+      />,
     ]}
   </div>
 );
 FormNestedItemLayout.propTypes = {
   content: PropTypes.node.isRequired,
-  removeButton: PropTypes.node
+  removeButton: PropTypes.node,
 };
 registerComponent({
-  name: 'FormNestedItemLayout',
-  component: FormNestedItemLayout
+  name: "FormNestedItemLayout",
+  component: FormNestedItemLayout,
 });
 
 const FormNestedItem = (
-  { nestedFields, name, path, removeItem, itemIndex, formComponents, hideRemove, label, ...props },
+  {
+    nestedFields,
+    name,
+    path,
+    removeItem,
+    itemIndex,
+    formComponents,
+    hideRemove,
+    label,
+    ...props
+  },
   { errors, intl }
 ) => {
   const FormComponents = mergeWithComponents(formComponents);
-  const isArray = typeof itemIndex !== 'undefined';
+  const isArray = typeof itemIndex !== "undefined";
   return (
     <FormComponents.FormNestedItemLayout
       content={nestedFields.map((field, i) => {
@@ -46,7 +60,8 @@ const FormNestedItem = (
         );
       })}
       removeButton={
-        isArray && !hideRemove && [
+        isArray &&
+        !hideRemove && [
           <div key="remove-button" className="form-nested-item-remove">
             <Components.Button
               className="form-nested-button"
@@ -57,7 +72,10 @@ const FormNestedItem = (
               onClick={() => {
                 removeItem(name);
               }}
-              aria-label={intl.formatMessage({ id: 'forms.delete_nested_field' }, { label: label })}
+              aria-label={intl.formatMessage(
+                { id: "forms.delete_nested_field" },
+                { label: label }
+              )}
             >
               <Components.IconRemove height={12} width={12} />
             </Components.Button>
@@ -65,7 +83,7 @@ const FormNestedItem = (
           <div
             key="remove-button-overlay"
             className="form-nested-item-deleted-overlay"
-          />
+          />,
         ]
       }
     />
@@ -76,12 +94,12 @@ FormNestedItem.propTypes = {
   path: PropTypes.string.isRequired,
   itemIndex: PropTypes.number,
   formComponents: PropTypes.object,
-  hideRemove: PropTypes.bool
+  hideRemove: PropTypes.bool,
 };
 
 FormNestedItem.contextTypes = {
   errors: PropTypes.array,
-  intl: intlShape
+  intl: intlShape,
 };
 
-registerComponent('FormNestedItem', FormNestedItem);
+registerComponent("FormNestedItem", FormNestedItem);

@@ -1,14 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import getContext from 'recompose/getContext';
-import { Components, registerComponent } from 'meteor/vulcan:core';
-import get from 'lodash/get';
+import React from "react";
+// import PropTypes from "prop-types";
+// import getContext from 'recompose/getContext';
+// import { Components, registerComponent } from 'meteor/vulcan:core';
+import get from "lodash/get";
+import { useCoreComponents } from "./CoreComponentsContext";
 
 const FormError = ({ error, errorContext, getLabel }) => {
-
+  const CoreComponents = useCoreComponents();
   // use the error or error message as default message
   const defaultMessage = JSON.stringify(error.message || error);
-  const id = error.id || 'app.defaultError';
+  const id = error.id || "app.defaultError";
 
   // default props for all errors
   let messageProps = {
@@ -23,7 +24,8 @@ const FormError = ({ error, errorContext, getLabel }) => {
   // additional properties to enhance the message
   if (error.properties) {
     // in case this is a nested fields, only keep last segment of path
-    const errorName = error.properties.name && error.properties.name.split('.').slice(-1)[0];
+    const errorName =
+      error.properties.name && error.properties.name.split(".").slice(-1)[0];
     messageProps.values = {
       ...messageProps.values,
       // if the error is triggered by a field, get the relevant label
@@ -39,7 +41,7 @@ const FormError = ({ error, errorContext, getLabel }) => {
     };
   }
 
-  const exception = get(error, 'extensions.exception');
+  const exception = get(error, "extensions.exception");
   if (exception) {
     messageProps = {
       ...messageProps,
@@ -47,19 +49,19 @@ const FormError = ({ error, errorContext, getLabel }) => {
       values: exception.data,
     };
   }
-  return <Components.FormattedMessage html={true} {...messageProps} />;
+  return <CoreComponents.FormattedMessage html={true} {...messageProps} />;
 };
 
 FormError.defaultProps = {
-  errorContext: '', // default context so format message does not complain
-  getLabel: name => name,
+  errorContext: "", // default context so format message does not complain
+  getLabel: (name) => name,
 };
 
 // TODO: pass getLabel as prop instead for consistency?
-registerComponent(
-  'FormError',
-  FormError,
-  getContext({
-    getLabel: PropTypes.func,
-  })
-);
+// registerComponent(
+//   "FormError",
+//   FormError,
+//   getContext({
+//     getLabel: PropTypes.func,
+//   })
+// );

@@ -24,7 +24,7 @@ import {
   getIntlLabel,
 } from "@vulcanjs/i18n";
 import { capitalize, removeProperty } from "@vulcanjs/utils";
-import { VulcanFieldSchema, FieldGroup } from "@vulcanjs/schema";
+import { FieldGroup } from "@vulcanjs/schema";
 import cloneDeep from "lodash/cloneDeep";
 import sortBy from "lodash/sortBy";
 import map from "lodash/map";
@@ -47,6 +47,8 @@ import omit from "lodash/omit";
 import without from "lodash/without";
 import _filter from "lodash/filter";
 import omitBy from "lodash/omitBy";
+
+import { FormField } from "./typings";
 
 import { convertSchema, formProperties } from "./modules/schema_utils";
 import { isEmptyValue } from "./modules/utils";
@@ -217,19 +219,6 @@ An example would be a createdAt date added automatically on creation even though
   mutationFragment?: string;
 }
 
-// Parsed version of the field, easier to display
-interface FormField extends VulcanFieldSchema {
-  name: string; // = the field key name  in the schema
-  path?: string;
-  datatype: any; // ?
-  itemDatatype?: any; // TODO: we may reuse the logic from the graphql generator to get the type of a schema field
-  intlKeys?: Array<string>;
-  document?: any;
-  options?: any;
-  intlInput?: boolean;
-  help?: string;
-  layout?: "horizontal" | "vertical";
-}
 // Group of multiple fields (obtained by parsing the whole schema)
 interface GroupWithFields extends FieldGroup {
   fields: Array<FormField>;

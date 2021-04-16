@@ -1,23 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { registerComponent, Components } from 'meteor/vulcan:core';
+import React from "react";
+import { useCoreComponents } from "./CoreComponentsContext";
+import { useFormComponents } from "./FormComponentsContext";
 
-const FormErrors = ({ errors }) => (
-  <div className="form-errors">
-    {!!errors.length && (
-      <Components.Alert className="flash-message" variant="danger">
-        <ul>
-          {errors.map((error, index) => (
-            <li key={index}>
-              <Components.FormError error={error} errorContext="form" />
-            </li>
-          ))}
-        </ul>
-      </Components.Alert>
-    )}
-  </div>
-);
-registerComponent('FormErrors', FormErrors);
+export const FormErrors = ({ errors }) => {
+  const CoreComponents = useCoreComponents();
+  const FormComponents = useFormComponents();
+
+  return (
+    <div className="form-errors">
+      {!!errors.length && (
+        <CoreComponents.Alert className="flash-message" variant="danger">
+          <ul>
+            {errors.map((error, index) => (
+              <li key={index}>
+                <FormComponents.FormError error={error} errorContext="form" />
+              </li>
+            ))}
+          </ul>
+        </CoreComponents.Alert>
+      )}
+    </div>
+  );
+};
 
 // /*
 

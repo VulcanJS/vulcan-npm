@@ -1,7 +1,7 @@
 {
-  "name": "@vulcanjs/react-components",
+  "name": "@vulcanjs/permissions",
   "version": "0.1.10",
-  "description": "Vulcan components",
+  "description": "Vulcan permissions",
   "main": "./dist/index.js",
   "files": [
     "dist/"
@@ -15,7 +15,6 @@
   "dependencies": {
     "@vulcanjs/core": "^0.1.6-alpha.2",
     "@vulcanjs/i18n": "^0.1.10",
-    "@vulcanjs/permissions": "^0.1.10",
     "@vulcanjs/schema": "^0.1.10",
     "@vulcanjs/utils": "^0.1.9",
     "lodash": "^4.17.21"
