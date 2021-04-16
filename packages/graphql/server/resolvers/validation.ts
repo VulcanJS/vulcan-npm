@@ -8,7 +8,7 @@ import {
 import _forEach from "lodash/forEach";
 import { VulcanModel } from "@vulcanjs/model";
 import { ContextWithUser } from "./typings";
-import { canCreateField, canUpdateField } from "../../permissions";
+import { canCreateField, canUpdateField } from "@vulcanjs/permissions";
 import { toSimpleSchema, ValidationError } from "@vulcanjs/schema";
 
 interface Modifier {

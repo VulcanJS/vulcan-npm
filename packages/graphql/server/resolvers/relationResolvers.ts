@@ -6,7 +6,7 @@ import { getModel, getModelConnector } from "./context";
 Default Relation Resolvers
 
 */
-import { restrictViewableFields } from "../../permissions";
+import { restrictViewableFields } from "@vulcanjs/permissions";
 import { QueryResolver } from "../typings";
 
 interface RelationInput {

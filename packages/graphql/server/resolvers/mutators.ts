@@ -48,7 +48,7 @@ import isEmpty from "lodash/isEmpty";
 import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
-import { restrictViewableFields } from "../../permissions";
+import { restrictViewableFields } from "@vulcanjs/permissions";
 
 interface CreateMutatorInput {
   model: VulcanGraphqlModel;
