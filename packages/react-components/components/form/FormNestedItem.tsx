@@ -1,11 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Components,
-  registerComponent,
-  mergeWithComponents,
-} from "meteor/vulcan:core";
-import { intlShape } from "meteor/vulcan:i18n";
+import { intlShape } from "@vulcanjs/i18n";
+import { useFormComponents } from "./FormComponentsContext";
+import { useCoreComponents } from "./CoreComponentsContext";
 
 const FormNestedItemLayout = ({ content, removeButton }) => (
   <div className="form-nested-item">
@@ -25,10 +22,6 @@ FormNestedItemLayout.propTypes = {
   content: PropTypes.node.isRequired,
   removeButton: PropTypes.node,
 };
-registerComponent({
-  name: "FormNestedItemLayout",
-  component: FormNestedItemLayout,
-});
 
 const FormNestedItem = (
   {
@@ -44,7 +37,8 @@ const FormNestedItem = (
   },
   { errors, intl }
 ) => {
-  const FormComponents = mergeWithComponents(formComponents);
+  const CoreComponents = useCoreComponents();
+  const FormComponents = useFormComponents();
   const isArray = typeof itemIndex !== "undefined";
   return (
     <FormComponents.FormNestedItemLayout
@@ -63,7 +57,7 @@ const FormNestedItem = (
         isArray &&
         !hideRemove && [
           <div key="remove-button" className="form-nested-item-remove">
-            <Components.Button
+            <CoreComponents.Button
               className="form-nested-button"
               variant="danger"
               size="sm"
@@ -77,8 +71,8 @@ const FormNestedItem = (
                 { label: label }
               )}
             >
-              <Components.IconRemove height={12} width={12} />
-            </Components.Button>
+              <FormComponents.IconRemove height={12} width={12} />
+            </CoreComponents.Button>
           </div>,
           <div
             key="remove-button-overlay"
@@ -101,5 +95,3 @@ FormNestedItem.contextTypes = {
   errors: PropTypes.array,
   intl: intlShape,
 };
-
-registerComponent("FormNestedItem", FormNestedItem);

@@ -6,6 +6,7 @@ export interface PossibleCoreComponents {
   FormattedMessage: any;
   Alert: any;
   Button: any;
+  Icon: any;
 }
 
 export const CoreComponentsContext = React.createContext<PossibleCoreComponents>(
@@ -14,6 +15,7 @@ export const CoreComponentsContext = React.createContext<PossibleCoreComponents>
     FormattedMessage: () => null,
     Alert: () => null,
     Button: () => null,
+    Icon: () => null,
   }
 );
 

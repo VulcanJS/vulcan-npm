@@ -50,6 +50,11 @@ export interface PossibleFormComponents {
   IconRemove: any;
   FieldErrors: any;
   FieldNestedDivider: any;
+  //
+  FormNestedItemLayout: any;
+  FormNestedObjectLayout: any;
+  FormNestedObject: any;
+  FormOptionLabel: any;
 }
 
 export const FormComponentsContext = React.createContext<PossibleFormComponents>(
@@ -96,6 +101,11 @@ export const FormComponentsContext = React.createContext<PossibleFormComponents>
     IconAdd: () => null,
     IconRemove: () => null,
     FieldNestedDivider: () => null,
+    // nested item
+    FormNestedItemLayout: () => null,
+    FormNestedObjectLayout: () => null,
+    FormNestedObject: () => null,
+    FormOptionLabel: () => null,
   }
 );
 
