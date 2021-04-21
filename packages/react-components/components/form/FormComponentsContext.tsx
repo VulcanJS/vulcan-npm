@@ -55,6 +55,8 @@ export interface PossibleFormComponents {
   FormNestedObjectLayout: any;
   FormNestedObject: any;
   FormOptionLabel: any;
+  // Form
+  Form: any;
 }
 
 export const FormComponentsContext = React.createContext<PossibleFormComponents>(
@@ -106,6 +108,8 @@ export const FormComponentsContext = React.createContext<PossibleFormComponents>
     FormNestedObjectLayout: () => null,
     FormNestedObject: () => null,
     FormOptionLabel: () => null,
+    //
+    Form: () => null,
   }
 );
 

@@ -17,6 +17,7 @@ import {
   QueryOptions,
   gql,
   QueryResult,
+  QueryHookOptions,
 } from "@apollo/client";
 import { Fragment } from "./typings";
 
@@ -49,38 +50,27 @@ export const buildSingleQuery = ({
  * @param {*} props
  */
 const buildQueryOptions = <TData = any, TVariables = OperationVariables>(
-  options,
+  options: UseSingleOptions<any, TData, TVariables>,
   props
-): Partial<QueryOptions<TData, TVariables>> => {
-  let {
-    pollInterval = 20000,
-    // generic apollo graphQL options
-    queryOptions = {},
-  } = options;
-
+): Partial<QueryHookOptions<TData, TVariables>> => {
   // if this is the SSR process, set pollInterval to null
   // see https://github.com/apollographql/apollo-client/issues/1704#issuecomment-322995855
-  pollInterval = typeof window === "undefined" ? null : pollInterval;
-
-  // OpenCrud backwards compatibility
-  const graphQLOptions: Partial<
-    QueryOptions</*TVariables*/ any, TData> & { pollInterval?: number }
-  > = {
-    variables: {
-      ...computeQueryVariables(
-        { ...options, input: _merge({}, defaultInput, options.input || {}) }, // needed to merge in defaultInput, could be improved
-        props
-      ),
-    },
-    pollInterval, // note: pollInterval can be set to 0 to disable polling (20s by default)
-  };
-
-  // see https://www.apollographql.com/docs/react/features/error-handling/#error-policies
-  graphQLOptions.errorPolicy = "all";
+  const pollInterval =
+    typeof window === "undefined"
+      ? undefined
+      : options?.queryOptions?.pollInterval ?? 2000;
 
   return {
-    ...graphQLOptions,
-    ...queryOptions,
+    variables: {
+      ...(computeQueryVariables(
+        { ...options, input: _merge({}, defaultInput, options.input || {}) }, // needed to merge in defaultInput, could be improved
+        props
+      ) as TVariables),
+    },
+    // see https://www.apollographql.com/docs/react/features/error-handling/#error-policies
+    errorPolicy: "all",
+    ...(options?.queryOptions || {}),
+    pollInterval, // note: pollInterval can be set to 0 to disable polling (20s by default)
   };
 };
 
@@ -109,12 +99,13 @@ interface SingleResult<TModel = any, TData = any> extends QueryResult<TData> {
   fragment: string;
   document: TModel; // shortcut to get the document
 }
-interface UseSingleOptions<TModel> {
+interface UseSingleOptions<TModel, TData = any, TVariables = any> {
   model: VulcanGraphqlModel;
   input?: SingleInput<TModel>;
   fragment?: Fragment;
   fragmentName?: string;
   extraQueries?: string;
+  queryOptions?: QueryHookOptions<TData, TVariables>;
 }
 
 /**

@@ -217,6 +217,11 @@ If no fragment is passed, SmartForm will only return fields used in the form, bu
 
 An example would be a createdAt date added automatically on creation even though it’s not part of the actual form. If you’d like that field to be returned after the mutation, you can define a custom mutationFragment that includes it explicitly.*/
   mutationFragment?: string;
+
+  // mutations from container
+  createDocument: Function;
+  updateDocument: Function;
+  deleteDocument: Function;
 }
 
 // Group of multiple fields (obtained by parsing the whole schema)
@@ -1257,7 +1262,7 @@ class SmartForm extends Component<FormProps, FormState> {
     if (this.getFormType() === "new") {
       // create document form
       try {
-        const result = await this.props[`create${this.props.typeName}`]({
+        const result = await this.props.createDocument({
           input: {
             data,
             contextName,
@@ -1278,13 +1283,14 @@ class SmartForm extends Component<FormProps, FormState> {
       // update document form
       try {
         const documentId = this.getDocument()._id;
-        const result = await this.props[`update${this.props.typeName}`]({
+        const result = await this.props.updateDocument({
           input: {
             id: documentId,
             data,
             contextName,
           },
         });
+        // TODO: ?? what is Meta?
         const meta = this.props[`update${this.props.typeName}Meta`];
         // in new versions of Apollo Client errors are no longer thrown/caught
         // but can instead be provided as props by the useMutation hook
@@ -1315,7 +1321,8 @@ class SmartForm extends Component<FormProps, FormState> {
     );
 
     if (window.confirm(deleteDocumentConfirm)) {
-      this.props[`delete${this.props.typeName}`]({ input: { id: documentId } })
+      this.props
+        .deleteDocument({ input: { id: documentId } })
         .then((mutationResult) => {
           // the mutation result looks like {data:{collectionRemove: null}} if succeeded
           if (this.props.removeSuccessCallback)
