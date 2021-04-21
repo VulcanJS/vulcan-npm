@@ -50,13 +50,14 @@ import omitBy from "lodash/omitBy";
 
 import { FormField } from "./typings";
 
-import { convertSchema, formProperties } from "./modules/schema_utils";
-import { isEmptyValue } from "./modules/utils";
-import { getParentPath } from "./modules/path_utils";
 import {
+  convertSchema,
+  formProperties,
   getEditableFields,
   getInsertableFields,
-} from "./modules/schema_utils.js";
+} from "./modules/schema_utils";
+import { isEmptyValue } from "./modules/utils";
+import { getParentPath } from "./modules/path_utils";
 // import withCollectionProps from "./withCollectionProps";
 import { callbackProps } from "./propTypes";
 import _ from "underscore";
@@ -165,7 +166,7 @@ export interface FormState {
   originalSchema: any;
 }
 type PropsFromPropTypes = {
-  [key in keyof SmartForm["propTypes"]]?: any;
+  [key in keyof Form["propTypes"]]?: any;
 }; // dumb type just to remove errors, to be improved by replacing propTypes with ts
 export interface FormProps<TModel = { [key in string]: any }>
   extends PropsFromPropTypes {
@@ -243,7 +244,7 @@ const mergeWithComponents = (components?: any) => {
   return merge({}, defaultFormComponents, components);
 };
 
-class SmartForm extends Component<FormProps, FormState> {
+export class Form extends Component<FormProps, FormState> {
   constructor(props) {
     super(props);
     const state = getInitialStateFromProps(props);
@@ -1463,7 +1464,7 @@ class SmartForm extends Component<FormProps, FormState> {
   }
 }
 
-export default SmartForm;
+export default Form;
 
 //registerComponent({
 //  name: "Form",

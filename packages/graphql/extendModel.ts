@@ -121,7 +121,7 @@ export const createGraphqlModel = (
 // import merge from "lodash/merge";
 // import _omit from "lodash/omit";
 // import mergeWith from "lodash/mergeWith";
-// import { createSchema, isCollectionType } from "./schema_utils.js";
+// import { createSchema, isCollectionType } from "./schema_utils";
 
 // // will be set to `true` if there is one or more intl schema fields
 // export let hasIntlFields = false;

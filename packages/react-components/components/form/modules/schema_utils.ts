@@ -1,8 +1,8 @@
 /*
  * Schema converter/getters
  */
-import { Utils } from "meteor/vulcan:core";
-import Users from "meteor/vulcan:users";
+import { canCreateField, canUpdateField } from "@vulcanjs/permissions";
+import { getFieldType } from "./utils";
 
 /* getters */
 // filter out fields with "." or "$"
@@ -34,7 +34,7 @@ If flatten = true, will create a flat object instead of nested tree
 export const getInsertableFields = function (schema, user) {
   const fields = Object.keys(schema).filter(function (fieldName) {
     var field = schema[fieldName];
-    return Users.canCreateField(user, field);
+    return canCreateField(user, field);
   });
   return fields;
 };
@@ -47,12 +47,15 @@ export const getInsertableFields = function (schema, user) {
 export const getEditableFields = function (schema, user, document) {
   const fields = Object.keys(schema).filter(function (fieldName) {
     var field = schema[fieldName];
-    return Users.canUpdateField(user, field, document);
+    return canUpdateField(user, field, document);
   });
   return fields;
 };
 
-export const convertSchema = (schema, options = {}) => {
+export const convertSchema = (
+  schema,
+  options: { flatten?: boolean; removeArrays?: boolean } = {}
+) => {
   const { flatten = false, removeArrays = true } = options;
 
   if (schema._schema) {
@@ -118,7 +121,7 @@ export const getFieldSchema = (fieldName, schema) => {
 
 // type is an array due to the possibility of using SimpleSchema.oneOf
 // right now we support only fields with one type
-export const getSchemaType = Utils.getFieldType;
+export const getSchemaType = getFieldType;
 
 const getArrayNestedSchema = (fieldName, schema) => {
   const arrayItemSchema = schema._schema[`${fieldName}.$`];
