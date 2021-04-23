@@ -5,7 +5,7 @@ import React from "react";
 import get from "lodash/get";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 
-const FormError = ({ error, errorContext, getLabel }) => {
+export const FormError = ({ error, errorContext, getLabel }) => {
   const VulcanComponents = useVulcanComponents();
   // use the error or error message as default message
   const defaultMessage = JSON.stringify(error.message || error);

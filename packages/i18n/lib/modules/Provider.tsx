@@ -1,14 +1,21 @@
-import React, { Component } from 'react';
-import { getString } from 'meteor/vulcan:lib';
-import { intlShape } from './shape.js';
+import React, { Component } from "react";
+import { getString } from "../../intl"; // previously was in meteor/vulcan:lib
+import { intlShape } from "./shape";
 
-export default class IntlProvider extends Component {
+export interface IntlProviderProps {
+  locale: string;
+  // messages: any;
+}
+export class IntlProvider extends Component<IntlProviderProps> {
+  static childContextTypes = {
+    intl: intlShape,
+  };
   formatMessage = ({ id, defaultMessage }, values = null) => {
-    const { messages, locale } = this.props;
-    return getString({ id, defaultMessage, values, messages, locale });
+    const { /*messages,*/ locale } = this.props;
+    return getString({ id, defaultMessage, values, /* messages,*/ locale });
   };
 
-  formatStuff = something => {
+  formatStuff = (something) => {
     return something;
   };
 
@@ -33,6 +40,4 @@ export default class IntlProvider extends Component {
   }
 }
 
-IntlProvider.childContextTypes = {
-  intl: intlShape,
-};
+export default IntlProvider;

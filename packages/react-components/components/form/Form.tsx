@@ -13,7 +13,6 @@ This component expects:
 */
 
 import React, { Component } from "react";
-import SimpleSchema from "simpl-schema";
 import PropTypes from "prop-types";
 import { runCallbacks, getErrors } from "@vulcanjs/core";
 import {
@@ -61,12 +60,16 @@ import { getParentPath } from "./modules/path_utils";
 // import withCollectionProps from "./withCollectionProps";
 import { callbackProps } from "./propTypes";
 import _ from "underscore";
+import { VulcanModel } from "@vulcanjs/model";
+import { VulcanSchema } from "@vulcanjs/schema";
+import { User } from "@vulcanjs/permissions";
+import { PossibleFormComponents } from "./defaultVulcanComponents";
 
 // props that should trigger a form reset
 const RESET_PROPS = [
-  "collection",
-  "collectionName",
-  "typeName",
+  "model",
+  // "collection",
+  // "collectionName",
   "document",
   "schema",
   "currentUser",
@@ -94,11 +97,8 @@ const getDefaultValues = (convertedSchema) => {
 
 const compactObject = (o) => omitBy(o, (f) => f === null || f === undefined);
 
-const getInitialStateFromProps = (nextProps) => {
-  const collection = nextProps.collection;
-  const schema = nextProps.schema
-    ? new SimpleSchema(nextProps.schema)
-    : collection.simpleSchema();
+const getInitialStateFromProps = (nextProps: FormProps) => {
+  const schema = nextProps.schema || nextProps.model.schema;
   const convertedSchema = convertSchema(schema);
   const formType = nextProps.document ? "edit" : "new";
   // for new document forms, add default values to initial document
@@ -166,7 +166,7 @@ export interface FormState {
   originalSchema: any;
 }
 type PropsFromPropTypes = {
-  [key in keyof Form["propTypes"]]?: any;
+  // [key in keyof Form["propTypes"]]?: any;
 }; // dumb type just to remove errors, to be improved by replacing propTypes with ts
 export interface FormProps<TModel = { [key in string]: any }>
   extends PropsFromPropTypes {
@@ -174,9 +174,27 @@ export interface FormProps<TModel = { [key in string]: any }>
   history: any;
   id?: string;
   components?: {};
-  /* The collection in which to edit or insert a document. */
-  // TODO: replace by  a model
-  collection: any;
+  /* The model in which to edit or insert a document. */
+  model: VulcanModel;
+  /** Passing directly a raw schema (TODO: model is still mandatory atm) */
+  schema?: VulcanSchema;
+  document?: any;
+  disabled?: boolean;
+  currentUser?: User;
+  addFields?: any;
+  removeFields?: any;
+  hideFields?: any;
+  warnUnsavedChanges?: boolean;
+  contextName?: string;
+  formComponents?: PossibleFormComponents;
+  itemProperties?: Object;
+  showDelete?: boolean;
+  // labels
+  cancelLabel?: string;
+  revertLabel?: string;
+  //
+  revertCallback?: Function;
+  successComponent?: any;
   /* Instead of passing collection you can pass the name of the collection.*/
   // collectionName?: string;
   /*If present, the document to edit. If not present, the form will be a “new document” form.*/
@@ -223,6 +241,9 @@ An example would be a createdAt date added automatically on creation even though
   createDocument: Function;
   updateDocument: Function;
   deleteDocument: Function;
+  // ??
+  createDocumentMeta: { error?: any };
+  updateDocumentMeta: { error?: any };
 }
 
 // Group of multiple fields (obtained by parsing the whole schema)
@@ -257,11 +278,8 @@ export class Form extends Component<FormProps, FormState> {
   unblock: Function;
   form: any;
 
-  propTypes = {
+  static propTypes = {
     // main options
-    collection: PropTypes.object.isRequired,
-    collectionName: PropTypes.string.isRequired,
-    typeName: PropTypes.string.isRequired,
 
     document: PropTypes.object, // if a document is passed, this will be an edit form
     schema: PropTypes.object, // usually not needed
@@ -302,7 +320,7 @@ export class Form extends Component<FormProps, FormState> {
     client: PropTypes.object,
   };
 
-  defaultProps = {
+  static defaultProps = {
     layout: "horizontal",
     prefilledProps: {},
     repeatErrors: false,
@@ -310,11 +328,11 @@ export class Form extends Component<FormProps, FormState> {
     showDelete: true,
   };
 
-  contextTypes = {
+  static contextTypes = {
     intl: intlShape,
   };
 
-  childContextTypes = {
+  static childContextTypes = {
     addToDeletedValues: PropTypes.func,
     deletedValues: PropTypes.array,
     addToSubmitForm: PropTypes.func,
@@ -753,7 +771,7 @@ export class Form extends Component<FormProps, FormState> {
 
   */
   getIntlKeys = (fieldName) => {
-    const collectionName = this.props.collectionName.toLowerCase();
+    const collectionName = this.props.model.name.toLowerCase();
     return getIntlKeys({
       fieldName: fieldName,
       collectionName,
@@ -767,7 +785,7 @@ export class Form extends Component<FormProps, FormState> {
 
    */
   getLabel = (fieldName: string, fieldLocale?: string) => {
-    const collectionName = this.props.collectionName.toLowerCase();
+    const collectionName = this.props.model.name.toLowerCase();
     const label = formatLabel({
       intl: this.context.intl,
       fieldName: fieldName,
@@ -792,7 +810,7 @@ export class Form extends Component<FormProps, FormState> {
    (Same as getLabel but pass isDescription: true )
    */
   getDescription = (fieldName) => {
-    const collectionName = this.props.collectionName.toLowerCase();
+    const collectionName = this.props.model.name.toLowerCase();
     const description = getIntlLabel({
       intl: this.context.intl,
       fieldName: fieldName,
@@ -809,7 +827,7 @@ export class Form extends Component<FormProps, FormState> {
 
   */
   getOptionLabel = (fieldName, option) => {
-    const collectionName = this.props.collectionName.toLowerCase();
+    const collectionName = this.props.model.name.toLowerCase();
     const intlId =
       option.intlId || `${collectionName}.${fieldName}.${option.value}`;
     return this.context.intl.formatMessage({
@@ -1269,7 +1287,8 @@ export class Form extends Component<FormProps, FormState> {
             contextName,
           },
         });
-        const meta = this.props[`create${this.props.typeName}Meta`];
+        // TODO: what to do with this?
+        const meta = this.props.createDocumentMeta;
         // in new versions of Apollo Client errors are no longer thrown/caught
         // but can instead be provided as props by the useMutation hook
         if (meta?.error) {
@@ -1292,7 +1311,7 @@ export class Form extends Component<FormProps, FormState> {
           },
         });
         // TODO: ?? what is Meta?
-        const meta = this.props[`update${this.props.typeName}Meta`];
+        const meta = this.props.updateDocumentMeta;
         // in new versions of Apollo Client errors are no longer thrown/caught
         // but can instead be provided as props by the useMutation hook
         if (meta.error) {
@@ -1373,10 +1392,10 @@ export class Form extends Component<FormProps, FormState> {
 
   getFormProps = () => {
     const docClassName = `document-${this.getFormType()}`;
-    const typeName = this.props.typeName.toLowerCase();
+    const modelName = this.props.model.name.toLowerCase();
 
     return {
-      className: `${docClassName} ${docClassName}-${typeName}`,
+      className: `${docClassName} ${docClassName}-${modelName}`,
       id: this.props.id,
       onSubmit: this.submitForm,
       ref: (e) => {
@@ -1417,7 +1436,6 @@ export class Form extends Component<FormProps, FormState> {
       revertLabel,
       cancelCallback,
       revertCallback,
-      collectionName,
     } = this.props;
     const { currentValues, deletedValues, errors } = this.state;
     return {
@@ -1434,7 +1452,6 @@ export class Form extends Component<FormProps, FormState> {
           this.props.showDelete &&
           this.deleteDocument) ||
         null,
-      collectionName,
       currentValues,
       deletedValues,
       errors,

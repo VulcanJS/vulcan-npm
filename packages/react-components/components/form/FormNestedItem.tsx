@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { intlShape } from "@vulcanjs/i18n";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 
-const FormNestedItemLayout = ({ content, removeButton }) => (
+export const FormNestedItemLayout = ({ content, removeButton }) => (
   <div className="form-nested-item">
     <div className="form-nested-item-inner">{content}</div>
     {removeButton && [
@@ -22,7 +22,7 @@ FormNestedItemLayout.propTypes = {
   removeButton: PropTypes.node,
 };
 
-const FormNestedItem = (
+export const FormNestedItem = (
   {
     nestedFields,
     name,

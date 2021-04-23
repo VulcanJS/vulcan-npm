@@ -3,7 +3,7 @@ import React from "react";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 
 // Replaceable layout, default implementation
-const FormNestedArrayLayout = (props) => {
+export const FormNestedArrayLayout = (props) => {
   const {
     hasErrors,
     nestedArrayErrors,

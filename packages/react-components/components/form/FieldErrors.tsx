@@ -1,17 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useFormComponents } from "./FormComponentsContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 // Track dependencies, not used yet
 export const formComponentsDependencies = ["FormError"];
 
 export const FieldErrors = ({ errors }) => {
-  const { FormError } = useFormComponents();
+  const VulcanComponents = useVulcanComponents();
   return (
     <ul className="form-input-errors">
       {errors.map((error, index) => (
         <li key={index}>
-          <FormError error={error} errorContext="field" />
+          <VulcanComponents.FormError error={error} errorContext="field" />
         </li>
       ))}
     </ul>

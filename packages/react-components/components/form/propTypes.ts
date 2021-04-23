@@ -1,5 +1,5 @@
 /** PropTypes for documentation purpose (not tested yet) */
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 export const fieldProps = {
   //
@@ -17,7 +17,7 @@ export const fieldProps = {
   // e.g phoneNumbers.0.value
   path: PropTypes.string,
   // permissions
-  disabled: PropTypes.boolean,
+  disabled: PropTypes.bool,
   // if it has an array field
   // e.g addresses.$ : { type: .... }
   arrayFieldSchema: PropTypes.object,
@@ -25,15 +25,15 @@ export const fieldProps = {
   // if it is a nested object itself
   // eg address : { type : { ... }}
   nestedSchema: PropTypes.object,
-  nestedInput: PropTypes.boolean, // flag
-  nestedFields: PropTypes.array //arrayOf(fieldProps)
+  nestedInput: PropTypes.bool, // flag
+  nestedFields: PropTypes.array, //arrayOf(fieldProps)
 };
 
 export const groupProps = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   order: PropTypes.number,
-  fields: PropTypes.arrayOf(PropTypes.shape(fieldProps))
+  fields: PropTypes.arrayOf(PropTypes.shape(fieldProps)),
 };
 
 export const callbackProps = {
@@ -44,5 +44,5 @@ export const callbackProps = {
   removeSuccessCallback: PropTypes.func,
   errorCallback: PropTypes.func,
   cancelCallback: PropTypes.func,
-  revertCallback: PropTypes.func
+  revertCallback: PropTypes.func,
 };

@@ -4,7 +4,7 @@ import _omit from "lodash/omit";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 
 // Replaceable layout
-const FormNestedObjectLayout = ({ hasErrors, label, content }) => (
+export const FormNestedObjectLayout = ({ hasErrors, label, content }) => (
   <div
     className={`form-group row form-nested ${hasErrors ? "input-error" : ""}`}
   >

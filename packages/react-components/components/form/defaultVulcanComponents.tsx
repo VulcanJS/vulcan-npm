@@ -1,3 +1,25 @@
+import { FormError } from "./FormError";
+import { FormComponent } from "./FormComponent";
+import { FormComponentLoader } from "./FormComponentLoader";
+import { FormElement } from "./FormElement";
+import { FormGroup } from "./FormGroup";
+import { FormIntl, FormIntlItemLayout, FormIntlLayout } from "./FormIntl";
+import { FormErrors } from "./FormErrors";
+import { FormSubmit } from "./FormSubmit";
+import { FormLayout } from "./FormLayout";
+import {
+  FormNestedArrayInnerLayout,
+  IconAdd,
+  IconRemove,
+} from "./FormNestedArray";
+import { FormNestedArrayLayout } from "./FormNestedArrayLayout";
+import { FormNestedItem, FormNestedItemLayout } from "./FormNestedItem";
+import { FormNestedDivider } from "./FormNestedDivider";
+import { FieldErrors } from "./FieldErrors";
+import { FormNestedObject, FormNestedObjectLayout } from "./FormNestedObject";
+import { FormOptionLabel } from "./FormOptionLabel";
+import { Form } from "./Form";
+
 export interface PossibleCoreComponents {
   Loading: any;
   FormattedMessage: any;
@@ -49,7 +71,7 @@ export interface PossibleFormComponents {
   IconAdd: any;
   IconRemove: any;
   FieldErrors: any;
-  FieldNestedDivider: any;
+  FormNestedDivider: any;
   //
   FormNestedItemLayout: any;
   FormNestedObjectLayout: any;
@@ -69,8 +91,9 @@ const defaultCoreComponents: PossibleCoreComponents = {
   Icon: () => null,
 };
 const defaultFormComponents: PossibleFormComponents = {
-  FormError: () => null, // used by: FieldErrors
+  FormError, // used by: FieldErrors
   // To be defined by the UI framework
+  // TODO: add defaults in React components
   FormComponentDefault: () => null,
   FormComponentPassword: () => null,
   FormComponentNumber: () => null,
@@ -91,33 +114,33 @@ const defaultFormComponents: PossibleFormComponents = {
   FormComponentAutocomplete: () => null,
   FormComponentMultiAutocomplete: () => null,
   // Components defined in default vulcan/forms
-  FormComponent: () => null,
-  FormComponentLoader: () => null,
-  FormElement: () => null,
-  FormGroup: () => null,
-  FormIntl: () => null,
-  FormIntlItemLayout: () => null,
-  FormIntlLayout: () => null,
+  FormComponent,
+  FormComponentLoader,
+  FormElement,
+  FormGroup,
+  FormIntl,
+  FormIntlItemLayout,
+  FormIntlLayout,
 
   // Layout
-  FieldErrors: () => null,
-  FormErrors: () => null,
-  FormSubmit: () => null,
-  FormLayout: () => null,
+  FieldErrors,
+  FormErrors,
+  FormSubmit,
+  FormLayout,
 
-  FormNestedArrayInnerLayout: () => null,
-  FormNestedArrayLayout: () => null,
-  FormNestedItem: () => null,
-  IconAdd: () => null,
-  IconRemove: () => null,
-  FieldNestedDivider: () => null,
+  FormNestedArrayInnerLayout,
+  FormNestedArrayLayout,
+  FormNestedItem,
+  IconAdd,
+  IconRemove,
+  FormNestedDivider,
   // nested item
-  FormNestedItemLayout: () => null,
-  FormNestedObjectLayout: () => null,
-  FormNestedObject: () => null,
-  FormOptionLabel: () => null,
+  FormNestedItemLayout,
+  FormNestedObjectLayout,
+  FormNestedObject,
+  FormOptionLabel,
   //
-  Form: () => null,
+  Form,
 };
 
 export const defaultVulcanComponents = {

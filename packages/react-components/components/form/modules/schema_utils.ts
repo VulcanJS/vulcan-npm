@@ -2,6 +2,7 @@
  * Schema converter/getters
  */
 import { canCreateField, canUpdateField } from "@vulcanjs/permissions";
+import { VulcanFieldSchema, VulcanSchema } from "@vulcanjs/schema";
 import { getFieldType } from "./utils";
 
 /* getters */
@@ -52,55 +53,58 @@ export const getEditableFields = function (schema, user, document) {
   return fields;
 };
 
+/**
+ * Vulcan Schema => Form Schema
+ * TODO: type this better
+ * @param schema
+ * @param options
+ * @returns
+ */
 export const convertSchema = (
-  schema,
+  schema: VulcanSchema,
   options: { flatten?: boolean; removeArrays?: boolean } = {}
 ) => {
   const { flatten = false, removeArrays = true } = options;
 
-  if (schema._schema) {
-    let jsonSchema = {};
+  let jsonSchema = {};
 
-    Object.keys(schema._schema).forEach((fieldName) => {
-      // exclude array fields
-      if (removeArrays && fieldName.includes("$")) {
-        return;
-      }
+  Object.keys(schema).forEach((fieldName) => {
+    // exclude array fields
+    if (removeArrays && fieldName.includes("$")) {
+      return;
+    }
 
-      // extract schema
-      jsonSchema[fieldName] = getFieldSchema(fieldName, schema);
+    // extract schema
+    jsonSchema[fieldName] = getFieldSchema(fieldName, schema);
 
-      // check for existence of nested field
-      // and get its schema if possible or its type otherwise
-      const subSchemaOrType = getNestedFieldSchemaOrType(fieldName, schema);
-      if (subSchemaOrType) {
-        // remember the subschema if it exists, allow to customize labels for each group of items for arrays of objects
-        jsonSchema[fieldName].arrayFieldSchema = getFieldSchema(
-          `${fieldName}.$`,
-          schema
-        );
+    // check for existence of nested field
+    // and get its schema if possible or its type otherwise
+    const subSchemaOrType = getNestedFieldSchemaOrType(fieldName, schema);
+    if (subSchemaOrType) {
+      // remember the subschema if it exists, allow to customize labels for each group of items for arrays of objects
+      jsonSchema[fieldName].arrayFieldSchema = getFieldSchema(
+        `${fieldName}.$`,
+        schema
+      );
 
-        // call convertSchema recursively on the subSchema
-        const convertedSubSchema = convertSchema(subSchemaOrType, options);
-        // nested schema can be a field schema ({type, canRead, etc.}) (convertedSchema will be null)
-        // or a schema on its own with subfields (convertedSchema will return smth)
-        if (!convertedSubSchema) {
-          // subSchema is a simple field in this case (eg array of numbers)
-          jsonSchema[fieldName].isSimpleArrayField = true; //getFieldSchema(`${fieldName}.$`, schema);
+      // call convertSchema recursively on the subSchema
+      const convertedSubSchema = convertSchema(subSchemaOrType, options);
+      // nested schema can be a field schema ({type, canRead, etc.}) (convertedSchema will be null)
+      // or a schema on its own with subfields (convertedSchema will return smth)
+      if (!convertedSubSchema) {
+        // subSchema is a simple field in this case (eg array of numbers)
+        jsonSchema[fieldName].isSimpleArrayField = true; //getFieldSchema(`${fieldName}.$`, schema);
+      } else {
+        // subSchema is a full schema with multiple fields (eg array of objects)
+        if (flatten) {
+          jsonSchema = { ...jsonSchema, ...convertedSubSchema };
         } else {
-          // subSchema is a full schema with multiple fields (eg array of objects)
-          if (flatten) {
-            jsonSchema = { ...jsonSchema, ...convertedSubSchema };
-          } else {
-            jsonSchema[fieldName].schema = convertedSubSchema;
-          }
+          jsonSchema[fieldName].schema = convertedSubSchema;
         }
       }
-    });
-    return jsonSchema;
-  } else {
-    return null;
-  }
+    }
+  });
+  return jsonSchema;
 };
 
 /*
@@ -108,10 +112,10 @@ export const convertSchema = (
 Get a JSON object representing a field's schema
 
 */
-export const getFieldSchema = (fieldName, schema) => {
+export const getFieldSchema = (fieldName: string, schema: VulcanSchema) => {
   let fieldSchema = {};
   schemaProperties.forEach((property) => {
-    const propertyValue = schema.get(fieldName, property);
+    const propertyValue = schema[fieldName]?.[property];
     if (propertyValue) {
       fieldSchema[property] = propertyValue;
     }
@@ -121,22 +125,23 @@ export const getFieldSchema = (fieldName, schema) => {
 
 // type is an array due to the possibility of using SimpleSchema.oneOf
 // right now we support only fields with one type
-export const getSchemaType = getFieldType;
+export const getSchemaType = (fieldSchema: VulcanFieldSchema) =>
+  getFieldType(fieldSchema);
 
-const getArrayNestedSchema = (fieldName, schema) => {
-  const arrayItemSchema = schema._schema[`${fieldName}.$`];
+const getArrayNestedSchema = (fieldName: string, schema: VulcanSchema) => {
+  const arrayItemSchema = schema[`${fieldName}.$`];
   const nestedSchema = arrayItemSchema && getSchemaType(arrayItemSchema);
   return nestedSchema;
 };
 // nested object fields type is of the form "type: new SimpleSchema({...})"
 // so they should possess a "_schema" prop
-const isNestedSchemaField = (fieldSchema) => {
+const isNestedSchemaField = (fieldSchema: VulcanFieldSchema) => {
   const fieldType = getSchemaType(fieldSchema);
   //console.log('fieldType', typeof fieldType, fieldType._schema)
   return fieldType && !!fieldType._schema;
 };
-const getObjectNestedSchema = (fieldName, schema) => {
-  const fieldSchema = schema._schema[fieldName];
+const getObjectNestedSchema = (fieldName: string, schema: VulcanSchema) => {
+  const fieldSchema = schema[fieldName];
   if (!isNestedSchemaField(fieldSchema)) return null;
   const nestedSchema = fieldSchema && getSchemaType(fieldSchema);
   return nestedSchema;

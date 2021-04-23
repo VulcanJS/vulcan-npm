@@ -80,7 +80,7 @@ interface FormComponentState {
 /**
  * Component for the display of any field of the form
  */
-class FormComponent<TField = any> extends Component<
+export class FormComponent<TField = any> extends Component<
   FormComponentProps<TField>,
   FormComponentState
 > {

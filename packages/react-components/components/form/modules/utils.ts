@@ -153,7 +153,9 @@ export const getNestedDeletedValues = (
     accumulator
   );
 
-export const getFieldType = (datatype) => datatype[0].type;
+//TODO: check if it still works as expected
+// previously was dataType[0].type
+export const getFieldType = (fieldSchema) => fieldSchema.type;
 /**
  * Get appropriate null value for various field types
  *

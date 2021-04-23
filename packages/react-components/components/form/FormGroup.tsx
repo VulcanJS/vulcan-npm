@@ -36,7 +36,7 @@ export interface FormGroupProps {
 interface FormGroupState {
   collapsed: boolean;
 }
-class FormGroup extends PureComponent<FormGroupProps, FormGroupState> {
+export class FormGroup extends PureComponent<FormGroupProps, FormGroupState> {
   constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this);

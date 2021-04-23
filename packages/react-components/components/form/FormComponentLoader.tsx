@@ -19,7 +19,7 @@ export interface FormComponentLoaderProps {
   /** Run the query only when value is not empty */
   queryWaitsForValue?: boolean;
 }
-const FormComponentLoader = (props: FormComponentLoaderProps) => {
+export const FormComponentLoader = (props: FormComponentLoaderProps) => {
   const VulcanComponents = useVulcanComponents();
   const { query, children, options, value, queryWaitsForValue } = props;
 
