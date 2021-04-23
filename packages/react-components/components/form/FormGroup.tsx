@@ -2,9 +2,9 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import _some from "lodash/some";
 import { User, isAdmin } from "@vulcanjs/permissions";
-import { FormComponentsContext } from "./FormComponentsContext";
 import { FieldGroup } from "@vulcanjs/schema";
 import { FormField } from "./typings";
+import { VulcanComponentsContext } from "./VulcanComponentsContext";
 
 export interface FormGroupProps {
   name: string;
@@ -65,7 +65,7 @@ class FormGroup extends PureComponent<FormGroupProps, FormGroupState> {
     prefilledProps: PropTypes.object,
   };
 
-  static contextType = FormComponentsContext; // TODO: switch to functional component
+  static contextType = VulcanComponentsContext; // TODO: switch to functional component
 
   toggle() {
     this.setState({

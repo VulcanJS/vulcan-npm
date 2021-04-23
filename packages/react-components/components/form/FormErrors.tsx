@@ -1,23 +1,21 @@
 import React from "react";
-import { useCoreComponents } from "./CoreComponentsContext";
-import { useFormComponents } from "./FormComponentsContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 export const FormErrors = ({ errors }) => {
-  const CoreComponents = useCoreComponents();
-  const FormComponents = useFormComponents();
+  const VulcanComponents = useVulcanComponents();
 
   return (
     <div className="form-errors">
       {!!errors.length && (
-        <CoreComponents.Alert className="flash-message" variant="danger">
+        <VulcanComponents.Alert className="flash-message" variant="danger">
           <ul>
             {errors.map((error, index) => (
               <li key={index}>
-                <FormComponents.FormError error={error} errorContext="form" />
+                <VulcanComponents.FormError error={error} errorContext="form" />
               </li>
             ))}
           </ul>
-        </CoreComponents.Alert>
+        </VulcanComponents.Alert>
       )}
     </div>
   );

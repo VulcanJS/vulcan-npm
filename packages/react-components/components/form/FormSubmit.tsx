@@ -4,8 +4,8 @@
  */
 import React from "react";
 import PropTypes from "prop-types";
-import { useCoreComponents } from "./CoreComponentsContext";
 import { canDeleteDocument } from "@vulcanjs/permissions";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 export const FormSubmit = (
   {
@@ -23,19 +23,19 @@ export const FormSubmit = (
   },
   { isChanged, clearForm }
 ) => {
-  const CoreComponents = useCoreComponents();
+  const VulcanComponents = useVulcanComponents();
   return (
     <div className="form-submit">
-      <CoreComponents.Button type="submit" variant="primary">
+      <VulcanComponents.Button type="submit" variant="primary">
         {submitLabel ? (
           submitLabel
         ) : (
-          <CoreComponents.FormattedMessage
+          <VulcanComponents.FormattedMessage
             id="forms.submit"
             defaultMessage="Submit"
           />
         )}
-      </CoreComponents.Button>
+      </VulcanComponents.Button>
 
       {cancelCallback ? (
         <a
@@ -48,7 +48,7 @@ export const FormSubmit = (
           {cancelLabel ? (
             cancelLabel
           ) : (
-            <CoreComponents.FormattedMessage
+            <VulcanComponents.FormattedMessage
               id="forms.cancel"
               defaultMessage="Cancel"
             />
@@ -68,7 +68,7 @@ export const FormSubmit = (
           {revertLabel ? (
             revertLabel
           ) : (
-            <CoreComponents.FormattedMessage
+            <VulcanComponents.FormattedMessage
               id="forms.revert"
               defaultMessage="Revert"
             />
@@ -84,17 +84,17 @@ export const FormSubmit = (
       }) ? (
         <div>
           <hr />
-          <CoreComponents.Button
+          <VulcanComponents.Button
             variant="link"
             onClick={deleteDocument}
             className={`delete-link ${model.name}-delete-link`}
           >
-            <CoreComponents.Icon name="close" />{" "}
-            <CoreComponents.FormattedMessage
+            <VulcanComponents.Icon name="close" />{" "}
+            <VulcanComponents.FormattedMessage
               id="forms.delete"
               defaultMessage="Delete"
             />
-          </CoreComponents.Button>
+          </VulcanComponents.Button>
         </div>
       ) : null}
     </div>

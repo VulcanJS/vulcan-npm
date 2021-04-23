@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormComponents } from "./FormComponentsContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 export const FormLayout = ({
   commonProps,
@@ -9,19 +9,19 @@ export const FormLayout = ({
   submitProps,
   children,
 }) => {
-  const FormComponents = useFormComponents();
+  const VulcanComponents = useVulcanComponents();
   return (
-    <FormComponents.FormElement {...formProps}>
-      <FormComponents.FormErrors {...commonProps} {...errorProps} />
+    <VulcanComponents.FormElement {...formProps}>
+      <VulcanComponents.FormErrors {...commonProps} {...errorProps} />
 
       {children}
 
       {repeatErrors && (
-        <FormComponents.FormErrors {...commonProps} {...errorProps} />
+        <VulcanComponents.FormErrors {...commonProps} {...errorProps} />
       )}
 
-      <FormComponents.FormSubmit {...commonProps} {...submitProps} />
-    </FormComponents.FormElement>
+      <VulcanComponents.FormSubmit {...commonProps} {...submitProps} />
+    </VulcanComponents.FormElement>
   );
 };
 

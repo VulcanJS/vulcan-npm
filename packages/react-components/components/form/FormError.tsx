@@ -3,10 +3,10 @@ import React from "react";
 // import getContext from 'recompose/getContext';
 // import { Components, registerComponent } from 'meteor/vulcan:core';
 import get from "lodash/get";
-import { useCoreComponents } from "./CoreComponentsContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 const FormError = ({ error, errorContext, getLabel }) => {
-  const CoreComponents = useCoreComponents();
+  const VulcanComponents = useVulcanComponents();
   // use the error or error message as default message
   const defaultMessage = JSON.stringify(error.message || error);
   const id = error.id || "app.defaultError";
@@ -49,7 +49,7 @@ const FormError = ({ error, errorContext, getLabel }) => {
       values: exception.data,
     };
   }
-  return <CoreComponents.FormattedMessage html={true} {...messageProps} />;
+  return <VulcanComponents.FormattedMessage html={true} {...messageProps} />;
 };
 
 FormError.defaultProps = {

@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import omit from "lodash/omit";
+import { PossibleFormComponents } from "./defaultVulcanComponents";
 // import getContext from "recompose/getContext";
-import { PossibleFormComponents } from "./FormComponentsContext";
 
 const Locales: Array<{ id: string }> = []; // ?? might need to get this from context
 // import { Locales } from "meteor/vulcan:core";

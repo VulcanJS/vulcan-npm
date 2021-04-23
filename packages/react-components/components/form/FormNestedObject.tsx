@@ -1,7 +1,7 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { useFormComponents } from "./FormComponentsContext";
 import _omit from "lodash/omit";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 // Replaceable layout
 const FormNestedObjectLayout = ({ hasErrors, label, content }) => (
@@ -28,7 +28,7 @@ interface FormNestedObjectProps {
   path: string;
 }
 export const FormNestedObject = (props: FormNestedObjectProps) => {
-  const FormComponents = useFormComponents();
+  const VulcanComponents = useVulcanComponents();
   //const value = this.getCurrentValue()
   // do not pass FormNested's own value, input and inputProperties props down
   const properties = _omit(
@@ -45,17 +45,17 @@ export const FormNestedObject = (props: FormNestedObjectProps) => {
   );
   const hasErrors = nestedObjectErrors && nestedObjectErrors.length;
   return (
-    <FormComponents.FormNestedObjectLayout
+    <VulcanComponents.FormNestedObjectLayout
       hasErrors={hasErrors}
       label={props.label}
       content={[
-        <FormComponents.FormNestedItem
+        <VulcanComponents.FormNestedItem
           key="form-nested-item"
           {...properties}
           path={`${props.path}`}
         />,
         hasErrors ? (
-          <FormComponents.FieldErrors
+          <VulcanComponents.FieldErrors
             key="form-nested-errors"
             errors={nestedObjectErrors}
           />

@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { useCoreComponents } from "./CoreComponentsContext";
-import { useFormComponents } from "./FormComponentsContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 // Replaceable layout, default implementation
 const FormNestedArrayLayout = (props) => {
@@ -14,8 +13,7 @@ const FormNestedArrayLayout = (props) => {
     AfterComponent,
     children,
   } = props;
-  const FormComponents = useFormComponents();
-  const CoreComponents = useCoreComponents();
+  const VulcanComponents = useVulcanComponents();
 
   return (
     <div
@@ -28,17 +26,17 @@ const FormNestedArrayLayout = (props) => {
       <div className="col-sm-9">
         {children}
         {addItem && (
-          <CoreComponents.Button
+          <VulcanComponents.Button
             className="form-nested-button form-nested-add"
             size="sm"
             variant="success"
             onClick={addItem}
           >
-            <FormComponents.IconAdd height={12} width={12} />
-          </CoreComponents.Button>
+            <VulcanComponents.IconAdd height={12} width={12} />
+          </VulcanComponents.Button>
         )}
         {props.hasErrors ? (
-          <FormComponents.FieldErrors
+          <VulcanComponents.FieldErrors
             key="form-nested-errors"
             errors={nestedArrayErrors}
           />

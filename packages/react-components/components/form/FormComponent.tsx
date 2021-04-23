@@ -11,10 +11,7 @@ import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import SimpleSchema from "simpl-schema";
 import { isEmptyValue, getNullValue } from "./modules/utils";
-import {
-  withFormComponents,
-  PossibleFormComponents,
-} from "./FormComponentsContext";
+import { PossibleFormComponents } from "./defaultVulcanComponents";
 
 // extract this as a pure function so that it can be used inside getDerivedStateFromProps
 const getCharacterCounts = (value, max) => {

@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { intlShape } from "@vulcanjs/i18n";
-import { useFormComponents } from "./FormComponentsContext";
-import { useCoreComponents } from "./CoreComponentsContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 const FormNestedItemLayout = ({ content, removeButton }) => (
   <div className="form-nested-item">
@@ -37,14 +36,13 @@ const FormNestedItem = (
   },
   { errors, intl }
 ) => {
-  const CoreComponents = useCoreComponents();
-  const FormComponents = useFormComponents();
+  const VulcanComponents = useVulcanComponents();
   const isArray = typeof itemIndex !== "undefined";
   return (
-    <FormComponents.FormNestedItemLayout
+    <VulcanComponents.FormNestedItemLayout
       content={nestedFields.map((field, i) => {
         return (
-          <FormComponents.FormComponent
+          <VulcanComponents.FormComponent
             key={i}
             {...props}
             {...field}
@@ -57,7 +55,7 @@ const FormNestedItem = (
         isArray &&
         !hideRemove && [
           <div key="remove-button" className="form-nested-item-remove">
-            <CoreComponents.Button
+            <VulcanComponents.Button
               className="form-nested-button"
               variant="danger"
               size="sm"
@@ -71,8 +69,8 @@ const FormNestedItem = (
                 { label: label }
               )}
             >
-              <FormComponents.IconRemove height={12} width={12} />
-            </CoreComponents.Button>
+              <VulcanComponents.IconRemove height={12} width={12} />
+            </VulcanComponents.Button>
           </div>,
           <div
             key="remove-button-overlay"

@@ -35,7 +35,7 @@ component is also added to wait for withSingle's loading prop to be false)
 
 */
 
-import React, { PureComponent } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { intlShape } from "@vulcanjs/i18n";
 // import { withRouter } from "react-router";
@@ -51,7 +51,6 @@ import // withCurrentUser,
 import gql from "graphql-tag";
 // import { withSingle } from "meteor/vulcan:core";
 
-import withCollectionProps from "./withCollectionProps";
 import { callbackProps } from "./propTypes";
 
 import getFormFragments from "./modules/formFragments";
@@ -60,20 +59,16 @@ import { VulcanSchema } from "@vulcanjs/schema";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { capitalize } from "@vulcanjs/utils";
 import {
-  PossibleCoreComponents,
-  useCoreComponents,
-} from "./CoreComponentsContext";
-import {
-  PossibleFormComponents,
-  useFormComponents,
-} from "./FormComponentsContext";
-import {
   useSingle,
   useCreate,
   useUpdate,
   useDelete,
 } from "@vulcanjs/react-hooks";
-import { create } from "lodash";
+import { useVulcanComponents } from "./VulcanComponentsContext";
+import {
+  PossibleFormComponents,
+  PossibleCoreComponents,
+} from "./defaultVulcanComponents";
 
 interface FormWrapperProps {
   schema?: VulcanSchema; // TODO: should we keep the model only? or allow to pass raw schema?
@@ -103,8 +98,7 @@ export const FormWrapper = (props: FormWrapperProps) => {
     slug,
   };
   const formType = isEdit ? "edit" : "new";
-  const Components = useCoreComponents();
-  const FormComponents = useFormComponents();
+  const VulcanComponents = useVulcanComponents();
 
   // get fragment used to decide what data to load from the server to populate the form,
   // as well as what data to ask for as return value for the mutation
@@ -196,7 +190,8 @@ export const FormWrapper = (props: FormWrapperProps) => {
       // TODO: support slug
     },
     queryOptions: {
-      fetchPolicy: "network-only", // we always want to load a fresh copy of the document
+      // we always want to load a fresh copy of the document
+      fetchPolicy: "network-only" as "network-only", // cast is for fixing annoying TS issue... https://github.com/vuejs/vue-apollo/issues/936
       pollInterval: 0, // no polling, only load data once
     },
   };
@@ -208,10 +203,10 @@ export const FormWrapper = (props: FormWrapperProps) => {
   const [deleteDocument] = useDelete(mutationOptions);
 
   if (isEdit && loading) {
-    return <Components.Loading />;
+    return <VulcanComponents.Loading />;
   }
   return (
-    <FormComponents.Form
+    <VulcanComponents.Form
       document={document}
       loading={loading}
       createDocument={createDocument}

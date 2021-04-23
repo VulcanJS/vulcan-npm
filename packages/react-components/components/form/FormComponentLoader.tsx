@@ -9,8 +9,7 @@ import React, { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import isEmpty from "lodash/isEmpty";
-import { useFormComponents } from "./FormComponentsContext";
-import { useCoreComponents } from "./CoreComponentsContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 export interface FormComponentLoaderProps {
   query: string | (({ value: any }) => string);
@@ -21,8 +20,7 @@ export interface FormComponentLoaderProps {
   queryWaitsForValue?: boolean;
 }
 const FormComponentLoader = (props: FormComponentLoaderProps) => {
-  const FormComponents = useFormComponents();
-  const CoreComponents = useCoreComponents();
+  const VulcanComponents = useVulcanComponents();
   const { query, children, options, value, queryWaitsForValue } = props;
 
   // if query is a function, execute it
@@ -54,7 +52,7 @@ const FormComponentLoader = (props: FormComponentLoaderProps) => {
   if (loading) {
     return (
       <div className="form-component-loader">
-        <CoreComponents.Loading />
+        <VulcanComponents.Loading />
       </div>
     );
   }

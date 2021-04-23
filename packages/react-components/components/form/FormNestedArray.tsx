@@ -6,7 +6,7 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import _omit from "lodash/omit";
 import _get from "lodash/get";
-import { PossibleFormComponents } from "./FormComponentsContext";
+import { PossibleFormComponents } from "./defaultVulcanComponents";
 
 // Wraps the FormNestedItem, repeated for each object
 // Allow for example to have a label per object
