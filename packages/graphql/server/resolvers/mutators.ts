@@ -270,7 +270,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 
   // get original document from database or arguments
   const connector = getModelConnector(context, model);
-  const currentDocument = await connector.findOne(model, selector);
+  const currentDocument = await connector.findOne(selector);
 
   if (!currentDocument) {
     throw new Error(
@@ -429,7 +429,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   const connector = getModelConnector<TModel>(context, model);
 
   // get document from database
-  let document = await connector.findOne(model, selector);
+  let document = await connector.findOne(selector);
 
   if (!document) {
     throw new Error(
