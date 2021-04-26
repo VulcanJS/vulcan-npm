@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/graphql",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "main": "./dist/index.js",
   "files": [
     "dist/"
@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "@vulcanjs/model": "^0.1.10",
-    "@vulcanjs/schema": "^0.1.10",
+    "@vulcanjs/schema": "^0.1.11",
     "@vulcanjs/utils": "^0.1.9",
     "apollo-server": "^2.18.2",
     "graphql-date": "^1.0.3",
