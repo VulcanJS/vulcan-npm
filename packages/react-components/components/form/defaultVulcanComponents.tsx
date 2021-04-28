@@ -2,7 +2,7 @@ import { FormError } from "./FormError";
 import { FormComponent } from "./FormComponent";
 import { FormComponentLoader } from "./FormComponentLoader";
 import { FormElement } from "./FormElement";
-import { FormGroup } from "./FormGroup";
+import { FormGroup, FormGroupLayout, FormGroupHeader } from "./FormGroup";
 import { FormIntl, FormIntlItemLayout, FormIntlLayout } from "./FormIntl";
 import { FormErrors } from "./FormErrors";
 import { FormSubmit } from "./FormSubmit";
@@ -76,6 +76,8 @@ export interface PossibleFormComponents {
   FormComponentLoader: any;
   FormElement: any;
   FormGroup: any;
+  FormGroupLayout: any;
+  FormGroupHeader: any;
   // intl
   FormIntlLayout: any;
   FormIntlItemLayout: any;
@@ -139,6 +141,8 @@ const defaultFormComponents: PossibleFormComponents = {
   FormComponentLoader,
   FormElement,
   FormGroup,
+  FormGroupLayout,
+  FormGroupHeader,
   FormIntl,
   FormIntlItemLayout,
   FormIntlLayout,

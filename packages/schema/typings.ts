@@ -66,9 +66,9 @@ export interface FieldGroup {
   startCollapsed?: boolean; // If true, the group will start collapsed
   adminsOnly?: boolean; // Lets you put fields that members canUpdate in a group that only admins can see
   /** Change compared to Vulcan Meteor: we accept only components, not rendered elements or reference to a component*/
-  beforeComponent?: React.ComponentType; // Component to place at the start of the group
+  beforeComponent?: React.ComponentType<any>; // Component to place at the start of the group
   /** Change compared to Vulcan Meteor: we accept only components, not rendered elements or reference to a component*/
-  afterComponent?: React.ComponentType; // Component to place at the end of the group
+  afterComponent?: React.ComponentType<any>; // Component to place at the end of the group
 }
 interface VulcanField<TField = any> {
   canRead?: PermissionDefinition | Array<PermissionDefinition>;
