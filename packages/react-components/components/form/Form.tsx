@@ -63,7 +63,10 @@ import _ from "underscore";
 import { VulcanModel } from "@vulcanjs/model";
 import { VulcanSchema } from "@vulcanjs/schema";
 import { User } from "@vulcanjs/permissions";
-import { PossibleFormComponents } from "./defaultVulcanComponents";
+import {
+  defaultVulcanComponents,
+  PossibleFormComponents,
+} from "./defaultVulcanComponents";
 
 // props that should trigger a form reset
 const RESET_PROPS = [
@@ -259,14 +262,6 @@ interface FormComponent {
   FormLayout: React.ComponentType;
   FormGroup: React.ComponentType;
 }
-// TODO: import components from the child files
-const defaultFormComponents: FormComponent = {
-  FormLayout: ({ children }) => <div>{children}</div>,
-  FormGroup: ({ children }) => <div>{children}</div>,
-};
-const mergeWithComponents = (components?: any) => {
-  return merge({}, defaultFormComponents, components);
-};
 
 export class Form extends Component<FormProps, FormState> {
   constructor(props) {
@@ -473,7 +468,9 @@ export class Form extends Component<FormProps, FormState> {
   Get form components, in case any has been overwritten for this specific form
 
   */
-  getMergedComponents = () => mergeWithComponents(this.props.components);
+  // TODO: use components from context instead when moving to stateless
+  getMergedComponents = () =>
+    merge({}, defaultVulcanComponents, this.props.components);
 
   // --------------------------------------------------------------------- //
   // -------------------------------- Fields ----------------------------- //
