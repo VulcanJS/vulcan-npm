@@ -525,11 +525,11 @@ export class Form extends Component<FormProps, FormState> {
     }
 
     // sort by order
-    groups = sortBy(groups, "order");
+    groupsWithFields = sortBy(groupsWithFields, "order");
 
     // console.log(groups);
 
-    return groups;
+    return groupsWithFields;
   };
 
   /*
