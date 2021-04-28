@@ -20,6 +20,27 @@ import { FormNestedObject, FormNestedObjectLayout } from "./FormNestedObject";
 import { FormOptionLabel } from "./FormOptionLabel";
 import { Form } from "./Form";
 
+import {
+  FormComponentDefault,
+  FormComponentPassword,
+  FormComponentNumber,
+  FormComponentUrl,
+  FormComponentEmail,
+  FormComponentTextarea,
+  FormComponentCheckbox,
+  FormComponentCheckboxGroup,
+  FormComponentRadioGroup,
+  FormComponentSelect,
+  FormComponentSelectMultiple,
+  FormComponentDateTime,
+  FormComponentDate,
+  FormComponentTime,
+  FormComponentStaticText,
+  FormComponentLikert,
+  FormComponentAutocomplete,
+  FormComponentMultiAutocomplete,
+} from "./DefaultFormComponents";
+
 export interface PossibleCoreComponents {
   Loading: any;
   FormattedMessage: any;
@@ -44,7 +65,7 @@ export interface PossibleFormComponents {
   FormComponentSelectMultiple: any;
   FormComponentDateTime: any;
   FormComponentDate: any;
-  FormComponentDate2: any;
+  // FormComponentDate2: any;
   FormComponentTime: any;
   FormComponentStaticText: any;
   FormComponentLikert: any;
@@ -94,25 +115,25 @@ const defaultFormComponents: PossibleFormComponents = {
   FormError, // used by: FieldErrors
   // To be defined by the UI framework
   // TODO: add defaults in React components
-  FormComponentDefault: () => null,
-  FormComponentPassword: () => null,
-  FormComponentNumber: () => null,
-  FormComponentUrl: () => null,
-  FormComponentEmail: () => null,
-  FormComponentTextarea: () => null,
-  FormComponentCheckbox: () => null,
-  FormComponentCheckboxGroup: () => null,
-  FormComponentRadioGroup: () => null,
-  FormComponentSelect: () => null,
-  FormComponentSelectMultiple: () => null,
-  FormComponentDateTime: () => null,
-  FormComponentDate: () => null,
-  FormComponentDate2: () => null,
-  FormComponentTime: () => null,
-  FormComponentStaticText: () => null,
-  FormComponentLikert: () => null,
-  FormComponentAutocomplete: () => null,
-  FormComponentMultiAutocomplete: () => null,
+  FormComponentDefault,
+  FormComponentPassword,
+  FormComponentNumber,
+  FormComponentUrl,
+  FormComponentEmail,
+  FormComponentTextarea,
+  FormComponentCheckbox,
+  FormComponentCheckboxGroup,
+  FormComponentRadioGroup,
+  FormComponentSelect,
+  FormComponentSelectMultiple,
+  FormComponentDateTime,
+  FormComponentDate,
+  //FormComponentDate2,
+  FormComponentTime,
+  FormComponentStaticText,
+  FormComponentLikert,
+  FormComponentAutocomplete,
+  FormComponentMultiAutocomplete,
   // Components defined in default vulcan/forms
   FormComponent,
   FormComponentLoader,

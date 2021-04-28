@@ -170,9 +170,11 @@ type PropsFromPropTypes = {
 }; // dumb type just to remove errors, to be improved by replacing propTypes with ts
 export interface FormProps<TModel = { [key in string]: any }>
   extends PropsFromPropTypes {
-  refetch: any;
-  history: any;
+  // TODO: router stuffs
+  refetch?: Function;
+  history?: any;
   id?: string;
+  // TODO: merge
   components?: {};
   /* The model in which to edit or insert a document. */
   model: VulcanModel;
@@ -204,24 +206,24 @@ export interface FormProps<TModel = { [key in string]: any }>
   /*The text inside the submit button of the form.*/
   submitLabel?: string;
   /*A layout property used to control how the form fields are displayed. Defaults to horizontal.*/
-  layout: "horizontal" | "vertical";
+  layout?: "horizontal" | "vertical";
   /*Whether to show a “delete document” link on edit forms.*/
   showRemove?: boolean;
   /*A set of props used to prefill the form. */
-  prefilledProps: TModel & Object; // TODO: should it allow only fields from the Model or also additional fields?
+  prefilledProps?: TModel & Object; // TODO: should it allow only fields from the Model or also additional fields?
   /*Whether to repeat validation errors at the bottom of the form.*/
   repeatErrors?: boolean;
   //Callbacks
   /*A callback called on form submission on the form data. Can return the submitted data object as well.*/
-  submitCallback: (data) => any;
+  submitCallback?: (data) => any;
   /*A callback called on mutation success.*/
-  successCallback: (document, meta: { form: any }) => void;
+  successCallback?: (document, meta: { form: any }) => void;
   /*A callback called on mutation failure.*/
-  errorCallback: (document, error, meta: { form: any }) => void;
+  errorCallback?: (document, error, meta: { form: any }) => void;
   /*If a cancelCallback function is provided, a “cancel” link will be shown next to the form’s submit button and the callback will be called on click.*/
-  cancelCallback: (document) => void;
+  cancelCallback?: (document) => void;
   /*A callback to call when a document is successfully removed (deleted).*/
-  removeSuccessCallback: (document) => void;
+  removeSuccessCallback?: (document) => void;
 
   /*A callback called a every change or blur event inside the form.*/
   changeCallback: (currentDocument) => void;
@@ -238,12 +240,13 @@ An example would be a createdAt date added automatically on creation even though
   mutationFragment?: string;
 
   // mutations from container
+  // => replace the "onSubmit" of a normal form
   createDocument: Function;
   updateDocument: Function;
   deleteDocument: Function;
   // ??
-  createDocumentMeta: { error?: any };
-  updateDocumentMeta: { error?: any };
+  createDocumentMeta?: { error?: any };
+  updateDocumentMeta?: { error?: any };
 }
 
 // Group of multiple fields (obtained by parsing the whole schema)

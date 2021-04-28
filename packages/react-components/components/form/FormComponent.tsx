@@ -381,8 +381,8 @@ export class FormComponent<TField = any> extends Component<
         case "date":
           return FormComponents.FormComponentDate;
 
-        case "date2":
-          return FormComponents.FormComponentDate2;
+        // case "date2":
+        //   return FormComponents.FormComponentDate2;
 
         case "time":
           return FormComponents.FormComponentTime;
