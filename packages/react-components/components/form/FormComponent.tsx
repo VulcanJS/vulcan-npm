@@ -11,12 +11,10 @@ import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import SimpleSchema from "simpl-schema";
 import { isEmptyValue, getNullValue } from "./modules/utils";
-import {
-  PossibleFormComponents,
-  PossibleVulcanComponents,
-} from "./defaultVulcanComponents";
+import { PossibleVulcanComponents } from "./defaultVulcanComponents";
 import { withVulcanComponents } from "./VulcanComponentsContext";
 import { FormField } from "./typings";
+import { FormComponentInner } from "./FormComponentInner";
 
 // extract this as a pure function so that it can be used inside getDerivedStateFromProps
 const getCharacterCounts = (value, max) => {
@@ -485,8 +483,6 @@ FormComponent.contextType = {
   // @ts-expect-error
   getDocument: PropTypes.func.isRequired,
 };*/
-
-export const FormComponentInner = ({ children }) => <div>{children}</div>;
 
 export const formComponentsDependencies = [
   "FormComponentDefault",

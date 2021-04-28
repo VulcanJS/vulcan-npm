@@ -1,6 +1,7 @@
 import { FormError } from "./FormError";
 // TODO: currently we need the default export because we pass components manually
-import FormComponent, { FormComponentInner } from "./FormComponent";
+import FormComponent from "./FormComponent";
+import { FormComponentInner } from "./FormComponentInner";
 import { FormComponentLoader } from "./FormComponentLoader";
 import { FormElement } from "./FormElement";
 import { FormGroup, FormGroupLayout, FormGroupHeader } from "./FormGroup";
