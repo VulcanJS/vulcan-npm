@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-hooks",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Connect to an existing Vulcan backend using hooks",
   "main": "./dist/index.js",
   "files": [
@@ -14,10 +14,10 @@
   "license": "MIT",
   "dependencies": {
     "@vulcanjs/core": "^0.1.6-alpha.2",
-    "@vulcanjs/graphql": "^0.1.10",
     "@vulcanjs/schema": "^0.1.10",
     "@vulcanjs/utils": "^0.1.9",
     "graphql": "^15.5.0",
+    "@vulcanjs/graphql": "^0.1.11",
     "graphql-tag": "^2.11.0",
     "lodash": "^4.17.20",
     "mingo": "^3.0.6"
