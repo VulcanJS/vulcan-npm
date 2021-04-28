@@ -11,7 +11,12 @@ import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import SimpleSchema from "simpl-schema";
 import { isEmptyValue, getNullValue } from "./modules/utils";
-import { PossibleFormComponents } from "./defaultVulcanComponents";
+import {
+  PossibleFormComponents,
+  PossibleVulcanComponents,
+} from "./defaultVulcanComponents";
+import { withVulcanComponents } from "./VulcanComponentsContext";
+import { FormField } from "./typings";
 
 // extract this as a pure function so that it can be used inside getDerivedStateFromProps
 const getCharacterCounts = (value, max) => {
@@ -47,7 +52,8 @@ type StandardInputType =
   | "multiautocomplete";
 
 type Options<TField = any> = Array<{ label: string; value: TField }>;
-export interface FormComponentProps<TField> {
+//TODO: it extends the Field type actually, provided by FormGroup and other
+export interface FormComponentProps<TField> extends FormField {
   document: any;
   deletedValues: Array<string>;
   datatype: any; // TODO: type of the field, replace this by a cleaner value like we do in graphql to get the field type
@@ -68,7 +74,7 @@ export interface FormComponentProps<TField> {
   /** Graphql query you can pass to fetch the options asynchronously */
   query?: string;
   options?: Options | ((fciProps?: any) => Options);
-  formComponents: PossibleFormComponents; // TODO: get from context after switching to a functional component
+  vulcanComponents: PossibleVulcanComponents;
 
   updateCurrentValues: Function; // TODO: move this to context to avoid props drilling
   clearFieldErrors: Function;
@@ -235,10 +241,11 @@ export class FormComponent<TField = any> extends Component<
   */
   getValue = (props?: FormComponentProps<TField>, context?: any) => {
     const p = props || this.props;
-    const c = context || this.context;
+    // TODO: get document from context
+    //const c = context || this.context;
     const { locale, defaultValue, deletedValues, formType, datatype } = p;
     const path = locale ? `${getPath(p)}.value` : getPath(p);
-    const currentDocument = c.getDocument();
+    const currentDocument = p.document;
     let value = get(currentDocument, path);
     // note: force intl fields to be treated like strings
     const nullValue = locale ? "" : getNullValue(datatype);
@@ -287,7 +294,7 @@ export class FormComponent<TField = any> extends Component<
   */
   getFieldType = (props?: FormComponentProps<TField>) => {
     const p = props || this.props;
-    return p.datatype && p.datatype[0].type;
+    return p.type; // //.datatype && p.datatype[0].type;
   };
 
   /*
@@ -332,7 +339,7 @@ export class FormComponent<TField = any> extends Component<
   */
   getFormInput = () => {
     const inputType = this.getInputType();
-    const FormComponents = this.props.formComponents;
+    const FormComponents = this.props.vulcanComponents;
 
     // if input is a React component, use it
     if (typeof this.props.input === "function") {
@@ -415,7 +422,7 @@ export class FormComponent<TField = any> extends Component<
   };
 
   render() {
-    const FormComponents = this.context.formComponents;
+    const FormComponents = this.props.vulcanComponents;
 
     if (this.props.intlInput) {
       return <FormComponents.FormIntl {...this.props} />;
@@ -447,7 +454,7 @@ export class FormComponent<TField = any> extends Component<
       inputType: this.getInputType(),
       value: this.getValue(),
       errors: this.getErrors(),
-      document: this.context.getDocument(),
+      // document: this.context.getDocument(),
       showCharsRemaining: !!this.showCharsRemaining(),
       handleChange: this.handleChange,
       clearField: this.clearField,
@@ -473,10 +480,13 @@ export class FormComponent<TField = any> extends Component<
   }
 }
 
+/*
 FormComponent.contextType = {
   // @ts-expect-error
   getDocument: PropTypes.func.isRequired,
-};
+};*/
+
+export const FormComponentInner = ({ children }) => <div>{children}</div>;
 
 export const formComponentsDependencies = [
   "FormComponentDefault",
@@ -500,4 +510,4 @@ export const formComponentsDependencies = [
   "FormComponentMultiAutocomplete",
 ];
 //module.exports = FormComponent;
-export default FormComponent;
+export default withVulcanComponents(FormComponent);

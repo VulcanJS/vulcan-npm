@@ -1,5 +1,6 @@
 import { FormError } from "./FormError";
-import { FormComponent } from "./FormComponent";
+// TODO: currently we need the default export because we pass components manually
+import FormComponent, { FormComponentInner } from "./FormComponent";
 import { FormComponentLoader } from "./FormComponentLoader";
 import { FormElement } from "./FormElement";
 import { FormGroup, FormGroupLayout, FormGroupHeader } from "./FormGroup";
@@ -8,6 +9,7 @@ import { FormErrors } from "./FormErrors";
 import { FormSubmit } from "./FormSubmit";
 import { FormLayout } from "./FormLayout";
 import {
+  FormNestedArray,
   FormNestedArrayInnerLayout,
   IconAdd,
   IconRemove,
@@ -73,6 +75,7 @@ export interface PossibleFormComponents {
   FormComponentMultiAutocomplete: any;
   //
   FormComponent: any;
+  FormComponentInner: any;
   FormComponentLoader: any;
   FormElement: any;
   FormGroup: any;
@@ -88,6 +91,7 @@ export interface PossibleFormComponents {
   FormLayout: any;
 
   // arrays and objects
+  FormNestedArray: any;
   FormNestedArrayInnerLayout: any;
   FormNestedArrayLayout: any;
   FormNestedItem: any;
@@ -138,6 +142,7 @@ const defaultFormComponents: PossibleFormComponents = {
   FormComponentMultiAutocomplete,
   // Components defined in default vulcan/forms
   FormComponent,
+  FormComponentInner,
   FormComponentLoader,
   FormElement,
   FormGroup,
@@ -153,6 +158,7 @@ const defaultFormComponents: PossibleFormComponents = {
   FormSubmit,
   FormLayout,
 
+  FormNestedArray,
   FormNestedArrayInnerLayout,
   FormNestedArrayLayout,
   FormNestedItem,

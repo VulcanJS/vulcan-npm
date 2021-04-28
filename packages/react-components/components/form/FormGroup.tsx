@@ -40,8 +40,22 @@ interface FormGroupState {
   collapsed: boolean;
 }
 
-export const FormGroupLayout = (props) => <fieldset {...props} />;
+/**
+ * TODO: take unused props into account
+ * @param param0
+ * @returns
+ */
+export const FormGroupLayout = ({
+  anchorName,
+  collapsed,
+  hasErrors,
+  group,
+  document,
+  ...props
+}) => <fieldset {...props} />;
+
 export const FormGroupHeader = (props) => <h2 {...props} />;
+
 export const FormGroup /*<FormGroupProps, FormGroupState>*/ = (
   props: FormGroupProps
 ) => {

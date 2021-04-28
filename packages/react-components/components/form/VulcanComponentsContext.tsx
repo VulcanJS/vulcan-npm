@@ -27,10 +27,10 @@ export const VulcanComponentsConsumer = VulcanComponentsContext.Consumer;
 export const useVulcanComponents = () => useContext(VulcanComponentsContext);
 
 export const withVulcanComponents = (C) => (props) => {
-  const coreComponents = useVulcanComponents();
+  const vulcanComponents = useVulcanComponents();
   deprecate(
     "0.0.0",
     "Using withVulcanComponents HOC => prefer useVulcanComponents with hooks"
   );
-  return <C coreComponents={coreComponents} {...props} />;
+  return <C vulcanComponents={vulcanComponents} {...props} />;
 };
