@@ -6,6 +6,7 @@
  * use them in Vulcan core anymore.
  */
 import { SchemaDefinition /*, EvaluatedSchemaDefinition*/ } from "simpl-schema";
+import { VulcanFieldInput } from "./form";
 
 export type FieldTypeName =
   | "String"
@@ -89,7 +90,7 @@ interface VulcanField<TField = any> {
   /*The form label. If not provided, the label will be generated based on the field name and the available language strings data. */
   label?: string;
   defaultValue?: TField;
-  input?: "textarea" | "select" | "text" | "checkboxgroup" | any; // SmartForm control (String or React component)
+  input?: VulcanFieldInput;
   control?: any; // SmartForm control (String or React component) (legacy)
   order?: any; // position in the form
   group?: FieldGroup; // form fieldset group
@@ -122,8 +123,9 @@ interface VulcanField<TField = any> {
 export interface VulcanFieldSchema<TField = any>
   extends VulcanField,
     SchemaDefinition<TField> {
-  type: SchemaDefinition<any>["type"] | VulcanFieldSchema;
+  type: VulcanFieldType;
 }
+export type VulcanFieldType = SchemaDefinition<any>["type"] | VulcanFieldSchema;
 
 // Extendable Vulcan schema
 export type VulcanSchema<TSchemaFieldExtension = any> = {

@@ -12737,6 +12737,15 @@ simpl-schema@^1.10.1, simpl-schema@^1.10.2:
     message-box "^0.2.7"
     mongo-object "^0.1.4"
 
+simpl-schema@^1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/simpl-schema/-/simpl-schema-1.12.0.tgz#299ff4446c7fce59678be7e55b5ab0db7566a343"
+  integrity sha512-lzXC3L8jJbPhNXGR3cjlyIauqqrC5WUJS4O34Ym/wLIvb8K3ZieK+1OfTzs4mBpDc3Y8u53gQFAr1X37DmTcEg==
+  dependencies:
+    clone "^2.1.2"
+    message-box "^0.2.7"
+    mongo-object "^0.1.4"
+
 sisteransi@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
