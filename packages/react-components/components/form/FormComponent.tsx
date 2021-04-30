@@ -116,7 +116,8 @@ ComponentType => {
     const InputComponent = input;
     return InputComponent;
   } else {
-    const inputName = getInputName({ fieldType: type, input });
+    const inputName = getInputName(type, input);
+    console.log("input name", inputName);
     // else pick a predefined component
     switch (inputName) {
       case "text":
@@ -215,7 +216,7 @@ type Options<TField = any> = Array<{ label: string; value: TField }>;
 export interface FormComponentProps<TField = any> extends FormField {
   document: any;
   deletedValues: Array<string>;
-  datatype: any; // TODO: type of the field, replace this by a cleaner value like we do in graphql to get the field type
+  datatype: VulcanFieldType; // TODO: type of the field, replace this by a cleaner value like we do in graphql to get the field type
   disabled: boolean;
   errors: Array<any>;
   /** Help text for the form */
@@ -285,7 +286,8 @@ export const FormComponent = (props: FormComponentProps) => {
     clearFieldErrors,
     max,
     path,
-    type,
+    //type,
+    datatype,
     input,
     // TODO: get from context instead
     updateCurrentValues,
@@ -294,6 +296,7 @@ export const FormComponent = (props: FormComponentProps) => {
     query,
     options,
   } = props;
+  const type = datatype;
   const countFromProps = getCharacterCountsFromProps(props);
   // equivalent to getDerivedStateFromProps
   const [charsCountState, setCharacterCounts] = useState<{

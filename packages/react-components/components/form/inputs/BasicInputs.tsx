@@ -9,7 +9,7 @@ export const FormComponentNumber = (props) => (
   <Input type="number" {...props} />
 );
 export const FormComponentUrl = (props) => <Input type="url" {...props} />;
-export const FormComponentEmail = (props) => <Input {...props} />;
+export const FormComponentEmail = (props) => <Input type="email" {...props} />;
 export const FormComponentTextarea = (props) => <textarea {...props} />;
 export const FormComponentCheckbox = (props) => (
   <Input type="checkbox" {...props} />
