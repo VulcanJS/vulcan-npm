@@ -5,6 +5,8 @@ import { VulcanComponentsProvider } from "../VulcanComponentsContext";
 import { createModel } from "@vulcanjs/model";
 import { IntlProvider } from "@vulcanjs/i18n";
 import { actions } from "@storybook/addon-actions";
+import SimpleSchema from "simpl-schema";
+import { any } from "lodash/fp";
 
 export default {
   component: Form,
@@ -66,30 +68,106 @@ export const EmptyForm = () => (
     })}
   />
 );
-const allFieldsSchema = [
-  { type: String },
-  { type: Date },
-  { type: Boolean },
-  { type: Number },
-  { type: String, input: "password" },
-].reduce(
-  (schema, fieldSchema) => ({
-    ...schema,
-    [`${fieldSchema.type.toString()}${fieldSchema.input ? "-input" : ""}`]: {
-      ...fieldSchema,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
-    },
-  }),
-  {}
+const defaultFieldSchema = {
+  type: String,
+  canRead: ["guests"],
+  canCreate: ["guests"],
+  canUpdate: ["guests"],
+};
+import fromPairs from "lodash/fromPairs";
+import mapValues from "lodash/mapValues";
+const withDefaultFieldSchema = (partialSchema) =>
+  mapValues(partialSchema, (fieldSchema) => ({
+    ...defaultFieldSchema,
+    label: `${fieldSchema.type}${
+      fieldSchema.input ? "-" + fieldSchema.input : ""
+    }`,
+    ...fieldSchema,
+  }));
+
+const basicTypes = [String, Date, Boolean, Number, SimpleSchema.Integer];
+const basicFieldsSchema = withDefaultFieldSchema(
+  fromPairs([
+    // native inputs
+    ...basicTypes.map((type) => [type.toString(), { type }]),
+    ...["password", "url", "email", "textarea", "statictext"].map((input) => {
+      const fieldName = `string-${input}`;
+      return [
+        fieldName,
+        {
+          type: String,
+          input,
+        },
+      ];
+    }),
+    ["date-datetime", { type: Date, input: "datetime" }],
+    ["date-date", { type: Date, input: "date" }],
+    ["date-time", { type: Date, input: "time" }],
+    /*
+  TODO:
+  likert: {},
+  */
+  ])
 );
 export const AllBasicFieldsForm = () => (
   <Form
     {...defaultProps}
     model={createModel({
       name: "Biography",
-      schema: allFieldsSchema,
+      schema: basicFieldsSchema,
+    })}
+  />
+);
+
+const selectFieldsSchema = withDefaultFieldSchema({
+  "boolean-select": {
+    type: Boolean,
+    input: "select",
+    options: [
+      { label: "true", value: true },
+      { label: "false", value: false },
+    ],
+  },
+  "string-select": {
+    type: String,
+    input: "select",
+    options: [
+      { label: "a", value: "a" },
+      { label: "b", value: "b" },
+      { label: "c", value: "c" },
+    ],
+  },
+  "number-select": {
+    type: Number,
+    input: "select",
+    options: [
+      { label: "1", value: 1 },
+      { label: "2", value: 2 },
+      { label: "3", value: 3 },
+    ],
+  },
+  "date-select": {
+    type: Date,
+    input: "select",
+    options: [{ label: "now", value: new Date() }],
+  },
+  /* 
+  // TODO:
+  checkboxgroup: {},
+  radiogroup: {},
+  select,
+  selectmultiple,
+  autocomplete,
+  multiautocomplete
+  */
+});
+
+export const SelectFieldsForm = () => (
+  <Form
+    {...defaultProps}
+    model={createModel({
+      name: "Biography",
+      schema: selectFieldsSchema,
     })}
   />
 );
