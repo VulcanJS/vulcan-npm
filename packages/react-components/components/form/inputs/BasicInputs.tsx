@@ -1,4 +1,4 @@
-import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useVulcanComponents } from "../VulcanComponentsContext";
 
 const Input = ({ props }) => <input {...props} />; // TODO: might need some sanitization
 export const FormComponentDefault = (props) => <input type="text" {...props} />;

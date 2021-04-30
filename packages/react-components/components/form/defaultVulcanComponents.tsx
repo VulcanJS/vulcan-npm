@@ -42,7 +42,7 @@ import {
   FormComponentLikert,
   FormComponentAutocomplete,
   FormComponentMultiAutocomplete,
-} from "./DefaultFormComponents";
+} from "./inputs/BasicInputs";
 
 export interface PossibleCoreComponents {
   Loading: any;
