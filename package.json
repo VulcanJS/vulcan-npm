@@ -4,7 +4,9 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "build": "lerna run build",
-    "link": "lerna exec yarn link && ./scripts/link-duplicates.sh",
+    "local-publish": "lerna exec yalc publish # then, use 'yalc link <package-name>' in your project",
+    "link-yarn-legacy": "lerna exec yarn link && ./scripts/link-duplicates.sh # deprecated, symlink creates issue with React, Webpack...",
+    "unlink-yarn-legacy": "lerna exec yarn unlink",
     "clean": "rm -Rf ./node_modules ./packages/*/dist ./packages/*/node_modules",
     "test": "jest",
     "coverage": "jest --coverage"
@@ -32,7 +34,8 @@
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2",
-    "webpack-node-externals": "^2.5.2"
+    "webpack-node-externals": "^2.5.2",
+    "yalc": "^1.0.0-pre.53"
   },
   "publishConfig": {
     "access": "public"

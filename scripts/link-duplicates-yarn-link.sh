@@ -1,4 +1,5 @@
 #! /bin/bash
+# DEPRECATED: prefer using Yalc, which avoid this issue by maintaining a local store
 
 # Avoid duplicate versions of React in root project by forcing the Vulcan NPM version
 # @see https://github.com/VulcanJS/vulcan-npm/issues/5
