@@ -12,7 +12,9 @@ npm i -g lerna
 
 ### Develop
 
-Install and link packages using `lerna bootstrap`. Now `@vulcanjs/xxx` will be available in your own application.
+Install packages using `lerna bootstrap`. 
+
+To use Vulcan NPM local install in Vulcan Next, see Vulcan Next contribution doc.
 
 ## Resources
 
