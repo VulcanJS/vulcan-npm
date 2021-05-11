@@ -5,20 +5,20 @@ import {
   PossibleVulcanComponents,
 } from "./defaultVulcanComponents";
 
-export const VulcanComponentsContext = React.createContext<PossibleVulcanComponents>(
-  defaultVulcanComponents
-);
+export const VulcanComponentsContext =
+  React.createContext<PossibleVulcanComponents>(defaultVulcanComponents);
 
 // TODO: we might need to adapt the provider to merge its value with a potentially higher up context
 // So that you can override only some components by adding an additional context while keeping the defaults
 export const VulcanComponentsProvider = ({
   value,
   ...props
-}: React.ComponentProps<typeof VulcanComponentsProvider> & {
-  value: Partial<PossibleVulcanComponents>;
+}: {
+  value?: Partial<PossibleVulcanComponents>;
+  children: React.ReactNode;
 }) => (
   <VulcanComponentsContext.Provider
-    value={{ ...defaultVulcanComponents, ...value }} // merge provided components so the user can provide only a partial replacement
+    value={{ ...defaultVulcanComponents, ...(value || {}) }} // merge provided components so the user can provide only a partial replacement
     {...props}
   />
 );

@@ -1,12 +1,74 @@
-import React, { Component } from "react";
+import { deprecate } from "@vulcanjs/utils";
+import React, { Component, useContext } from "react";
 import { getString } from "../../intl"; // previously was in meteor/vulcan:lib
+// TODO: do we still need the shape?
 import { intlShape } from "./shape";
 
-export interface IntlProviderProps {
+interface Message {}
+type Formatter<T = any> = (val: T) => string;
+
+interface IntlProps {
   locale: string;
+}
+
+const makeFormatMessage =
+  ({ locale }: IntlProps) =>
+  ({ id, defaultMessage }, values = null) => {
+    return getString({ id, defaultMessage, values, /* messages,*/ locale });
+  };
+
+const formatAny = (something: any): string => {
+  return "" + something;
+};
+
+interface IntlProviderContextValue {
+  formatDate: Formatter;
+  formatTime: Formatter;
+  formatRelative: Formatter;
+  formatNumber: Formatter;
+  formatPlural: Formatter;
+  formatMessage: Formatter<Message>;
+  formatHTMLMessage: Formatter;
+  now: any;
+  locale: string;
+}
+
+const makeDefaultValue = ({ locale }: IntlProps): IntlProviderContextValue => ({
+  formatDate: formatAny,
+  formatTime: formatAny,
+  formatRelative: formatAny,
+  formatNumber: formatAny,
+  formatPlural: formatAny,
+  formatMessage: makeFormatMessage({ locale: locale }),
+  formatHTMLMessage: formatAny,
+  now: null, // ?
+  locale: locale,
+});
+
+export const IntlProviderContext =
+  React.createContext<IntlProviderContextValue>(
+    makeDefaultValue({ locale: "" })
+  );
+
+export interface IntlProviderProps extends IntlProps {
+  children: React.ReactNode;
   // messages: any;
 }
-export class IntlProvider extends Component<IntlProviderProps> {
+export const IntlProvider = ({ locale, ...props }: IntlProviderProps) => {
+  return (
+    <IntlProviderContext.Provider
+      value={makeDefaultValue({ locale })}
+      {...props}
+    />
+  );
+};
+
+export const useIntlContext = () => useContext(IntlProviderContext);
+
+/**
+ * Use for class components that still rely on the old API
+ */
+export class LegacyIntlProvider extends Component<IntlProviderProps> {
   static childContextTypes = {
     intl: intlShape,
   };
@@ -36,6 +98,7 @@ export class IntlProvider extends Component<IntlProviderProps> {
   }
 
   render() {
+    deprecate("0.0.0", "Please React's new context API");
     return this.props.children;
   }
 }

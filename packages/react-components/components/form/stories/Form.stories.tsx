@@ -3,10 +3,9 @@ import { Story, Meta } from "@storybook/react";
 import { Form, FormProps } from "../Form";
 import { VulcanComponentsProvider } from "../VulcanComponentsContext";
 import { createModel } from "@vulcanjs/model";
-import { IntlProvider } from "@vulcanjs/i18n";
+import { IntlProvider, LegacyIntlProvider } from "@vulcanjs/i18n";
 import { actions } from "@storybook/addon-actions";
 import SimpleSchema from "simpl-schema";
-import { any } from "lodash/fp";
 
 export default {
   component: Form,
@@ -16,9 +15,11 @@ export default {
     (Story) => (
       // TODO: improve this
       <VulcanComponentsProvider>
-        <IntlProvider locale="fr">
-          <Story />
-        </IntlProvider>
+        <LegacyIntlProvider locale="fr">
+          <IntlProvider locale="fr">
+            <Story />
+          </IntlProvider>
+        </LegacyIntlProvider>
       </VulcanComponentsProvider>
     ),
   ],

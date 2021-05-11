@@ -21,6 +21,15 @@ export const standardInputs: Array<VulcanCoreInput> = [
   "text",
   "password",
 ];
+
+export const clearableInputs: Array<VulcanCoreInput> = [
+  "date",
+  //  "date2",
+  "datetime",
+  "time",
+  "select",
+  "radiogroup",
+];
 export const advancedInputs: Array<VulcanCoreInput> = [
   "likert",
   "autocomplete",

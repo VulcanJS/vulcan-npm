@@ -89,11 +89,13 @@ const getInputName = (
   Returns true if the passed input type is a custom
   NOTE: it also accept non-standard name, if you want to add a new type of Input in the context
   */
+/*
 const isCustomInput = (inputType: VulcanFieldInput) => {
   if (typeof inputType !== "string") return true;
   const isStandardInput = allVulcanInputs.includes(inputType);
   return !isStandardInput;
 };
+*/
 
 /*
 
@@ -299,10 +301,11 @@ export const FormComponent = (props: FormComponentProps) => {
   const type = datatype;
   const countFromProps = getCharacterCountsFromProps(props);
   // equivalent to getDerivedStateFromProps
-  const [charsCountState, setCharacterCounts] = useState<{
-    charsCount: number;
-    charsRemaining: number;
-  }>(countFromProps);
+  const [charsCountState, setCharacterCounts] =
+    useState<{
+      charsCount: number;
+      charsRemaining: number;
+    }>(countFromProps);
 
   // TODO: move this logic somewhere else, as it is specific to String components.
   // Eg using an intermediate FormComponentText
