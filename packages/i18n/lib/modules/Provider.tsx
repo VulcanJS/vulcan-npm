@@ -67,6 +67,12 @@ export const useIntlContext = () => useContext(IntlProviderContext);
 
 /**
  * Use for class components that still rely on the old API
+ *
+ * This is only necessary when you have a component that rely on multiple contexts
+ * and that you cannot move to a stateless component.
+ * If you can use a stateless component instead, prefer using useIntlcontext hook
+ * If you are stuck with a stateful component, use static contextType = IntlProviderContext
+ * If you have multiple context, then you'll need this legacy provider until you can move to hooks
  */
 export class LegacyIntlProvider extends Component<IntlProviderProps> {
   static childContextTypes = {
@@ -98,7 +104,10 @@ export class LegacyIntlProvider extends Component<IntlProviderProps> {
   }
 
   render() {
-    deprecate("0.0.0", "Please React's new context API");
+    deprecate(
+      "0.0.0",
+      "Please React's new context API in your class components: static contextType = IntlProviderContext;, or move to hooks"
+    );
     return this.props.children;
   }
 }

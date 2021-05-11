@@ -21,6 +21,7 @@ import {
   formatLabel,
   getIntlKeys,
   getIntlLabel,
+  IntlProviderContext,
 } from "@vulcanjs/i18n";
 import { capitalize, removeProperty } from "@vulcanjs/utils";
 import { FieldGroup } from "@vulcanjs/schema";
@@ -326,9 +327,7 @@ export class Form extends Component<FormProps, FormState> {
     showDelete: true,
   };
 
-  static contextTypes = {
-    intl: intlShape,
-  };
+  static contextType = IntlProviderContext;
 
   static childContextTypes = {
     addToDeletedValues: PropTypes.func,
@@ -499,7 +498,7 @@ export class Form extends Component<FormProps, FormState> {
     let groupsWithFields = groups.map((group) => {
       const label =
         group.label ||
-        this.context.intl.formatMessage({ id: group.name }) ||
+        this.context.formatMessage({ id: group.name }) ||
         capitalize(group.name);
       const groupFields = _.filter(fields, (field) => {
         return field.group && field.group.name === group.name;
@@ -660,7 +659,7 @@ export class Form extends Component<FormProps, FormState> {
               ...this.props,
               fieldName,
               document,
-              intl: this.context.intl,
+              intl: this.context,
             })
           : property;
     }
@@ -787,13 +786,13 @@ export class Form extends Component<FormProps, FormState> {
   getLabel = (fieldName: string, fieldLocale?: string) => {
     const collectionName = this.props.model.name.toLowerCase();
     const label = formatLabel({
-      intl: this.context.intl,
+      intl: this.context,
       fieldName: fieldName,
       collectionName: collectionName,
       schema: this.state.flatSchema,
     });
     if (fieldLocale) {
-      const intlFieldLocale = this.context.intl.formatMessage({
+      const intlFieldLocale = this.context.formatMessage({
         id: `locales.${fieldLocale}`,
         defaultMessage: fieldLocale,
       });
@@ -812,7 +811,7 @@ export class Form extends Component<FormProps, FormState> {
   getDescription = (fieldName) => {
     const collectionName = this.props.model.name.toLowerCase();
     const description = getIntlLabel({
-      intl: this.context.intl,
+      intl: this.context,
       fieldName: fieldName,
       collectionName: collectionName,
       schema: this.state.flatSchema,
@@ -830,7 +829,7 @@ export class Form extends Component<FormProps, FormState> {
     const collectionName = this.props.model.name.toLowerCase();
     const intlId =
       option.intlId || `${collectionName}.${fieldName}.${option.value}`;
-    return this.context.intl.formatMessage({
+    return this.context.formatMessage({
       id: intlId,
       defaultMessage: option.label,
     });
@@ -1091,7 +1090,7 @@ export class Form extends Component<FormProps, FormState> {
   */
   handleRouteLeave = () => {
     if (this.isChanged()) {
-      const message = this.context.intl.formatMessage({
+      const message = this.context.formatMessage({
         id: "forms.confirm_discard",
         defaultMessage: "Are you sure you want to discard your changes?",
       });
@@ -1107,7 +1106,7 @@ export class Form extends Component<FormProps, FormState> {
    */
   handlePageLeave = (event) => {
     if (this.isChanged()) {
-      const message = this.context.intl.formatMessage({
+      const message = this.context.formatMessage({
         id: "forms.confirm_discard",
         defaultMessage: "Are you sure you want to discard your changes?",
       });
@@ -1335,7 +1334,7 @@ export class Form extends Component<FormProps, FormState> {
     const documentId = this.props.document._id;
     const documentTitle = document.title || document.name || "";
 
-    const deleteDocumentConfirm = this.context.intl.formatMessage(
+    const deleteDocumentConfirm = this.context.formatMessage(
       { id: "forms.delete_confirm" },
       { title: documentTitle }
     );

@@ -15,11 +15,9 @@ export default {
     (Story) => (
       // TODO: improve this
       <VulcanComponentsProvider>
-        <LegacyIntlProvider locale="fr">
-          <IntlProvider locale="fr">
-            <Story />
-          </IntlProvider>
-        </LegacyIntlProvider>
+        <IntlProvider locale="fr">
+          <Story />
+        </IntlProvider>
       </VulcanComponentsProvider>
     ),
   ],
