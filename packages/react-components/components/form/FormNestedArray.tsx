@@ -2,8 +2,7 @@
  * Change compared to Vulcan Meteor:
  * after/before => After, Before with titlecase
  */
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect } from "react";
 import _omit from "lodash/omit";
 import _get from "lodash/get";
 import { PossibleFormComponents } from "./defaultVulcanComponents";
@@ -48,38 +47,22 @@ export interface FormNestedArrayProps<TValue = any> {
   deletedValues?: any;
   addItem: Function | null;
 }
-export class FormNestedArray extends PureComponent<FormNestedArrayProps> {
-  static propTypes = {
-    currentValues: PropTypes.object,
-    path: PropTypes.string,
-    label: PropTypes.string,
-    minCount: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
-    maxCount: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
-    errors: PropTypes.array.isRequired,
-    deletedValues: PropTypes.array.isRequired,
-    formComponents: PropTypes.object.isRequired,
-    itemProperties: PropTypes.object,
-  };
-
-  static defaultProps = {
+export const FormNestedArray = (props: FormNestedArrayProps) => {
+  /*static defaultProps = {
     itemProperties: {},
-  };
+  };*/
+  const value = props.value || [];
 
-  getCurrentValue() {
-    return this.props.value || [];
-  }
-
-  addItem = () => {
-    const { prefilledProps, path } = this.props;
-    const value = this.getCurrentValue();
-    this.props.updateCurrentValues(
+  const addItem = () => {
+    const { prefilledProps, path } = props;
+    props.updateCurrentValues(
       { [`${path}.${value.length}`]: _get(prefilledProps, `${path}.$`) || {} },
       { mode: "merge" }
     );
   };
 
-  removeItem = (index) => {
-    this.props.updateCurrentValues({ [`${this.props.path}.${index}`]: null });
+  const removeItem = (index) => {
+    props.updateCurrentValues({ [`${props.path}.${index}`]: null });
   };
 
   /*
@@ -88,14 +71,14 @@ export class FormNestedArray extends PureComponent<FormNestedArrayProps> {
   and the given index (ex: if we want to know if the second address is deleted, we
   look for the presence of 'addresses.1')
   */
-  isDeleted = (index) => {
-    return this.props.deletedValues.includes(`${this.props.path}.${index}`);
+  const isDeleted = (index) => {
+    return props.deletedValues.includes(`${props.path}.${index}`);
   };
 
-  computeVisibleIndex = (values) => {
+  const computeVisibleIndex = (values) => {
     let currentIndex = 0;
     const visibleIndexes = values.map((subDocument, subDocumentIndx) => {
-      if (this.isDeleted(subDocumentIndx)) {
+      if (isDeleted(subDocumentIndx)) {
         return 0;
       } else {
         currentIndex = currentIndex + 1;
@@ -105,82 +88,73 @@ export class FormNestedArray extends PureComponent<FormNestedArrayProps> {
     return visibleIndexes;
   };
 
-  componentDidMount() {
-    if (this.props.itemProperties.openNested) this.addItem();
-  }
+  useEffect(() => {
+    if (props.itemProperties.openNested) addItem();
+  }, []);
 
-  render() {
-    const value = this.getCurrentValue();
-    const visibleItemIndexes = this.computeVisibleIndex(value);
-    // do not pass FormNested's own value, input and inputProperties props down
-    const properties = {
-      ..._omit(
-        this.props,
-        "value",
-        "input",
-        "inputProperties",
-        "nestedInput",
-        "beforeComponent",
-        "afterComponent"
-      ),
-    };
-    const {
-      errors,
-      path,
-      FormComponents,
-      minCount,
-      maxCount,
-      arrayField,
-    } = this.props;
+  const visibleItemIndexes = computeVisibleIndex(value);
+  // do not pass FormNested's own value, input and inputProperties props down
+  const properties = {
+    ..._omit(
+      props,
+      "value",
+      "input",
+      "inputProperties",
+      "nestedInput",
+      "beforeComponent",
+      "afterComponent"
+    ),
+  };
+  const { errors, path, FormComponents, minCount, maxCount, arrayField } =
+    props;
 
-    //filter out null values to calculate array length
-    let arrayLength = value.filter((singleValue) => {
-      return typeof singleValue !== "undefined" && singleValue !== null;
-    }).length;
-    properties.addItem =
-      !maxCount || arrayLength < maxCount ? this.addItem : null;
+  //filter out null values to calculate array length
+  let arrayLength = value.filter((singleValue) => {
+    return typeof singleValue !== "undefined" && singleValue !== null;
+  }).length;
+  properties.addItem =
+    !maxCount || arrayLength < maxCount ? this.addItem : null;
 
-    // only keep errors specific to the nested array (and not its subfields)
-    properties.nestedArrayErrors = errors.filter(
-      (error) => error.path && error.path === path
-    );
-    properties.hasErrors = !!(
-      properties.nestedArrayErrors && properties.nestedArrayErrors.length
-    );
+  // only keep errors specific to the nested array (and not its subfields)
+  properties.nestedArrayErrors = errors.filter(
+    (error) => error.path && error.path === path
+  );
+  properties.hasErrors = !!(
+    properties.nestedArrayErrors && properties.nestedArrayErrors.length
+  );
 
-    return (
-      <FormComponents.FormNestedArrayLayout {...properties}>
-        {value.map((subDocument, i) => {
-          if (this.isDeleted(i)) return null;
-          const path = `${this.props.path}.${i}`;
-          const visibleItemIndex = visibleItemIndexes[i];
-          return (
-            <FormComponents.FormNestedArrayInnerLayout
-              {...arrayField}
-              key={path}
-              FormComponents={FormComponents}
-              addItem={this.addItem}
+  return (
+    <FormComponents.FormNestedArrayLayout {...properties}>
+      {value.map((subDocument, i) => {
+        if (isDeleted(i)) return null;
+        const path = `${props.path}.${i}`;
+        const visibleItemIndex = visibleItemIndexes[i];
+        return (
+          <FormComponents.FormNestedArrayInnerLayout
+            {...arrayField}
+            key={path}
+            FormComponents={FormComponents}
+            addItem={addItem}
+            itemIndex={i}
+            visibleItemIndex={visibleItemIndex}
+            path={path}
+          >
+            <FormComponents.FormNestedItem
+              {...properties}
               itemIndex={i}
               visibleItemIndex={visibleItemIndex}
               path={path}
-            >
-              <FormComponents.FormNestedItem
-                {...properties}
-                itemIndex={i}
-                visibleItemIndex={visibleItemIndex}
-                path={path}
-                removeItem={() => {
-                  this.removeItem(i);
-                }}
-                hideRemove={!!minCount && arrayLength <= minCount}
-              />
-            </FormComponents.FormNestedArrayInnerLayout>
-          );
-        })}
-      </FormComponents.FormNestedArrayLayout>
-    );
-  }
-}
+              removeItem={() => {
+                removeItem(i);
+              }}
+              hideRemove={!!minCount && arrayLength <= minCount}
+            />
+          </FormComponents.FormNestedArrayInnerLayout>
+        );
+      })}
+    </FormComponents.FormNestedArrayLayout>
+  );
+};
 
 export const formComponentsDependencies = [
   "FormNestedArrayInnerLayout",
