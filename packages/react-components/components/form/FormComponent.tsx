@@ -365,7 +365,7 @@ export const FormComponent = (props: FormComponentProps) => {
 
   */
   const getErrors = (errors?: Array<any>) => {
-    errors = errors || props.errors;
+    errors = errors || props.errors || [];
     const fieldErrors = errors.filter(
       (error) => error.path && error.path.includes(path)
     );
