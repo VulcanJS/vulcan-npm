@@ -5,7 +5,7 @@ import { getString } from "../../intl"; // previously was in meteor/vulcan:lib
 import { intlShape } from "./shape";
 
 interface Message {}
-type Formatter<T = any> = (val: T) => string;
+type Formatter<T = any> = (val: T, ...args: any) => string;
 
 interface IntlProps {
   locale: string;

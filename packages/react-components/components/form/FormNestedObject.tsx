@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import _omit from "lodash/omit";
 import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useFormContext } from "./FormContext";
 
 // Replaceable layout
 export const FormNestedObjectLayout = ({ hasErrors, label, content }) => (
@@ -38,7 +39,7 @@ export const FormNestedObject = (props: FormNestedObjectProps) => {
     "inputProperties",
     "nestedInput"
   );
-  const { errors } = props;
+  const { errors } = useFormContext();
   // only keep errors specific to the nested array (and not its subfields)
   const nestedObjectErrors = errors.filter(
     (error) => error.path && error.path === props.path

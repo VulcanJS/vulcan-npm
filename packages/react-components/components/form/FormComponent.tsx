@@ -5,7 +5,7 @@
  * - FormComponents context is limited to default component. Other components must be passed through the schema instead
  * (it means you can't extend the SmartForm with new inputType, instead use a fully custom input)
  */
-import React, { Component, ComponentType, useEffect, useState } from "react";
+import React, { ComponentType, useEffect, useState } from "react";
 import get from "lodash/get";
 import SimpleSchema from "simpl-schema";
 import { isEmptyValue, getNullValue } from "./modules/utils";
@@ -13,10 +13,7 @@ import {
   PossibleFormComponents,
   PossibleVulcanComponents,
 } from "./defaultVulcanComponents";
-import {
-  useVulcanComponents,
-  withVulcanComponents,
-} from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 import { FormField } from "./typings";
 import {
   VulcanFieldSchema,
@@ -24,7 +21,8 @@ import {
   VulcanCoreInput,
   VulcanFieldType,
 } from "@vulcanjs/schema";
-import { getAutoInputFromType, allVulcanInputs } from "./inputs/consts";
+import { getAutoInputFromType } from "./inputs/consts";
+import { useFormContext } from "./FormContext";
 
 const getCharacterCounts = (value: any, max: number) => {
   const characterCount: number = value && value.length ? value.length : 0;
@@ -188,36 +186,10 @@ ComponentType => {
   }
 };
 
-/*
-  static propTypes = {
-    document: PropTypes.object.isRequired,
-    name: PropTypes.string.isRequired,
-    label: PropTypes.string,
-    value: PropTypes.any,
-    placeholder: PropTypes.string,
-    prefilledValue: PropTypes.any,
-    options: PropTypes.any,
-    input: PropTypes.any,
-    datatype: PropTypes.any,
-    path: PropTypes.string.isRequired,
-    disabled: PropTypes.bool,
-    nestedSchema: PropTypes.object,
-    currentValues: PropTypes.object.isRequired,
-    deletedValues: PropTypes.array.isRequired,
-    throwError: PropTypes.func.isRequired,
-    updateCurrentValues: PropTypes.func.isRequired,
-    errors: PropTypes.array.isRequired,
-    addToDeletedValues: PropTypes.func,
-    clearFieldErrors: PropTypes.func.isRequired,
-    currentUser: PropTypes.object,
-    prefilledProps: PropTypes.object,
-  };*/
-
 type Options<TField = any> = Array<{ label: string; value: TField }>;
-//TODO: it extends the Field type actually, provided by FormGroup and other
+
 export interface FormComponentProps<TField = any> extends FormField {
   document: any;
-  deletedValues: Array<string>;
   datatype: VulcanFieldType; // TODO: type of the field, replace this by a cleaner value like we do in graphql to get the field type
   disabled: boolean;
   errors: Array<any>;
@@ -238,7 +210,6 @@ export interface FormComponentProps<TField = any> extends FormField {
   options?: Options | ((fciProps?: any) => Options);
   vulcanComponents: PossibleVulcanComponents;
 
-  updateCurrentValues: Function; // TODO: move this to context to avoid props drilling
   clearFieldErrors: Function;
 }
 /**
@@ -291,13 +262,13 @@ export const FormComponent = (props: FormComponentProps) => {
     //type,
     datatype,
     input,
-    // TODO: get from context instead
-    updateCurrentValues,
     intlInput,
     nestedInput,
     query,
     options,
   } = props;
+  const { updateCurrentValues, deletedValues } = useFormContext();
+
   const type = datatype;
   const countFromProps = getCharacterCountsFromProps(props);
   // equivalent to getDerivedStateFromProps
@@ -333,7 +304,7 @@ export const FormComponent = (props: FormComponentProps) => {
       typeof max !== "undefined" &&
       ["url", "email", "textarea", "text"].includes(inputName);
   }
-  const inputType = inputName; // TODO: rename inputType in the corresponding child components
+  // const inputType = inputName; // TODO: rename inputType in the corresponding child components
 
   /*
   Function passed to form controls (always controlled) to update their value
@@ -369,7 +340,7 @@ export const FormComponent = (props: FormComponentProps) => {
   */
   const getValue = () => {
     //const c = context || this.context;
-    const { locale, defaultValue, deletedValues, formType, datatype } = props;
+    const { locale, defaultValue, formType, datatype } = props;
     const path = locale ? `${getPath(props)}.value` : getPath(props);
     const currentDocument = props.document;
     let value = get(currentDocument, path);
@@ -447,7 +418,6 @@ export const FormComponent = (props: FormComponentProps) => {
     inputType: getInputName(type, input),
     value: getValue(),
     errors: getErrors(),
-    // document: this.context.getDocument(),
     showCharsRemaining: !!showCharsRemaining,
     handleChange: handleChange,
     clearField: clearField,
@@ -472,12 +442,6 @@ export const FormComponent = (props: FormComponentProps) => {
   );
 };
 
-/*
-FormComponent.contextType = {
-  // @ts-expect-error
-  getDocument: PropTypes.func.isRequired,
-};*/
-
 export const formComponentsDependencies = [
   "FormComponentDefault",
   "FormComponentPassword",
@@ -499,5 +463,5 @@ export const formComponentsDependencies = [
   "FormComponentAutocomplete",
   "FormComponentMultiAutocomplete",
 ];
-//module.exports = FormComponent;
-export default withVulcanComponents(FormComponent);
+
+export default FormComponent;

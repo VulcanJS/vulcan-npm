@@ -4,9 +4,11 @@ import React from "react";
 // import { Components, registerComponent } from 'meteor/vulcan:core';
 import get from "lodash/get";
 import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useFormContext } from "./FormContext";
 
-export const FormError = ({ error, errorContext, getLabel }) => {
+export const FormError = ({ error, errorContext }) => {
   const VulcanComponents = useVulcanComponents();
+  const { getLabel } = useFormContext();
   // use the error or error message as default message
   const defaultMessage = JSON.stringify(error.message || error);
   const id = error.id || "app.defaultError";
@@ -54,14 +56,4 @@ export const FormError = ({ error, errorContext, getLabel }) => {
 
 FormError.defaultProps = {
   errorContext: "", // default context so format message does not complain
-  getLabel: (name) => name,
 };
-
-// TODO: pass getLabel as prop instead for consistency?
-// registerComponent(
-//   "FormError",
-//   FormError,
-//   getContext({
-//     getLabel: PropTypes.func,
-//   })
-// );

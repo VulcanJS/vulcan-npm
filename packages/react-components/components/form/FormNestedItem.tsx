@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { intlShape } from "@vulcanjs/i18n";
 import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useIntlContext } from "@vulcanjs/i18n";
 
 export const FormNestedItemLayout = ({ content, removeButton }) => (
   <div className="form-nested-item">
@@ -22,21 +23,19 @@ FormNestedItemLayout.propTypes = {
   removeButton: PropTypes.node,
 };
 
-export const FormNestedItem = (
-  {
-    nestedFields,
-    name,
-    path,
-    removeItem,
-    itemIndex,
-    formComponents,
-    hideRemove,
-    label,
-    ...props
-  },
-  { errors, intl }
-) => {
+export const FormNestedItem = ({
+  nestedFields,
+  name,
+  path,
+  removeItem,
+  itemIndex,
+  formComponents,
+  hideRemove,
+  label,
+  ...props
+}) => {
   const VulcanComponents = useVulcanComponents();
+  const intl = useIntlContext();
   const isArray = typeof itemIndex !== "undefined";
   return (
     <VulcanComponents.FormNestedItemLayout

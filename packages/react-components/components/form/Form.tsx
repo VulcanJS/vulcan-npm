@@ -16,7 +16,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { runCallbacks, getErrors } from "@vulcanjs/core";
 import {
-  intlShape,
   isIntlField,
   formatLabel,
   getIntlKeys,
@@ -25,28 +24,28 @@ import {
 } from "@vulcanjs/i18n";
 import { capitalize, removeProperty } from "@vulcanjs/utils";
 import { FieldGroup } from "@vulcanjs/schema";
+import _filter from "lodash/filter";
 import cloneDeep from "lodash/cloneDeep";
-import sortBy from "lodash/sortBy";
-import map from "lodash/map";
-import get from "lodash/get";
-import set from "lodash/set";
-import unset from "lodash/unset";
 import compact from "lodash/compact";
-import update from "lodash/update";
-import merge from "lodash/merge";
 import find from "lodash/find";
-import pick from "lodash/pick";
+import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import isEqualWith from "lodash/isEqualWith";
+import isObject from "lodash/isObject";
+import map from "lodash/map";
+import mapValues from "lodash/mapValues";
+import merge from "lodash/merge";
+import omit from "lodash/omit";
+import omitBy from "lodash/omitBy";
+import pick from "lodash/pick";
+import pickBy from "lodash/pickBy";
+import set from "lodash/set";
+import sortBy from "lodash/sortBy";
 import uniq from "lodash/uniq";
 import uniqBy from "lodash/uniqBy";
-import isObject from "lodash/isObject";
-import mapValues from "lodash/mapValues";
-import pickBy from "lodash/pickBy";
-import omit from "lodash/omit";
+import unset from "lodash/unset";
+import update from "lodash/update";
 import without from "lodash/without";
-import _filter from "lodash/filter";
-import omitBy from "lodash/omitBy";
 
 import { FormField } from "./typings";
 
@@ -68,6 +67,7 @@ import {
   defaultVulcanComponents,
   PossibleFormComponents,
 } from "./defaultVulcanComponents";
+import { FormContext } from "./FormContext";
 
 // props that should trigger a form reset
 const RESET_PROPS = [
@@ -258,12 +258,6 @@ interface GroupWithFields extends FieldGroup {
   fields: Array<FormField>;
 }
 
-interface FormComponent {
-  // TODO: list the components here
-  FormLayout: React.ComponentType;
-  FormGroup: React.ComponentType;
-}
-
 export class Form extends Component<FormProps, FormState> {
   constructor(props) {
     super(props);
@@ -328,27 +322,6 @@ export class Form extends Component<FormProps, FormState> {
   };
 
   static contextType = IntlProviderContext;
-
-  static childContextTypes = {
-    addToDeletedValues: PropTypes.func,
-    deletedValues: PropTypes.array,
-    addToSubmitForm: PropTypes.func,
-    addToFailureForm: PropTypes.func,
-    addToSuccessForm: PropTypes.func,
-    clearFormCallbacks: PropTypes.func,
-    updateCurrentValues: PropTypes.func,
-    setFormState: PropTypes.func,
-    throwError: PropTypes.func,
-    clearForm: PropTypes.func,
-    refetchForm: PropTypes.func,
-    isChanged: PropTypes.func,
-    initialDocument: PropTypes.object,
-    getDocument: PropTypes.func,
-    getLabel: PropTypes.func,
-    submitForm: PropTypes.func,
-    errors: PropTypes.array,
-    currentValues: PropTypes.object,
-  };
 
   defaultValues = {};
 
@@ -922,32 +895,6 @@ export class Form extends Component<FormProps, FormState> {
     );
   };
 
-  // pass on context to all child components
-  getChildContext = () => {
-    return {
-      throwError: this.throwError,
-      clearForm: this.clearForm,
-      refetchForm: this.refetchForm,
-      isChanged: this.isChanged,
-      submitForm: this.submitFormContext, //Change in name because we already have a function
-      // called submitForm, but no reason for the user to know
-      // about that
-      addToDeletedValues: this.addToDeletedValues,
-      updateCurrentValues: this.updateCurrentValues,
-      getDocument: this.getDocument,
-      getLabel: this.getLabel,
-      initialDocument: this.state.initialDocument,
-      setFormState: this.setFormState,
-      addToSubmitForm: this.addToSubmitForm,
-      addToSuccessForm: this.addToSuccessForm,
-      addToFailureForm: this.addToFailureForm,
-      clearFormCallbacks: this.clearFormCallbacks,
-      errors: this.state.errors,
-      currentValues: this.state.currentValues,
-      deletedValues: this.state.deletedValues,
-    };
-  };
-
   // --------------------------------------------------------------------- //
   // ------------------------------ Lifecycle ---------------------------- //
   // --------------------------------------------------------------------- //
@@ -1468,22 +1415,41 @@ export class Form extends Component<FormProps, FormState> {
     return this.state.success && successComponent ? (
       successComponent
     ) : (
-      <FormComponents.FormLayout {...this.getFormLayoutProps()}>
-        {this.getFieldGroups().map((group, i) => (
-          <FormComponents.FormGroup
-            key={i}
-            {...this.getFormGroupProps(group)}
-          />
-        ))}
-      </FormComponents.FormLayout>
+      <FormContext.Provider
+        value={{
+          throwError: this.throwError,
+          clearForm: this.clearForm,
+          refetchForm: this.refetchForm,
+          isChanged: this.isChanged,
+          submitForm: this.submitFormContext, //Change in name because we already have a function
+          // called submitForm, but no reason for the user to know
+          // about that
+          addToDeletedValues: this.addToDeletedValues,
+          updateCurrentValues: this.updateCurrentValues,
+          getDocument: this.getDocument,
+          getLabel: this.getLabel,
+          initialDocument: this.state.initialDocument,
+          setFormState: this.setFormState,
+          addToSubmitForm: this.addToSubmitForm,
+          addToSuccessForm: this.addToSuccessForm,
+          addToFailureForm: this.addToFailureForm,
+          clearFormCallbacks: this.clearFormCallbacks,
+          errors: this.state.errors,
+          currentValues: this.state.currentValues,
+          deletedValues: this.state.deletedValues,
+        }}
+      >
+        <FormComponents.FormLayout {...this.getFormLayoutProps()}>
+          {this.getFieldGroups().map((group, i) => (
+            <FormComponents.FormGroup
+              key={i}
+              {...this.getFormGroupProps(group)}
+            />
+          ))}
+        </FormComponents.FormLayout>
+      </FormContext.Provider>
     );
   }
 }
 
 export default Form;
-
-//registerComponent({
-//  name: "Form",
-//  component: SmartForm,
-//  hocs: [withCollectionProps],
-//});

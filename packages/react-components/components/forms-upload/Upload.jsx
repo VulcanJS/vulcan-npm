@@ -11,14 +11,23 @@ When clearing an image, it is addeds to `deletedValues` and set to `null` in the
 but the array item itself is not deleted. The entire array is then cleaned when submitting the form.
 
 */
-import { Components, getSetting, registerSetting, registerComponent } from 'meteor/vulcan:lib';
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone';
-import 'cross-fetch/polyfill'; // patch for browser which don't have fetch implemented
-import set from 'lodash/set';
+import {
+  Components,
+  getSetting,
+  registerSetting,
+  registerComponent,
+} from "meteor/vulcan:lib";
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import Dropzone from "react-dropzone";
+import "cross-fetch/polyfill"; // patch for browser which don't have fetch implemented
+import set from "lodash/set";
 
-registerSetting('cloudinary.cloudName', null, 'Cloudinary cloud name (for image uploads)');
+registerSetting(
+  "cloudinary.cloudName",
+  null,
+  "Cloudinary cloud name (for image uploads)"
+);
 
 /*
 
@@ -27,19 +36,19 @@ Dropzone styles
 */
 const baseStyle = {
   borderWidth: 1,
-  borderStyle: 'dashed',
-  marginBottom: '10',
-  padding: '10',
+  borderStyle: "dashed",
+  marginBottom: "10",
+  padding: "10",
 };
 const activeStyle = {
-  borderStyle: 'solid',
-  borderColor: '#6c6',
-  backgroundColor: '#eee',
+  borderStyle: "solid",
+  borderColor: "#6c6",
+  backgroundColor: "#eee",
 };
 const rejectStyle = {
-  borderStyle: 'solid',
-  borderColor: '#c66',
-  backgroundColor: '#eee',
+  borderStyle: "solid",
+  borderColor: "#c66",
+  backgroundColor: "#eee",
 };
 
 /*
@@ -47,11 +56,13 @@ const rejectStyle = {
 Get a URL from an image or an array of images
 
 */
-const getImageUrl = imageOrImageArray => {
+const getImageUrl = (imageOrImageArray) => {
   // if image is actually an array of formats, use first format
-  const image = Array.isArray(imageOrImageArray) ? imageOrImageArray[0] : imageOrImageArray;
+  const image = Array.isArray(imageOrImageArray)
+    ? imageOrImageArray[0]
+    : imageOrImageArray;
   // if image is an object, return secure_url; else return image itself
-  const imageUrl = typeof image === 'string' ? image : image.secure_url;
+  const imageUrl = typeof image === "string" ? image : image.secure_url;
   return imageUrl;
 };
 
@@ -73,7 +84,11 @@ class Image extends PureComponent {
 
   render() {
     return (
-      <div className={`upload-image ${this.props.loading ? 'upload-image-loading' : ''} ${this.props.error ? 'upload-image-error' : ''}`}>
+      <div
+        className={`upload-image ${
+          this.props.loading ? "upload-image-loading" : ""
+        } ${this.props.error ? "upload-image-error" : ""}`}
+      >
         <div className="upload-image-contents">
           <img style={{ width: 150 }} src={getImageUrl(this.props.image)} />
           {this.props.loading && (
@@ -144,7 +159,10 @@ class Upload extends PureComponent {
 
   */
   isDisabled = () => {
-    return this.state.uploading || this.props.maxCount <= this.getImages({ includeDeleted: false }).length;
+    return (
+      this.state.uploading ||
+      this.props.maxCount <= this.getImages({ includeDeleted: false }).length
+    );
   };
 
   /*
@@ -152,7 +170,7 @@ class Upload extends PureComponent {
   When an image is uploaded
 
   */
-  onDrop = files => {
+  onDrop = (files) => {
     const promises = [];
     const imagesCount = this.getImages().length;
 
@@ -164,13 +182,18 @@ class Upload extends PureComponent {
     });
 
     // request url to cloudinary
-    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${getSetting('cloudinary.cloudName')}/upload`;
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${getSetting(
+      "cloudinary.cloudName"
+    )}/upload`;
 
     // trigger a request for each file
     files.forEach((file, index) => {
       // figure out update path for current image
       const updateIndex = imagesCount + index;
-      const updatePath = this.getFieldType() === String ? this.props.path : `${this.props.path}.${updateIndex}`;
+      const updatePath =
+        this.getFieldType() === String
+          ? this.props.path
+          : `${this.props.path}.${updateIndex}`;
 
       // build preview object
       const previewObject = {
@@ -184,22 +207,22 @@ class Upload extends PureComponent {
 
       // request body
       const body = new FormData();
-      body.append('file', file);
-      body.append('upload_preset', this.props.options.preset);
+      body.append("file", file);
+      body.append("upload_preset", this.props.options.preset);
 
       // post request to cloudinary
       promises.push(
         fetch(cloudinaryUrl, {
-          method: 'POST',
+          method: "POST",
           body,
         })
-          .then(res => res.json()) // json-ify the readable strem
-          .then(body => {
+          .then((res) => res.json()) // json-ify the readable strem
+          .then((body) => {
             if (body.error) {
               // eslint-disable-next-line no-console
               console.log(body.error);
               this.props.throwError({
-                id: 'upload.error',
+                id: "upload.error",
                 path: this.props.path,
                 message: body.error.message,
               });
@@ -217,11 +240,11 @@ class Upload extends PureComponent {
               return imageObject;
             }
           })
-          .catch(error => {
+          .catch((error) => {
             // eslint-disable-next-line no-console
             console.log(error);
             this.props.throwError({
-              id: 'upload.error',
+              id: "upload.error",
               path: this.props.path,
               message: error.message,
             });
@@ -229,7 +252,7 @@ class Upload extends PureComponent {
       );
     });
 
-    Promise.all(promises).then(values => {
+    Promise.all(promises).then((values) => {
       // console.log(values);
       // set the uploading status to false
       this.setState({
@@ -238,7 +261,7 @@ class Upload extends PureComponent {
     });
   };
 
-  isDeleted = index => {
+  isDeleted = (index) => {
     return this.props.deletedValues.includes(`${this.props.path}.${index}`);
   };
 
@@ -247,7 +270,7 @@ class Upload extends PureComponent {
   Remove the image at `index`
 
   */
-  clearImage = index => {
+  clearImage = (index) => {
     this.props.updateCurrentValues({ [`${this.props.path}.${index}`]: null });
   };
 
@@ -270,9 +293,13 @@ class Upload extends PureComponent {
       images = [images];
     }
     // remove previews if needed
-    images = includePreviews ? images : images.filter(image => !image.preview);
+    images = includePreviews
+      ? images
+      : images.filter((image) => !image.preview);
     // remove deleted images
-    images = includeDeleted ? images : images.filter((image, index) => !this.isDeleted(index));
+    images = includeDeleted
+      ? images
+      : images.filter((image, index) => !this.isDeleted(index));
     return images;
   };
 
@@ -281,7 +308,11 @@ class Upload extends PureComponent {
     const images = this.getImages({ includeDeleted: true });
 
     return (
-      <div className={`form-group row ${this.isDisabled() ? 'upload-disabled' : ''}`}>
+      <div
+        className={`form-group row ${
+          this.isDisabled() ? "upload-disabled" : ""
+        }`}
+      >
         <label className="control-label col-sm-3">{this.props.label}</label>
         <div className="col-sm-9">
           <div className="upload-field">
@@ -292,8 +323,14 @@ class Upload extends PureComponent {
               className="dropzone-base"
               activeClassName="dropzone-active"
               rejectClassName="dropzone-reject"
-              disabled={this.isDisabled()}>
-              {({ getRootProps, getInputProps, isDragActive, isDragReject }) => {
+              disabled={this.isDisabled()}
+            >
+              {({
+                getRootProps,
+                getInputProps,
+                isDragActive,
+                isDragReject,
+              }) => {
                 let styles = { ...baseStyle };
                 styles = isDragActive ? { ...styles, ...activeStyle } : styles;
                 styles = isDragReject ? { ...styles, ...rejectStyle } : styles;
@@ -352,6 +389,6 @@ Upload.contextTypes = {
   addToSubmitForm: PropTypes.func,
 };
 
-registerComponent('Upload', Upload);
+registerComponent("Upload", Upload);
 
 export default Upload;

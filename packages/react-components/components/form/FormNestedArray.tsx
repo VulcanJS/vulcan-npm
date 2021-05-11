@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import _omit from "lodash/omit";
 import _get from "lodash/get";
 import { PossibleFormComponents } from "./defaultVulcanComponents";
+import { useFormContext } from "./FormContext";
 
 // Wraps the FormNestedItem, repeated for each object
 // Allow for example to have a label per object
@@ -42,12 +43,11 @@ export interface FormNestedArrayProps<TValue = any> {
   // TODO: get from context
   FormComponents: PossibleFormComponents;
   // TODO: get from context to avoid props drilling
-  updateCurrentValues: Function;
   prefilledProps?: any;
-  deletedValues?: any;
   addItem: Function | null;
 }
 export const FormNestedArray = (props: FormNestedArrayProps) => {
+  const { updateCurrentValues, deletedValues } = useFormContext();
   /*static defaultProps = {
     itemProperties: {},
   };*/
@@ -55,14 +55,14 @@ export const FormNestedArray = (props: FormNestedArrayProps) => {
 
   const addItem = () => {
     const { prefilledProps, path } = props;
-    props.updateCurrentValues(
+    updateCurrentValues(
       { [`${path}.${value.length}`]: _get(prefilledProps, `${path}.$`) || {} },
       { mode: "merge" }
     );
   };
 
   const removeItem = (index) => {
-    props.updateCurrentValues({ [`${props.path}.${index}`]: null });
+    updateCurrentValues({ [`${props.path}.${index}`]: null });
   };
 
   /*
@@ -72,7 +72,7 @@ export const FormNestedArray = (props: FormNestedArrayProps) => {
   look for the presence of 'addresses.1')
   */
   const isDeleted = (index) => {
-    return props.deletedValues.includes(`${props.path}.${index}`);
+    return deletedValues.includes(`${props.path}.${index}`);
   };
 
   const computeVisibleIndex = (values) => {
@@ -112,8 +112,7 @@ export const FormNestedArray = (props: FormNestedArrayProps) => {
   let arrayLength = value.filter((singleValue) => {
     return typeof singleValue !== "undefined" && singleValue !== null;
   }).length;
-  properties.addItem =
-    !maxCount || arrayLength < maxCount ? this.addItem : null;
+  properties.addItem = !maxCount || arrayLength < maxCount ? addItem : null;
 
   // only keep errors specific to the nested array (and not its subfields)
   properties.nestedArrayErrors = errors.filter(

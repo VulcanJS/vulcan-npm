@@ -5,7 +5,18 @@ import { useVulcanComponents } from "./VulcanComponentsContext";
 // Track dependencies, not used yet
 export const formComponentsDependencies = ["FormError"];
 
-export const FieldErrors = ({ errors }) => {
+/**
+ * Errors for one specif fields
+ * @returns
+ */
+export const FieldErrors = ({
+  errors,
+}: {
+  /**
+   * Errors for this specific field only
+   */
+  errors: Array<any>;
+}) => {
   const VulcanComponents = useVulcanComponents();
   return (
     <ul className="form-input-errors">
@@ -16,7 +27,4 @@ export const FieldErrors = ({ errors }) => {
       ))}
     </ul>
   );
-};
-FieldErrors.propTypes = {
-  errors: PropTypes.array.isRequired,
 };

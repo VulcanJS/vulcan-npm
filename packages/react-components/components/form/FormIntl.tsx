@@ -1,6 +1,7 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import omit from "lodash/omit";
-import { PossibleFormComponents } from "./defaultVulcanComponents";
+import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useFormContext } from "./FormContext";
 
 const Locales: Array<{ id: string }> = []; // ?? might need to get this from context
 export const FormIntlLayout = ({ children }) => (
@@ -13,12 +14,11 @@ export const FormIntlItemLayout = ({ locale, children }) => (
 interface FormIntlProps {
   path: string;
   name: string;
-  FormComponents: PossibleFormComponents;
-  // TODO: this should be provided by "Form" context
-  getLabel: (name: string, localeId: string) => string;
 }
 
 export const FormIntl = (props: FormIntlProps) => {
+  const FormComponents = useVulcanComponents();
+  const { getLabel } = useFormContext();
   /*
   Note: ideally we'd try to make sure to return the right path no matter
   the order translations are stored in, but in practice we can't guarantee it
@@ -29,7 +29,7 @@ export const FormIntl = (props: FormIntlProps) => {
     return `${props.path}_intl.${defaultIndex}`;
   };
 
-  const { name, FormComponents } = props;
+  const { name } = props;
 
   // do not pass FormIntl's own value, inputProperties, and intlInput props down
   const properties = omit(
@@ -45,7 +45,7 @@ export const FormIntl = (props: FormIntlProps) => {
         <FormComponents.FormIntlItemLayout key={locale.id} locale={locale}>
           <FormComponents.FormComponent
             {...properties}
-            label={props.getLabel(name, locale.id)}
+            label={getLabel(name, locale.id)}
             path={getLocalePath(i)}
             locale={locale.id}
           />

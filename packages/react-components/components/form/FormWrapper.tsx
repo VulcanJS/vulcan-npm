@@ -6,7 +6,7 @@ Changes compared to Vulcan Meteor:
 - no queryFragmentName (resp. mutation), need to pass the fragment explicitely
 
 Technically, this is a GraphqlSmartForm, while Form.tsx is the more
-generic SmartForm.
+generic SmartForm, or a "ModelForm".
 
 
 ---
@@ -37,19 +37,11 @@ component is also added to wait for withSingle's loading prop to be false)
 
 import React from "react";
 import PropTypes from "prop-types";
-import { intlShape } from "@vulcanjs/i18n";
-// import { withRouter } from "react-router";
-// import { withApollo } from "@apollo/client/react/hoc";
-// import compose from "recompose/compose";
-import // withCurrentUser,
+// import // withCurrentUser,
 // Utils,
-// withCreate2,
-// withUpdate2,
-// withDelete2,
 // getFragment,
-"meteor/vulcan:core";
+//"meteor/vulcan:core";
 import gql from "graphql-tag";
-// import { withSingle } from "meteor/vulcan:core";
 
 import { callbackProps } from "./propTypes";
 
@@ -63,6 +55,7 @@ import {
   useCreate,
   useUpdate,
   useDelete,
+  UseSingleOptions,
 } from "@vulcanjs/react-hooks";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 import {
@@ -161,9 +154,6 @@ export const FormWrapper = (props: FormWrapperProps) => {
   //};
   //}
 
-  // TODO: move out of the component
-  // getComponent() {
-  let WrappedComponent;
   const prefix = `${model.name}${capitalize(formType)}`;
   // props to pass on to child component (i.e. <Form />)
   const childProps = {
@@ -178,7 +168,7 @@ export const FormWrapper = (props: FormWrapperProps) => {
     fragment: mutationFragment,
   };
 
-  const queryOptions = {
+  const queryOptions: UseSingleOptions<any> = {
     model,
     // TODO: what this option does?
     // queryName: `${prefix}FormQuery`,
@@ -193,9 +183,10 @@ export const FormWrapper = (props: FormWrapperProps) => {
       // we always want to load a fresh copy of the document
       fetchPolicy: "network-only" as "network-only", // cast is for fixing annoying TS issue... https://github.com/vuejs/vue-apollo/issues/936
       pollInterval: 0, // no polling, only load data once
+      skip: formType === "edit",
     },
   };
-  const { data, loading } = useSingle(queryOptions); // TODO: skip if edit mode
+  const { data, loading } = useSingle(queryOptions);
   const document = data; // TODO: get the item from data
   // TODO: pass the creation functions down to the Form
   const [createDocument] = useCreate(mutationOptions);
@@ -264,11 +255,6 @@ FormWrapper.propTypes = {
 
 FormWrapper.defaultProps = {
   layout: "horizontal",
-};
-
-FormWrapper.contextTypes = {
-  closeCallback: PropTypes.func,
-  intl: intlShape,
 };
 
 /*

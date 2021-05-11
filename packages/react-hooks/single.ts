@@ -99,7 +99,7 @@ interface SingleResult<TModel = any, TData = any> extends QueryResult<TData> {
   fragment: string;
   document: TModel; // shortcut to get the document
 }
-interface UseSingleOptions<TModel, TData = any, TVariables = any> {
+export interface UseSingleOptions<TModel, TData = any, TVariables = any> {
   model: VulcanGraphqlModel;
   input?: SingleInput<TModel>;
   fragment?: Fragment;

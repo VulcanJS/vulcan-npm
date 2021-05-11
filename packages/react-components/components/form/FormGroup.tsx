@@ -1,43 +1,28 @@
 import React, { PureComponent, useState } from "react";
-import PropTypes from "prop-types";
 import _some from "lodash/some";
 import { User, isAdmin } from "@vulcanjs/permissions";
 import { FieldGroup } from "@vulcanjs/schema";
 import { FormField } from "./typings";
-import {
-  useVulcanComponents,
-  VulcanComponentsContext,
-} from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useFormContext } from "./FormContext";
 
 export interface FormGroupProps {
   name: string;
   label: string;
-  // TODO: check if already defined or create a typings.ts to share this component
-  // NOTE: make distinction between the group definition, and the extended version of Form
   group: FieldGroup /*{
     adminsOnly?: boolean;
     beforeComponent?: any;
   };*/;
   fields: Array<FormField>;
-  errors: Array<any>;
   hidden?: boolean | Function;
   disabled?: boolean;
   document: any;
   currentUser?: User;
   itemProperties: any;
   // TODO: get those from Form context instead
-  throwError: any;
-  currentValues: any;
-  updateCurrentValues: any;
-  deletedValues: any;
-  addToDeletedValues: any;
   clearFieldErrors: any;
   formType: any;
   prefilledProps: any;
-  submitForm: any;
-}
-interface FormGroupState {
-  collapsed: boolean;
 }
 
 /**
@@ -65,22 +50,16 @@ export const FormGroup /*<FormGroupProps, FormGroupState>*/ = (
     label,
     group,
     fields,
-    errors,
     hidden,
     document,
     currentUser,
     disabled,
     itemProperties,
     prefilledProps,
-    throwError,
     formType,
-    updateCurrentValues,
     clearFieldErrors,
-    submitForm,
-    currentValues,
-    deletedValues,
-    addToDeletedValues,
   } = props;
+  const { errors } = useFormContext();
   const [collapsed, setCollapsed] = useState<boolean>(
     group.startCollapsed || false
   );
@@ -143,6 +122,9 @@ export const FormGroup /*<FormGroupProps, FormGroupState>*/ = (
       document={document}
     >
       {/* TODO: create TS error at the moment: group.beforeComponent && <group.beforeComponent {...props} />*/}
+      {/** TODO: we pass all the functions as props to the FormComponent,
+       * but it should rely on the context instead for methods
+       */}
 
       {fields.map((field) => (
         <VulcanComponents.FormComponent
@@ -154,17 +136,10 @@ export const FormGroup /*<FormGroupProps, FormGroupState>*/ = (
             ...itemProperties,
             ...field.itemProperties,
           }}
-          errors={errors}
-          throwError={throwError}
-          currentValues={currentValues}
-          updateCurrentValues={updateCurrentValues}
-          deletedValues={deletedValues}
-          addToDeletedValues={addToDeletedValues}
           clearFieldErrors={clearFieldErrors}
           formType={formType}
           currentUser={currentUser}
           prefilledProps={prefilledProps}
-          submitForm={submitForm}
         />
       ))}
 

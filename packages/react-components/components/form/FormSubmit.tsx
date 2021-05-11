@@ -6,24 +6,22 @@ import React from "react";
 import PropTypes from "prop-types";
 import { canDeleteDocument } from "@vulcanjs/permissions";
 import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useFormContext } from "./FormContext";
 
-export const FormSubmit = (
-  {
-    submitForm,
-    submitLabel,
-    cancelLabel,
-    cancelCallback,
-    revertLabel,
-    revertCallback,
-    document,
-    deleteDocument,
-    model,
-    classes,
-    currentUser,
-  },
-  { isChanged, clearForm }
-) => {
+export const FormSubmit = ({
+  submitLabel,
+  cancelLabel,
+  cancelCallback,
+  revertLabel,
+  revertCallback,
+  document,
+  deleteDocument,
+  model,
+  // classes,
+  currentUser,
+}) => {
   const VulcanComponents = useVulcanComponents();
+  const { clearForm } = useFormContext();
   return (
     <div className="form-submit">
       <VulcanComponents.Button type="submit" variant="primary">
@@ -111,9 +109,4 @@ FormSubmit.propTypes = {
   deleteDocument: PropTypes.func,
   collectionName: PropTypes.string,
   classes: PropTypes.object,
-};
-
-FormSubmit.contextTypes = {
-  isChanged: PropTypes.func,
-  clearForm: PropTypes.func,
 };
