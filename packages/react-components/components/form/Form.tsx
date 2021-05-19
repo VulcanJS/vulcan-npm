@@ -68,6 +68,9 @@ import {
   PossibleFormComponents,
 } from "./defaultVulcanComponents";
 import { FormContext } from "./FormContext";
+import { FormLayoutProps } from "./FormLayout";
+
+type FormType = "new" | "edit";
 
 // props that should trigger a form reset
 const RESET_PROPS = [
@@ -104,7 +107,7 @@ const compactObject = (o) => omitBy(o, (f) => f === null || f === undefined);
 const getInitialStateFromProps = (nextProps: FormProps) => {
   const schema = nextProps.schema || nextProps.model.schema;
   const convertedSchema = convertSchema(schema);
-  const formType = nextProps.document ? "edit" : "new";
+  const formType: FormType = nextProps.document ? "edit" : "new";
   // for new document forms, add default values to initial document
   const defaultValues =
     formType === "new" ? getDefaultValues(convertedSchema) : {};
@@ -503,12 +506,12 @@ export class Form extends Component<FormProps, FormState> {
   Get all field groups
 
   */
-  getFieldGroups = () => {
+  getFieldGroups = (mutableFields: Array<any>) => {
     // build fields array by iterating over the list of field names
     let fields = getFieldNames(this.props, this.getDocument()).map(
       (fieldName) => {
         // get schema for the current field
-        return this.createField(fieldName, this.state.schema);
+        return this.createField(fieldName, this.state.schema, mutableFields);
       }
     );
 
@@ -647,14 +650,20 @@ export class Form extends Component<FormProps, FormState> {
 
     return field;
   };
-  handlePermissions = (field, fieldName, schema) => {
+  handlePermissions = (field, fieldName, mutableFields: Array<any>) => {
     // if field is not creatable/updatable, disable it
-    if (!this.getMutableFields(schema).includes(fieldName)) {
+    if (!mutableFields.includes(fieldName)) {
       field.disabled = true;
     }
     return field;
   };
-  handleFieldChildren = (field, fieldName, fieldSchema, schema) => {
+  handleFieldChildren = (
+    field,
+    fieldName,
+    fieldSchema,
+    schema,
+    mutableFields: Array<any>
+  ) => {
     // array field
     if (fieldSchema.arrayFieldSchema) {
       field.arrayFieldSchema = fieldSchema.arrayFieldSchema;
@@ -680,6 +689,7 @@ export class Form extends Component<FormProps, FormState> {
         return this.createField(
           subFieldName,
           field.nestedSchema,
+          mutableFields,
           fieldName,
           field.path
         );
@@ -696,6 +706,7 @@ export class Form extends Component<FormProps, FormState> {
   createField = (
     fieldName: string,
     schema: any,
+    mutableFields: Array<any>,
     parentFieldName?: string,
     parentPath?: string
   ): FormField => {
@@ -703,8 +714,14 @@ export class Form extends Component<FormProps, FormState> {
     let field = this.initField(fieldName, fieldSchema);
     field = this.handleFieldPath(field, fieldName, parentPath);
     field = this.handleFieldParent(field, parentFieldName);
-    field = this.handlePermissions(field, fieldName, schema);
-    field = this.handleFieldChildren(field, fieldName, fieldSchema, schema);
+    field = this.handlePermissions(field, fieldName, mutableFields);
+    field = this.handleFieldChildren(
+      field,
+      fieldName,
+      fieldSchema,
+      schema,
+      mutableFields
+    );
     return field;
   };
   createArraySubField = (fieldName, subFieldSchema, schema) => {
@@ -864,7 +881,7 @@ export class Form extends Component<FormProps, FormState> {
     this.setState(fn);
   };
 
-  submitFormContext = (newValues) => {
+  submitFormContext = (formType: FormType) => (newValues) => {
     // keep the previous ones and extend (with possible replacement) with new ones
     this.setState(
       (prevState) => ({
@@ -873,7 +890,7 @@ export class Form extends Component<FormProps, FormState> {
           ...newValues,
         }, // Submit form after setState update completed
       }),
-      () => this.submitForm()
+      () => this.submitForm(formType)()
     );
   };
 
@@ -1183,7 +1200,7 @@ export class Form extends Component<FormProps, FormState> {
   Submit form handler
 
   */
-  submitForm = async (event?: Event) => {
+  submitForm = (formType: FormType) => async (event?: Event) => {
     event && event.preventDefault();
     event && event.stopPropagation();
 
@@ -1206,7 +1223,7 @@ export class Form extends Component<FormProps, FormState> {
       data = this.props.submitCallback(data) || data;
     }
 
-    if (this.getFormType() === "new") {
+    if (formType === "new") {
       // create document form
       try {
         const result = await this.props.createDocument({
@@ -1288,7 +1305,7 @@ export class Form extends Component<FormProps, FormState> {
   // ------------------------- Props to Pass ----------------------------- //
   // --------------------------------------------------------------------- //
 
-  getCommonProps = () => {
+  getCommonProps = ({ formType }: { formType: FormType }) => {
     const { errors, currentValues, deletedValues, disabled } = this.state;
     const {
       currentUser,
@@ -1306,43 +1323,44 @@ export class Form extends Component<FormProps, FormState> {
       deletedValues,
       addToDeletedValues: this.addToDeletedValues,
       clearFieldErrors: this.clearFieldErrors,
-      formType: this.getFormType(),
+      formType,
       currentUser,
       disabled,
       prefilledProps,
       formComponents: this.getMergedComponents(),
       FormComponents: this.getMergedComponents(),
       itemProperties,
-      submitForm: this.submitForm,
+      submitForm: this.submitForm(formType),
       contextName,
     };
   };
 
-  getFormProps = () => {
-    const docClassName = `document-${this.getFormType()}`;
+  getFormProps = ({ formType }: { formType: FormType }) => {
+    const docClassName = `document-${formType}`;
     const modelName = this.props.model.name.toLowerCase();
 
     return {
       className: `${docClassName} ${docClassName}-${modelName}`,
       id: this.props.id,
-      onSubmit: this.submitForm,
+      onSubmit: this.submitForm(formType),
       ref: (e) => {
         this.form = e;
       },
     };
   };
 
-  getFormLayoutProps = () => {
-    const { formComponents, repeatErrors } = this.props;
-    const FormComponents = this.getMergedComponents();
-
+  getFormLayoutProps = ({
+    formType,
+  }: {
+    formType: FormType;
+  }): FormLayoutProps => {
+    const { repeatErrors } = this.props;
     return {
-      FormComponents,
-      formProps: this.getFormProps(),
+      formProps: this.getFormProps({ formType }),
       errorProps: this.getFormErrorsProps(),
       repeatErrors: repeatErrors,
-      submitProps: this.getFormSubmitProps(),
-      commonProps: this.getCommonProps(),
+      submitProps: this.getFormSubmitProps({ formType }),
+      commonProps: this.getCommonProps({ formType }),
     };
   };
 
@@ -1350,14 +1368,14 @@ export class Form extends Component<FormProps, FormState> {
     errors: this.state.errors,
   });
 
-  getFormGroupProps = (group) => ({
+  getFormGroupProps = ({ formType, group }) => ({
     key: group.name,
     ...group,
     group: omit(group, ["fields"]),
-    ...this.getCommonProps(),
+    ...this.getCommonProps({ formType }),
   });
 
-  getFormSubmitProps = () => {
+  getFormSubmitProps = ({ formType }: { formType: FormType }) => {
     const {
       submitLabel,
       cancelLabel,
@@ -1367,7 +1385,7 @@ export class Form extends Component<FormProps, FormState> {
     } = this.props;
     const { currentValues, deletedValues, errors } = this.state;
     return {
-      submitForm: this.submitForm,
+      submitForm: this.submitForm(formType),
       submitLabel,
       cancelLabel,
       revertLabel,
@@ -1375,7 +1393,7 @@ export class Form extends Component<FormProps, FormState> {
       revertCallback,
       document: this.getDocument(),
       deleteDocument:
-        (this.getFormType() === "edit" &&
+        (formType === "edit" &&
           this.props.showRemove &&
           this.props.showDelete &&
           this.deleteDocument) ||
@@ -1452,7 +1470,7 @@ export class Form extends Component<FormProps, FormState> {
           clearForm: this.clearForm,
           refetchForm: this.refetchForm,
           isChanged: this.isChanged,
-          submitForm: this.submitFormContext, //Change in name because we already have a function
+          submitForm: this.submitFormContext(formType), //Change in name because we already have a function
           // called submitForm, but no reason for the user to know
           // about that
           addToDeletedValues: this.addToDeletedValues,
@@ -1470,11 +1488,11 @@ export class Form extends Component<FormProps, FormState> {
           deletedValues: this.state.deletedValues,
         }}
       >
-        <FormComponents.FormLayout {...this.getFormLayoutProps()}>
-          {this.getFieldGroups().map((group, i) => (
+        <FormComponents.FormLayout {...this.getFormLayoutProps({ formType })}>
+          {this.getFieldGroups(mutableFields).map((group, i) => (
             <FormComponents.FormGroup
               key={i}
-              {...this.getFormGroupProps(group)}
+              {...this.getFormGroupProps({ formType, group })}
             />
           ))}
         </FormComponents.FormLayout>

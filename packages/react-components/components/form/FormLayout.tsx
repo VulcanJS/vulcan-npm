@@ -1,7 +1,14 @@
 import React from "react";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 
-export const FormLayout = ({
+export interface FormLayoutProps {
+  commonProps: any;
+  formProps: any;
+  errorProps: any;
+  submitProps: any;
+  repeatErrors?: boolean;
+}
+export const FormLayout: React.FC<FormLayoutProps> = ({
   commonProps,
   formProps,
   errorProps,
