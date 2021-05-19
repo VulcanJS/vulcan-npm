@@ -1,6 +1,6 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
-import { Form, FormProps } from "../Form";
+import { Form, FormProps } from "../Form/Form";
 import { VulcanComponentsProvider } from "../VulcanComponentsContext";
 import { createModel } from "@vulcanjs/model";
 import { IntlProvider, LegacyIntlProvider } from "@vulcanjs/i18n";
