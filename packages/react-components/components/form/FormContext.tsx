@@ -12,7 +12,7 @@ interface FormContextValue {
   deletedValues: Array<any>;
   errors: Array<any>;
   getDocument: Function;
-  getLabel: Function;
+  getLabel: (fieldName: string, fieldLocale?: string) => string;
   initialDocument: object;
   isChanged: boolean;
   refetchForm: Function;

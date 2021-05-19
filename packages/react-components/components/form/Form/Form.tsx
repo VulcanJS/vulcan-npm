@@ -15,15 +15,8 @@ This component expects:
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { runCallbacks, getErrors } from "@vulcanjs/core";
-import {
-  isIntlField,
-  formatLabel,
-  getIntlKeys,
-  getIntlLabel,
-  IntlProviderContext,
-} from "@vulcanjs/i18n";
-import { capitalize, removeProperty } from "@vulcanjs/utils";
-import { FieldGroup } from "@vulcanjs/schema";
+import { IntlProviderContext } from "@vulcanjs/i18n";
+import { removeProperty } from "@vulcanjs/utils";
 import _filter from "lodash/filter";
 import cloneDeep from "lodash/cloneDeep";
 import compact from "lodash/compact";
@@ -32,7 +25,6 @@ import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import isEqualWith from "lodash/isEqualWith";
 import isObject from "lodash/isObject";
-import map from "lodash/map";
 import mapValues from "lodash/mapValues";
 import merge from "lodash/merge";
 import omit from "lodash/omit";
@@ -40,17 +32,12 @@ import omitBy from "lodash/omitBy";
 import pick from "lodash/pick";
 import pickBy from "lodash/pickBy";
 import set from "lodash/set";
-import sortBy from "lodash/sortBy";
-import uniqBy from "lodash/uniqBy";
 import unset from "lodash/unset";
 import update from "lodash/update";
 import without from "lodash/without";
 
-import { FormField } from "../typings";
-
 import {
   convertSchema,
-  formProperties,
   getEditableFields,
   getInsertableFields,
 } from "../modules/schema_utils";
@@ -69,7 +56,7 @@ import {
 import { FormContext } from "../FormContext";
 import { FormLayoutProps } from "../FormLayout";
 import { FormSubmitProps } from "../FormSubmit";
-import { getFieldNames } from "./fields";
+import { getFieldGroups, getFieldNames, getLabel } from "./fields";
 
 type FormType = "new" | "edit";
 
@@ -357,11 +344,6 @@ An example would be a createdAt date added automatically on creation even though
   updateDocumentMeta?: { error?: any };
 }
 
-// Group of multiple fields (obtained by parsing the whole schema)
-interface GroupWithFields extends FieldGroup {
-  fields: Array<FormField>;
-}
-
 export class Form extends Component<FormProps, FormState> {
   constructor(props) {
     super(props);
@@ -508,317 +490,6 @@ export class Form extends Component<FormProps, FormState> {
   // TODO: use components from context instead when moving to stateless
   getMergedComponents = () =>
     merge({}, defaultVulcanComponents, this.props.components);
-
-  // --------------------------------------------------------------------- //
-  // -------------------------------- Fields ----------------------------- //
-  // --------------------------------------------------------------------- //
-
-  /*
-
-  Get all field groups
-
-  */
-  getFieldGroups = (mutableFields: Array<string>) => {
-    // build fields array by iterating over the list of field names
-    let fields = getFieldNames(this.props, this.getDocument(), {
-      mutableFields,
-      schema: this.state.schema,
-    }).map((fieldName) => {
-      // get schema for the current field
-      return this.createField(fieldName, this.state.schema, mutableFields);
-    });
-
-    fields = sortBy(fields, "order");
-
-    // get list of all unique groups (based on their name) used in current fields, remove "empty" group
-    let groups = compact(
-      uniqBy(map(fields, "group"), (g) => (g ? g.name : ""))
-    );
-
-    // for each group, add relevant fields
-    let groupsWithFields = groups.map((group) => {
-      const label =
-        group.label ||
-        this.context.formatMessage({ id: group.name }) ||
-        capitalize(group.name);
-      const groupFields = _.filter(fields, (field) => {
-        return field.group && field.group.name === group.name;
-      });
-      const groupWithFields: GroupWithFields = {
-        ...group,
-        label,
-        fields: groupFields,
-      };
-      return groupWithFields;
-    });
-
-    // add default group if necessary
-    const defaultGroupFields = _filter(fields, (field) => !field.group);
-    if (defaultGroupFields.length) {
-      const defaultGroup: GroupWithFields = {
-        name: "default",
-        label: "default",
-        order: 0,
-        fields: defaultGroupFields,
-      };
-      groupsWithFields = [defaultGroup].concat(groupsWithFields);
-    }
-
-    // sort by order
-    groupsWithFields = sortBy(groupsWithFields, "order");
-
-    // console.log(groups);
-
-    return groupsWithFields;
-  };
-
-  initField = (fieldName, fieldSchema) => {
-    const isArray = get(fieldSchema, "type.0.type") === Array;
-
-    // intialize properties
-    let field: Partial<FormField> = {
-      ...pick(fieldSchema, formProperties),
-      name: fieldName,
-      datatype: fieldSchema.type,
-      layout: this.props.layout, // A layout property used to control how the form fields are displayed. Defaults to horizontal.
-      input: fieldSchema.input || fieldSchema.control, // TODO
-    };
-
-    // if this is an array field also store its array item type
-    if (isArray) {
-      const itemFieldSchema = this.state.originalSchema[`${fieldName}.$`];
-      field.itemDatatype = get(itemFieldSchema, "type.0.type");
-    }
-
-    field.label = this.getLabel(fieldName);
-    field.intlKeys = this.getIntlKeys(fieldName);
-    // // replace value by prefilled value if value is empty
-    // const prefill = fieldSchema.prefill || (fieldSchema.form && fieldSchema.form.prefill);
-    // if (prefill) {
-    //   const prefilledValue = typeof prefill === 'function' ? prefill.call(fieldSchema) : prefill;
-    //   if (!!prefilledValue && !field.value) {
-    //     field.prefilledValue = prefilledValue;
-    //     field.value = prefilledValue;
-    //   }
-    // }
-
-    const document = this.getDocument();
-    field.document = document;
-
-    // internationalize field options labels
-    if (field.options && Array.isArray(field.options)) {
-      field.options = field.options.map((option) => ({
-        ...option,
-        label: this.getOptionLabel(fieldName, option),
-      }));
-    }
-
-    // if this an intl'd field, use a special intlInput
-    if (isIntlField(fieldSchema)) {
-      field.intlInput = true;
-    }
-
-    // add any properties specified in fieldSchema.form as extra props passed on
-    // to the form component, calling them if they are functions
-    const inputProperties =
-      fieldSchema.form || fieldSchema.inputProperties || {};
-    for (const prop in inputProperties) {
-      const property = inputProperties[prop];
-      field[prop] =
-        typeof property === "function"
-          ? property.call(fieldSchema, {
-              ...this.props,
-              fieldName,
-              document,
-              intl: this.context,
-            })
-          : property;
-    }
-
-    // add description as help prop
-    const description = this.getDescription(fieldName);
-    if (description) {
-      field.help = description;
-    }
-
-    return field as FormField;
-  };
-  handleFieldPath = (
-    field: FormField,
-    fieldName: string,
-    parentPath?: string
-  ) => {
-    const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
-    field.path = fieldPath;
-    if (field.defaultValue) {
-      set(this.defaultValues, fieldPath, field.defaultValue);
-    }
-    return field;
-  };
-  handleFieldParent = (field, parentFieldName) => {
-    // if field has a parent field, pass it on
-    if (parentFieldName) {
-      field.parentFieldName = parentFieldName;
-    }
-
-    return field;
-  };
-  handlePermissions = (field, fieldName, mutableFields: Array<any>) => {
-    // if field is not creatable/updatable, disable it
-    if (!mutableFields.includes(fieldName)) {
-      field.disabled = true;
-    }
-    return field;
-  };
-  handleFieldChildren = (
-    field,
-    fieldName,
-    fieldSchema,
-    schema,
-    mutableFields: Array<any>
-  ) => {
-    // array field
-    if (fieldSchema.arrayFieldSchema) {
-      field.arrayFieldSchema = fieldSchema.arrayFieldSchema;
-      // create a field that can be exploited by the form
-      field.arrayField = this.createArraySubField(
-        fieldName,
-        field.arrayFieldSchema,
-        schema
-      );
-      //field.nestedInput = true
-    }
-    // nested fields: set input to "nested"
-    if (fieldSchema.schema) {
-      field.nestedSchema = fieldSchema.schema;
-      field.nestedInput = true;
-
-      // get nested schema
-      // for each nested field, get field object by calling createField recursively
-      field.nestedFields = getFieldNames(this.props, this.getDocument(), {
-        schema: field.nestedSchema,
-        addExtraFields: false,
-      }).map((subFieldName) => {
-        return this.createField(
-          subFieldName,
-          field.nestedSchema,
-          mutableFields,
-          fieldName,
-          field.path
-        );
-      });
-    }
-    return field;
-  };
-
-  /*
-  Given a field's name, the containing schema, and parent, create the
-  complete field object to be passed to the component
-
-  */
-  createField = (
-    fieldName: string,
-    schema: any,
-    mutableFields: Array<any>,
-    parentFieldName?: string,
-    parentPath?: string
-  ): FormField => {
-    const fieldSchema = schema[fieldName];
-    let field = this.initField(fieldName, fieldSchema);
-    field = this.handleFieldPath(field, fieldName, parentPath);
-    field = this.handleFieldParent(field, parentFieldName);
-    field = this.handlePermissions(field, fieldName, mutableFields);
-    field = this.handleFieldChildren(
-      field,
-      fieldName,
-      fieldSchema,
-      schema,
-      mutableFields
-    );
-    return field;
-  };
-  createArraySubField = (fieldName, subFieldSchema, schema) => {
-    const subFieldName = `${fieldName}.$`;
-    let subField = this.initField(subFieldName, subFieldSchema);
-    // array subfield has the same path and permissions as its parent
-    // so we use parent name (fieldName) and not subfieldName
-    subField = this.handleFieldPath(subField, fieldName);
-    subField = this.handlePermissions(subField, fieldName, schema);
-    // we do not allow nesting yet
-    //subField = this.handleFieldChildren(field, fieldSchema)
-    return subField;
-  };
-
-  /*
-
-  Get a field's intl keys (useful for debugging)
-
-  */
-  getIntlKeys = (fieldName) => {
-    const collectionName = this.props.model.name.toLowerCase();
-    return getIntlKeys({
-      fieldName: fieldName,
-      collectionName,
-      schema: this.state.flatSchema,
-    });
-  };
-
-  /*
-
-   Get a field's label
-
-   */
-  getLabel = (fieldName: string, fieldLocale?: string) => {
-    const collectionName = this.props.model.name.toLowerCase();
-    const label = formatLabel({
-      intl: this.context,
-      fieldName: fieldName,
-      collectionName: collectionName,
-      schema: this.state.flatSchema,
-    });
-    if (fieldLocale) {
-      const intlFieldLocale = this.context.formatMessage({
-        id: `locales.${fieldLocale}`,
-        defaultMessage: fieldLocale,
-      });
-      return `${label} (${intlFieldLocale})`;
-    } else {
-      return label;
-    }
-  };
-
-  /*
-
-   Get a field's description
-
-   (Same as getLabel but pass isDescription: true )
-   */
-  getDescription = (fieldName) => {
-    const collectionName = this.props.model.name.toLowerCase();
-    const description = getIntlLabel({
-      intl: this.context,
-      fieldName: fieldName,
-      collectionName: collectionName,
-      schema: this.state.flatSchema,
-      isDescription: true,
-    });
-    return description || null;
-  };
-
-  /*
-
-  Get a field option's label
-
-  */
-  getOptionLabel = (fieldName, option) => {
-    const collectionName = this.props.model.name.toLowerCase();
-    const intlId =
-      option.intlId || `${collectionName}.${fieldName}.${option.value}`;
-    return this.context.formatMessage({
-      id: intlId,
-      defaultMessage: option.label,
-    });
-  };
 
   // --------------------------------------------------------------------- //
   // ------------------------------- Errors ------------------------------ //
@@ -1310,8 +981,8 @@ export class Form extends Component<FormProps, FormState> {
   // --------------------------------------------------------------------- //
 
   render() {
-    const { successComponent, document, currentUser } = this.props;
-    const { schema, initialDocument, currentDocument } = this.state;
+    const { successComponent, document, currentUser, model } = this.props;
+    const { schema, initialDocument, currentDocument, flatSchema } = this.state;
     const FormComponents = this.getMergedComponents();
 
     const formType: "edit" | "new" = document ? "edit" : "new";
@@ -1349,7 +1020,8 @@ export class Form extends Component<FormProps, FormState> {
           addToDeletedValues: this.addToDeletedValues,
           updateCurrentValues: this.updateCurrentValues,
           getDocument: this.getDocument,
-          getLabel: this.getLabel,
+          getLabel: (fieldName, fieldLocale) =>
+            getLabel(model, flatSchema, this.context, fieldName, fieldLocale),
           initialDocument: this.state.initialDocument,
           setFormState: this.setFormState,
           addToSubmitForm: this.addToSubmitForm,
@@ -1363,7 +1035,13 @@ export class Form extends Component<FormProps, FormState> {
         }}
       >
         <FormComponents.FormLayout {...formLayoutProps}>
-          {this.getFieldGroups(mutableFields).map((group, i) => (
+          {getFieldGroups(
+            this.props,
+            this.state,
+            this.context,
+            mutableFields,
+            this.context.formatMessage
+          ).map((group, i) => (
             <FormComponents.FormGroup key={i} {...formGroupProps(group)} />
           ))}
         </FormComponents.FormLayout>
