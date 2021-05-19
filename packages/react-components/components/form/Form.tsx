@@ -148,6 +148,95 @@ const getInitialStateFromProps = (nextProps: FormProps) => {
 
 /*
 
+  Get a list of the fields to be included in the current form
+
+  Note: when submitting the form (getData()), do not include any extra fields.
+
+  */
+const getFieldNames = (
+  props: FormProps,
+  currentDocument,
+  optionsFromArgs: {
+    excludeHiddenFields?: boolean;
+    excludeRemovedFields?: boolean;
+    replaceIntlFields?: boolean;
+    addExtraFields?: boolean;
+    schema?: VulcanSchema;
+    mutableFields?: Array<any>;
+  } = {}
+) => {
+  const { fields, addFields, removeFields, hideFields } = props;
+  const defaultOptions = {
+    excludeHiddenFields: true,
+    excludeRemovedFields: true,
+    replaceIntlFields: false,
+    addExtraFields: false,
+  };
+  const options = {
+    ...defaultOptions,
+    ...optionsFromArgs,
+  };
+  const {
+    schema,
+    mutableFields,
+    excludeRemovedFields,
+    excludeHiddenFields,
+    addExtraFields,
+    replaceIntlFields,
+  } = options;
+
+  // get all editable/insertable fields (depending on current form type)
+  let relevantFields = mutableFields;
+
+  // if "fields" prop is specified, restrict list of fields to it
+  if (typeof fields !== "undefined" && fields.length > 0) {
+    relevantFields = _.intersection(relevantFields, fields);
+  }
+
+  // if "hideFields" prop is specified, remove its fields
+  if (excludeRemovedFields) {
+    // OpenCRUD backwards compatibility
+    //const removeFields = removeFields || hideFields;
+    if (typeof removeFields !== "undefined" && removeFields.length > 0) {
+      relevantFields = _.difference(relevantFields, removeFields);
+    }
+  }
+
+  // if "addFields" prop is specified, add its fields
+  if (
+    addExtraFields &&
+    typeof addFields !== "undefined" &&
+    addFields.length > 0
+  ) {
+    relevantFields = relevantFields.concat(addFields);
+  }
+
+  // remove all hidden fields
+  if (excludeHiddenFields) {
+    const document = currentDocument;
+    relevantFields = _.reject(relevantFields, (fieldName) => {
+      const hidden = schema[fieldName].hidden;
+      return typeof hidden === "function"
+        ? hidden({ props, document })
+        : hidden;
+    });
+  }
+
+  // replace intl fields
+  if (replaceIntlFields) {
+    relevantFields = relevantFields.map((fieldName) =>
+      isIntlField(schema[fieldName]) ? `${fieldName}_intl` : fieldName
+    );
+  }
+
+  // remove any duplicates
+  relevantFields = uniq(relevantFields);
+
+  return relevantFields;
+};
+
+/*
+
 1. Constructor
 2. Helpers
 3. Errors
@@ -334,45 +423,6 @@ export class Form extends Component<FormProps, FormState> {
   // --------------------------------------------------------------------- //
 
   /*
-  If a document is being passed, this is an edit form
-  */
-  getFormType = () => {
-    return this.props.document ? "edit" : "new";
-  };
-
-  /*
-  Get a list of all insertable fields
-  */
-  getInsertableFields = (schema) => {
-    return getInsertableFields(
-      schema || this.state.schema,
-      this.props.currentUser
-    );
-  };
-
-  /*
-  Get a list of all editable fields
-  */
-  getEditableFields = (schema) => {
-    return getEditableFields(
-      schema || this.state.schema,
-      this.props.currentUser,
-      this.state.initialDocument
-    );
-  };
-
-  /*
-
-  Get a list of all mutable (insertable/editable depending on current form type) fields
-
-  */
-  getMutableFields = (schema) => {
-    return this.getFormType() === "edit"
-      ? this.getEditableFields(schema)
-      : this.getInsertableFields(schema);
-  };
-
-  /*
 
   Get the current document
 
@@ -406,7 +456,7 @@ export class Form extends Component<FormProps, FormState> {
 
     // only keep relevant fields
     // for intl fields, make sure we look in foo_intl and not foo
-    const fields = this.getFieldNames(args);
+    const fields = getFieldNames(this.props, this.getDocument(), args);
     data = { ...data, ...pick(this.getDocument(), ...fields) };
 
     // compact deleted values
@@ -455,10 +505,12 @@ export class Form extends Component<FormProps, FormState> {
   */
   getFieldGroups = () => {
     // build fields array by iterating over the list of field names
-    let fields = this.getFieldNames().map((fieldName) => {
-      // get schema for the current field
-      return this.createField(fieldName, this.state.schema);
-    });
+    let fields = getFieldNames(this.props, this.getDocument()).map(
+      (fieldName) => {
+        // get schema for the current field
+        return this.createField(fieldName, this.state.schema);
+      }
+    );
 
     fields = sortBy(fields, "order");
 
@@ -502,76 +554,6 @@ export class Form extends Component<FormProps, FormState> {
     // console.log(groups);
 
     return groupsWithFields;
-  };
-
-  /*
-
-  Get a list of the fields to be included in the current form
-
-  Note: when submitting the form (getData()), do not include any extra fields.
-
-  */
-  getFieldNames = (args?: any) => {
-    // we do this to avoid having default values in arrow functions, which breaks MS Edge support. See https://github.com/meteor/meteor/issues/10171
-    let args0 = args || {};
-    const {
-      schema = this.state.schema,
-      excludeHiddenFields = true,
-      excludeRemovedFields = true,
-      replaceIntlFields = false,
-      addExtraFields = true,
-    } = args0;
-
-    const { fields, addFields } = this.props;
-
-    // get all editable/insertable fields (depending on current form type)
-    let relevantFields = this.getMutableFields(schema);
-
-    // if "fields" prop is specified, restrict list of fields to it
-    if (typeof fields !== "undefined" && fields.length > 0) {
-      relevantFields = _.intersection(relevantFields, fields);
-    }
-
-    // if "hideFields" prop is specified, remove its fields
-    if (excludeRemovedFields) {
-      // OpenCRUD backwards compatibility
-      const removeFields = this.props.removeFields || this.props.hideFields;
-      if (typeof removeFields !== "undefined" && removeFields.length > 0) {
-        relevantFields = _.difference(relevantFields, removeFields);
-      }
-    }
-
-    // if "addFields" prop is specified, add its fields
-    if (
-      addExtraFields &&
-      typeof addFields !== "undefined" &&
-      addFields.length > 0
-    ) {
-      relevantFields = relevantFields.concat(addFields);
-    }
-
-    // remove all hidden fields
-    if (excludeHiddenFields) {
-      const document = this.getDocument();
-      relevantFields = _.reject(relevantFields, (fieldName) => {
-        const hidden = schema[fieldName].hidden;
-        return typeof hidden === "function"
-          ? hidden({ ...this.props, document })
-          : hidden;
-      });
-    }
-
-    // replace intl fields
-    if (replaceIntlFields) {
-      relevantFields = relevantFields.map((fieldName) =>
-        isIntlField(schema[fieldName]) ? `${fieldName}_intl` : fieldName
-      );
-    }
-
-    // remove any duplicates
-    relevantFields = uniq(relevantFields);
-
-    return relevantFields;
   };
 
   initField = (fieldName, fieldSchema) => {
@@ -691,7 +673,7 @@ export class Form extends Component<FormProps, FormState> {
 
       // get nested schema
       // for each nested field, get field object by calling createField recursively
-      field.nestedFields = this.getFieldNames({
+      field.nestedFields = getFieldNames(this.props, this.getDocument(), {
         schema: field.nestedSchema,
         addExtraFields: false,
       }).map((subFieldName) => {
@@ -1409,8 +1391,57 @@ export class Form extends Component<FormProps, FormState> {
   // --------------------------------------------------------------------- //
 
   render() {
-    const { successComponent } = this.props;
+    const { successComponent, document, currentUser } = this.props;
+    const { schema, initialDocument } = this.state;
     const FormComponents = this.getMergedComponents();
+
+    /*
+  If a document is being passed, this is an edit form
+  */
+    //getFormType = () => {
+    //  return this.props.document ? "edit" : "new";
+    //};
+    const formType: "edit" | "new" = document ? "edit" : "new";
+
+    /*
+  Get a list of all insertable fields
+  */
+    // getInsertableFields = (schema) => {
+    //   return getInsertableFields(
+    //     schema || this.state.schema,
+    //     this.props.currentUser
+    //   );
+    // };
+    const insertableFields = getInsertableFields(schema, currentUser);
+
+    /*
+  Get a list of all editable fields
+  */
+    //getEditableFields = (schema) => {
+    //  return getEditableFields(
+    //    schema || this.state.schema,
+    //    this.props.currentUser,
+    //    this.state.initialDocument
+    //  );
+    //};
+    const editableFields = getEditableFields(
+      schema,
+      currentUser,
+      initialDocument
+    );
+
+    /*
+
+  Get a list of all mutable (insertable/editable depending on current form type) fields
+
+  */
+    // getMutableFields = (schema) => {
+    //   return this.getFormType() === "edit"
+    //     ? this.getEditableFields(schema)
+    //     : this.getInsertableFields(schema);
+    // };
+    const mutableFields =
+      formType === "edit" ? editableFields : insertableFields;
 
     return this.state.success && successComponent ? (
       successComponent
