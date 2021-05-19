@@ -20,10 +20,8 @@ import { removeProperty } from "@vulcanjs/utils";
 import _filter from "lodash/filter";
 import cloneDeep from "lodash/cloneDeep";
 import compact from "lodash/compact";
-import find from "lodash/find";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
-import isEqualWith from "lodash/isEqualWith";
 import isObject from "lodash/isObject";
 import mapValues from "lodash/mapValues";
 import merge from "lodash/merge";
@@ -57,6 +55,8 @@ import { FormContext } from "../FormContext";
 import { FormLayoutProps } from "../FormLayout";
 import { FormSubmitProps } from "../FormSubmit";
 import { getFieldGroups, getFieldNames, getLabel } from "./fields";
+import { isNotSameDocument } from "./utils";
+import { FormLeavingManager } from "./FormLeavingManager";
 
 type FormType = "new" | "edit";
 
@@ -91,15 +91,6 @@ const getDefaultValues = (convertedSchema) => {
 };
 
 const compactObject = (o) => omitBy(o, (f) => f === null || f === undefined);
-
-const isNotSameDocument = (initialDocument, changedDocument) => {
-  const changedValue = find(changedDocument, (value, key, collection) => {
-    return !isEqualWith(value, initialDocument[key], (objValue, othValue) => {
-      if (!objValue && !othValue) return true;
-    });
-  });
-  return typeof changedValue !== "undefined";
-};
 
 const getInitialStateFromProps = (nextProps: FormProps): FormState => {
   const schema = nextProps.schema || nextProps.model.schema;
@@ -266,6 +257,7 @@ export interface FormProps<TModel = { [key in string]: any }>
   extends PropsFromPropTypes {
   // TODO: router stuffs
   refetch?: Function;
+  // TODO: this was initially implemented with react-router, we should confirm how it translates in Next or any other framework
   history?: any;
   id?: string;
   // TODO: merge
@@ -646,106 +638,6 @@ export class Form extends Component<FormProps, FormState> {
 
   /*
 
-  Install a route leave hook to warn the user if there are unsaved changes
-
-  */
-  componentDidMount = () => {
-    const { initialDocument, currentDocument } = this.state;
-    const isChanged = isNotSameDocument(initialDocument, currentDocument);
-    this.checkRouteChange(isChanged);
-    this.checkBrowserClosing();
-  };
-
-  /*
-  Remove the closing browser check on component unmount
-  see https://gist.github.com/mknabe/bfcb6db12ef52323954a28655801792d
-  */
-  componentWillUnmount = () => {
-    if (this.getWarnUnsavedChanges()) {
-      // unblock route change
-      if (this.unblock) {
-        this.unblock();
-      }
-      // unblock browser change
-      // @ts-ignore
-      window.onbeforeunload = undefined; //undefined instead of null to support IE
-    }
-  };
-
-  // -------------------- Check on form leaving ----- //
-
-  /**
-   * Check if we must warn user on unsaved change
-   */
-  getWarnUnsavedChanges = () => {
-    //let warnUnsavedChanges = getSetting("forms.warnUnsavedChanges");
-    return this.props.warnUnsavedChanges;
-  };
-
-  // check for route change, prevent form content loss
-  checkRouteChange = (isChanged) => {
-    // @see https://github.com/ReactTraining/react-router/issues/4635#issuecomment-297828995
-    // @see https://github.com/ReactTraining/history#blocking-transitions
-    if (this.getWarnUnsavedChanges()) {
-      this.unblock = this.props.history.block((location, action) => {
-        // return the message that will pop into a window.confirm alert
-        // if returns nothing, the message won't appear and the user won't be blocked
-        return this.handleRouteLeave(isChanged);
-
-        /*
-            // React-router 3 implementtion
-            const routes = this.props.router.routes;
-            const currentRoute = routes[routes.length - 1];
-            this.props.router.setRouteLeaveHook(currentRoute, this.handleRouteLeave);
-
-            */
-      });
-    }
-  };
-  // check for browser closing
-  checkBrowserClosing = () => {
-    //check for closing the browser with unsaved changes too
-    window.onbeforeunload = this.handlePageLeave;
-  };
-
-  /*
-  Check if the user has unsaved changes, returns a message if yes
-  and nothing if not
-  */
-  handleRouteLeave = (isChanged) => {
-    if (isChanged) {
-      const message = this.context.formatMessage({
-        id: "forms.confirm_discard",
-        defaultMessage: "Are you sure you want to discard your changes?",
-      });
-      return message;
-    }
-  };
-
-  /**
-   * Same for browser closing
-   *
-   * see https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload
-   * the message returned is actually ignored by most browsers and a default message 'Are you sure you want to leave this page? You might have unsaved changes' is displayed. See the Notes section on the mozilla docs above
-   */
-  handlePageLeave = (event) => {
-    const { initialDocument, currentDocument } = this.state;
-    const isChanged = isNotSameDocument(initialDocument, currentDocument);
-    if (isChanged) {
-      const message = this.context.formatMessage({
-        id: "forms.confirm_discard",
-        defaultMessage: "Are you sure you want to discard your changes?",
-      });
-      if (event) {
-        event.returnValue = message;
-      }
-
-      return message;
-    }
-  };
-
-  /*
-
   Refetch the document from the database (in case it was updated by another process or to reset the form)
 
   */
@@ -974,7 +866,14 @@ export class Form extends Component<FormProps, FormState> {
   // --------------------------------------------------------------------- //
 
   render() {
-    const { successComponent, document, currentUser, model } = this.props;
+    const {
+      successComponent,
+      document,
+      currentUser,
+      model,
+      warnUnsavedChanges,
+      history,
+    } = this.props;
     const { schema, initialDocument, currentDocument, flatSchema } = this.state;
     const FormComponents = this.getMergedComponents();
 
@@ -1001,48 +900,53 @@ export class Form extends Component<FormProps, FormState> {
     return this.state.success && successComponent ? (
       successComponent
     ) : (
-      <FormContext.Provider
-        value={{
-          throwError: this.throwError,
-          clearForm: this.clearForm,
-          refetchForm: this.refetchForm,
-          isChanged,
-          submitForm: this.submitFormContext(formType), //Change in name because we already have a function
-          // called submitForm, but no reason for the user to know
-          // about that
-          addToDeletedValues: this.addToDeletedValues,
-          updateCurrentValues: this.updateCurrentValues,
-          getDocument: () => currentDocument,
-          getLabel: (fieldName, fieldLocale) =>
-            getLabel(model, flatSchema, this.context, fieldName, fieldLocale),
-          initialDocument: this.state.initialDocument,
-          setFormState: this.setFormState,
-          addToSubmitForm: this.addToSubmitForm,
-          addToSuccessForm: this.addToSuccessForm,
-          addToFailureForm: this.addToFailureForm,
-          clearFormCallbacks: this.clearFormCallbacks,
-          errors: this.state.errors,
-          currentValues: this.state.currentValues,
-          deletedValues: this.state.deletedValues,
-          clearFieldErrors: this.clearFieldErrors,
-        }}
+      <FormLeavingManager
+        initialDocument={initialDocument}
+        currentDocument={currentDocument}
+        history={history}
+        warnUnsavedChanges={warnUnsavedChanges}
       >
-        <FormComponents.FormLayout {...formLayoutProps}>
-          {getFieldGroups(
-            this.props,
-            this.state,
-            this.context,
-            mutableFields,
-            this.context.formatMessage
-          ).map((group, i) => (
-            <FormComponents.FormGroup key={i} {...formGroupProps(group)} />
-          ))}
-        </FormComponents.FormLayout>
-      </FormContext.Provider>
+        <FormContext.Provider
+          value={{
+            throwError: this.throwError,
+            clearForm: this.clearForm,
+            refetchForm: this.refetchForm,
+            isChanged,
+            submitForm: this.submitFormContext(formType), //Change in name because we already have a function
+            // called submitForm, but no reason for the user to know
+            // about that
+            addToDeletedValues: this.addToDeletedValues,
+            updateCurrentValues: this.updateCurrentValues,
+            getDocument: () => currentDocument,
+            getLabel: (fieldName, fieldLocale) =>
+              getLabel(model, flatSchema, this.context, fieldName, fieldLocale),
+            initialDocument: this.state.initialDocument,
+            setFormState: this.setFormState,
+            addToSubmitForm: this.addToSubmitForm,
+            addToSuccessForm: this.addToSuccessForm,
+            addToFailureForm: this.addToFailureForm,
+            clearFormCallbacks: this.clearFormCallbacks,
+            errors: this.state.errors,
+            currentValues: this.state.currentValues,
+            deletedValues: this.state.deletedValues,
+            clearFieldErrors: this.clearFieldErrors,
+          }}
+        >
+          <FormComponents.FormLayout {...formLayoutProps}>
+            {getFieldGroups(
+              this.props,
+              this.state,
+              this.context,
+              mutableFields,
+              this.context.formatMessage
+            ).map((group, i) => (
+              <FormComponents.FormGroup key={i} {...formGroupProps(group)} />
+            ))}
+          </FormComponents.FormLayout>
+        </FormContext.Provider>
+      </FormLeavingManager>
     );
   }
 }
-
-const LeaveFormManager = () => {};
 
 export default Form;

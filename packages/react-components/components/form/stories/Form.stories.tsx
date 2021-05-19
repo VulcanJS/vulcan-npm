@@ -176,3 +176,22 @@ export const SelectFieldsForm = () => (
     })}
   />
 );
+
+export const WarnOnUnsavedChanges = () => (
+  <div>
+    <p>To test: fill the form and try to leave the page</p>
+    <Form
+      {...defaultProps}
+      model={createModel({
+        name: "Biography",
+        schema: { someText: { type: String, ...defaultFieldSchema } },
+      })}
+      warnUnsavedChanges={true}
+      history={
+        {
+          block: (getMessage) => () => window.confirm(getMessage()),
+        } /*{ ...actions("block") }*/
+      }
+    />
+  </div>
+);
