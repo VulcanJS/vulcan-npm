@@ -421,15 +421,6 @@ export class Form extends Component<FormProps, FormState> {
 
   /*
 
-  Get the current document
-
-  */
-  getDocument = () => {
-    return this.state.currentDocument;
-  };
-
-  /*
-
   Like getDocument, but cross-reference with getFieldNames()
   to only return fields that actually need to be submitted
 
@@ -437,6 +428,7 @@ export class Form extends Component<FormProps, FormState> {
 
   */
   getData = (customArgs) => {
+    const { currentDocument } = this.state;
     // we want to keep prefilled data even for hidden/removed fields
     let data = this.props.prefilledProps || {};
 
@@ -453,8 +445,8 @@ export class Form extends Component<FormProps, FormState> {
 
     // only keep relevant fields
     // for intl fields, make sure we look in foo_intl and not foo
-    const fields = getFieldNames(this.props, this.getDocument(), args);
-    data = { ...data, ...pick(this.getDocument(), ...fields) };
+    const fields = getFieldNames(this.props, currentDocument, args);
+    data = { ...data, ...pick(currentDocument, ...fields) };
 
     // compact deleted values
     this.state.deletedValues.forEach((path) => {
@@ -872,6 +864,7 @@ export class Form extends Component<FormProps, FormState> {
 
   */
   submitForm = (formType: FormType) => async (event?: Event) => {
+    const { currentDocument } = this.state;
     event && event.preventDefault();
     event && event.stopPropagation();
 
@@ -918,7 +911,7 @@ export class Form extends Component<FormProps, FormState> {
     } else {
       // update document form
       try {
-        const documentId = this.getDocument()._id;
+        const documentId = currentDocument._id;
         const result = await this.props.updateDocument({
           input: {
             id: documentId,
@@ -947,7 +940,7 @@ export class Form extends Component<FormProps, FormState> {
 
   */
   deleteDocument = () => {
-    const document = this.getDocument();
+    const document = this.state.currentDocument;
     const documentId = this.props.document._id;
     const documentTitle = document.title || document.name || "";
 
@@ -1019,7 +1012,7 @@ export class Form extends Component<FormProps, FormState> {
           // about that
           addToDeletedValues: this.addToDeletedValues,
           updateCurrentValues: this.updateCurrentValues,
-          getDocument: this.getDocument,
+          getDocument: () => currentDocument,
           getLabel: (fieldName, fieldLocale) =>
             getLabel(model, flatSchema, this.context, fieldName, fieldLocale),
           initialDocument: this.state.initialDocument,
@@ -1049,5 +1042,7 @@ export class Form extends Component<FormProps, FormState> {
     );
   }
 }
+
+const LeaveFormManager = () => {};
 
 export default Form;
