@@ -7,13 +7,14 @@ interface FormContextValue {
   addToSuccessForm: Function;
   clearForm: Function;
   clearFormCallbacks: Function;
+  clearFieldErrors: Function;
   currentValues: object;
   deletedValues: Array<any>;
   errors: Array<any>;
   getDocument: Function;
   getLabel: Function;
   initialDocument: object;
-  isChanged: Function;
+  isChanged: boolean;
   refetchForm: Function;
   setFormState: Function;
   submitForm: React.HTMLAttributes<HTMLFormElement>["onSubmit"];

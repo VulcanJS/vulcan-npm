@@ -105,6 +105,15 @@ const getDefaultValues = (convertedSchema) => {
 
 const compactObject = (o) => omitBy(o, (f) => f === null || f === undefined);
 
+const isNotSameDocument = (initialDocument, changedDocument) => {
+  const changedValue = find(changedDocument, (value, key, collection) => {
+    return !isEqualWith(value, initialDocument[key], (objValue, othValue) => {
+      if (!objValue && !othValue) return true;
+    });
+  });
+  return typeof changedValue !== "undefined";
+};
+
 const getInitialStateFromProps = (nextProps: FormProps): FormState => {
   const schema = nextProps.schema || nextProps.model.schema;
   const convertedSchema = convertSchema(schema);
@@ -272,8 +281,6 @@ const getChildrenProps = (
   const { deleteDocument } = callbacks;
   const commonProps = {
     document: currentDocument,
-    // TODO: should be passed through context
-    // clearFieldErrors: this.clearFieldErrors,
     formType,
     currentUser,
     disabled,
@@ -1069,7 +1076,9 @@ export class Form extends Component<FormProps, FormState> {
 
   */
   componentDidMount = () => {
-    this.checkRouteChange();
+    const { initialDocument, currentDocument } = this.state;
+    const isChanged = isNotSameDocument(initialDocument, currentDocument);
+    this.checkRouteChange(isChanged);
     this.checkBrowserClosing();
   };
 
@@ -1100,14 +1109,14 @@ export class Form extends Component<FormProps, FormState> {
   };
 
   // check for route change, prevent form content loss
-  checkRouteChange = () => {
+  checkRouteChange = (isChanged) => {
     // @see https://github.com/ReactTraining/react-router/issues/4635#issuecomment-297828995
     // @see https://github.com/ReactTraining/history#blocking-transitions
     if (this.getWarnUnsavedChanges()) {
       this.unblock = this.props.history.block((location, action) => {
         // return the message that will pop into a window.confirm alert
         // if returns nothing, the message won't appear and the user won't be blocked
-        return this.handleRouteLeave();
+        return this.handleRouteLeave(isChanged);
 
         /*
             // React-router 3 implementtion
@@ -1129,8 +1138,8 @@ export class Form extends Component<FormProps, FormState> {
   Check if the user has unsaved changes, returns a message if yes
   and nothing if not
   */
-  handleRouteLeave = () => {
-    if (this.isChanged()) {
+  handleRouteLeave = (isChanged) => {
+    if (isChanged) {
       const message = this.context.formatMessage({
         id: "forms.confirm_discard",
         defaultMessage: "Are you sure you want to discard your changes?",
@@ -1146,7 +1155,9 @@ export class Form extends Component<FormProps, FormState> {
    * the message returned is actually ignored by most browsers and a default message 'Are you sure you want to leave this page? You might have unsaved changes' is displayed. See the Notes section on the mozilla docs above
    */
   handlePageLeave = (event) => {
-    if (this.isChanged()) {
+    const { initialDocument, currentDocument } = this.state;
+    const isChanged = isNotSameDocument(initialDocument, currentDocument);
+    if (isChanged) {
       const message = this.context.formatMessage({
         id: "forms.confirm_discard",
         defaultMessage: "Are you sure you want to discard your changes?",
@@ -1157,23 +1168,6 @@ export class Form extends Component<FormProps, FormState> {
 
       return message;
     }
-  };
-  /*
-
-  Returns true if there are any differences between the initial document and the current one
-
-  */
-  isChanged = () => {
-    const initialDocument = this.state.initialDocument;
-    const changedDocument = this.getDocument();
-
-    const changedValue = find(changedDocument, (value, key, collection) => {
-      return !isEqualWith(value, initialDocument[key], (objValue, othValue) => {
-        if (!objValue && !othValue) return true;
-      });
-    });
-
-    return typeof changedValue !== "undefined";
   };
 
   /*
@@ -1406,10 +1400,12 @@ export class Form extends Component<FormProps, FormState> {
 
   render() {
     const { successComponent, document, currentUser } = this.props;
-    const { schema, initialDocument } = this.state;
+    const { schema, initialDocument, currentDocument } = this.state;
     const FormComponents = this.getMergedComponents();
 
     const formType: "edit" | "new" = document ? "edit" : "new";
+
+    const isChanged = isNotSameDocument(initialDocument, currentDocument);
     // Fields computation
     const mutableFields =
       formType === "edit"
@@ -1435,7 +1431,7 @@ export class Form extends Component<FormProps, FormState> {
           throwError: this.throwError,
           clearForm: this.clearForm,
           refetchForm: this.refetchForm,
-          isChanged: this.isChanged,
+          isChanged,
           submitForm: this.submitFormContext(formType), //Change in name because we already have a function
           // called submitForm, but no reason for the user to know
           // about that
@@ -1452,6 +1448,7 @@ export class Form extends Component<FormProps, FormState> {
           errors: this.state.errors,
           currentValues: this.state.currentValues,
           deletedValues: this.state.deletedValues,
+          clearFieldErrors: this.clearFieldErrors,
         }}
       >
         <FormComponents.FormLayout {...formLayoutProps}>

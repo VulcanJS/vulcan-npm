@@ -19,8 +19,6 @@ export interface FormGroupProps {
   document: any;
   currentUser?: User;
   itemProperties: any;
-  // TODO: get those from Form context instead
-  clearFieldErrors: any;
   formType: any;
   prefilledProps: any;
 }
@@ -57,9 +55,8 @@ export const FormGroup /*<FormGroupProps, FormGroupState>*/ = (
     itemProperties,
     prefilledProps,
     formType,
-    clearFieldErrors,
   } = props;
-  const { errors } = useFormContext();
+  const { errors, clearFieldErrors } = useFormContext();
   const [collapsed, setCollapsed] = useState<boolean>(
     group.startCollapsed || false
   );

@@ -208,8 +208,6 @@ export interface FormComponentProps<TField = any> extends FormField {
   query?: string;
   options?: Options | ((fciProps?: any) => Options);
   vulcanComponents: PossibleVulcanComponents;
-
-  clearFieldErrors: Function;
 }
 /**
  * Component for the display of any field of the form
@@ -255,7 +253,6 @@ export const FormComponent = (props: FormComponentProps) => {
 
   const {
     locale,
-    clearFieldErrors,
     max,
     path,
     //type,
@@ -266,7 +263,8 @@ export const FormComponent = (props: FormComponentProps) => {
     query,
     options,
   } = props;
-  const { updateCurrentValues, deletedValues } = useFormContext();
+  const { updateCurrentValues, deletedValues, clearFieldErrors } =
+    useFormContext();
 
   const type = datatype;
   const countFromProps = getCharacterCountsFromProps(props);
