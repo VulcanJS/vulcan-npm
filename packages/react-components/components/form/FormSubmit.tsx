@@ -8,6 +8,18 @@ import { canDeleteDocument } from "@vulcanjs/permissions";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 import { useFormContext } from "./FormContext";
 
+export interface FormSubmitProps {
+  submitLabel: any;
+  cancelLabel: any;
+  cancelCallback: any;
+  revertLabel: any;
+  revertCallback: any;
+  document: any;
+  deleteDocument: any;
+  model: any;
+  // classes: any,
+  currentUser: any;
+}
 export const FormSubmit = ({
   submitLabel,
   cancelLabel,

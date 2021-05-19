@@ -4,14 +4,12 @@ import { useVulcanComponents } from "./VulcanComponentsContext";
 export interface FormLayoutProps {
   commonProps: any;
   formProps: any;
-  errorProps: any;
   submitProps: any;
   repeatErrors?: boolean;
 }
 export const FormLayout: React.FC<FormLayoutProps> = ({
   commonProps,
   formProps,
-  errorProps,
   repeatErrors,
   submitProps,
   children,
@@ -19,13 +17,11 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
   const VulcanComponents = useVulcanComponents();
   return (
     <VulcanComponents.FormElement {...formProps}>
-      <VulcanComponents.FormErrors {...commonProps} {...errorProps} />
+      <VulcanComponents.FormErrors {...commonProps} />
 
       {children}
 
-      {repeatErrors && (
-        <VulcanComponents.FormErrors {...commonProps} {...errorProps} />
-      )}
+      {repeatErrors && <VulcanComponents.FormErrors {...commonProps} />}
 
       <VulcanComponents.FormSubmit {...commonProps} {...submitProps} />
     </VulcanComponents.FormElement>

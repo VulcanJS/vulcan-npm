@@ -117,7 +117,6 @@ ComponentType => {
     return InputComponent;
   } else {
     const inputName = getInputName(type, input);
-    console.log("input name", inputName);
     // else pick a predefined component
     switch (inputName) {
       case "text":

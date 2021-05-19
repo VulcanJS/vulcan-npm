@@ -1,12 +1,15 @@
-import React from "react";
+import React, { HTMLAttributes, PropsWithChildren } from "react";
+import { useFormContext } from "./FormContext";
 
+export type FormElementProps = HTMLAttributes<HTMLFormElement>;
 /**
  * The actual wrapper of the form
  */
 export const FormElement = React.forwardRef<HTMLFormElement>(
-  ({ children, ...otherProps }, ref) => {
+  ({ children, ...otherProps }: PropsWithChildren<FormElementProps>, ref) => {
+    const { submitForm } = useFormContext();
     return (
-      <form {...otherProps} ref={ref}>
+      <form onSubmit={submitForm} {...otherProps} ref={ref}>
         {children}
       </form>
     );

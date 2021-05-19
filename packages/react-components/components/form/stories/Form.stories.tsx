@@ -84,11 +84,17 @@ const withDefaultFieldSchema = (partialSchema) =>
     ...fieldSchema,
   }));
 
-const basicTypes = [String, Date, Boolean, Number, SimpleSchema.Integer];
+const basicTypes = [
+  ["String", String],
+  ["Date", Date],
+  ["Boolean", Boolean],
+  ["Number", Number],
+  ["SimpleSchema.Integer", SimpleSchema.Integer],
+];
 const basicFieldsSchema = withDefaultFieldSchema(
   fromPairs([
     // native inputs
-    ...basicTypes.map((type) => [type.toString(), { type }]),
+    ...basicTypes.map(([name, type]) => [name, { type }]),
     ...["password", "url", "email", "textarea", "statictext"].map((input) => {
       const fieldName = `string-${input}`;
       return [

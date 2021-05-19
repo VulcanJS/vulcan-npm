@@ -1,8 +1,13 @@
 import React from "react";
+import { useFormContext } from "./FormContext";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 
-export const FormErrors = ({ errors }) => {
+/**
+ * Display errors for the current form, based on the context
+ */
+export const FormErrors = () => {
   const VulcanComponents = useVulcanComponents();
+  const { errors } = useFormContext();
 
   return (
     <div className="form-errors">

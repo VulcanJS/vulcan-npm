@@ -16,7 +16,7 @@ interface FormContextValue {
   isChanged: Function;
   refetchForm: Function;
   setFormState: Function;
-  submitForm: Function;
+  submitForm: React.HTMLAttributes<HTMLFormElement>["onSubmit"];
   throwError: Function;
   updateCurrentValues: Function;
 }

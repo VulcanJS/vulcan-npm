@@ -69,6 +69,7 @@ import {
 } from "./defaultVulcanComponents";
 import { FormContext } from "./FormContext";
 import { FormLayoutProps } from "./FormLayout";
+import { FormSubmitProps } from "./FormSubmit";
 
 type FormType = "new" | "edit";
 
@@ -104,7 +105,7 @@ const getDefaultValues = (convertedSchema) => {
 
 const compactObject = (o) => omitBy(o, (f) => f === null || f === undefined);
 
-const getInitialStateFromProps = (nextProps: FormProps) => {
+const getInitialStateFromProps = (nextProps: FormProps): FormState => {
   const schema = nextProps.schema || nextProps.model.schema;
   const convertedSchema = convertSchema(schema);
   const formType: FormType = nextProps.document ? "edit" : "new";
@@ -168,7 +169,7 @@ const getFieldNames = (
     mutableFields?: Array<any>;
   } = {}
 ) => {
-  const { fields, addFields, removeFields, hideFields } = props;
+  const { fields, addFields, removeFields } = props;
   const defaultOptions = {
     excludeHiddenFields: true,
     excludeRemovedFields: true,
@@ -238,6 +239,98 @@ const getFieldNames = (
   return relevantFields;
 };
 
+const getChildrenProps = (
+  props: FormProps,
+  state: FormState,
+  options: { formType: FormType },
+  // TODO: that belongs to the context instead
+  callbacks: { deleteDocument: Function }
+): {
+  formLayoutProps: FormLayoutProps;
+  formGroupProps: Function;
+  commonProps: any;
+  formSubmitProps: FormSubmitProps;
+} => {
+  const {
+    currentUser,
+    repeatErrors,
+    submitLabel,
+    cancelLabel,
+    revertLabel,
+    cancelCallback,
+    revertCallback,
+    id,
+    model,
+    prefilledProps,
+    itemProperties,
+    contextName,
+    showRemove,
+    showDelete,
+  } = props;
+  const { disabled, currentDocument } = state;
+  const { formType } = options;
+  const { deleteDocument } = callbacks;
+  const commonProps = {
+    document: currentDocument,
+    // TODO: should be passed through context
+    // clearFieldErrors: this.clearFieldErrors,
+    formType,
+    currentUser,
+    disabled,
+    prefilledProps,
+    itemProperties,
+    contextName,
+  };
+
+  const docClassName = `document-${formType}`;
+  const modelName = model.name.toLowerCase();
+  const formProps = {
+    className: `${docClassName} ${docClassName}-${modelName}`,
+    id: id,
+    // It's the form element responsibility to get submitForm from context
+    // onSubmit: this.submitForm(formType),
+    // TODO: update to useRef
+    //ref: (e) => {
+    //  this.form = e;
+    //},
+  };
+
+  const formGroupProps = (group) => ({
+    key: group.name,
+    ...group,
+    group: omit(group, ["fields"]),
+    ...commonProps,
+  });
+
+  const formSubmitProps = {
+    model,
+    currentUser,
+    submitLabel,
+    cancelLabel,
+    revertLabel,
+    cancelCallback,
+    revertCallback,
+    document: currentDocument,
+    // TODO: should probably be passed through context
+    deleteDocument:
+      (formType === "edit" && showRemove && showDelete && deleteDocument) ||
+      null,
+  };
+
+  const formLayoutProps = {
+    formProps: formProps,
+    repeatErrors: repeatErrors,
+    submitProps: formSubmitProps,
+    commonProps,
+  };
+  return {
+    commonProps,
+    formSubmitProps,
+    formGroupProps,
+    formLayoutProps,
+  };
+};
+
 /*
 
 1. Constructor
@@ -279,9 +372,10 @@ export interface FormProps<TModel = { [key in string]: any }>
   document?: any;
   disabled?: boolean;
   currentUser?: User;
-  addFields?: any;
-  removeFields?: any;
-  hideFields?: any;
+  addFields?: Array<string>;
+  removeFields?: Array<string>;
+  // deprecated
+  //hideFields?: any;
   warnUnsavedChanges?: boolean;
   contextName?: string;
   formComponents?: PossibleFormComponents;
@@ -506,14 +600,15 @@ export class Form extends Component<FormProps, FormState> {
   Get all field groups
 
   */
-  getFieldGroups = (mutableFields: Array<any>) => {
+  getFieldGroups = (mutableFields: Array<string>) => {
     // build fields array by iterating over the list of field names
-    let fields = getFieldNames(this.props, this.getDocument()).map(
-      (fieldName) => {
-        // get schema for the current field
-        return this.createField(fieldName, this.state.schema, mutableFields);
-      }
-    );
+    let fields = getFieldNames(this.props, this.getDocument(), {
+      mutableFields,
+      schema: this.state.schema,
+    }).map((fieldName) => {
+      // get schema for the current field
+      return this.createField(fieldName, this.state.schema, mutableFields);
+    });
 
     fields = sortBy(fields, "order");
 
@@ -1305,105 +1400,6 @@ export class Form extends Component<FormProps, FormState> {
   // ------------------------- Props to Pass ----------------------------- //
   // --------------------------------------------------------------------- //
 
-  getCommonProps = ({ formType }: { formType: FormType }) => {
-    const { errors, currentValues, deletedValues, disabled } = this.state;
-    const {
-      currentUser,
-      prefilledProps,
-      formComponents,
-      itemProperties,
-      contextName,
-    } = this.props;
-    return {
-      errors,
-      throwError: this.throwError,
-      document: this.getDocument(),
-      currentValues,
-      updateCurrentValues: this.updateCurrentValues,
-      deletedValues,
-      addToDeletedValues: this.addToDeletedValues,
-      clearFieldErrors: this.clearFieldErrors,
-      formType,
-      currentUser,
-      disabled,
-      prefilledProps,
-      formComponents: this.getMergedComponents(),
-      FormComponents: this.getMergedComponents(),
-      itemProperties,
-      submitForm: this.submitForm(formType),
-      contextName,
-    };
-  };
-
-  getFormProps = ({ formType }: { formType: FormType }) => {
-    const docClassName = `document-${formType}`;
-    const modelName = this.props.model.name.toLowerCase();
-
-    return {
-      className: `${docClassName} ${docClassName}-${modelName}`,
-      id: this.props.id,
-      onSubmit: this.submitForm(formType),
-      ref: (e) => {
-        this.form = e;
-      },
-    };
-  };
-
-  getFormLayoutProps = ({
-    formType,
-  }: {
-    formType: FormType;
-  }): FormLayoutProps => {
-    const { repeatErrors } = this.props;
-    return {
-      formProps: this.getFormProps({ formType }),
-      errorProps: this.getFormErrorsProps(),
-      repeatErrors: repeatErrors,
-      submitProps: this.getFormSubmitProps({ formType }),
-      commonProps: this.getCommonProps({ formType }),
-    };
-  };
-
-  getFormErrorsProps = () => ({
-    errors: this.state.errors,
-  });
-
-  getFormGroupProps = ({ formType, group }) => ({
-    key: group.name,
-    ...group,
-    group: omit(group, ["fields"]),
-    ...this.getCommonProps({ formType }),
-  });
-
-  getFormSubmitProps = ({ formType }: { formType: FormType }) => {
-    const {
-      submitLabel,
-      cancelLabel,
-      revertLabel,
-      cancelCallback,
-      revertCallback,
-    } = this.props;
-    const { currentValues, deletedValues, errors } = this.state;
-    return {
-      submitForm: this.submitForm(formType),
-      submitLabel,
-      cancelLabel,
-      revertLabel,
-      cancelCallback,
-      revertCallback,
-      document: this.getDocument(),
-      deleteDocument:
-        (formType === "edit" &&
-          this.props.showRemove &&
-          this.props.showDelete &&
-          this.deleteDocument) ||
-        null,
-      currentValues,
-      deletedValues,
-      errors,
-    };
-  };
-
   // --------------------------------------------------------------------- //
   // ----------------------------- Render -------------------------------- //
   // --------------------------------------------------------------------- //
@@ -1413,53 +1409,23 @@ export class Form extends Component<FormProps, FormState> {
     const { schema, initialDocument } = this.state;
     const FormComponents = this.getMergedComponents();
 
-    /*
-  If a document is being passed, this is an edit form
-  */
-    //getFormType = () => {
-    //  return this.props.document ? "edit" : "new";
-    //};
     const formType: "edit" | "new" = document ? "edit" : "new";
-
-    /*
-  Get a list of all insertable fields
-  */
-    // getInsertableFields = (schema) => {
-    //   return getInsertableFields(
-    //     schema || this.state.schema,
-    //     this.props.currentUser
-    //   );
-    // };
-    const insertableFields = getInsertableFields(schema, currentUser);
-
-    /*
-  Get a list of all editable fields
-  */
-    //getEditableFields = (schema) => {
-    //  return getEditableFields(
-    //    schema || this.state.schema,
-    //    this.props.currentUser,
-    //    this.state.initialDocument
-    //  );
-    //};
-    const editableFields = getEditableFields(
-      schema,
-      currentUser,
-      initialDocument
-    );
-
-    /*
-
-  Get a list of all mutable (insertable/editable depending on current form type) fields
-
-  */
-    // getMutableFields = (schema) => {
-    //   return this.getFormType() === "edit"
-    //     ? this.getEditableFields(schema)
-    //     : this.getInsertableFields(schema);
-    // };
+    // Fields computation
     const mutableFields =
-      formType === "edit" ? editableFields : insertableFields;
+      formType === "edit"
+        ? getEditableFields(schema, currentUser, initialDocument)
+        : getInsertableFields(schema, currentUser);
+
+    const { formLayoutProps, formGroupProps } = getChildrenProps(
+      this.props,
+      this.state,
+      {
+        formType,
+      },
+      {
+        deleteDocument: this.deleteDocument,
+      }
+    );
 
     return this.state.success && successComponent ? (
       successComponent
@@ -1488,12 +1454,9 @@ export class Form extends Component<FormProps, FormState> {
           deletedValues: this.state.deletedValues,
         }}
       >
-        <FormComponents.FormLayout {...this.getFormLayoutProps({ formType })}>
+        <FormComponents.FormLayout {...formLayoutProps}>
           {this.getFieldGroups(mutableFields).map((group, i) => (
-            <FormComponents.FormGroup
-              key={i}
-              {...this.getFormGroupProps({ formType, group })}
-            />
+            <FormComponents.FormGroup key={i} {...formGroupProps(group)} />
           ))}
         </FormComponents.FormLayout>
       </FormContext.Provider>
