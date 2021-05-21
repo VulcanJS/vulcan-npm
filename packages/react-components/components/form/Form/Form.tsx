@@ -56,7 +56,7 @@ import { FormLayoutProps } from "../FormLayout";
 import { FormSubmitProps } from "../FormSubmit";
 import { getFieldGroups, getFieldNames, getLabel } from "./fields";
 import { isNotSameDocument } from "./utils";
-import { useWarnOnUnsaved } from "./useWarnOnUnsaved";
+import { useWarnOnUnsaved } from "../useWarnOnUnsaved";
 
 type FormType = "new" | "edit";
 
