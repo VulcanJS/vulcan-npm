@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from "react";
-import PropTypes from "prop-types";
 import { useIntlContext } from "@vulcanjs/i18n";
 import { whitelistInputProps } from "./ui_utils";
+import { FormComponentProps } from "./FormComponent";
 /*
 import {
   instantiateComponent,
@@ -14,16 +14,16 @@ import { PossibleVulcanComponents } from "./defaultVulcanComponents";
 import { clearableInputs } from "./inputs/consts";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 
-interface FormComponentInnerProps {
+export interface FormComponentInnerProps extends FormComponentProps {
   inputType: VulcanCoreInput;
-  disabled?: boolean;
+  //disabled?: boolean;
+  // help?: string;
   /**
    * Callback called when clicking on the "clear input" button
    */
   clearField?: MouseEventHandler<HTMLButtonElement>;
   handleChange?: Function;
   itemProperties?: any;
-  help?: string;
   description?: string;
   loading?: boolean;
   submitForm: any;
@@ -79,7 +79,7 @@ export const FormComponentInner = (props: FormComponentInnerProps) => {
     }
   };
 
-  const getProperties = () => {
+  const getProperties = (): FormInputProps => {
     const {
       handleChange,
       inputType,
@@ -91,12 +91,8 @@ export const FormComponentInner = (props: FormComponentInnerProps) => {
       formComponents,
       intlKeys,
     } = props;
-    const properties: FormComponentInnerProps & {
-      inputProperties: React.HTMLProps<HTMLInputElement>;
-      itemProperties: any; // TODO
-    } = {
+    const properties = {
       ...props,
-
       inputProperties: {
         ...whitelistInputProps(props),
         onChange: (event) => {
@@ -180,3 +176,10 @@ export const FormComponentInner = (props: FormComponentInnerProps) => {
     </div>
   );
 };
+
+export interface FormInputProps extends FormComponentInnerProps {
+  // TODO: note sure about this, there also seems to be label and other props that are not HTMLInput props per se
+  // It may depend on the type of input as well, maybe the type is more an union
+  inputProperties: React.HTMLProps<HTMLInputElement>;
+  itemProperties: any; // TODO
+}

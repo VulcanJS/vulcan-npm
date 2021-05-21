@@ -18,7 +18,6 @@ import { FormField } from "./typings";
 import {
   VulcanFieldSchema,
   VulcanFieldInput,
-  VulcanCoreInput,
   VulcanFieldType,
 } from "@vulcanjs/schema";
 import { getAutoInputFromType } from "./inputs/consts";
@@ -75,10 +74,7 @@ const isObjectField = (type: VulcanFieldSchema["type"]) => {
   Get form input type, either based on input props, or by guessing based on form field type
 
   */
-const getInputName = (
-  fieldType: VulcanFieldType,
-  input?: VulcanCoreInput | string
-) => {
+const getInputName = (fieldType: VulcanFieldType, input?: VulcanFieldInput) => {
   if (input) return input;
   return getAutoInputFromType(fieldType);
 };
@@ -419,7 +415,6 @@ export const FormComponent = (props: FormComponentProps) => {
     handleChange: handleChange,
     clearField: clearField,
     formInput: getFormInput({ FormComponents, input, type }),
-    formComponents: FormComponents,
   };
 
   // if there is no query, handle options here; otherwise they will be handled by

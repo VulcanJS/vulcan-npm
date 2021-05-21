@@ -10,10 +10,8 @@ import { VulcanSchema } from "@vulcanjs/schema";
 import { FormProps, FormState } from "./Form";
 import uniq from "lodash/uniq";
 import compact from "lodash/compact";
-import _ from "underscore";
 import get from "lodash/get";
 import pick from "lodash/pick";
-import set from "lodash/set";
 import {
   isIntlField,
   formatLabel,
@@ -24,6 +22,9 @@ import {
 import map from "lodash/map";
 import sortBy from "lodash/sortBy";
 import uniqBy from "lodash/uniqBy";
+import difference from "lodash/difference";
+import reject from "lodash/reject";
+import intersection from "lodash/intersection";
 import _filter from "lodash/filter";
 import { capitalize } from "@vulcanjs/utils";
 import { VulcanFieldSchema } from "@vulcanjs/schema/dist/typings";
@@ -164,7 +165,7 @@ export const getFieldNames = (
 
   // if "fields" prop is specified, restrict list of fields to it
   if (typeof fields !== "undefined" && fields.length > 0) {
-    relevantFields = _.intersection(relevantFields, fields);
+    relevantFields = intersection(relevantFields, fields);
   }
 
   // if "hideFields" prop is specified, remove its fields
@@ -172,7 +173,7 @@ export const getFieldNames = (
     // OpenCRUD backwards compatibility
     //const removeFields = removeFields || hideFields;
     if (typeof removeFields !== "undefined" && removeFields.length > 0) {
-      relevantFields = _.difference(relevantFields, removeFields);
+      relevantFields = difference(relevantFields, removeFields);
     }
   }
 
@@ -188,7 +189,7 @@ export const getFieldNames = (
   // remove all hidden fields
   if (excludeHiddenFields) {
     const document = currentDocument;
-    relevantFields = _.reject(relevantFields, (fieldName) => {
+    relevantFields = reject(relevantFields, (fieldName) => {
       const hidden = schema[fieldName].hidden;
       return typeof hidden === "function"
         ? hidden({ props, document })
@@ -457,7 +458,7 @@ export const getFieldGroups = (
       group.label ||
       //this.context.formatMessage({ id: group.name }) ||
       capitalize(group.name);
-    const groupFields = _.filter(fields, (field) => {
+    const groupFields = _filter(fields, (field) => {
       return field.group && field.group.name === group.name;
     });
     const groupWithFields: GroupWithFields = {

@@ -78,9 +78,6 @@ import mapValues from "lodash/mapValues";
 const withDefaultFieldSchema = (partialSchema) =>
   mapValues(partialSchema, (fieldSchema) => ({
     ...defaultFieldSchema,
-    label: `${fieldSchema.type}${
-      fieldSchema.input ? "-" + fieldSchema.input : ""
-    }`,
     ...fieldSchema,
   }));
 
@@ -114,7 +111,18 @@ const basicFieldsSchema = withDefaultFieldSchema(
   */
   ])
 );
-export const AllBasicFieldsForm = () => (
+
+export const OneTextInput = () => (
+  <Form
+    {...defaultProps}
+    model={createModel({
+      name: "Biography",
+      schema: { someText: { type: String, ...defaultFieldSchema } },
+    })}
+  />
+);
+
+export const AllBasicFields = () => (
   <Form
     {...defaultProps}
     model={createModel({
@@ -187,11 +195,6 @@ export const WarnOnUnsavedChanges = () => (
         schema: { someText: { type: String, ...defaultFieldSchema } },
       })}
       warnUnsavedChanges={true}
-      history={
-        {
-          block: (getMessage) => () => window.confirm(getMessage()),
-        } /*{ ...actions("block") }*/
-      }
     />
   </div>
 );

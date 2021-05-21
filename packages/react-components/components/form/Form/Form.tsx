@@ -272,10 +272,7 @@ type PropsFromPropTypes = {
 }; // dumb type just to remove errors, to be improved by replacing propTypes with ts
 export interface FormProps<TModel = { [key in string]: any }>
   extends PropsFromPropTypes {
-  // TODO: router stuffs
   refetch?: Function;
-  // TODO: this was initially implemented with react-router, we should confirm how it translates in Next or any other framework
-  history?: any;
   id?: string;
   // TODO: merge
   components?: {};
