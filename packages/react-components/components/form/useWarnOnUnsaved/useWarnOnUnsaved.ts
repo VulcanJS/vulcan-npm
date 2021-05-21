@@ -35,7 +35,7 @@ export const useWarnOnUnsaved = ({
    * the message returned is actually ignored by most browsers and a default message 'Are you sure you want to leave this page? You might have unsaved changes' is displayed. See the Notes section on the mozilla docs above
    */
   const handlePageLeave = (event) => {
-    debugTransitions("running handlePageLeave");
+    debugTransitions("running handlePageLeave", event);
     const message = context.formatMessage({
       id: "forms.confirm_discard",
       defaultMessage: "Are you sure you want to discard your changes?",
