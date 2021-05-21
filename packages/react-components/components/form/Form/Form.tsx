@@ -56,7 +56,7 @@ import { FormLayoutProps } from "../FormLayout";
 import { FormSubmitProps } from "../FormSubmit";
 import { getFieldGroups, getFieldNames, getLabel } from "./fields";
 import { isNotSameDocument } from "./utils";
-import { FormLeavingManager } from "./FormLeavingManager";
+import { useWarnOnUnsaved } from "./useWarnOnUnsaved";
 
 type FormType = "new" | "edit";
 
@@ -225,6 +225,23 @@ const getChildrenProps = (
     formGroupProps,
     formLayoutProps,
   };
+};
+
+// component form until we go stateless
+const FormWarnUnsaved = ({
+  isChanged,
+  warnUnsavedChanges,
+  children,
+}: {
+  isChanged: boolean;
+  warnUnsavedChanges?: boolean;
+  children: React.ReactNode;
+}) => {
+  useWarnOnUnsaved({
+    isChanged,
+    warnUnsavedChanges,
+  });
+  return <>{children}</>;
 };
 
 /*
@@ -815,7 +832,7 @@ export class Form extends Component<FormProps, FormState> {
         const meta = this.props.updateDocumentMeta;
         // in new versions of Apollo Client errors are no longer thrown/caught
         // but can instead be provided as props by the useMutation hook
-        if (meta.error) {
+        if (meta?.error) {
           this.mutationErrorCallback(document, meta.error);
         } else {
           this.editMutationSuccessCallback(result);
@@ -872,14 +889,12 @@ export class Form extends Component<FormProps, FormState> {
       currentUser,
       model,
       warnUnsavedChanges,
-      history,
     } = this.props;
     const { schema, initialDocument, currentDocument, flatSchema } = this.state;
     const FormComponents = this.getMergedComponents();
 
     const formType: "edit" | "new" = document ? "edit" : "new";
 
-    const isChanged = isNotSameDocument(initialDocument, currentDocument);
     // Fields computation
     const mutableFields =
       formType === "edit"
@@ -896,14 +911,13 @@ export class Form extends Component<FormProps, FormState> {
         deleteDocument: this.deleteDocument,
       }
     );
+    const isChanged = isNotSameDocument(initialDocument, currentDocument);
 
     return this.state.success && successComponent ? (
       successComponent
     ) : (
-      <FormLeavingManager
-        initialDocument={initialDocument}
-        currentDocument={currentDocument}
-        history={history}
+      <FormWarnUnsaved
+        isChanged={isChanged}
         warnUnsavedChanges={warnUnsavedChanges}
       >
         <FormContext.Provider
@@ -944,7 +958,7 @@ export class Form extends Component<FormProps, FormState> {
             ))}
           </FormComponents.FormLayout>
         </FormContext.Provider>
-      </FormLeavingManager>
+      </FormWarnUnsaved>
     );
   }
 }
