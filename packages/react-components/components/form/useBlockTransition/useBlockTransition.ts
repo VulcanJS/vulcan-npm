@@ -1,8 +1,7 @@
-import { useIntlContext } from "@vulcanjs/i18n";
 import { useEffect, useRef } from "react";
 import { block } from "./block";
 import debug from "debug";
-const debugTransitions = debug("useBlockTransition");
+const debugTransitions = debug("vn:router-transitions");
 
 /**
  * Can trigger an alert on unsaved changes
@@ -16,31 +15,13 @@ const debugTransitions = debug("useBlockTransition");
  */
 export const useBlockTransition = ({
   shouldBlock,
+  getBlockedMessage,
 }: {
   shouldBlock: boolean;
+  getBlockedMessage: (evt?: BeforeUnloadEvent) => string;
 }) => {
   // function to unblock the form
   const unblockRef = useRef<Function | undefined>();
-  const context = useIntlContext();
-
-  /**
-   * To be passed to onbeforeunload event. The returned message will be displayed
-   * by the prompt.
-   *
-   * see https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload
-   * the message returned is actually ignored by most browsers and a default message 'Are you sure you want to leave this page? You might have unsaved changes' is displayed. See the Notes section on the mozilla docs above
-   */
-  const handlePageLeave = (event) => {
-    debugTransitions("running handlePageLeave", event);
-    const message = context.formatMessage({
-      id: "forms.confirm_discard",
-      defaultMessage: "Are you sure you want to discard your changes?",
-    });
-    if (event) {
-      event.returnValue = message;
-    }
-    return message;
-  };
 
   useEffect(() => {
     const isBlocking = !!unblockRef.current;
@@ -61,16 +42,29 @@ export const useBlockTransition = ({
       }
     };
     // block
+    const onBlocked = (evt?: BeforeUnloadEvent): string => {
+      const message = getBlockedMessage(evt);
+      debugTransitions(
+        "user is being blocked after trying to leave the page, with message: " +
+          message
+      );
+      if (evt) {
+        evt.returnValue = message;
+      }
+      return message;
+    };
     if (shouldBlock) {
       debugTransitions(
         "should block transition, setting up relevant event listener"
       );
-      unblockRef.current = block(handlePageLeave, onUnblock);
+      unblockRef.current = block(onBlocked, onUnblock);
     }
     // unblock if not blocking anymore and was blocking previously
     if (!shouldBlock && isBlocking) {
       debugTransitions("should unblock (state has been reinitialized)");
-      unblockRef.current();
+      if (unblockRef.current) {
+        unblockRef.current();
+      }
     }
     // trigger the potentially registered unblock function when component unmounts
     //return onUnblock;
