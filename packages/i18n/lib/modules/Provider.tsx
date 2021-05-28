@@ -21,7 +21,7 @@ const formatAny = (something: any): string => {
   return "" + something;
 };
 
-interface IntlProviderContextValue {
+export interface IntlProviderContextValue {
   formatDate: Formatter;
   formatTime: Formatter;
   formatRelative: Formatter;

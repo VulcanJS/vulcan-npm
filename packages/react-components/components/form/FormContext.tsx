@@ -16,7 +16,8 @@ interface FormContextValue {
   initialDocument: object;
   isChanged: boolean;
   refetchForm: Function;
-  setFormState: Function;
+  // TODO: we deprecate this, it doesn't make sense to allow a child to setState this way
+  // setFormState: Function;
   submitForm: React.HTMLAttributes<HTMLFormElement>["onSubmit"];
   throwError: Function;
   updateCurrentValues: Function;

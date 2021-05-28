@@ -12,10 +12,10 @@ This component expects:
 
 */
 
-import React, { Component } from "react";
+import React, { Component, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { runCallbacks, getErrors } from "@vulcanjs/core";
-import { IntlProviderContext } from "@vulcanjs/i18n";
+import { IntlProviderContext, useIntlContext } from "@vulcanjs/i18n";
 import { removeProperty } from "@vulcanjs/utils";
 import _filter from "lodash/filter";
 import cloneDeep from "lodash/cloneDeep";
@@ -57,6 +57,7 @@ import { FormSubmitProps } from "../FormSubmit";
 import { getFieldGroups, getFieldNames, getLabel } from "./fields";
 import { isNotSameDocument } from "./utils";
 import { useWarnOnUnsaved } from "../useWarnOnUnsaved";
+import { useVulcanComponents } from "../VulcanComponentsContext";
 
 type FormType = "new" | "edit";
 
@@ -139,7 +140,7 @@ const getInitialStateFromProps = (nextProps: FormProps): FormState => {
 
 const getChildrenProps = (
   props: FormProps,
-  state: FormState,
+  state: Pick<FormState, "disabled" | "currentDocument">,
   options: { formType: FormType },
   // TODO: that belongs to the context instead
   callbacks: { deleteDocument: Function }
@@ -246,6 +247,72 @@ const FormWarnUnsaved = ({
 
 /*
 
+  Like getDocument, but cross-reference with getFieldNames()
+  to only return fields that actually need to be submitted
+
+  Also remove any deleted values.
+
+  */
+const getData = (
+  customArgs,
+  props: FormProps,
+  state: Pick<FormState, "currentDocument" | "deletedValues">,
+  // previously from "this" object
+  { submitFormCallbacks, form }: any
+) => {
+  const { currentDocument } = state;
+  const { prefilledProps } = props;
+  // we want to keep prefilled data even for hidden/removed fields
+  let data = prefilledProps || {};
+
+  // omit prefilled props for nested fields
+  data = omitBy(data, (value, key) => key.endsWith(".$"));
+
+  const args = {
+    excludeRemovedFields: false,
+    excludeHiddenFields: false,
+    replaceIntlFields: true,
+    addExtraFields: false,
+    ...customArgs,
+  };
+
+  // only keep relevant fields
+  // for intl fields, make sure we look in foo_intl and not foo
+  const fields = getFieldNames(props, currentDocument, args);
+  data = { ...data, ...pick(currentDocument, ...fields) };
+
+  // compact deleted values
+  state.deletedValues.forEach((path) => {
+    if (path.includes(".")) {
+      /*
+
+        If deleted field is a nested field, nested array, or nested array item, try to compact its parent array
+
+        - Nested field: 'address.city'
+        - Nested array: 'addresses.1'
+        - Nested array item: 'addresses.1.city'
+
+        */
+      compactParent(data, path);
+    }
+  });
+
+  // run data object through submitForm callbacks
+  data = runCallbacks({
+    callbacks: submitFormCallbacks,
+    iterator: data,
+    args: [
+      {
+        /*form: this*/
+      },
+    ],
+  });
+
+  return data;
+};
+
+/*
+
 1. Constructor
 2. Helpers
 3. Errors
@@ -315,6 +382,8 @@ export interface FormProps<TModel = { [key in string]: any }>
   /*Whether to repeat validation errors at the bottom of the form.*/
   repeatErrors?: boolean;
   //Callbacks
+  /** Callback ran on first render */
+  initCallback?: Function;
   /*A callback called on form submission on the form data. Can return the submitted data object as well.*/
   submitCallback?: (data) => any;
   /*A callback called on mutation success.*/
@@ -350,144 +419,31 @@ An example would be a createdAt date added automatically on creation even though
   updateDocumentMeta?: { error?: any };
 }
 
-export class Form extends Component<FormProps, FormState> {
-  constructor(props) {
-    super(props);
-    const state = getInitialStateFromProps(props);
-    this.state = {
-      ...state,
-    };
-    if (props.initCallback) props.initCallback(state.currentDocument);
-  }
-
-  unblock: Function;
-  form: any;
-
-  static propTypes = {
-    // main options
-
-    document: PropTypes.object, // if a document is passed, this will be an edit form
-    schema: PropTypes.object, // usually not needed
-
-    // graphQL
-    // => now mutations have dynamic names
-    //newMutation: PropTypes.func, // the new mutation
-    //editMutation: PropTypes.func, // the edit mutation
-    //removeMutation: PropTypes.func, // the remove mutation
-
-    // form
-    prefilledProps: PropTypes.object,
-    layout: PropTypes.string,
-    fields: PropTypes.arrayOf(PropTypes.string),
-    addFields: PropTypes.arrayOf(PropTypes.string),
-    removeFields: PropTypes.arrayOf(PropTypes.string),
-    hideFields: PropTypes.arrayOf(PropTypes.string), // OpenCRUD backwards compatibility
-    showRemove: PropTypes.bool,
-    showDelete: PropTypes.bool,
-    submitLabel: PropTypes.node,
-    cancelLabel: PropTypes.node,
-    revertLabel: PropTypes.node,
-    repeatErrors: PropTypes.bool,
-    warnUnsavedChanges: PropTypes.bool,
-    formComponents: PropTypes.object,
-    disabled: PropTypes.bool,
-    itemProperties: PropTypes.object,
-    successComponent: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.element,
-    ]),
-    contextName: PropTypes.string,
-
-    // callbacks
-    ...callbackProps,
-
-    currentUser: PropTypes.object,
-    client: PropTypes.object,
-  };
-
-  static defaultProps = {
+export const Form = (props: FormProps) => {
+  const { initCallback } = props;
+  const initialState = getInitialStateFromProps(props);
+  const { schema, originalSchema, flatSchema } = initialState;
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false; // toggle flag after first render/mounting
+      return;
+    }
+    if (initCallback) initCallback(initialState.currentDocument);
+  }, [initCallback]);
+  const defaultProps = {
     layout: "horizontal",
     prefilledProps: {},
     repeatErrors: false,
     showRemove: true,
     showDelete: true,
   };
-
-  static contextType = IntlProviderContext;
-
-  defaultValues = {};
-
-  submitFormCallbacks: Array<Function> = [];
-  successFormCallbacks: Array<Function> = [];
-  failureFormCallbacks: Array<Function> = [];
-
-  // --------------------------------------------------------------------- //
-  // ------------------------------- Helpers ----------------------------- //
-  // --------------------------------------------------------------------- //
-
-  /*
-
-  Like getDocument, but cross-reference with getFieldNames()
-  to only return fields that actually need to be submitted
-
-  Also remove any deleted values.
-
-  */
-  getData = (customArgs) => {
-    const { currentDocument } = this.state;
-    // we want to keep prefilled data even for hidden/removed fields
-    let data = this.props.prefilledProps || {};
-
-    // omit prefilled props for nested fields
-    data = omitBy(data, (value, key) => key.endsWith(".$"));
-
-    const args = {
-      excludeRemovedFields: false,
-      excludeHiddenFields: false,
-      replaceIntlFields: true,
-      addExtraFields: false,
-      ...customArgs,
-    };
-
-    // only keep relevant fields
-    // for intl fields, make sure we look in foo_intl and not foo
-    const fields = getFieldNames(this.props, currentDocument, args);
-    data = { ...data, ...pick(currentDocument, ...fields) };
-
-    // compact deleted values
-    this.state.deletedValues.forEach((path) => {
-      if (path.includes(".")) {
-        /*
-
-        If deleted field is a nested field, nested array, or nested array item, try to compact its parent array
-
-        - Nested field: 'address.city'
-        - Nested array: 'addresses.1'
-        - Nested array item: 'addresses.1.city'
-
-        */
-        compactParent(data, path);
-      }
-    });
-
-    // run data object through submitForm callbacks
-    data = runCallbacks({
-      callbacks: this.submitFormCallbacks,
-      iterator: data,
-      args: [{ form: this }],
-    });
-
-    return data;
-  };
-
-  /*
-
-  Get form components, in case any has been overwritten for this specific form
-
-  */
-  // TODO: use components from context instead when moving to stateless
-  getMergedComponents = () =>
-    merge({}, defaultVulcanComponents, this.props.components);
+  const allProps = { ...defaultProps, ...props };
+  const defaultValues = {};
+  const submitFormCallbacks: Array<Function> = [];
+  const successFormCallbacks: Array<Function> = [];
+  const failureFormCallbacks: Array<Function> = [];
+  const intl = useIntlContext();
 
   // --------------------------------------------------------------------- //
   // ------------------------------- Errors ------------------------------ //
@@ -504,16 +460,15 @@ export class Form extends Component<FormProps, FormState> {
     - message: if id cannot be used as i81n key, message will be used
 
   */
-  throwError = (error) => {
+  const [errors, setErrors] = useState<Array<any>>([]);
+  const throwError = (error) => {
     let formErrors = getErrors(error);
 
     // eslint-disable-next-line no-console
     console.log(formErrors);
 
     // add error(s) to state
-    this.setState((prevState) => ({
-      errors: [...prevState.errors, ...formErrors],
-    }));
+    setErrors((prevErrors) => [...prevErrors, ...formErrors]);
   };
 
   /*
@@ -521,59 +476,77 @@ export class Form extends Component<FormProps, FormState> {
   Clear errors for a field
 
   */
-  clearFieldErrors = (path) => {
-    this.setState((prevState) => ({
-      errors: prevState.errors.filter((error) => error.path !== path),
-    }));
+  const clearFieldErrors = (path) => {
+    setErrors((prevErrors) =>
+      prevErrors.filter((error) => error.path !== path)
+    );
   };
 
   // --------------------------------------------------------------------- //
   // ------------------------------- Context ----------------------------- //
   // --------------------------------------------------------------------- //
 
+  const [deletedValues, setDeletedValues] = useState<Array<any>>([]);
+
   // add something to deleted values
-  addToDeletedValues = (name) => {
-    this.setState((prevState) => ({
-      deletedValues: [...prevState.deletedValues, name],
+  const addToDeletedValues = (name) => {
+    setDeletedValues((prevDeletedValues) => [...prevDeletedValues, name]);
+  };
+
+  const [callbacks, setCallbacks] = useState({
+    submitFormCallbacks: [],
+    successFormCallbacks: [],
+    failureFormCallbacks: [],
+  });
+  // add a callback to the form submission
+  const addToSubmitForm = (callback) => {
+    setCallbacks((cbs) => ({
+      ...cbs,
+      submitFormCallbacks: [...cbs.submitFormCallbacks, callback],
     }));
   };
 
-  // add a callback to the form submission
-  addToSubmitForm = (callback) => {
-    this.submitFormCallbacks.push(callback);
-  };
-
   // add a callback to form submission success
-  addToSuccessForm = (callback) => {
-    this.successFormCallbacks.push(callback);
+  const addToSuccessForm = (callback) => {
+    setCallbacks((cbs) => ({
+      ...cbs,
+      successFormCallbacks: [...cbs.successFormCallbacks, callback],
+    }));
   };
 
   // add a callback to form submission failure
-  addToFailureForm = (callback) => {
-    this.failureFormCallbacks.push(callback);
+  const addToFailureForm = (callback) => {
+    setCallbacks((cbs) => ({
+      ...cbs,
+      failureFormCallbacks: [...cbs.failureFormCallbacks, callback],
+    }));
   };
 
-  clearFormCallbacks = () => {
-    this.submitFormCallbacks = [];
-    this.successFormCallbacks = [];
-    this.failureFormCallbacks = [];
+  const clearFormCallbacks = () => {
+    setCallbacks({
+      submitFormCallbacks: [],
+      successFormCallbacks: [],
+      failureFormCallbacks: [],
+    });
   };
 
+  /*
   setFormState = (fn) => {
     this.setState(fn);
   };
+  */
 
-  submitFormContext = (formType: FormType) => (newValues) => {
-    // keep the previous ones and extend (with possible replacement) with new ones
-    this.setState(
-      (prevState) => ({
-        currentValues: {
-          ...prevState.currentValues,
-          ...newValues,
-        }, // Submit form after setState update completed
-      }),
-      () => this.submitForm(formType)()
-    );
+  const [currentValues, setCurrentValues] = useState<Object>({});
+
+  const submitFormContext = (formType: FormType) => (newValues) => {
+    setCurrentValues((prevCurrentValues) => ({
+      ...prevCurrentValues,
+      ...newValues,
+    }));
+    // TODO: previously, this was using a callback from setCurrentValues
+    // this needs to be rearchitectured to work without, will need some check
+    // https://stackoverflow.com/questions/56247433/how-to-use-setstate-callback-on-react-hooks
+    submitForm(formType)();
   };
 
   // --------------------------------------------------------------------- //
@@ -588,6 +561,7 @@ export class Form extends Component<FormProps, FormState> {
   @see https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html
 
   */
+  /*
   UNSAFE_componentWillReceiveProps(nextProps) {
     const needReset = !!RESET_PROPS.find(
       (prop) => !isEqual(this.props[prop], nextProps[prop])
@@ -598,56 +572,64 @@ export class Form extends Component<FormProps, FormState> {
       if (nextProps.initCallback)
         nextProps.initCallback(newState.currentDocument);
     }
-  }
+  }*/
+
+  const [currentDocument, setCurrentDocument] = useState<{
+    title?: string;
+    _id?: string;
+    name?: string;
+  }>({});
 
   /*
 
   Manually update the current values of one or more fields(i.e. on change or blur).
 
   */
-  updateCurrentValues = (newValues, options: { mode?: string } = {}) => {
+  const updateCurrentValues = (newValues, options: { mode?: string } = {}) => {
     // default to overwriting old value with new
     const { mode = "overwrite" } = options;
-    const { changeCallback } = this.props;
+    const { changeCallback } = props;
 
     // keep the previous ones and extend (with possible replacement) with new ones
-    this.setState((prevState) => {
-      // keep only the relevant properties
-      const newState = {
-        currentValues: cloneDeep(prevState.currentValues),
-        currentDocument: cloneDeep(prevState.currentDocument),
-        deletedValues: cloneDeep(prevState.deletedValues),
-      };
+    // keep only the relevant properties
+    const newState = {
+      currentValues: cloneDeep(currentValues),
+      currentDocument: cloneDeep(currentDocument),
+      deletedValues: cloneDeep(deletedValues),
+    };
 
-      Object.keys(newValues).forEach((key) => {
-        const path = key;
-        let value = newValues[key];
+    Object.keys(newValues).forEach((key) => {
+      const path = key;
+      let value = newValues[key];
 
-        if (isEmptyValue(value)) {
-          // delete value
-          unset(newState.currentValues, path);
-          set(newState.currentDocument, path, null);
-          newState.deletedValues = [...newState.deletedValues, path];
+      if (isEmptyValue(value)) {
+        // delete value
+        unset(newState.currentValues, path);
+        set(newState.currentDocument, path, null);
+        newState.deletedValues = [...newState.deletedValues, path];
+      } else {
+        // 1. update currentValues
+        set(newState.currentValues, path, value);
+
+        // 2. update currentDocument
+        // For arrays and objects, give option to merge instead of overwrite
+        if (mode === "merge" && (Array.isArray(value) || isObject(value))) {
+          const oldValue = get(newState.currentDocument, path);
+          set(newState.currentDocument, path, merge(oldValue, value));
         } else {
-          // 1. update currentValues
-          set(newState.currentValues, path, value);
-
-          // 2. update currentDocument
-          // For arrays and objects, give option to merge instead of overwrite
-          if (mode === "merge" && (Array.isArray(value) || isObject(value))) {
-            const oldValue = get(newState.currentDocument, path);
-            set(newState.currentDocument, path, merge(oldValue, value));
-          } else {
-            set(newState.currentDocument, path, value);
-          }
-
-          // 3. in case value had previously been deleted, "undelete" it
-          newState.deletedValues = without(newState.deletedValues, path);
+          set(newState.currentDocument, path, value);
         }
-      });
-      if (changeCallback) changeCallback(newState.currentDocument);
-      return newState;
+
+        // 3. in case value had previously been deleted, "undelete" it
+        newState.deletedValues = without(newState.deletedValues, path);
+      }
     });
+    if (changeCallback) changeCallback(newState.currentDocument);
+
+    // TODO: prefer  a reducer
+    setCurrentValues(newState.currentValues);
+    setCurrentDocument(newState.currentDocument);
+    setDeletedValues(newState.deletedValues);
   };
 
   /*
@@ -655,12 +637,15 @@ export class Form extends Component<FormProps, FormState> {
   Refetch the document from the database (in case it was updated by another process or to reset the form)
 
   */
-  refetchForm = () => {
-    if (this.props.refetch) {
-      this.props.refetch();
+  const refetchForm = () => {
+    if (props.refetch) {
+      props.refetch();
     }
   };
 
+  const [initialDocument, setInitialDocument] = useState<Object>({});
+  const [disabled, setDisabled] = useState<boolean>(false); // TODO
+  const [success, setSuccess] = useState<boolean>(false); // TODO
   /**
    * Clears form errors and values.
    *
@@ -684,59 +669,61 @@ export class Form extends Component<FormProps, FormState> {
    *  Document to use as new initial document when values are cleared instead of
    *  the existing one. Note that prefilled props will be merged
    */
-  clearForm = (options: { document?: any } = {}) => {
+  const clearForm = (options: { document?: any } = {}) => {
     const { document: optionsDocument } = options;
     const document = optionsDocument
-      ? merge({}, this.props.prefilledProps, optionsDocument)
+      ? merge({}, props.prefilledProps, optionsDocument)
       : null;
-    this.setState((prevState) => ({
-      errors: [],
-      currentValues: {},
-      deletedValues: [],
-      currentDocument: document || prevState.initialDocument,
-      initialDocument: document || prevState.initialDocument,
-      disabled: false,
-    }));
+    // TODO: prefer a reducer
+    setErrors([]);
+    setCurrentValues({});
+    setDeletedValues([]);
+    setCurrentDocument(document || initialDocument);
+    setInitialDocument(document || initialDocument);
+    setDisabled(false);
   };
 
-  newMutationSuccessCallback = (result) => {
-    this.mutationSuccessCallback(result, "new");
+  const newMutationSuccessCallback = (result) => {
+    mutationSuccessCallback(result, "new");
   };
 
-  editMutationSuccessCallback = (result) => {
-    this.mutationSuccessCallback(result, "edit");
+  const editMutationSuccessCallback = (result) => {
+    mutationSuccessCallback(result, "edit");
   };
 
-  mutationSuccessCallback = (result, mutationType) => {
-    this.setState((prevState) => ({ disabled: false, success: true }));
+  const formRef = useRef(null);
+  const mutationSuccessCallback = (result, mutationType) => {
+    // TODO: use a reducer
+    setDisabled(true);
+    setSuccess(true);
     let document = result.data[Object.keys(result.data)[0]].data; // document is always on first property
 
     // for new mutation, run refetch function if it exists
-    if (mutationType === "new" && this.props.refetch) this.props.refetch();
+    if (mutationType === "new" && props.refetch) props.refetch();
 
     // call the clear form method (i.e. trigger setState) only if the form has not been unmounted
     // (we are in an async callback, everything can happen!)
-    if (this.form) {
-      this.clearForm({
+    // TODO: this should rely on a ref
+    if (formRef.current) {
+      clearForm({
         document: mutationType === "edit" ? document : undefined,
       });
     }
 
     // run document through mutation success callbacks
     document = runCallbacks({
-      callbacks: this.successFormCallbacks,
+      callbacks: successFormCallbacks,
       iterator: document,
-      args: [{ form: this }],
+      args: [{ form: formRef.current }],
     });
 
     // run success callback if it exists
-    if (this.props.successCallback)
-      this.props.successCallback(document, { form: this });
+    if (props.successCallback) props.successCallback(document, { form: this });
   };
 
   // catch graphql errors
-  mutationErrorCallback = (document, error) => {
-    this.setState((prevState) => ({ disabled: false }));
+  const mutationErrorCallback = (document, error) => {
+    setDisabled(false);
 
     // eslint-disable-next-line no-console
     console.log("// graphQL Error");
@@ -745,19 +732,19 @@ export class Form extends Component<FormProps, FormState> {
 
     // run mutation failure callbacks on error, we do not allow the callbacks to change the error
     runCallbacks({
-      callbacks: this.failureFormCallbacks,
+      callbacks: failureFormCallbacks,
       iterator: error,
-      args: [{ error, form: this }],
+      args: [{ error, form: formRef.current }],
     });
 
     if (!_.isEmpty(error)) {
       // add error to state
-      this.throwError(error);
+      throwError(error);
     }
 
     // run error callback if it exists
-    if (this.props.errorCallback)
-      this.props.errorCallback(document, error, { form: this });
+    if (props.errorCallback)
+      props.errorCallback(document, error, { form: this });
 
     // scroll back up to show error messages
     // TODO: migrate this to scroll on top of the form
@@ -769,56 +756,64 @@ export class Form extends Component<FormProps, FormState> {
   Submit form handler
 
   */
-  submitForm = (formType: FormType) => async (event?: Event) => {
-    const { currentDocument } = this.state;
+  const submitForm = (formType: FormType) => async (event?: Event) => {
     event && event.preventDefault();
     event && event.stopPropagation();
 
-    const { contextName } = this.props;
+    const { contextName } = props;
 
     // if form is disabled (there is already a submit handler running) don't do anything
-    if (this.state.disabled) {
+    if (disabled) {
       return;
     }
 
     // clear errors and disable form while it's submitting
-    this.setState((prevState) => ({ errors: [], disabled: true }));
+    setErrors([]);
+    setDisabled(true);
 
     // complete the data with values from custom components
     // note: it follows the same logic as SmartForm's getDocument method
-    let data = this.getData({ replaceIntlFields: true, addExtraFields: false });
+    let data = getData(
+      { replaceIntlFields: true, addExtraFields: false },
+      props,
+      {
+        currentDocument,
+        deletedValues,
+      },
+      { form: formRef.current, submitFormCallbacks }
+    );
 
     // if there's a submit callback, run it
-    if (this.props.submitCallback) {
-      data = this.props.submitCallback(data) || data;
+    if (props.submitCallback) {
+      data = props.submitCallback(data) || data;
     }
 
     if (formType === "new") {
       // create document form
       try {
-        const result = await this.props.createDocument({
+        const result = await props.createDocument({
           input: {
             data,
             contextName,
           },
         });
         // TODO: what to do with this?
-        const meta = this.props.createDocumentMeta;
+        const meta = props.createDocumentMeta;
         // in new versions of Apollo Client errors are no longer thrown/caught
         // but can instead be provided as props by the useMutation hook
         if (meta?.error) {
-          this.mutationErrorCallback(document, meta.error);
+          mutationErrorCallback(document, meta.error);
         } else {
-          this.newMutationSuccessCallback(result);
+          newMutationSuccessCallback(result);
         }
       } catch (error) {
-        this.mutationErrorCallback(document, error);
+        mutationErrorCallback(document, error);
       }
     } else {
       // update document form
       try {
         const documentId = currentDocument._id;
-        const result = await this.props.updateDocument({
+        const result = await props.updateDocument({
           input: {
             id: documentId,
             data,
@@ -826,16 +821,16 @@ export class Form extends Component<FormProps, FormState> {
           },
         });
         // TODO: ?? what is Meta?
-        const meta = this.props.updateDocumentMeta;
+        const meta = props.updateDocumentMeta;
         // in new versions of Apollo Client errors are no longer thrown/caught
         // but can instead be provided as props by the useMutation hook
         if (meta?.error) {
-          this.mutationErrorCallback(document, meta.error);
+          mutationErrorCallback(document, meta.error);
         } else {
-          this.editMutationSuccessCallback(result);
+          editMutationSuccessCallback(result);
         }
       } catch (error) {
-        this.mutationErrorCallback(document, error);
+        mutationErrorCallback(document, error);
       }
     }
   };
@@ -845,24 +840,24 @@ export class Form extends Component<FormProps, FormState> {
   Delete document handler
 
   */
-  deleteDocument = () => {
-    const document = this.state.currentDocument;
-    const documentId = this.props.document._id;
+  const deleteDocument = () => {
+    const document = currentDocument;
+    const documentId = props.document._id;
     const documentTitle = document.title || document.name || "";
 
-    const deleteDocumentConfirm = this.context.formatMessage(
+    const deleteDocumentConfirm = intl.formatMessage(
       { id: "forms.delete_confirm" },
       { title: documentTitle }
     );
 
     if (window.confirm(deleteDocumentConfirm)) {
-      this.props
+      props
         .deleteDocument({ input: { id: documentId } })
         .then((mutationResult) => {
           // the mutation result looks like {data:{collectionRemove: null}} if succeeded
-          if (this.props.removeSuccessCallback)
-            this.props.removeSuccessCallback({ documentId, documentTitle });
-          if (this.props.refetch) this.props.refetch();
+          if (props.removeSuccessCallback)
+            props.removeSuccessCallback({ documentId, documentTitle });
+          if (props.refetch) props.refetch();
         })
         .catch((error) => {
           // eslint-disable-next-line no-console
@@ -879,85 +874,83 @@ export class Form extends Component<FormProps, FormState> {
   // ----------------------------- Render -------------------------------- //
   // --------------------------------------------------------------------- //
 
-  render() {
-    const {
-      successComponent,
-      document,
-      currentUser,
-      model,
-      warnUnsavedChanges,
-    } = this.props;
-    const { schema, initialDocument, currentDocument, flatSchema } = this.state;
-    const FormComponents = this.getMergedComponents();
+  const { successComponent, document, currentUser, model, warnUnsavedChanges } =
+    props;
+  const FormComponents = useVulcanComponents();
 
-    const formType: "edit" | "new" = document ? "edit" : "new";
+  const formType: "edit" | "new" = document ? "edit" : "new";
 
-    // Fields computation
-    const mutableFields =
-      formType === "edit"
-        ? getEditableFields(schema, currentUser, initialDocument)
-        : getInsertableFields(schema, currentUser);
+  // Fields computation
+  const mutableFields =
+    formType === "edit"
+      ? getEditableFields(schema, currentUser, initialDocument)
+      : getInsertableFields(schema, currentUser);
 
-    const { formLayoutProps, formGroupProps } = getChildrenProps(
-      this.props,
-      this.state,
-      {
-        formType,
-      },
-      {
-        deleteDocument: this.deleteDocument,
-      }
-    );
-    const isChanged = isNotSameDocument(initialDocument, currentDocument);
+  const { formLayoutProps, formGroupProps } = getChildrenProps(
+    props,
+    { disabled, currentDocument },
+    {
+      formType,
+    },
+    {
+      deleteDocument,
+    }
+  );
+  const isChanged = isNotSameDocument(initialDocument, currentDocument);
 
-    return this.state.success && successComponent ? (
-      successComponent
-    ) : (
-      <FormWarnUnsaved
-        isChanged={isChanged}
-        warnUnsavedChanges={warnUnsavedChanges}
+  return success && successComponent ? (
+    successComponent
+  ) : (
+    <FormWarnUnsaved
+      isChanged={isChanged}
+      warnUnsavedChanges={warnUnsavedChanges}
+    >
+      <FormContext.Provider
+        value={{
+          throwError,
+          clearForm,
+          refetchForm,
+          isChanged,
+          submitForm: submitFormContext(formType), //Change in name because we already have a function
+          // called submitForm, but no reason for the user to know
+          // about that
+          addToDeletedValues: addToDeletedValues,
+          updateCurrentValues: updateCurrentValues,
+          getDocument: () => currentDocument,
+          getLabel: (fieldName, fieldLocale) =>
+            getLabel(model, flatSchema, intl, fieldName, fieldLocale),
+          initialDocument: initialDocument,
+          // TODO BAD: check where used
+          //setFormState: this.setFormState,
+          addToSubmitForm,
+          addToSuccessForm,
+          addToFailureForm,
+          clearFormCallbacks,
+          errors,
+          currentValues,
+          deletedValues,
+          clearFieldErrors,
+        }}
       >
-        <FormContext.Provider
-          value={{
-            throwError: this.throwError,
-            clearForm: this.clearForm,
-            refetchForm: this.refetchForm,
-            isChanged,
-            submitForm: this.submitFormContext(formType), //Change in name because we already have a function
-            // called submitForm, but no reason for the user to know
-            // about that
-            addToDeletedValues: this.addToDeletedValues,
-            updateCurrentValues: this.updateCurrentValues,
-            getDocument: () => currentDocument,
-            getLabel: (fieldName, fieldLocale) =>
-              getLabel(model, flatSchema, this.context, fieldName, fieldLocale),
-            initialDocument: this.state.initialDocument,
-            setFormState: this.setFormState,
-            addToSubmitForm: this.addToSubmitForm,
-            addToSuccessForm: this.addToSuccessForm,
-            addToFailureForm: this.addToFailureForm,
-            clearFormCallbacks: this.clearFormCallbacks,
-            errors: this.state.errors,
-            currentValues: this.state.currentValues,
-            deletedValues: this.state.deletedValues,
-            clearFieldErrors: this.clearFieldErrors,
-          }}
-        >
-          <FormComponents.FormLayout {...formLayoutProps}>
-            {getFieldGroups(
-              this.props,
-              this.state,
-              this.context,
-              mutableFields,
-              this.context.formatMessage
-            ).map((group, i) => (
-              <FormComponents.FormGroup key={i} {...formGroupProps(group)} />
-            ))}
-          </FormComponents.FormLayout>
-        </FormContext.Provider>
-      </FormWarnUnsaved>
-    );
-  }
-}
+        <FormComponents.FormLayout {...formLayoutProps}>
+          {getFieldGroups(
+            props,
+            {
+              currentDocument,
+              schema,
+              flatSchema,
+              originalSchema,
+            },
+            intl,
+            mutableFields,
+            intl.formatMessage
+          ).map((group, i) => (
+            <FormComponents.FormGroup key={i} {...formGroupProps(group)} />
+          ))}
+        </FormComponents.FormLayout>
+      </FormContext.Provider>
+    </FormWarnUnsaved>
+  );
+};
 
 export default Form;

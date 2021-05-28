@@ -17,6 +17,7 @@ import {
   formatLabel,
   getIntlKeys,
   getIntlLabel,
+  IntlProviderContextValue,
 } from "@vulcanjs/i18n";
 
 import map from "lodash/map";
@@ -56,7 +57,7 @@ const getModelIntlKeys = (
 export const getLabel = (
   model: VulcanModel,
   flatSchema: any,
-  context: any,
+  context: IntlProviderContextValue,
   fieldName: string,
   fieldLocale?: string
 ) => {
@@ -214,7 +215,13 @@ export const getFieldNames = (
 // -------------------------------- Fields ----------------------------- //
 // --------------------------------------------------------------------- //
 
-const initField = (props, state, context, fieldName, fieldSchema) => {
+const initField = (
+  props,
+  state: Pick<FormState, "currentDocument" | "flatSchema" | "originalSchema">,
+  context,
+  fieldName,
+  fieldSchema
+) => {
   const { model } = props;
   const { currentDocument, flatSchema } = state;
   const isArray = get(fieldSchema, "type.0.type") === Array;
@@ -318,7 +325,7 @@ const handlePermissions = (field, fieldName, mutableFields: Array<any>) => {
 };
 const handleFieldChildren = (
   props: FormProps,
-  state: FormState,
+  state: Pick<FormState, "currentDocument" | "flatSchema" | "originalSchema">,
   context: any,
   field,
   fieldName: string,
@@ -375,7 +382,7 @@ const handleFieldChildren = (
   */
 const createField = (
   props: FormProps,
-  state: FormState,
+  state: Pick<FormState, "currentDocument" | "flatSchema" | "originalSchema">,
   context: any,
   fieldName: string,
   schema: any,
@@ -402,7 +409,7 @@ const createField = (
 };
 const createArraySubField = (
   props: FormProps,
-  state: FormState,
+  state: Pick<FormState, "currentDocument" | "flatSchema" | "originalSchema">,
   context: any,
   fieldName: string,
   subFieldSchema: VulcanFieldSchema,
@@ -425,6 +432,11 @@ interface GroupWithFields extends FieldGroup {
   fields: Array<FormField>;
 }
 
+type FormSchemaState = Pick<
+  FormState,
+  "currentDocument" | "schema" | "flatSchema" | "originalSchema"
+>;
+
 /*
 
   Get all field groups
@@ -432,8 +444,8 @@ interface GroupWithFields extends FieldGroup {
   */
 export const getFieldGroups = (
   props: FormProps,
-  state: FormState,
-  context: any,
+  state: FormSchemaState,
+  context: IntlProviderContextValue,
   mutableFields: Array<string>,
   formatMessage: Function
 ) => {
