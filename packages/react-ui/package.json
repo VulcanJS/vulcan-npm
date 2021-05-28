@@ -1,7 +1,7 @@
 {
-  "name": "@vulcanjs/react-components",
+  "name": "@vulcanjs/ui-react",
   "version": "0.1.10",
-  "description": "Vulcan components",
+  "description": "Vulcan UI components for React",
   "main": "./dist/index.js",
   "files": [
     "dist/"
