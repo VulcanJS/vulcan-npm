@@ -27,17 +27,6 @@ export const addressSchema = {
     ...permissions,
   },
 };
-// [{street, city,...}, {street, city, ...}]
-const arrayOfObjectSchema = {
-  addresses: {
-    type: Array,
-    group: addressGroup,
-    ...permissions,
-  },
-  "addresses.$": {
-    type: addressSchema,
-  },
-};
 // example with custom inputs for the children
 // ["http://maps/XYZ", "http://maps/foobar"]
 const arrayOfUrlSchema = {
@@ -116,6 +105,17 @@ const createDummyCollection = (typeName, schema) =>
     schema,
   });
 export const Foos = createDummyCollection("Foo", fooSchema);
+// [{street, city,...}, {street, city, ...}]
+const arrayOfObjectSchema = {
+  addresses: {
+    type: Array,
+    group: addressGroup,
+    ...permissions,
+  },
+  "addresses.$": {
+    type: addressSchema,
+  },
+};
 export const ArrayOfObjects = createDummyCollection(
   "ArrayOfObject",
   arrayOfObjectSchema

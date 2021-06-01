@@ -28,7 +28,6 @@ export interface FormNestedArrayProps<TValue = any> {
   /** Path for the nested object */
   path: string;
   itemProperties: any;
-  errors: Array<any>;
   minCount?: number;
   maxCount?: number;
   arrayField?: boolean;
@@ -39,7 +38,7 @@ export interface FormNestedArrayProps<TValue = any> {
   addItem: Function | null;
 }
 export const FormNestedArray = (props: FormNestedArrayProps) => {
-  const { updateCurrentValues, deletedValues } = useFormContext();
+  const { updateCurrentValues, deletedValues, errors } = useFormContext();
   /*static defaultProps = {
     itemProperties: {},
   };*/
@@ -97,7 +96,7 @@ export const FormNestedArray = (props: FormNestedArrayProps) => {
       "afterComponent"
     ),
   };
-  const { errors, path, minCount, maxCount, arrayField } = props;
+  const { path, minCount, maxCount, arrayField } = props;
   const FormComponents = useVulcanComponents();
 
   //filter out null values to calculate array length

@@ -34,8 +34,11 @@ export const FormGroupLayout = ({
   hasErrors,
   group,
   document,
+  toggle,
   ...props
-}) => <fieldset {...props} />;
+}) => {
+  return <fieldset {...props} />;
+};
 
 export const FormGroupHeader = (props) => <h2 {...props} />;
 

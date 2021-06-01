@@ -6,7 +6,7 @@ import { createModel } from "@vulcanjs/model";
 import { IntlProvider, LegacyIntlProvider } from "@vulcanjs/i18n";
 import { actions } from "@storybook/addon-actions";
 import SimpleSchema from "simpl-schema";
-import * as models from "../tests/fixtures/models";
+import * as models from "./fixtures/models";
 
 export default {
   component: Form,

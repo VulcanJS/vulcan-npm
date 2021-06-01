@@ -5,7 +5,7 @@ import expect from "expect";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 // @see https://storybook.js.org/addons/@storybook/react-testing
 import { composeStories } from "@storybook/react-testing";
-import * as stories from "../stories/Form.stories"; // import all stories from the stories file
+import * as stories from "./Form.stories"; // import all stories from the stories file
 import {
   Addresses,
   ArrayOfObjects,
@@ -18,7 +18,8 @@ import {
 // Every component that is returned maps 1:1 with the stories,
 // but they already contain all decorators from story level, meta level and global level.
 // => here the form comes with default I18n context and default components to simplify the setup
-const { DefaultForm, ArrayOfUrlsForm } = composeStories(stories);
+const { DefaultForm, ArrayOfUrlsForm, ArrayOfObjectsForm } =
+  composeStories(stories);
 
 // we must import all the other components, so that "registerComponent" is called
 
@@ -87,13 +88,16 @@ describe("vulcan-forms/Form", function () {
       });
     });
     describe("array of objects", function () {
-      it.skip("renders", () => {
-        const wrapper = render(
-          <Form {...defaultProps} model={ArrayOfObjects} />
-        );
-        expect(wrapper).toBeDefined();
+      it("renders", () => {
+        const { container } = render(<ArrayOfObjectsForm {...defaultProps} />);
+        expect(container).toBeDefined();
       });
-      it("render a FormGroup for addresses", function () {
+      it.skip("render a FormGroup for addresses", () => {
+        const { container, getByRole } = render(
+          <ArrayOfObjectsForm {...defaultProps} />
+        );
+        const group = getByRole("group");
+        expect(group).toEqual("hello");
         /*
         const wrapper = render(
           <Form {...defaultProps} model={ArrayOfObjects} />
@@ -189,8 +193,10 @@ describe("vulcan-forms/Form", function () {
     });
     describe("array with custom children inputs (e.g array of url)", function () {
       it.skip("shallow render", function () {
+        /*
         const { container } = render(<ArrayOfUrlsForm />);
         expect(container).toBeDefined();
+        */
       });
       it.skip("passes down the array item custom input", () => {
         /* TODO: update to React testing

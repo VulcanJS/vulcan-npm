@@ -19,6 +19,26 @@ const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
     </div>
   );
 }; // TODO: might need some sanitization
+
+const HTMLSelectAdapter = (props: FormInputProps) => {
+  const { inputProperties, options = [] } = props;
+  const { label, name } = inputProperties;
+  if (!Array.isArray(options))
+    throw new Error("HTMLSelectAdapater not yet supporting functional options");
+  return (
+    <div>
+      <label htmlFor={name}>{label}</label>
+      {/** TODO: whitelisting feature should be smarter to differentiate select and input */}
+      <select
+        {...(inputProperties as unknown as React.HTMLProps<HTMLSelectElement>)}
+      >
+        {options.map(({ label, value }) => (
+          <option key={value} label={label} value={value}></option>
+        ))}
+      </select>
+    </div>
+  );
+};
 export const FormComponentDefault = (props) => (
   <HTMLInputAdapter type="text" {...props} />
 );
@@ -46,12 +66,8 @@ export const FormComponentCheckboxGroup = (props) => (
 export const FormComponentRadioGroup = (props) => (
   <HTMLInputAdapter {...props} />
 );
-export const FormComponentSelect = ({ options, ...props }) => (
-  <select {...props}>
-    {options.map(({ label, value }) => (
-      <option key={value} label={label} value={value}></option>
-    ))}
-  </select>
+export const FormComponentSelect = (props: FormInputProps) => (
+  <HTMLSelectAdapter {...props} />
 );
 export const FormComponentSelectMultiple = (props) => {
   const Components = useVulcanComponents();

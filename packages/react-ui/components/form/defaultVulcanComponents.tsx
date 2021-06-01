@@ -1,3 +1,4 @@
+import React from "react";
 import { FormError } from "./FormError";
 // TODO: currently we need the default export because we pass components manually
 import FormComponent from "./FormComponent";
@@ -43,6 +44,8 @@ import {
   FormComponentAutocomplete,
   FormComponentMultiAutocomplete,
 } from "./inputs/BasicInputs";
+import { Button } from "./core/Button";
+import { props } from "lodash/fp";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -112,10 +115,10 @@ export type PossibleVulcanComponents = PossibleCoreComponents &
   PossibleFormComponents;
 
 const defaultCoreComponents: PossibleCoreComponents = {
-  Loading: () => null,
+  Loading: () => "loading...",
   FormattedMessage: () => null,
   Alert: () => null,
-  Button: () => null,
+  Button,
   Icon: () => null,
 };
 const defaultFormComponents: PossibleFormComponents = {

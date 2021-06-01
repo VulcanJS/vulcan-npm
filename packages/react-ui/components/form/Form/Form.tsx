@@ -417,6 +417,8 @@ An example would be a createdAt date added automatically on creation even though
   // ??
   createDocumentMeta?: { error?: any };
   updateDocumentMeta?: { error?: any };
+  // EXPERIMENTAL: allowing to manually set the form children
+  children?: React.ReactNode;
 }
 
 export const Form = (props: FormProps) => {
