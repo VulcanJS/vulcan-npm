@@ -10,7 +10,6 @@ import SimpleSchema from "simpl-schema";
 export default {
   component: Form,
   title: "Form", //TODO: why we need this?
-  argTypes: { submitCallback: { action: "clicked" } },
   decorators: [
     (Story) => (
       // TODO: improve this
@@ -21,7 +20,31 @@ export default {
       </VulcanComponentsProvider>
     ),
   ],
+  args: {
+    model: createModel({
+      name: "Biography",
+      schema: {},
+    }),
+  },
+  actions: [
+    "submitCallback",
+    "successCallback",
+    "errorCallback",
+    "cancelCallback",
+    "removeSuccessCallback",
+    "changeCallback",
+    // mutations
+    "createDocument",
+    "updateDocument",
+    "deleteDocument",
+  ],
+  // another syntax for actions
+  argTypes: { submitCallback: { action: "clicked" } },
 };
+
+const FormTemplate: Story<FormProps> = (args) => <Form {...args} />;
+
+export const DefaultForm = FormTemplate.bind({});
 /*
 More advanced patterns with templates 
 https://storybook.js.org/docs/react/writing-stories/introduction#using-args
@@ -39,34 +62,15 @@ EmptyForm.args = {
   }),
 };
 */
-const defaultProps: FormProps = {
-  model: createModel({
-    name: "Biography",
-    schema: {},
-  }),
-
-  ...actions(
-    "submitCallback",
-    "successCallback",
-    "errorCallback",
-    "cancelCallback",
-    "removeSuccessCallback",
-    "changeCallback",
-    // mutations
-    "createDocument",
-    "updateDocument",
-    "deleteDocument"
-  ),
-};
-export const EmptyForm = () => (
-  <Form
-    {...defaultProps}
-    model={createModel({
+export const EmptyForm = FormTemplate.bind({
+  args: {
+    model: createModel({
       name: "Biography",
       schema: {},
-    })}
-  />
-);
+    }),
+  },
+});
+
 const defaultFieldSchema = {
   type: String,
   canRead: ["guests"],
@@ -112,25 +116,21 @@ const basicFieldsSchema = withDefaultFieldSchema(
   ])
 );
 
-export const OneTextInput = () => (
-  <Form
-    {...defaultProps}
-    model={createModel({
-      name: "Biography",
-      schema: { someText: { type: String, ...defaultFieldSchema } },
-    })}
-  />
-);
+export const OneTextInput = FormTemplate.bind({});
+OneTextInput.args = {
+  model: createModel({
+    name: "Biography",
+    schema: { someText: { ...defaultFieldSchema, type: String } },
+  }),
+};
 
-export const AllBasicFields = () => (
-  <Form
-    {...defaultProps}
-    model={createModel({
-      name: "Biography",
-      schema: basicFieldsSchema,
-    })}
-  />
-);
+export const AllBasicFields = FormTemplate.bind({});
+AllBasicFields.args = {
+  model: createModel({
+    name: "Biography",
+    schema: basicFieldsSchema,
+  }),
+};
 
 const selectFieldsSchema = withDefaultFieldSchema({
   "boolean-select": {
@@ -175,24 +175,23 @@ const selectFieldsSchema = withDefaultFieldSchema({
   */
 });
 
-export const SelectFieldsForm = () => (
-  <Form
-    {...defaultProps}
-    model={createModel({
-      name: "Biography",
-      schema: selectFieldsSchema,
-    })}
-  />
-);
+export const SelectFieldsForm = FormTemplate.bind({});
+SelectFieldsForm.args = {
+  model: createModel({
+    name: "Biography",
+    schema: selectFieldsSchema,
+  }),
+};
 
 export const WarnOnUnsavedChanges = () => (
   <div>
     <p>To test: fill the form and try to leave the page</p>
+    {/* @ts-ignore */}
     <Form
-      {...defaultProps}
+      {...FormTemplate.args}
       model={createModel({
         name: "Biography",
-        schema: { someText: { type: String, ...defaultFieldSchema } },
+        schema: { someText: { ...defaultFieldSchema, type: String } },
       })}
       warnUnsavedChanges={true}
     />
