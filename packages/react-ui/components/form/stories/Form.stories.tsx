@@ -6,6 +6,7 @@ import { createModel } from "@vulcanjs/model";
 import { IntlProvider, LegacyIntlProvider } from "@vulcanjs/i18n";
 import { actions } from "@storybook/addon-actions";
 import SimpleSchema from "simpl-schema";
+import * as models from "../tests/fixtures/models";
 
 export default {
   component: Form,
@@ -125,6 +126,7 @@ AllBasicFields.args = {
   }),
 };
 
+// SELECT
 const selectFieldsSchema = withDefaultFieldSchema({
   "boolean-select": {
     type: Boolean,
@@ -175,6 +177,23 @@ SelectFieldsForm.args = {
     schema: selectFieldsSchema,
   }),
 };
+
+// ARRAY AND OBJECTS
+export const ArrayOfObjectsForm = FormTemplate.bind({});
+ArrayOfObjectsForm.args = { model: models.ArrayOfObjects };
+export const ObjectsForm = FormTemplate.bind({});
+ObjectsForm.args = { model: models.Objects };
+export const ArrayOfUrlsForm = FormTemplate.bind({});
+ArrayOfUrlsForm.args = { model: models.ArrayOfUrls };
+export const ArrayOfCustomObjectsForm = FormTemplate.bind({});
+ArrayOfCustomObjectsForm.args = { model: models.ArrayOfCustomObjects };
+export const ArrayFullCustomForm = FormTemplate.bind({});
+ArrayFullCustomForm.args = { model: models.ArrayFullCustom };
+// eslint-disable-next-line no-unused-vars
+export const ArrayOfStringsForm = FormTemplate.bind({});
+ArrayOfStringsForm.args = { model: models.ArrayOfStrings };
+export const AddressesForm = FormTemplate.bind({});
+AddressesForm.args = { model: models.Addresses };
 
 // @see https://github.com/storybookjs/storybook/pull/14550
 export const WarnOnUnsavedChanges = () => (

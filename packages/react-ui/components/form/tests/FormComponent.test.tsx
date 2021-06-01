@@ -6,35 +6,32 @@ import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 
 // helpers
 // tests
-describe("vulcan-forms/FormComponent", function () {
+describe("react-ui/form/FormComponent", function () {
   /**
    * Simulate context created by <Form>
    * @param param0
    * @returns
    */
-  const wrapper = ({ children }) => (
+  const wrapper: React.FC = ({ children }) => (
     // @ts-ignore
-    <FormContext.Provider value={{ getDocument: () => ({}) }}>
+    <FormContext.Provider
+      value={{ getDocument: () => ({}), deletedValues: [] }}
+    >
       {children}
     </FormContext.Provider>
   );
   const defaultProps: FormComponentProps = {
     type: "",
     disabled: false,
-    optional: true,
+    //optional: true,
     document: {},
     name: "meetingPlace",
     path: "meetingPlace",
     datatype: [{ type: Object }],
     layout: "horizontal",
     label: "Meeting place",
-    currentValues: {},
     formType: "new",
-    deletedValues: [],
-    throwError: () => {},
-    updateCurrentValues: () => {},
     errors: [],
-    clearFieldErrors: () => {},
   };
   it("shallow render", function () {
     const { container } = render(<FormComponent {...defaultProps} />, {
@@ -55,7 +52,7 @@ describe("vulcan-forms/FormComponent", function () {
       nestedFields: [{}, {}, {}],
       currentValues: {},
     };
-    it("render a FormNestedArray", function () {
+    it.skip("render a FormNestedArray", function () {
       const container = render(<FormComponent {...props} />, { wrapper });
       /*
       const formNested = wrapper.find("FormNestedArray");
@@ -77,7 +74,7 @@ describe("vulcan-forms/FormComponent", function () {
       currentValues: {},
     };
     it("shallow render", function () {
-      const container = render(<FormComponent {...props} />, { wrapper });
+      const { container } = render(<FormComponent {...props} />, { wrapper });
       expect(container).toBeDefined();
     });
     it.skip("render a FormNestedObject", function () {

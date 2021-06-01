@@ -3,6 +3,7 @@ import React from "react";
 import { FormNestedArray } from "../FormNestedArray";
 import { FormNestedArrayLayout } from "../FormNestedArrayLayout";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
+import { FormContext } from "../FormContext";
 
 // helpers
 // tests
@@ -18,10 +19,16 @@ describe("vulcan:forms/FormNestedArray", function () {
     //nestedFields: []
   };
 
+  const wrapper: React.FC = ({ children }) => (
+    // @ts-ignore
+    <FormContext.Provider value={{}}>{children}</FormContext.Provider>
+  );
   describe("Display the input n times", function () {
     it("shallow render", function () {
-      const wrapper = render(<FormNestedArray {...defaultProps} />);
-      expect(wrapper).toBeDefined();
+      const { container } = render(<FormNestedArray {...defaultProps} />, {
+        wrapper,
+      });
+      expect(container).toBeDefined();
     });
     // TODO: broken now we use a layout...
     it.skip("shows an add button when empty", function () {
