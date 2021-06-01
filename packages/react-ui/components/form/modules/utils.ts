@@ -5,6 +5,7 @@ import set from "lodash/set";
 import size from "lodash/size";
 
 import { removePrefix, filterPathsByPrefix } from "./path_utils";
+import { VulcanFieldSchema } from "@vulcanjs/schema/dist/typings";
 
 // add support for nested properties
 export const deepValue = function (obj, path) {
@@ -155,7 +156,8 @@ export const getNestedDeletedValues = (
 
 //TODO: check if it still works as expected
 // previously was dataType[0].type
-export const getFieldType = (fieldSchema) => fieldSchema.type;
+export const getFieldType = (fieldSchema: VulcanFieldSchema) =>
+  fieldSchema.type;
 /**
  * Get appropriate null value for various field types
  *

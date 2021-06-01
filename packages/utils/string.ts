@@ -12,6 +12,7 @@ import get from "lodash/get";
 import isFunction from "lodash/isFunction";
 // import pluralize from "pluralize";
 import isEmpty from "lodash/isEmpty";
+import { VulcanModel } from "@vulcanjs/model";
 
 /**
  * @summary Convert a camelCase string to dash-separated string
@@ -160,8 +161,11 @@ export const checkNested = function (obj /*, level1, level2, ... levelN*/) {
   return true;
 };
 
-export const getFieldLabel = (fieldName, collection) => {
-  const label = collection.simpleSchema()._schema[fieldName].label;
+export const getFieldLabel = (
+  fieldName: string,
+  model: VulcanModel
+): string => {
+  const label = model.schema[fieldName].label;
   const nameWithSpaces = camelToSpaces(fieldName);
   return label || nameWithSpaces;
 };

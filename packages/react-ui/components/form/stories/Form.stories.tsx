@@ -26,21 +26,14 @@ export default {
       schema: {},
     }),
   },
-  actions: [
-    "submitCallback",
-    "successCallback",
-    "errorCallback",
-    "cancelCallback",
-    "removeSuccessCallback",
-    "changeCallback",
-    // mutations
-    "createDocument",
-    "updateDocument",
-    "deleteDocument",
-  ],
+  argTypes: {
+    createDocument: { action: "createDocument" },
+    updateDocument: { action: "updateDocument" },
+    deleteDocument: { action: "deleteDocument" },
+  },
+  parameters: { actions: { argTypesRegex: "^.*Callback$" } },
   // another syntax for actions
-  argTypes: { submitCallback: { action: "clicked" } },
-};
+} as Meta;
 
 const FormTemplate: Story<FormProps> = (args) => <Form {...args} />;
 
@@ -183,12 +176,12 @@ SelectFieldsForm.args = {
   }),
 };
 
+// @see https://github.com/storybookjs/storybook/pull/14550
 export const WarnOnUnsavedChanges = () => (
   <div>
     <p>To test: fill the form and try to leave the page</p>
-    {/* @ts-ignore */}
     <Form
-      {...FormTemplate.args}
+      {...(FormTemplate.args as FormProps)}
       model={createModel({
         name: "Biography",
         schema: { someText: { ...defaultFieldSchema, type: String } },

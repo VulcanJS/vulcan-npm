@@ -20,7 +20,7 @@ FormNestedObjectLayout.propTypes = {
 };
 
 interface FormNestedObjectProps {
-  label: string;
+  label?: string;
   value: any;
   input: any;
   inputProperties: any;

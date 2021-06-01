@@ -13,3 +13,5 @@ export interface FormField extends VulcanFieldSchema {
   help?: string;
   layout?: "horizontal" | "vertical";
 }
+
+export type FormType = "new" | "edit";

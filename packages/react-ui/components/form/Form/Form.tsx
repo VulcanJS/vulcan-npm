@@ -59,7 +59,7 @@ import { isNotSameDocument } from "./utils";
 import { useWarnOnUnsaved } from "../useWarnOnUnsaved";
 import { useVulcanComponents } from "../VulcanComponentsContext";
 
-type FormType = "new" | "edit";
+import type { FormType } from "../typings";
 
 // props that should trigger a form reset
 const RESET_PROPS = [

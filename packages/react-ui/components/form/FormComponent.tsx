@@ -189,12 +189,12 @@ export interface FormComponentProps<TField = any> extends FormField {
   disabled: boolean;
   errors: Array<any>;
   /** Help text for the form */
-  help: string;
+  help?: string;
   /** Path of the field if nested */
   path: string;
   defaultValue?: TField;
   max?: number;
-  locale: string;
+  locale?: string;
   /** Input for this field */
   input?: VulcanFieldInput | string | React.Component;
   formType: "new" | "edit"; // new or edit
@@ -203,7 +203,7 @@ export interface FormComponentProps<TField = any> extends FormField {
   /** Graphql query you can pass to fetch the options asynchronously */
   query?: string;
   options?: Options | ((fciProps?: any) => Options);
-  vulcanComponents: PossibleVulcanComponents;
+  vulcanComponents?: PossibleVulcanComponents;
 }
 /**
  * Component for the display of any field of the form

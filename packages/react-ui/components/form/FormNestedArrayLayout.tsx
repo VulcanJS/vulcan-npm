@@ -19,7 +19,7 @@ export const FormNestedArrayLayout = (props) => {
     <div
       className={`form-group row form-nested ${hasErrors ? "input-error" : ""}`}
     >
-      {<BeforeComponent {...props} />}
+      {BeforeComponent && <BeforeComponent {...props} />}
 
       <label className="control-label col-sm-3">{label}</label>
 
@@ -43,7 +43,7 @@ export const FormNestedArrayLayout = (props) => {
         ) : null}
       </div>
 
-      {<AfterComponent {...props} />}
+      {AfterComponent && <AfterComponent {...props} />}
     </div>
   );
 };

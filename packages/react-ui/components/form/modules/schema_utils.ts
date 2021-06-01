@@ -133,12 +133,11 @@ const getArrayNestedSchema = (fieldName: string, schema: VulcanSchema) => {
   const nestedSchema = arrayItemSchema && getSchemaType(arrayItemSchema);
   return nestedSchema;
 };
-// nested object fields type is of the form "type: new SimpleSchema({...})"
-// so they should possess a "_schema" prop
+
+// TODO: not 100% it's valid with current implementation
 const isNestedSchemaField = (fieldSchema: VulcanFieldSchema) => {
   const fieldType = getSchemaType(fieldSchema);
-  //console.log('fieldType', typeof fieldType, fieldType._schema)
-  return fieldType && !!fieldType._schema;
+  return fieldType && typeof fieldType === "object";
 };
 const getObjectNestedSchema = (fieldName: string, schema: VulcanSchema) => {
   const fieldSchema = schema[fieldName];

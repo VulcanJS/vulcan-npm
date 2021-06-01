@@ -5,20 +5,14 @@
 import React, { useEffect } from "react";
 import _omit from "lodash/omit";
 import _get from "lodash/get";
-import { PossibleFormComponents } from "./defaultVulcanComponents";
 import { useFormContext } from "./FormContext";
+import { useVulcanComponents } from "./VulcanComponentsContext";
 
 // Wraps the FormNestedItem, repeated for each object
 // Allow for example to have a label per object
 export const FormNestedArrayInnerLayout = (props) => {
-  const {
-    FormComponents,
-    label,
-    children,
-    addItem,
-    BeforeComponent,
-    AfterComponent,
-  } = props;
+  const { label, children, addItem, BeforeComponent, AfterComponent } = props;
+  const FormComponents = useVulcanComponents();
   return (
     <div className="form-nested-array-inner-layout">
       <BeforeComponent {...props} />
@@ -41,8 +35,6 @@ export interface FormNestedArrayProps<TValue = any> {
   nestedArrayErrors: any;
   hasErrors?: boolean;
   // TODO: get from context
-  FormComponents: PossibleFormComponents;
-  // TODO: get from context to avoid props drilling
   prefilledProps?: any;
   addItem: Function | null;
 }
@@ -105,8 +97,8 @@ export const FormNestedArray = (props: FormNestedArrayProps) => {
       "afterComponent"
     ),
   };
-  const { errors, path, FormComponents, minCount, maxCount, arrayField } =
-    props;
+  const { errors, path, minCount, maxCount, arrayField } = props;
+  const FormComponents = useVulcanComponents();
 
   //filter out null values to calculate array length
   let arrayLength = value.filter((singleValue) => {
@@ -132,7 +124,6 @@ export const FormNestedArray = (props: FormNestedArrayProps) => {
           <FormComponents.FormNestedArrayInnerLayout
             {...arrayField}
             key={path}
-            FormComponents={FormComponents}
             addItem={addItem}
             itemIndex={i}
             visibleItemIndex={visibleItemIndex}
