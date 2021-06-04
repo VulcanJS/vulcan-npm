@@ -1,10 +1,9 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
+// TODO: we have to do this otherwise we end up with a circular dep...
 import { Form } from "../Form2/Form";
 import { FormProps } from "../Form/typings";
-import { VulcanComponentsProvider } from "../VulcanComponentsContext";
 import { createModel } from "@vulcanjs/model";
-import { IntlProvider, LegacyIntlProvider } from "@vulcanjs/i18n";
 import SimpleSchema from "simpl-schema";
 import * as models from "./fixtures/models";
 
@@ -14,9 +13,7 @@ export default {
   decorators: [
     (Story) => (
       <VulcanComponentsProvider>
-        <IntlProvider locale="fr">
-          <Story />
-        </IntlProvider>
+        <Story />
       </VulcanComponentsProvider>
     ),
   ],
@@ -73,6 +70,7 @@ const defaultFieldSchema = {
 import fromPairs from "lodash/fromPairs";
 import mapValues from "lodash/mapValues";
 import gql from "graphql-tag";
+import { VulcanComponentsProvider } from "../VulcanComponentsContext";
 const withDefaultFieldSchema = (partialSchema) =>
   mapValues(partialSchema, (fieldSchema) => ({
     ...defaultFieldSchema,

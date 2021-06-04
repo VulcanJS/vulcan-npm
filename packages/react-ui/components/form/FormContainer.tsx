@@ -37,19 +37,14 @@ Or:
 component is also added to wait for withSingle's loading prop to be false)
 
 */
-
 import React from "react";
-import PropTypes from "prop-types";
 // import // withCurrentUser,
 // Utils,
 // getFragment,
 //"meteor/vulcan:core";
 import gql from "graphql-tag";
 
-import { callbackProps } from "./propTypes";
-
 import getFormFragments from "./modules/formFragments";
-import { VulcanSchema } from "@vulcanjs/schema";
 // import { VulcanModel } from "@vulcanjs/model";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { capitalize } from "@vulcanjs/utils";
@@ -62,7 +57,7 @@ import {
 } from "@vulcanjs/react-hooks";
 import { useVulcanComponents } from "./VulcanComponentsContext";
 
-interface FormContainerProps {
+export interface FormContainerProps {
   model: VulcanGraphqlModel;
   /** Document id for edition mode, will automatically fetch the document */
   documentId?: string;

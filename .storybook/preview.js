@@ -1,3 +1,5 @@
+import { IntlProvider } from "../packages/i18n";
+
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
@@ -7,6 +9,14 @@ export const parameters = {
     },
   },
 };
+
+export const decorators = [
+  (Story) => (
+    <IntlProvider locale="fr">
+      <Story />
+    </IntlProvider>
+  ),
+];
 
 // Those events are triggered by the form when you activate
 // warn on unsaved changes

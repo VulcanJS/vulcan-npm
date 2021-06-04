@@ -1,8 +1,6 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { SmartForm, SmartFormProps } from "../FormContainer";
-import { VulcanComponentsProvider } from "../VulcanComponentsContext";
-import { IntlProvider } from "@vulcanjs/i18n";
 import { createGraphqlModel } from "@vulcanjs/graphql";
 import { EmptyGraphql } from "./fixtures/models";
 
@@ -14,6 +12,7 @@ import {
   OperationNameMockLink,
 } from "operation-name-mock-link";
 import gql from "graphql-tag";
+import { VulcanComponentsProvider } from "../VulcanComponentsContext";
 // TODO: create mocks for data fetching, data creation, data update
 interface GetSomeDataResult {
   getSomeData: {
@@ -46,15 +45,12 @@ export default {
   decorators: [
     (Story) => (
       <VulcanComponentsProvider>
-        <IntlProvider locale="fr">
-          {/** Apollo mocking */}
-          <MockedProvider
-            // We replace MockedProvider default link with our custom MockLink
-            link={new OperationNameMockLink([mock], false)}
-          >
-            <Story />
-          </MockedProvider>
-        </IntlProvider>
+        <MockedProvider
+          // We replace MockedProvider default link with our custom MockLink
+          link={new OperationNameMockLink([mock], false)}
+        >
+          <Story />
+        </MockedProvider>
       </VulcanComponentsProvider>
     ),
   ],
