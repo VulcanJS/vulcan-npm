@@ -36,6 +36,7 @@
     "jest": "^26.4.2",
     "lerna": "^3.22.1",
     "mongoose": "^5.10.16",
+    "operation-name-mock-link": "^0.0.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "typescript": "^3.8.2",

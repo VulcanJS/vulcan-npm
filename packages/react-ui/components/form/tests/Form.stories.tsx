@@ -1,10 +1,10 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
-import { Form, FormProps } from "../Form/Form";
+import { Form } from "../Form2/Form";
+import { FormProps } from "../Form/typings";
 import { VulcanComponentsProvider } from "../VulcanComponentsContext";
 import { createModel } from "@vulcanjs/model";
 import { IntlProvider, LegacyIntlProvider } from "@vulcanjs/i18n";
-import { actions } from "@storybook/addon-actions";
 import SimpleSchema from "simpl-schema";
 import * as models from "./fixtures/models";
 
@@ -13,7 +13,6 @@ export default {
   title: "Form", //TODO: why we need this?
   decorators: [
     (Story) => (
-      // TODO: improve this
       <VulcanComponentsProvider>
         <IntlProvider locale="fr">
           <Story />
@@ -73,6 +72,7 @@ const defaultFieldSchema = {
 };
 import fromPairs from "lodash/fromPairs";
 import mapValues from "lodash/mapValues";
+import gql from "graphql-tag";
 const withDefaultFieldSchema = (partialSchema) =>
   mapValues(partialSchema, (fieldSchema) => ({
     ...defaultFieldSchema,

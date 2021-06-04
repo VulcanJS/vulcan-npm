@@ -1,5 +1,5 @@
 import React from "react";
-// TODO: should be loaded from Components instead?
+// TODO: for some reason we have to call it Form in storybook
 import { Form, FormProps } from "../Form";
 import expect from "expect";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
