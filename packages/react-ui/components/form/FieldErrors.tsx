@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponents/Consumer";
 
 // Track dependencies, not used yet
 export const formComponentsDependencies = ["FormError"];

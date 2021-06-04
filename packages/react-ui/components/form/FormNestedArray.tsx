@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import _omit from "lodash/omit";
 import _get from "lodash/get";
 import { useFormContext } from "./FormContext";
-import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponents/Consumer";
 
 // Wraps the FormNestedItem, repeated for each object
 // Allow for example to have a label per object

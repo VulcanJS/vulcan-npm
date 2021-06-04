@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponents/Consumer";
 
 // Replaceable layout, default implementation
 export const FormNestedArrayLayout = (props) => {

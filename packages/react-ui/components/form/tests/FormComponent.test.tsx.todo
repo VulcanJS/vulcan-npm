@@ -3,7 +3,7 @@ import React from "react";
 import { FormComponent, FormComponentProps } from "../FormComponent";
 import { FormContext } from "../FormContext";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { VulcanComponentsProvider } from "../VulcanComponentsContext";
+import { VulcanComponentsProvider } from "../VulcanComponents/Consumer";
 
 // helpers
 // tests

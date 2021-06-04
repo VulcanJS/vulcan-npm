@@ -12,7 +12,7 @@ import {
   OperationNameMockLink,
 } from "operation-name-mock-link";
 import gql from "graphql-tag";
-import { VulcanComponentsProvider } from "../VulcanComponentsContext";
+import { VulcanComponentsProvider } from "../VulcanComponents/Provider";
 // TODO: create mocks for data fetching, data creation, data update
 interface GetSomeDataResult {
   getSomeData: {

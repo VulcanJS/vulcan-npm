@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _omit from "lodash/omit";
-import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponents/Consumer";
 import { useFormContext } from "./FormContext";
 
 // Replaceable layout

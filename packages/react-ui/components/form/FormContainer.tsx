@@ -55,7 +55,7 @@ import {
   useDelete,
   UseSingleOptions,
 } from "@vulcanjs/react-hooks";
-import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponents/Consumer";
 
 export interface FormContainerProps {
   model: VulcanGraphqlModel;

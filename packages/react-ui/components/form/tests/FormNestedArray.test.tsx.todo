@@ -4,7 +4,7 @@ import { FormNestedArray } from "../FormNestedArray";
 import { FormNestedArrayLayout } from "../FormNestedArrayLayout";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import { FormContext } from "../FormContext";
-import { VulcanComponentsProvider } from "../VulcanComponentsContext";
+import { VulcanComponentsProvider } from "../VulcanComponents/Consumer";
 import { IntlProvider } from "@vulcanjs/i18n";
 
 // helpers

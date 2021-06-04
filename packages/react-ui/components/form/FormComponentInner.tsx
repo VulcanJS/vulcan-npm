@@ -12,7 +12,7 @@ import classNames from "classnames";
 import { VulcanCoreInput } from "@vulcanjs/schema";
 import { PossibleVulcanComponents } from "./defaultVulcanComponents";
 import { clearableInputs } from "./inputs/consts";
-import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponents/Consumer";
 
 export interface FormComponentInnerProps extends FormComponentProps {
   inputType: VulcanCoreInput;
