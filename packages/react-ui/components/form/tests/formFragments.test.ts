@@ -1,3 +1,4 @@
+import { createGraphqlModel } from "@vulcanjs/graphql";
 import expect from "expect";
 import { print } from "graphql/language/printer";
 
@@ -11,9 +12,17 @@ const normalizeFragment = (gqlSchema) =>
 
 const defaultArgs = {
   formType: "new" as const,
-  collectionName: "Foos",
-  typeName: "Foo",
 };
+const makeModel = (schema) =>
+  createGraphqlModel({
+    name: "Foo",
+    schema,
+    graphql: {
+      typeName: "Foo",
+      multiTypeName: "Foos",
+    },
+  });
+
 describe("vulcan:form/formFragments", function () {
   test("generate valid query and mutation fragment", () => {
     const schema = {
@@ -28,9 +37,10 @@ describe("vulcan:form/formFragments", function () {
         canUpdate: ["admins"],
       },
     };
+    const model = makeModel(schema);
     const { queryFragment, mutationFragment } = getFormFragments({
       ...defaultArgs,
-      schema,
+      model,
     });
     expect(queryFragment).toBeDefined();
     expect(mutationFragment).toBeDefined();
@@ -55,10 +65,11 @@ describe("vulcan:form/formFragments", function () {
         canCreate: ["admins"],
       },
     };
+    const model = makeModel(schema);
     const { queryFragment, mutationFragment } = getFormFragments({
       ...defaultArgs,
       formType: "edit",
-      schema,
+      model,
     });
     expect(normalizeFragment(queryFragment)).toMatch(
       "fragment FoosEditFormQueryFragment on Foo { field }"
@@ -83,9 +94,10 @@ describe("vulcan:form/formFragments", function () {
         },
       },
     };
+    const model = makeModel(schema);
     const { queryFragment, mutationFragment } = getFormFragments({
       ...defaultArgs,
-      schema,
+      model,
     });
     expect(normalizeFragment(queryFragment)).toMatch(
       "fragment FoosNewFormQueryFragment on Foo { nestedField { firstNestedField secondNestedField } }"
@@ -115,9 +127,10 @@ describe("vulcan:form/formFragments", function () {
         },
       },
     };
+    const model = makeModel(schema);
     const { queryFragment, mutationFragment } = getFormFragments({
       ...defaultArgs,
-      schema,
+      model,
     });
     expect(normalizeFragment(queryFragment)).toMatch(
       "fragment FoosNewFormQueryFragment on Foo { arrayField { firstNestedField secondNestedField } }"
@@ -138,9 +151,10 @@ describe("vulcan:form/formFragments", function () {
         canRead: ["admins"],
       },
     };
+    const model = makeModel(schema);
     const { queryFragment, mutationFragment } = getFormFragments({
       ...defaultArgs,
-      schema,
+      model,
     });
     expect(normalizeFragment(queryFragment)).not.toMatch("readOnlyField"); // this does not affect the queryFragment;
     expect(normalizeFragment(mutationFragment)).toMatch(
@@ -169,9 +183,10 @@ describe("vulcan:form/formFragments", function () {
         },
       },
     };
+    const model = makeModel(schema);
     const { queryFragment, mutationFragment } = getFormFragments({
       ...defaultArgs,
-      schema,
+      model,
     });
     expect(normalizeFragment(queryFragment)).not.toMatch("virtual");
     expect(normalizeFragment(mutationFragment)).toMatch(
@@ -189,9 +204,10 @@ describe("vulcan:form/formFragments", function () {
         canRead: ["guests"],
       },
     };
+    const model = makeModel(schemaWithIds);
     const { queryFragment, mutationFragment } = getFormFragments({
       ...defaultArgs,
-      schema: schemaWithIds,
+      model,
     });
     expect(normalizeFragment(queryFragment)).toMatch(/_id/);
     expect(normalizeFragment(mutationFragment)).toMatch(/_id/);
@@ -206,9 +222,10 @@ describe("vulcan:form/formFragments", function () {
         canCreate: ["guests"],
       },
     };
+    const model = makeModel(schemaWithoutIds);
     const { queryFragment, mutationFragment } = getFormFragments({
       ...defaultArgs,
-      schema: schemaWithoutIds,
+      model,
     });
     expect(normalizeFragment(queryFragment)).not.toMatch(/_id/);
     expect(normalizeFragment(mutationFragment)).not.toMatch(/_id/);
