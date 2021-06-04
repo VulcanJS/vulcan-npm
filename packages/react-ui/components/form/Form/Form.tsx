@@ -376,7 +376,12 @@ export const Form = (props: FormProps) => {
     setDeletedValues((prevDeletedValues) => [...prevDeletedValues, name]);
   };
 
-  const [callbacks, setCallbacks] = useState({
+  interface Callbacks {
+    submitFormCallbacks: Array<any>;
+    successFormCallbacks: Array<any>;
+    failureFormCallbacks: Array<any>;
+  }
+  const [callbacks, setCallbacks] = useState<Callbacks>({
     submitFormCallbacks: [],
     successFormCallbacks: [],
     failureFormCallbacks: [],
