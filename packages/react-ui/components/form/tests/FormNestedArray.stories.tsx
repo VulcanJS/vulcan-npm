@@ -1,12 +1,8 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
-import { Form, FormProps } from "../Form/Form";
-import { VulcanComponentsProvider } from "../VulcanComponentsContext";
-import { createModel } from "@vulcanjs/model";
+import { VulcanComponentsProvider } from "../VulcanComponents/Provider";
 import { IntlProvider } from "@vulcanjs/i18n";
 import { action, actions } from "@storybook/addon-actions";
-import SimpleSchema from "simpl-schema";
-import * as models from "./fixtures/models";
 import { FormNestedArray, FormNestedArrayProps } from "../FormNestedArray";
 import { FormContext } from "../FormContext";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponents/Consumer";
 
 export interface FormLayoutProps {
   commonProps: any;

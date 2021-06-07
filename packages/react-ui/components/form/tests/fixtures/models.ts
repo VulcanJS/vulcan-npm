@@ -1,3 +1,4 @@
+import { createGraphqlModel } from "@vulcanjs/graphql";
 import { createModel } from "@vulcanjs/model";
 
 // fixtures
@@ -143,4 +144,13 @@ export const Addresses = createModel({
   name: "Addresses",
   //typeName: "Address",
   schema: addressSchema,
+});
+
+export const EmptyGraphql = createGraphqlModel({
+  name: "Empty",
+  schema: {},
+  graphql: {
+    typeName: "Empty",
+    multiTypeName: "Empties",
+  },
 });

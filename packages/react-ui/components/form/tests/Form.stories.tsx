@@ -1,23 +1,20 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
-import { Form, FormProps } from "../Form/Form";
-import { VulcanComponentsProvider } from "../VulcanComponentsContext";
+// TODO: we have to do this otherwise we end up with a circular dep...
+import { Form } from "../Form/Form";
+import { FormProps } from "../Form/typings";
 import { createModel } from "@vulcanjs/model";
-import { IntlProvider, LegacyIntlProvider } from "@vulcanjs/i18n";
-import { actions } from "@storybook/addon-actions";
 import SimpleSchema from "simpl-schema";
 import * as models from "./fixtures/models";
+import { VulcanComponentsProvider } from "../VulcanComponents/Provider";
 
 export default {
   component: Form,
   title: "Form", //TODO: why we need this?
   decorators: [
     (Story) => (
-      // TODO: improve this
       <VulcanComponentsProvider>
-        <IntlProvider locale="fr">
-          <Story />
-        </IntlProvider>
+        <Story />
       </VulcanComponentsProvider>
     ),
   ],

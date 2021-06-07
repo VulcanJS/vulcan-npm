@@ -13,7 +13,7 @@ import {
   PossibleFormComponents,
   PossibleVulcanComponents,
 } from "./defaultVulcanComponents";
-import { useVulcanComponents } from "./VulcanComponentsContext";
+import { useVulcanComponents } from "./VulcanComponents/Consumer";
 import { FormField } from "./typings";
 import {
   VulcanFieldSchema,

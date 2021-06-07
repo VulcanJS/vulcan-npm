@@ -1,13 +1,13 @@
 import { formProperties } from "../modules/schema_utils";
 import { FieldGroup } from "@vulcanjs/schema";
 import { FormField } from "../typings";
+import { FormProps, FormState } from "./typings";
 
 /**
  * Field related functions
  */
 
 import { VulcanSchema } from "@vulcanjs/schema";
-import { FormProps, FormState } from "./Form";
 import uniq from "lodash/uniq";
 import compact from "lodash/compact";
 import get from "lodash/get";

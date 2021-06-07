@@ -14,6 +14,7 @@ import {
 } from "@vulcanjs/schema";
 import {
   getFieldFragment,
+  VulcanGraphqlModel,
   //isBlackbox,
 } from "@vulcanjs/graphql";
 import { capitalize } from "@vulcanjs/utils";
@@ -138,23 +139,21 @@ const getSchemaFragment = ({
 };
 
 /**
- * Generate query and mutation fragments for forms
+ * Generate query and mutation fragments for forms, dynamically  based on the selected fields
  */
 const getFormFragments = ({
-  formType = "new", // new || edit
-  collectionName,
-  typeName,
-  schema,
+  formType = "new",
+  model,
   fields, // restrict on certain fields
   addFields, // add additional fields (eg to display static fields)
 }: {
+  model: VulcanGraphqlModel;
   formType: FormType;
-  collectionName: string;
-  typeName: string;
-  schema: VulcanSchema;
   fields?: Array<string>; // restrict on certain fields
   addFields?: Array<string>; // add additional fields (eg to display static fields)
 }) => {
+  const { schema, name, graphql } = model;
+  const { typeName, multiTypeName } = graphql;
   // get the root schema fieldNames
   let queryFieldNames = getQueryFieldNames({ schema, options: { formType } });
   let mutationFieldNames = getMutationFieldNames({
@@ -166,7 +165,7 @@ const getFormFragments = ({
   });
 
   // if "fields" prop is specified, restrict list of fields to it
-  if (typeof fields !== "undefined" && fields.length > 0) {
+  if (fields && fields?.length > 0) {
     // add "_intl" suffix to all fields in case some of them are intl fields
     const fieldsWithIntlSuffix = fields.map((field) => `${field}${intlSuffix}`);
     const allFields = [...fields, ...fieldsWithIntlSuffix];
@@ -175,7 +174,7 @@ const getFormFragments = ({
   }
 
   // add "addFields" prop contents to list of fields
-  if (addFields && addFields.length) {
+  if (addFields?.length) {
     queryFieldNames = queryFieldNames.concat(addFields);
     mutationFieldNames = mutationFieldNames.concat(addFields);
   }
@@ -195,30 +194,54 @@ const getFormFragments = ({
   queryFieldNames = _uniq(queryFieldNames);
   mutationFieldNames = _uniq(mutationFieldNames);
 
+  if (queryFieldNames.length === 0)
+    // NOTE: in theory, you could have no queriable fields, but mutable fields =>
+    // a form for data that you can create but can never see...
+    // Since that doesn't make much sense, we throw an error to secure the end user
+    throw new Error(
+      `Model "${model.name}" has no queryable fields, cannot create a form for it. Please add readable/createable fields to the model schema.`
+    );
+  if (mutationFieldNames.length === 0)
+    throw new Error(
+      `Model "${model.name}" has no mutable fields, cannot create a form for it. Please add createable/updateable fields to model schema.`
+    );
+
   // generate query fragment based on the fields that can be edited. Note: always add _id, and userId if possible.
   // TODO: support nesting
   const queryFragmentText = getSchemaFragment({
     schema,
     fragmentName: `fragment ${getFragmentName(
       formType,
-      collectionName,
+      multiTypeName, // previously collectionName //name,
       "query"
     )} on ${typeName}`,
     options: { formType, isMutation: false },
     fieldNames: queryFieldNames,
   });
+  if (!queryFragmentText) {
+    // NOTE: this should never happen if we don't have an empty array for field names
+    throw new Error(
+      `Model ${model.name} with fields ${queryFieldNames} yield an empty query fragment.`
+    );
+  }
   const generatedQueryFragment = gql(queryFragmentText);
 
   const mutationFragmentText = getSchemaFragment({
     schema,
     fragmentName: `fragment ${getFragmentName(
       formType,
-      collectionName,
+      multiTypeName, // previously collectionName,
       "mutation"
     )} on ${typeName}`,
     options: { formType, isMutation: true },
     fieldNames: mutationFieldNames,
   });
+  if (!mutationFragmentText) {
+    // NOTE: this should never happen if we don't have an empty array for field names
+    throw new Error(
+      `Model ${model.name} with fields ${mutationFieldNames} yield an empty mutation fragment.`
+    );
+  }
   // generate mutation fragment based on the fields that can be edited and/or viewed. Note: always add _id, and userId if possible.
   // TODO: support nesting
   const generatedMutationFragment = gql(mutationFragmentText);
