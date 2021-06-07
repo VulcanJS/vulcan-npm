@@ -1,6 +1,5 @@
 import React from "react";
 // TODO: for some reason we have to call it Form in storybook
-import { Form, FormProps } from "../Form";
 import expect from "expect";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 // @see https://storybook.js.org/addons/@storybook/react-testing
@@ -23,13 +22,11 @@ const { DefaultForm, ArrayOfUrlsForm, ArrayOfObjectsForm } =
 
 // we must import all the other components, so that "registerComponent" is called
 
-// @see https://github.com/storybookjs/storybook/pull/14550
-// in the future, DefaultForm.args should have the required fields as well to avoid this cast
-const defaultProps = DefaultForm.args as FormProps;
 // helpers
 // tests
 describe("vulcan-forms/Form", function () {
   // since some props are now handled by HOC we need to provide them manually
+  // TODO : delete this one
   /*
   const defaultProps: Pick<FormProps, "changeCallback"> = {
     changeCallback: jest.fn(),
@@ -44,8 +41,6 @@ describe("vulcan-forms/Form", function () {
     describe("basic collection - no nesting", function () {
       it("renders", function () {
         const { container } = render(
-          // {...defaultProps} is not necessary. See https://github.com/storybookjs/testing-react/issues/27
-          // OLD : <DefaultForm {...defaultProps} model={Addresses} />
           <DefaultForm model={Addresses} />
         );
         expect(container).toBeDefined();
@@ -78,7 +73,7 @@ describe("vulcan-forms/Form", function () {
       };
       // TODO: rewrite using testing-react
       const getFirstField = () => {
-        const wrapper = render(<Form model={Objects} />);
+        const wrapper = render(<DefaultForm model={Objects} />);
         const fields = getFormFields(wrapper);
         return fields[0];
       };
@@ -102,7 +97,7 @@ describe("vulcan-forms/Form", function () {
         expect(group).toEqual("hello");
         /*
         const wrapper = render(
-          <Form model={ArrayOfObjects} />
+          <DefaultForm model={ArrayOfObjects} />
         );
         const formGroup = wrapper.find("FormGroup").find({ name: "addresses" });
         expect(formGroup).toBeDefined();
@@ -112,7 +107,7 @@ describe("vulcan-forms/Form", function () {
       it.skip("passes down the array child fields", function () {
         /* TODO: update to testing-react
         const wrapper = render(
-          <Form model={ArrayOfObjects} />
+          <DefaultForm model={ArrayOfObjects} />
         );
         const formGroup = getArrayFormGroup(wrapper);
         const fields = getFields(formGroup);
@@ -132,8 +127,7 @@ describe("vulcan-forms/Form", function () {
           ],
         };
         const wrapper = render(
-          <Form
-            {...defaultProps}
+          <DefaultForm
             model={ArrayOfObjects}
             prefilledProps={prefilledProps}
           />
@@ -151,8 +145,7 @@ describe("vulcan-forms/Form", function () {
           },
         };
         const wrapper = render(
-          <Form
-            {...defaultProps}
+          <DefaultForm
             model={ArrayOfObjects}
             prefilledProps={prefilledProps}
           />
@@ -176,8 +169,7 @@ describe("vulcan-forms/Form", function () {
           },
         };
         const wrapper = render(
-          <Form
-            {...defaultProps}
+          <DefaultForm
             model={ArrayOfObjects}
             prefilledProps={prefilledProps}
           />
@@ -202,7 +194,7 @@ describe("vulcan-forms/Form", function () {
       });
       it.skip("passes down the array item custom input", () => {
         /* TODO: update to testing-react
-        const wrapper = render(<Form model={ArrayOfUrls} />);
+        const wrapper = render(<DefaultForm model={ArrayOfUrls} />);
         const formGroup = getArrayFormGroup(wrapper);
         const fields = getFields(formGroup);
         const arrayField = fields[0];
@@ -214,7 +206,7 @@ describe("vulcan-forms/Form", function () {
       it.skip("render", function () {
         /* TODO update to testing-react 
         const { container } = render(
-          <Form model={ArrayOfCustomObjects} />
+          <DefaultForm model={ArrayOfCustomObjects} />
         );
         expect(container).toBeDefined();
         */
@@ -222,7 +214,7 @@ describe("vulcan-forms/Form", function () {
       // TODO: does not work, schema_utils needs an update
       it.skip("passes down the custom input", function () {
         const wrapper = render(
-          <Form model={ArrayOfCustomObjects} />
+          <DefaultForm model={ArrayOfCustomObjects} />
         );
         const formGroup = getArrayFormGroup(wrapper);
         const fields = getFields(formGroup);
@@ -233,13 +225,13 @@ describe("vulcan-forms/Form", function () {
     describe("array with a fully custom input (array itself and children)", function () {
       it.skip("shallow render", function () {
         const wrapper = render(
-          <Form model={ArrayFullCustom} />
+          <DefaultForm model={ArrayFullCustom} />
         );
         expect(wrapper).toBeDefined();
       });
       it.skip("passes down the custom input", function () {
         const wrapper = render(
-          <Form model={ArrayFullCustom} />
+          <DefaultForm model={ArrayFullCustom} />
         );
         const formGroup = getArrayFormGroup(wrapper);
         const fields = getFields(formGroup);
@@ -256,7 +248,7 @@ describe("vulcan-forms/Form", function () {
     // so it's added to the deletedValues and not changedValues
     it.skip("store typed value", function () {
       const wrapper = render(
-        <Form model={Foos} />
+        <DefaultForm model={Foos} />
       );
       //console.log(wrapper.state());
       wrapper
@@ -273,7 +265,7 @@ describe("vulcan-forms/Form", function () {
     /*
     it("reset state when relevant props change", function () {
       const wrapper = render(
-        <Form model="Foos" collection={Foos} />
+        <DefaultForm model="Foos" collection={Foos} />
       );
       wrapper.setState({ currentValues: { foo: "bar" } });
       expect(wrapper.state("currentValues")).toEqual({ foo: "bar" });
@@ -286,7 +278,7 @@ describe("vulcan-forms/Form", function () {
       //const prefilledProps = { bar: 'foo' } // TODO
       const changeCallback = () => "CHANGE";
       const wrapper = render(
-        <Form model={Foos} changeCallback={changeCallback} />
+        <DefaultForm model={Foos} changeCallback={changeCallback} />
       );
       wrapper.setState({ currentValues: { foo: "bar" } });
       expect(wrapper.state("currentValues")).toEqual({ foo: "bar" });
