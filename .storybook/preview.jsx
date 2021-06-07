@@ -1,3 +1,4 @@
+import React from "react";
 import { IntlProvider } from "../packages/i18n";
 
 export const parameters = {

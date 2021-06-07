@@ -2660,7 +2660,7 @@
     prop-types "^15.7.2"
     regenerator-runtime "^0.13.7"
 
-"@storybook/addons@6.2.9", "@storybook/addons@^6.1.21":
+"@storybook/addons@6.2.9":
   version "6.2.9"
   resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-6.2.9.tgz#b7ba2b9f0e15b852c7d6b57d04fb0a493c57477c"
   integrity sha512-GnmEKbJwiN1jncN9NSA8CuR1i2XAlasPcl/Zn0jkfV9WitQeczVcJCPw86SGH84AD+tTBCyF2i9UC0KaOV1YBQ==
@@ -2799,7 +2799,7 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
-"@storybook/client-api@6.2.9", "@storybook/client-api@^6.1.21":
+"@storybook/client-api@6.2.9":
   version "6.2.9"
   resolved "https://registry.yarnpkg.com/@storybook/client-api/-/client-api-6.2.9.tgz#f0bb44e9b2692adfbf30d7ff751c6dd44bcfe1ce"
   integrity sha512-aLvEUVkbvv6Qo/2mF4rFCecdqi2CGOUDdsV1a6EFIVS/9gXFdpirsOwKHo9qNjacGdWPlBYGCUcbrw+DvNaSFA==
@@ -3036,16 +3036,7 @@
   dependencies:
     core-js "^3.8.2"
 
-"@storybook/react-testing@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@storybook/react-testing/-/react-testing-0.0.3.tgz#25b91a051d071de806105bb8abbcef65d75dbf74"
-  integrity sha512-9MDdB0L+bA9FUhbU60P20XQzmnsd2bxuNmbjEt8BZvj9VwM0PKyPJhMQ+qs8aeq6HajeAIz3mHZbUzjDVnpIcg==
-  dependencies:
-    "@storybook/addons" "^6.1.21"
-    "@storybook/client-api" "^6.1.21"
-    "@storybook/react" "^6.1.21"
-
-"@storybook/react@^6.1.21", "@storybook/react@^6.2.9":
+"@storybook/react@^6.2.9":
   version "6.2.9"
   resolved "https://registry.yarnpkg.com/@storybook/react/-/react-6.2.9.tgz#84f42b3d9a5c8de814f71ae186886076ba377d2c"
   integrity sha512-glvw+o/Vek2oapYIXCYDK6gm3cuSnx0XdOpiJVcXk3KLb8JfLbdzGYYp6dcWUbyOBqGcGFRpXIgMmkcwgn+fvQ==
@@ -3113,6 +3104,11 @@
     lodash "^4.17.20"
     prettier "~2.2.1"
     regenerator-runtime "^0.13.7"
+
+"@storybook/testing-react@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@storybook/testing-react/-/testing-react-0.0.17.tgz#632dd22f8815743f78c182b126f444cf51d92d71"
+  integrity sha512-93nbA/JSWDEys1msd438+wzETRFDEgT2aFqJL2y46++zsyv8g2mCYKZkf9E36KQHMQbO1uJBHT8CmrLQa8VmZw==
 
 "@storybook/theming@6.2.9":
   version "6.2.9"
