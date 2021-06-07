@@ -49,8 +49,8 @@ interface GraphqlSharedModel {
   multiTypeName: string; // plural name for the multi resolver
   multiResolverName: string;
   singleResolverName: string;
-  defaultFragment?: string;
-  defaultFragmentName?: string;
+  defaultFragment: string;
+  defaultFragmentName: string;
 }
 // Client only model fields
 interface GraphqlClientModel {}

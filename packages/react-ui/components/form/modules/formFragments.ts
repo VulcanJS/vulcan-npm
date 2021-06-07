@@ -199,7 +199,7 @@ const getFormFragments = ({
     // a form for data that you can create but can never see...
     // Since that doesn't make much sense, we throw an error to secure the end user
     throw new Error(
-      `Model "${model.name}" has no queryable fields, cannot create a form for it. Please add readable/createable fields to the model schema.`
+      `Model "${model.name}" has no queryable fields, cannot create a form for it. Please add readable/createable/updateable fields to the model schema.`
     );
   if (mutationFieldNames.length === 0)
     throw new Error(

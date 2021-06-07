@@ -35,58 +35,60 @@ interface CreateGraphqlModelOptions
     CreateGraphqlModelServerOptions {}
 
 // Reusable model extension function
-const extendModel = (
-  options: CreateGraphqlModelOptions
-) /*: ExtendModelFunc<VulcanGraphqlModel>*/ => (
-  model: VulcanModel
-): VulcanGraphqlModel => {
-  const name = model.name;
-  const {
-    typeName = name,
-    multiTypeName,
-    queryResolvers,
-    mutationResolvers,
-  } = options;
+const extendModel =
+  (
+    options: CreateGraphqlModelOptions
+  ) /*: ExtendModelFunc<VulcanGraphqlModel>*/ =>
+  (model: VulcanModel): VulcanGraphqlModel => {
+    const name = model.name;
+    const {
+      typeName = name,
+      multiTypeName,
+      queryResolvers,
+      mutationResolvers,
+    } = options;
 
-  const singleResolverName = camelCaseify(typeName);
-  const multiResolverName = camelCaseify(multiTypeName);
+    const singleResolverName = camelCaseify(typeName);
+    const multiResolverName = camelCaseify(multiTypeName);
 
-  // compute base properties
-  const graphqlModel = {
-    singleResolverName,
-    multiResolverName,
-    ...options,
-  };
-  // compute default fragment
-  const extendedModel = {
-    ...model,
-    graphql: graphqlModel,
-  };
-  const defaultFragment = getDefaultFragmentText(extendedModel);
-  const defaultFragmentName = getDefaultFragmentName(extendedModel);
+    // compute base properties
+    const graphqlModel = {
+      singleResolverName,
+      multiResolverName,
+      ...options,
+    };
+    // compute default fragment
+    const extendedModel = {
+      ...model,
+      graphql: graphqlModel,
+    };
+    const defaultFragment = getDefaultFragmentText(extendedModel);
+    const defaultFragmentName = getDefaultFragmentName(extendedModel);
 
-  if (!defaultFragment) {
-    // TODO: is this a normal scenario?
-    console.warn(
-      `Could not generate a default fragment for type ${graphqlModel.typeName}`
-    );
-  }
+    if (!defaultFragment) {
+      // we don't allow graphql objects without any queryable fields, as this is creating
+      // troubles downstream in Apollo hooks for instance
+      throw new Error(
+        `Could not generate a default fragment for type ${graphqlModel.typeName}.
+        Please make at least one field of the model ${model.name} readable, using canRead.`
+      );
+    }
 
-  // server-only
-  const extendedGraphqlModel = {
-    ...graphqlModel,
-    defaultFragment,
-    defaultFragmentName,
     // server-only
-    queryResolvers,
-    mutationResolvers,
+    const extendedGraphqlModel = {
+      ...graphqlModel,
+      defaultFragment,
+      defaultFragmentName,
+      // server-only
+      queryResolvers,
+      mutationResolvers,
+    };
+    const finalModel: VulcanGraphqlModel = {
+      ...model,
+      graphql: extendedGraphqlModel,
+    };
+    return finalModel;
   };
-  const finalModel: VulcanGraphqlModel = {
-    ...model,
-    graphql: extendedGraphqlModel,
-  };
-  return finalModel;
-};
 
 /**
  * Helper to simplify the syntax

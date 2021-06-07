@@ -176,7 +176,7 @@ export const FormContainer = (props: FormContainerProps) => {
       // we always want to load a fresh copy of the document
       fetchPolicy: "network-only" as "network-only", // cast is for fixing annoying TS issue... https://github.com/vuejs/vue-apollo/issues/936
       pollInterval: 0, // no polling, only load data once
-      skip: formType === "edit",
+      skip: formType === "new",
     },
   };
   const { data, loading } = useSingle(queryOptions);

@@ -184,14 +184,14 @@ export const getFieldNames = (
     typeof addFields !== "undefined" &&
     addFields.length > 0
   ) {
-    relevantFields = relevantFields.concat(addFields);
+    relevantFields = relevantFields?.concat(addFields);
   }
 
   // remove all hidden fields
   if (excludeHiddenFields) {
     const document = currentDocument;
     relevantFields = reject(relevantFields, (fieldName) => {
-      const hidden = schema[fieldName].hidden;
+      const hidden = schema?.[fieldName].hidden;
       return typeof hidden === "function"
         ? hidden({ props, document })
         : hidden;
@@ -200,8 +200,8 @@ export const getFieldNames = (
 
   // replace intl fields
   if (replaceIntlFields) {
-    relevantFields = relevantFields.map((fieldName) =>
-      isIntlField(schema[fieldName]) ? `${fieldName}_intl` : fieldName
+    relevantFields = relevantFields?.map((fieldName) =>
+      isIntlField(schema?.[fieldName]) ? `${fieldName}_intl` : fieldName
     );
   }
 
@@ -470,7 +470,7 @@ export const getFieldGroups = (
       group.label ||
       //this.context.formatMessage({ id: group.name }) ||
       capitalize(group.name);
-    const groupFields = _filter(fields, (field) => {
+    const groupFields = _filter<FormField>(fields, (field) => {
       return field.group && field.group.name === group.name;
     });
     const groupWithFields: GroupWithFields = {

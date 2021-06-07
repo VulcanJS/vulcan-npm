@@ -50,7 +50,7 @@ describe("react-hooks/queries", function () {
     test("query a single document", async () => {
       const mock = {
         request: {
-          query: buildSingleQuery({ typeName, fragmentName, fragment }),
+          query: buildSingleQuery({ model: Foo, fragmentName, fragment }),
           variables: {
             // variables must absolutely match with the emitted request,
             // including undefined values
@@ -105,8 +105,11 @@ describe("react-hooks/queries", function () {
     const defaultQuery = buildMultiQuery({
       model: Foo,
     });
-    const defaultVariables = buildMultiQueryOptions({ input: {} }, {}, {})
-      .variables;
+    const defaultVariables = buildMultiQueryOptions(
+      { input: {} },
+      {},
+      {}
+    ).variables;
 
     test("query multiple documents", async () => {
       const totalCount = 10;

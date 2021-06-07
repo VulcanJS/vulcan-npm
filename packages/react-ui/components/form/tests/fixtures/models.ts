@@ -145,12 +145,3 @@ export const Addresses = createModel({
   //typeName: "Address",
   schema: addressSchema,
 });
-
-export const EmptyGraphql = createGraphqlModel({
-  name: "Empty",
-  schema: {},
-  graphql: {
-    typeName: "Empty",
-    multiTypeName: "Empties",
-  },
-});

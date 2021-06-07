@@ -9,10 +9,10 @@ import React, { ComponentType, useEffect, useState } from "react";
 import get from "lodash/get";
 import SimpleSchema from "simpl-schema";
 import { isEmptyValue, getNullValue } from "./modules/utils";
-import {
+import type {
   PossibleFormComponents,
   PossibleVulcanComponents,
-} from "./defaultVulcanComponents";
+} from "./VulcanComponents/typings";
 import { useVulcanComponents } from "./VulcanComponents/Consumer";
 import { FormField } from "./typings";
 import {
@@ -269,7 +269,7 @@ export const FormComponent = (props: FormComponentProps) => {
     useState<{
       charsCount: number;
       charsRemaining: number;
-    }>(countFromProps);
+    } | null>(countFromProps);
 
   // TODO: move this logic somewhere else, as it is specific to String components.
   // Eg using an intermediate FormComponentText
@@ -277,6 +277,10 @@ export const FormComponent = (props: FormComponentProps) => {
   Updates the state of charsCount and charsRemaining as the users types
   */
   const updateCharacterCount = (value) => {
+    if (!max)
+      throw new Error(
+        "Cannot update character count when no max value is set."
+      );
     setCharacterCounts(getCharacterCounts(value, max));
   };
   useEffect(() => {
@@ -293,9 +297,11 @@ export const FormComponent = (props: FormComponentProps) => {
   let inputName = null;
   if (typeof input === "string") {
     inputName = getInputName(type, input);
-    showCharsRemaining =
+    showCharsRemaining = !!(
       typeof max !== "undefined" &&
-      ["url", "email", "textarea", "text"].includes(inputName);
+      inputName &&
+      ["url", "email", "textarea", "text"].includes(inputName)
+    );
   }
   // const inputType = inputName; // TODO: rename inputType in the corresponding child components
 

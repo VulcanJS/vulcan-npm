@@ -10,7 +10,7 @@ import {
 */
 import classNames from "classnames";
 import { VulcanCoreInput } from "@vulcanjs/schema";
-import { PossibleVulcanComponents } from "./defaultVulcanComponents";
+import { PossibleVulcanComponents } from "./VulcanComponents/typings";
 import { clearableInputs } from "./inputs/consts";
 import { useVulcanComponents } from "./VulcanComponents/Consumer";
 
@@ -22,6 +22,9 @@ export interface FormComponentInnerProps extends FormComponentProps {
    * Callback called when clicking on the "clear input" button
    */
   clearField?: MouseEventHandler<HTMLButtonElement>;
+  /**
+   * TODO: not sure if it should be mandatory or not (eg for uncontrolled components?)
+   */
   handleChange?: Function;
   itemProperties?: any;
   description?: string;
@@ -104,7 +107,9 @@ export const FormComponentInner = (props: FormComponentInnerProps) => {
                 event.target.checked
               : // @ts-ignore
                 event.target.value;
-          handleChange(inputValue);
+          if (handleChange) {
+            handleChange(inputValue);
+          }
         },
         onKeyPress: (event) => {
           if (event.key === "Enter" && inputType !== "textarea") {

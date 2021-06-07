@@ -2,7 +2,6 @@ import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { SmartForm, SmartFormProps } from "../FormContainer";
 import { createGraphqlModel } from "@vulcanjs/graphql";
-import { EmptyGraphql } from "./fixtures/models";
 
 // Mocking graphql
 import { MockedProvider } from "@apollo/client/testing";
@@ -13,6 +12,9 @@ import {
 } from "operation-name-mock-link";
 import gql from "graphql-tag";
 import { VulcanComponentsProvider } from "../VulcanComponents/Provider";
+import { ExpectedErrorBoundary } from "../../../testing/ExpectedErrorBoundary";
+import { buildSingleQuery } from "@vulcanjs/react-hooks/single";
+import { singleOperationName } from "@vulcanjs/graphql";
 // TODO: create mocks for data fetching, data creation, data update
 interface GetSomeDataResult {
   getSomeData: {
@@ -39,6 +41,24 @@ const mock: OperationNameMockedResponse<GetSomeDataResult> = {
   },
 };
 
+interface OneFieldType {
+  text: string;
+}
+const OneField = createGraphqlModel({
+  name: "OneField",
+  schema: {
+    text: {
+      type: String,
+      canRead: ["anyone"],
+      canUpdate: ["anyone"],
+      canCreate: ["anyone"],
+    },
+  },
+  graphql: {
+    typeName: "OneField",
+    multiTypeName: "OneFields",
+  },
+});
 export default {
   component: SmartForm,
   title: "SmartForm",
@@ -55,20 +75,7 @@ export default {
     ),
   ],
   args: {
-    model: createGraphqlModel({
-      name: "OneField",
-      schema: {
-        text: {
-          type: String,
-          canRead: ["anyone"],
-          canCreate: ["anyone"],
-        },
-      },
-      graphql: {
-        typeName: "OneField",
-        multiTypeName: "OneFields",
-      },
-    }),
+    model: OneField,
   },
   parameters: { actions: {} },
 } as Meta<SmartFormProps>;
@@ -79,48 +86,45 @@ const SmartFormTemplate: Story<SmartFormProps> = (args) => (
 
 export const DefaultSmartForm = SmartFormTemplate.bind({});
 
-// Catches aerror and display correctly
-class ExpectedErrorBoundary extends React.Component<
-  any,
-  { hasError: boolean; error?: Error }
-> {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError(error) {
-    console.warn(error);
-    // Mettez à jour l'état, de façon à montrer l'UI de repli au prochain rendu.
-    return { hasError: true, error };
-  }
-  componentDidCatch(error, errorInfo) {
-    // Vous pouvez aussi enregistrer l'erreur au sein d'un service de rapport.
-  }
-  render() {
-    if (this.state.hasError) {
-      // Vous pouvez afficher n'importe quelle UI de repli.
-      return (
-        <div>
-          <h2>Everything is fine</h2>
-          <p>
-            An expected error was caught by the error boundary with message:
-          </p>
-          <p>{this.state.error?.message}</p>
-        </div>
-      );
-    }
-    return (
-      <div>
-        <p>
-          Waiting for an error to be caught... this message should disappear...
-        </p>
-        <div>{this.props.children}</div>
-      </div>
-    );
-  }
-}
-export const Empty = () => (
+export const DefaultEditSmartForm = SmartFormTemplate.bind({});
+DefaultEditSmartForm.args = {
+  documentId: "1",
+};
+const editMock: OperationNameMockedResponse<{
+  empty: { result: OneFieldType };
+}> = {
+  request: {
+    operationName: singleOperationName(OneField.graphql.typeName),
+    query: buildSingleQuery({
+      model: OneField,
+    }),
+  },
+  result: {},
+};
+DefaultEditSmartForm.decorators = [
+  (Story) => (
+    <MockedProvider link={new OperationNameMockLink([editMock], false)}>
+      <Story />
+    </MockedProvider>
+  ),
+];
+
+const NotCreateableModel = createGraphqlModel({
+  name: "NotCreatable",
+  schema: {
+    text: {
+      type: String,
+      canRead: ["any"],
+    },
+  },
+  graphql: {
+    typeName: "Empty",
+    multiTypeName: "Empties",
+  },
+});
+// it is expected to fail
+export const NotCreateable = () => (
   <ExpectedErrorBoundary>
-    <SmartFormTemplate model={EmptyGraphql} />
+    <SmartFormTemplate model={NotCreateableModel} />
   </ExpectedErrorBoundary>
 );

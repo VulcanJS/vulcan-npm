@@ -26,20 +26,31 @@ const defaultInput = {
   allowNull: false,
 };
 
+/**
+ * GraphQL query for a single query
+ * @param param0
+ * @returns
+ */
 export const buildSingleQuery = ({
-  typeName,
+  model,
   fragmentName,
   fragment,
   extraQueries,
 }: {
-  typeName: string;
+  model: VulcanGraphqlModel;
+  //typeName: string;
   fragmentName?: string;
   fragment?: Fragment;
   extraQueries?: string;
 }) => {
+  const { typeName, defaultFragment, defaultFragmentName } = model.graphql;
   const query = gql`
-    ${singleClientTemplate({ typeName, fragmentName, extraQueries })}
-    ${fragment}
+    ${singleClientTemplate({
+      typeName,
+      fragmentName: fragmentName || defaultFragmentName,
+      extraQueries,
+    })}
+    ${fragment || defaultFragment}
   `;
   return query;
 };
@@ -113,7 +124,7 @@ export interface UseSingleOptions<TModel, TData = any, TVariables = any> {
  * @param options
  * @param props
  */
-export const useSingle = <TModel = any>(
+export const useSingle = <TModel = any, TData = any>(
   options: UseSingleOptions<TModel>,
   props = {}
 ): SingleResult<TModel> => {
@@ -127,13 +138,13 @@ export const useSingle = <TModel = any>(
   const { typeName, singleResolverName: resolverName } = model.graphql;
 
   const query = buildSingleQuery({
-    typeName,
+    model,
     fragmentName,
     fragment,
     extraQueries,
   });
 
-  const queryResult = useQuery(query, buildQueryOptions(options, props));
+  const queryResult = useQuery<TData>(query, buildQueryOptions(options, props));
   const result = buildSingleResult<TModel>(
     options,
     { fragment, fragmentName, resolverName },

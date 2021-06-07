@@ -15,14 +15,13 @@ const multiReturnProperty = "results";
 
 /* ------------------------------------- Query Types ------------------------------------- */
 
-/*
-
-A query for a single document
-
-movie(input: SingleMovieInput) : SingleMovieOutput
-
-*/
 export const singleQueryType = (typeName) => camelCaseify(typeName);
+/**
+ * Operation name for the single query
+ * @param typeName
+ * @returns
+ */
+export const singleOperationName = singleQueryType;
 export const singleQueryTemplate = ({ typeName }) =>
   `${singleQueryType(typeName)}(input: ${singleInputType(
     typeName,
@@ -178,13 +177,14 @@ query singleMovieQuery($input: SingleMovieInput) {
 }
 
 */
+
 // TODO: with hooks, extraQueries becomes less necessary?
 export const singleClientTemplate = ({
   typeName,
   fragmentName,
   extraQueries,
 }) =>
-  `query ${singleQueryType(typeName)}($input: ${singleInputType(
+  `query ${singleOperationName(typeName)}($input: ${singleInputType(
     typeName,
     true
   )}) {
