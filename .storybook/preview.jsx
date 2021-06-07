@@ -1,5 +1,4 @@
-// Need react here to pass the tests but it's not typescript-proof
-// import React from "react";
+import React from "react";
 import { IntlProvider } from "../packages/i18n";
 
 export const parameters = {
