@@ -44,13 +44,23 @@ export const buildSingleQuery = ({
   extraQueries?: string;
 }) => {
   const { typeName, defaultFragment, defaultFragmentName } = model.graphql;
+  const finalFragment = fragment || defaultFragment;
+  const finalFragmentName = fragmentName || defaultFragmentName;
+  if (!finalFragment) {
+    throw new Error(`Model ${model.name} has no default fragment, maybe it is empty or have only nested fields?
+    Please pass a fragment explicitely.`);
+  }
+  if (!finalFragmentName) {
+    throw new Error(`Model ${model.name} has no default fragment name, maybe it is empty or have only nested fields?
+    Please pass a fragmentName explicitely.`);
+  }
   const query = gql`
     ${singleClientTemplate({
       typeName,
-      fragmentName: fragmentName || defaultFragmentName,
+      fragmentName: finalFragmentName,
       extraQueries,
     })}
-    ${fragment || defaultFragment}
+    ${finalFragment}
   `;
   return query;
 };

@@ -66,9 +66,10 @@ const extendModel =
     const defaultFragmentName = getDefaultFragmentName(extendedModel);
 
     if (!defaultFragment) {
-      // we don't allow graphql objects without any queryable fields, as this is creating
-      // troubles downstream in Apollo hooks for instance
-      throw new Error(
+      // This can legitimately happen if the schema only have nested fields for instance
+      // However, in the future, it would be better to guarantee that we can generate a default fragment
+      // for all scenarios except actually empty schemas
+      console.warn(
         `Could not generate a default fragment for type ${graphqlModel.typeName}.
         Please make at least one field of the model ${model.name} readable, using canRead.`
       );
