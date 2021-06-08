@@ -3,7 +3,7 @@
  */
 import { VulcanFieldSchema } from "@vulcanjs/schema";
 import { QueryResolver } from "../typings";
-import { canReadField } from "../../permissions";
+import { canReadField } from "@vulcanjs/permissions";
 /**
  * Check that the field is readable and call the custom resolver if it is
  * @param resolver

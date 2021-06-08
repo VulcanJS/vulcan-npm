@@ -13,7 +13,7 @@ import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { MutationResolverDefinitions } from "../typings";
 import { VulcanGraphqlModel } from "../../typings";
-import { isMemberOf } from "../../permissions";
+import { isMemberOf } from "@vulcanjs/permissions";
 
 const defaultOptions = {
   create: true,

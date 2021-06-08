@@ -1,0 +1,38 @@
+{
+  "name": "@vulcanjs/ui-react",
+  "version": "0.1.12",
+  "description": "Vulcan UI components for React",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vulcanjs/core": "^0.1.12",
+    "@vulcanjs/graphql": "^0.1.12",
+    "@vulcanjs/i18n": "^0.1.12",
+    "@vulcanjs/permissions": "^0.1.12",
+    "@vulcanjs/react-hooks": "^0.1.12",
+    "@vulcanjs/schema": "^0.1.12",
+    "@vulcanjs/utils": "^0.1.12",
+    "classnames": "^2.3.1",
+    "lodash": "^4.17.21",
+    "simpl-schema": "^1.12.0"
+  },
+  "peerDependencies": {
+    "react": ">= 16.13.1",
+    "react-dom": ">= 16.13.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.168",
+    "@types/underscore": "^1.11.1"
+  }
+}

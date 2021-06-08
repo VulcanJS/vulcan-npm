@@ -1,0 +1,32 @@
+{
+  "name": "@vulcanjs/permissions",
+  "version": "0.1.12",
+  "description": "Vulcan permissions",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vulcanjs/model": "^0.1.12",
+    "@vulcanjs/schema": "^0.1.12",
+    "@vulcanjs/utils": "^0.1.12",
+    "lodash": "^4.17.21"
+  },
+  "peerDependencies": {
+    "react": ">= 16.13.1",
+    "react-dom": ">= 16.13.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.168",
+    "@types/underscore": "^1.11.1"
+  }
+}

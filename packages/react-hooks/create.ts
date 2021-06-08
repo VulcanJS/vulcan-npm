@@ -29,7 +29,11 @@
 import { useMutation, MutationResult, gql, FetchResult } from "@apollo/client";
 
 import { filterFunction } from "@vulcanjs/mongo";
-import { createClientTemplate } from "@vulcanjs/graphql";
+import {
+  createClientTemplate,
+  getModelFragment,
+  Fragment,
+} from "@vulcanjs/graphql";
 
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { VulcanMutationHookOptions } from "./typings";
@@ -38,6 +42,7 @@ import { addToData, matchSelector } from "./cacheUpdate";
 import { CreateVariables } from "@vulcanjs/graphql"; // TODO: we should depend only on client code
 
 import debug from "debug";
+import { VulcanGraphqlModel } from "@vulcanjs/graphql/typings";
 const debugApollo = debug("vn:apollo");
 /**
  * Compute the new list after a create mutation
@@ -78,10 +83,24 @@ const multiQueryUpdaterAfterCreate = multiQueryUpdater(
   computeNewDataAfterCreate
 );
 
-export const buildCreateQuery = ({ typeName, fragmentName, fragment }) => {
+export const buildCreateQuery = ({
+  model,
+  fragmentName,
+  fragment,
+}: {
+  model: VulcanGraphqlModel;
+  fragmentName?: string;
+  fragment?: Fragment;
+}) => {
+  const { typeName } = model.graphql;
+  const { finalFragment, finalFragmentName } = getModelFragment({
+    model,
+    fragment,
+    fragmentName,
+  });
   const query = gql`
-    ${createClientTemplate({ typeName, fragmentName })}
-    ${fragment}
+    ${createClientTemplate({ typeName, fragmentName: finalFragmentName })}
+    ${finalFragment}
   `;
   return query;
 };
@@ -129,7 +148,7 @@ export const useCreate = <TModel = any>(
 
   const { typeName } = model.graphql;
 
-  const query = buildCreateQuery({ typeName, fragmentName, fragment });
+  const query = buildCreateQuery({ model, fragmentName, fragment });
 
   const resolverName = `create${typeName}`;
 

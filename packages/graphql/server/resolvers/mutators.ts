@@ -38,7 +38,7 @@ import {
   modifierToData,
   dataToModifier,
 } from "./validation";
-import { runCallbacks } from "../../callbacks";
+import { runCallbacks } from "@vulcanjs/core";
 
 import { throwError } from "./errors";
 import { getModelConnector } from "./context";
@@ -48,7 +48,7 @@ import isEmpty from "lodash/isEmpty";
 import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
-import { restrictViewableFields } from "../../permissions";
+import { restrictViewableFields } from "@vulcanjs/permissions";
 
 interface CreateMutatorInput {
   model: VulcanGraphqlModel;
@@ -117,7 +117,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
   context = {},
 }: CreateMutatorInput): Promise<{ data: TModel }> => {
   // we don't want to modify the original document
-  let data: Partial<TModel> = clone(originalData);
+  let data: Partial<TModel> = clone(originalData) as TModel;
 
   const { schema } = model;
 

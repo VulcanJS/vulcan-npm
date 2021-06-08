@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/demo",
-  "version": "0.1.6-alpha.2",
+  "version": "0.1.12",
   "description": "Vulcan core features",
   "main": "dist/index.js",
   "files": [
@@ -23,5 +23,10 @@
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@vulcanjs/core": "^0.1.12",
+    "@vulcanjs/schema": "^0.1.12",
+    "@vulcanjs/utils": "^0.1.12"
   }
 }

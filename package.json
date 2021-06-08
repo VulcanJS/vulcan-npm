@@ -9,15 +9,25 @@
     "unlink-yarn-legacy": "lerna exec yarn unlink",
     "clean": "rm -Rf ./node_modules ./packages/*/dist ./packages/*/node_modules",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "devDependencies": {
-    "@apollo/client": "3.2.5",
+    "@apollo/client": "^3.3.19",
     "@babel/core": "^7.11.6",
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
+    "@mdx-js/react": "^1.6.22",
+    "@storybook/addon-actions": "^6.2.9",
+    "@storybook/addon-docs": "^6.2.9",
+    "@storybook/addon-essentials": "^6.2.9",
+    "@storybook/addon-links": "^6.2.9",
+    "@storybook/react": "^6.2.9",
+    "@storybook/testing-react": "^0.0.17",
+    "@testing-library/react": "^11.2.7",
     "@types/jest": "^26.0.14",
     "@types/node": "^13.7.6",
     "@types/react": "^16.9.23",
@@ -28,6 +38,7 @@
     "jest": "^26.4.2",
     "lerna": "^3.22.1",
     "mongoose": "^5.10.16",
+    "operation-name-mock-link": "^0.0.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "typescript": "^3.8.2",
@@ -40,7 +51,16 @@
   "publishConfig": {
     "access": "public"
   },
-  "workspaces": [
-    "packages/*"
-  ]
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "@storybook",
+      "@storybook/addon-docs",
+      "**/@storybook",
+      "**/@storybook/**"
+    ]
+  },
+  "dependencies": {}
 }

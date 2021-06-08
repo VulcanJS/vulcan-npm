@@ -1,6 +1,6 @@
 import { VulcanSchema } from "@vulcanjs/schema";
 import { ResolverMap } from "./typings";
-import { canReadField } from "../permissions";
+import { canReadField } from "@vulcanjs/permissions";
 
 /**
  * Generate field resolvers for the type defined in the SimpleSchema.

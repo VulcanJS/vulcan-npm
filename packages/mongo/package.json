@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/mongo",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Vulcan mongo bindings and helpers",
   "main": "./dist/index.js",
   "files": [
@@ -21,9 +21,11 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/graphql": "^0.1.11",
-    "@vulcanjs/model": "^0.1.10",
-    "@vulcanjs/utils": "^0.1.9",
+    "@vulcanjs/core": "^0.1.12",
+    "@vulcanjs/graphql": "^0.1.12",
+    "@vulcanjs/model": "^0.1.12",
+    "@vulcanjs/schema": "^0.1.12",
+    "@vulcanjs/utils": "^0.1.12",
     "lodash": "^4.17.20"
   },
   "peerDependencies": {

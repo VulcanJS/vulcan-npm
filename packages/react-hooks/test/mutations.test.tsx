@@ -60,7 +60,7 @@ describe("react-hooks/mutations", () => {
       // mock response
       {
         request: {
-          query: buildCreateQuery({ fragmentName, fragment, typeName }),
+          query: buildCreateQuery({ model: Foo, fragmentName, fragment }),
           variables: {
             input: {
               data: rawFoo,
