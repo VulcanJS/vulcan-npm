@@ -1,7 +1,7 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { SmartForm, SmartFormProps } from "../FormContainer";
-import { createGraphqlModel } from "@vulcanjs/graphql";
+import { createGraphqlModel, createOperationName } from "@vulcanjs/graphql";
 
 // Mocking graphql
 import { MockedProvider } from "@apollo/client/testing";
@@ -10,37 +10,12 @@ import {
   OperationNameMockedResponse,
   OperationNameMockLink,
 } from "operation-name-mock-link";
-import gql from "graphql-tag";
 import { VulcanComponentsProvider } from "../VulcanComponents/Provider";
 import { ExpectedErrorBoundary } from "../../../testing/ExpectedErrorBoundary";
-import { buildSingleQuery } from "@vulcanjs/react-hooks/single";
 import { singleOperationName } from "@vulcanjs/graphql";
-// TODO: create mocks for data fetching, data creation, data update
-interface GetSomeDataResult {
-  getSomeData: {
-    id: string;
-  };
-}
-const mock: OperationNameMockedResponse<GetSomeDataResult> = {
-  request: {
-    operationName: "myQuery",
-    query: gql`
-      query myQuery {
-        getSomeData {
-          id
-        }
-      }
-    `,
-  },
-  result: {
-    data: {
-      getSomeData: {
-        id: "42",
-      },
-    },
-  },
-};
+import { buildSingleQuery, buildCreateQuery } from "@vulcanjs/react-hooks";
 
+// dummy simplified model
 interface OneFieldType {
   text: string;
 }
@@ -59,6 +34,28 @@ const OneField = createGraphqlModel({
     multiTypeName: "OneFields",
   },
 });
+
+const singleMock: OperationNameMockedResponse<{
+  empty: { result: OneFieldType };
+}> = {
+  request: {
+    operationName: singleOperationName(OneField),
+    query: buildSingleQuery({
+      model: OneField,
+    }),
+  },
+  result: {},
+};
+const createMock: OperationNameMockedResponse<any> = {
+  request: {
+    operationName: createOperationName(OneField),
+    query: buildCreateQuery({ model: OneField }),
+  },
+  result: {
+    data: {},
+  },
+};
+
 export default {
   component: SmartForm,
   title: "SmartForm",
@@ -67,7 +64,7 @@ export default {
       <VulcanComponentsProvider>
         <MockedProvider
           // We replace MockedProvider default link with our custom MockLink
-          link={new OperationNameMockLink([mock], false)}
+          link={new OperationNameMockLink([], false)}
         >
           <Story />
         </MockedProvider>
@@ -90,20 +87,10 @@ export const DefaultEditSmartForm = SmartFormTemplate.bind({});
 DefaultEditSmartForm.args = {
   documentId: "1",
 };
-const editMock: OperationNameMockedResponse<{
-  empty: { result: OneFieldType };
-}> = {
-  request: {
-    operationName: singleOperationName(OneField.graphql.typeName),
-    query: buildSingleQuery({
-      model: OneField,
-    }),
-  },
-  result: {},
-};
+
 DefaultEditSmartForm.decorators = [
   (Story) => (
-    <MockedProvider link={new OperationNameMockLink([editMock], false)}>
+    <MockedProvider link={new OperationNameMockLink([singleMock], false)}>
       <Story />
     </MockedProvider>
   ),

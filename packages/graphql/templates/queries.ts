@@ -4,6 +4,7 @@ import {
   sortInputType,
 } from "./filtering";
 import { camelCaseify } from "@vulcanjs/utils";
+import { VulcanGraphqlModel } from "../typings";
 
 // eslint-disable-next-line
 const deprecated1 = `# Deprecated (use 'filter/id' fields instead).`;
@@ -21,7 +22,9 @@ export const singleQueryType = (typeName) => camelCaseify(typeName);
  * @param typeName
  * @returns
  */
-export const singleOperationName = singleQueryType;
+// same as singleQueryType but for a model
+export const singleOperationName = (model: VulcanGraphqlModel) =>
+  singleQueryType(model.graphql.typeName);
 export const singleQueryTemplate = ({ typeName }) =>
   `${singleQueryType(typeName)}(input: ${singleInputType(
     typeName,
@@ -184,7 +187,7 @@ export const singleClientTemplate = ({
   fragmentName,
   extraQueries,
 }) =>
-  `query ${singleOperationName(typeName)}($input: ${singleInputType(
+  `query ${singleQueryType(typeName)}($input: ${singleInputType(
     typeName,
     true
   )}) {

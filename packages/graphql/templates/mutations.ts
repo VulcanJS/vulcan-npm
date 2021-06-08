@@ -1,5 +1,6 @@
 import { convertToGraphQL } from "./types";
 import { filterInputType, selectorUniqueInputType } from "./filtering";
+import { VulcanGraphqlModel } from "../typings";
 
 // eslint-disable-next-line
 const deprecated = `# Deprecated (use 'input' field instead).`;
@@ -15,7 +16,9 @@ Mutation for creating a new document
 createMovie(input: CreateMovieInput) : MovieOutput
 
 */
-export const createMutationType = (typeName) => `create${typeName}`;
+export const createMutationType = (typeName: string) => `create${typeName}`;
+export const createOperationName = (model: VulcanGraphqlModel) =>
+  createMutationType(model.graphql.typeName);
 export const createMutationTemplate = ({ typeName }) =>
   `${createMutationType(typeName)}(
   input: ${createInputType(typeName)},

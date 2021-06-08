@@ -8,18 +8,18 @@ import {
   singleClientTemplate,
   VulcanGraphqlModel,
   SingleInput,
+  getModelFragment,
+  Fragment,
 } from "@vulcanjs/graphql";
 
 import { computeQueryVariables } from "./variables";
 import {
   OperationVariables,
   useQuery,
-  QueryOptions,
   gql,
   QueryResult,
   QueryHookOptions,
 } from "@apollo/client";
-import { Fragment } from "./typings";
 
 const defaultInput = {
   enableCache: false,
@@ -43,17 +43,12 @@ export const buildSingleQuery = ({
   fragment?: Fragment;
   extraQueries?: string;
 }) => {
-  const { typeName, defaultFragment, defaultFragmentName } = model.graphql;
-  const finalFragment = fragment || defaultFragment;
-  const finalFragmentName = fragmentName || defaultFragmentName;
-  if (!finalFragment) {
-    throw new Error(`Model ${model.name} has no default fragment, maybe it is empty or have only nested fields?
-    Please pass a fragment explicitely.`);
-  }
-  if (!finalFragmentName) {
-    throw new Error(`Model ${model.name} has no default fragment name, maybe it is empty or have only nested fields?
-    Please pass a fragmentName explicitely.`);
-  }
+  const { typeName } = model.graphql;
+  const { finalFragment, finalFragmentName } = getModelFragment({
+    model,
+    fragment,
+    fragmentName,
+  });
   const query = gql`
     ${singleClientTemplate({
       typeName,
