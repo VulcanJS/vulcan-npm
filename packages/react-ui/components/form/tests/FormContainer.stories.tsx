@@ -52,7 +52,12 @@ const createMock: OperationNameMockedResponse<any> = {
     query: buildCreateQuery({ model: OneField }),
   },
   result: {
-    data: {},
+    data: {
+      createOneField: {
+        // always return the same object whatever the user created
+        data: { text: "Hello" },
+      },
+    },
   },
 };
 
@@ -83,12 +88,20 @@ const SmartFormTemplate: Story<SmartFormProps> = (args) => (
 
 export const DefaultSmartForm = SmartFormTemplate.bind({});
 
-export const DefaultEditSmartForm = SmartFormTemplate.bind({});
-DefaultEditSmartForm.args = {
+export const CreateSmartForm = SmartFormTemplate.bind({});
+CreateSmartForm.args = {};
+CreateSmartForm.decorators = [
+  (Story) => (
+    <MockedProvider link={new OperationNameMockLink([createMock], false)}>
+      <Story />
+    </MockedProvider>
+  ),
+];
+export const EditSmartForm = SmartFormTemplate.bind({});
+EditSmartForm.args = {
   documentId: "1",
 };
-
-DefaultEditSmartForm.decorators = [
+EditSmartForm.decorators = [
   (Story) => (
     <MockedProvider link={new OperationNameMockLink([singleMock], false)}>
       <Story />

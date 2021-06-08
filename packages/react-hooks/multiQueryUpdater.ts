@@ -39,7 +39,17 @@ export const multiQueryUpdater =
       fragmentName,
       fragment,
     });
-    return async (cache, { data }) => {
+    return async (cache, { data }: { data: any }) => {
+      if (!data) {
+        throw new Error(
+          `No "data" passed to multiQuery updater for resolver ${resolverName} and model ${model.name}`
+        );
+      }
+      if (!data[resolverName]) {
+        throw new Error(
+          `data[${resolverName}] not defined in multiQuery updater for resolver ${resolverName} and model ${model.name}`
+        );
+      }
       const mutatedDocument = data[resolverName].data;
       // @see https://github.com/VulcanJS/vulcan-npm/issues/7
       //const client = getApolloClient();
