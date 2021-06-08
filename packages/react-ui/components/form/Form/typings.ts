@@ -1,3 +1,4 @@
+import { MutationResult } from "@apollo/client";
 import { VulcanModel } from "@vulcanjs/model";
 import { User } from "@vulcanjs/permissions";
 import { VulcanSchema } from "@vulcanjs/schema/dist/typings";
@@ -86,7 +87,17 @@ An example would be a createdAt date added automatically on creation even though
 
   // mutations from container
   // => replace the "onSubmit" of a normal form
-  createDocument: Function;
+  /**
+   * Called on document creation
+   * The result should have the same shape as the result of the graphql create mutation:
+   * { result: { data: { foo: {...}}}}
+   */
+  createDocument: <TData = Object>(createArgs: {
+    input: {
+      data: any;
+      contextName?: string;
+    };
+  }) => Promise<MutationResult<TData>>;
   updateDocument: Function;
   deleteDocument: Function;
   // ??

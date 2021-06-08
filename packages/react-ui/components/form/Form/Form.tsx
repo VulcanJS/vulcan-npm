@@ -51,6 +51,7 @@ import { useVulcanComponents } from "../VulcanComponents/Consumer";
 
 import type { FormType } from "../typings";
 import { FormProps, FormState } from "./typings";
+import { MutationResult } from "@apollo/client";
 
 // props that should trigger a form reset
 const RESET_PROPS = [
@@ -571,19 +572,28 @@ export const Form = (props: FormProps) => {
     setDisabled(false);
   };
 
-  const newMutationSuccessCallback = (result) => {
+  const newMutationSuccessCallback = function <TData = Object>(
+    result: SuccessfulMutationResult<TData>
+  ) {
     mutationSuccessCallback(result, "new");
   };
 
-  const editMutationSuccessCallback = (result) => {
+  const editMutationSuccessCallback = function <TData = Object>(
+    result: SuccessfulMutationResult<TData>
+  ) {
     mutationSuccessCallback(result, "edit");
   };
 
   const formRef = useRef(null);
-  const mutationSuccessCallback = (result, mutationType) => {
+  const mutationSuccessCallback = function <TData = Object>(
+    // must be called only on valid results
+    result: SuccessfulMutationResult<TData>,
+    mutationType: FormType
+  ) {
     // TODO: use a reducer
     setDisabled(true);
     setSuccess(true);
+    // TODO: quite risky... we should have a better way to get the document
     let document = result.data[Object.keys(result.data)[0]].data; // document is always on first property
 
     // for new mutation, run refetch function if it exists
@@ -691,6 +701,11 @@ export const Form = (props: FormProps) => {
         // but can instead be provided as props by the useMutation hook
         if (meta?.error) {
           mutationErrorCallback(document, meta.error);
+        } else if (!isSuccessful(result)) {
+          mutationErrorCallback(
+            document,
+            "Create mutation succeeded but yielded no data."
+          );
         } else {
           newMutationSuccessCallback(result);
         }
@@ -839,6 +854,19 @@ export const Form = (props: FormProps) => {
       </FormContext.Provider>
     </FormWarnUnsaved>
   );
+};
+
+// Mutation that yield a success result
+type SuccessfulMutationResult<TData = Object> = MutationResult<TData> & {
+  data: TData;
+};
+/**
+ * Typeguared to allow considering the request as successful
+ */
+const isSuccessful = function <T = any>(
+  result: MutationResult<T>
+): result is SuccessfulMutationResult<T> {
+  return !!result.data;
 };
 
 export default Form;
