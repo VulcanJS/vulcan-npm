@@ -40,17 +40,13 @@ describe("vulcan-forms/Form", function () {
     const getFields = (arrayFormGroup) => arrayFormGroup.prop("fields");
     describe("basic collection - no nesting", function () {
       it("renders", function () {
-        const { container } = render(
-          <DefaultForm model={Addresses} />
-        );
+        const { container } = render(<DefaultForm model={Addresses} />);
         expect(container).toBeDefined();
       });
     });
     describe("nested object (not in array)", function () {
       it("shallow render", () => {
-        const { container } = render(
-          <DefaultForm model={Objects} />
-        );
+        const { container } = render(<DefaultForm model={Objects} />);
         expect(container).toBeDefined();
       });
       it.skip("define one field", () => {
@@ -90,9 +86,7 @@ describe("vulcan-forms/Form", function () {
         expect(container).toBeDefined();
       });
       it.skip("render a FormGroup for addresses", () => {
-        const { container, getByRole } = render(
-          <ArrayOfObjectsForm />
-        );
+        const { container, getByRole } = render(<ArrayOfObjectsForm />);
         const group = getByRole("group");
         expect(group).toEqual("hello");
         /*
@@ -213,9 +207,7 @@ describe("vulcan-forms/Form", function () {
       });
       // TODO: does not work, schema_utils needs an update
       it.skip("passes down the custom input", function () {
-        const wrapper = render(
-          <DefaultForm model={ArrayOfCustomObjects} />
-        );
+        const wrapper = render(<DefaultForm model={ArrayOfCustomObjects} />);
         const formGroup = getArrayFormGroup(wrapper);
         const fields = getFields(formGroup);
         const arrayField = fields[0];
@@ -224,15 +216,11 @@ describe("vulcan-forms/Form", function () {
     });
     describe("array with a fully custom input (array itself and children)", function () {
       it.skip("shallow render", function () {
-        const wrapper = render(
-          <DefaultForm model={ArrayFullCustom} />
-        );
+        const wrapper = render(<DefaultForm model={ArrayFullCustom} />);
         expect(wrapper).toBeDefined();
       });
       it.skip("passes down the custom input", function () {
-        const wrapper = render(
-          <DefaultForm model={ArrayFullCustom} />
-        );
+        const wrapper = render(<DefaultForm model={ArrayFullCustom} />);
         const formGroup = getArrayFormGroup(wrapper);
         const fields = getFields(formGroup);
         const arrayField = fields[0];
