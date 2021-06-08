@@ -427,15 +427,19 @@ export const Form = (props: FormProps) => {
 
   const [currentValues, setCurrentValues] = useState<Object>({});
 
-  const submitFormContext = (formType: FormType) => (newValues) => {
+  const submitFormContext = (formType: FormType) => (event /*newValues*/) => {
+    /*
+    TODO: previously this callback was updating the current values with new values after this call
+    Need to check how this worked in Vulcan initially
     setCurrentValues((prevCurrentValues) => ({
       ...prevCurrentValues,
       ...newValues,
     }));
+    */
     // TODO: previously, this was using a callback from setCurrentValues
     // this needs to be rearchitectured to work without, will need some check
     // https://stackoverflow.com/questions/56247433/how-to-use-setstate-callback-on-react-hooks
-    submitForm(formType)();
+    submitForm(formType)(event);
   };
 
   // --------------------------------------------------------------------- //
