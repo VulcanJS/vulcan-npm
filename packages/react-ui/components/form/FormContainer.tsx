@@ -91,6 +91,10 @@ export interface FormContainerProps {
   queryFragment?: string;
   /** Force a mutation fragment */
   mutationFragment?: string;
+  /** Force a query fragment */
+  queryFragmentName?: string;
+  /** Force a mutation fragment */
+  mutationFragmentName?: string;
 }
 export type SmartFormProps = FormContainerProps;
 
@@ -112,7 +116,9 @@ export const FormContainer = (props: FormContainerProps) => {
   // TODO: move out of the component
   //const getFragments = () => {
   let queryFragment;
+  let queryFragmentName = props.queryFragmentName;
   let mutationFragment;
+  let mutationFragmentName = props.mutationFragmentName;
 
   // if queryFragment or mutationFragment props are specified, accept either fragment object or fragment string
   // TODO: not sure we actually need that, gApollo accepts fragments or string normally
@@ -153,7 +159,9 @@ export const FormContainer = (props: FormContainerProps) => {
     });
 
     queryFragment = queryFragment || autoFormFragments.queryFragment;
+    queryFragmentName = autoFormFragments.queryFragmentName;
     mutationFragment = mutationFragment || autoFormFragments.mutationFragment;
+    mutationFragmentName = autoFormFragments.mutationFragmentName;
   }
 
   // get query & mutation fragments from props or else default to same as generatedFragment
@@ -175,6 +183,7 @@ export const FormContainer = (props: FormContainerProps) => {
     model,
     // collection: this.props.collection,
     fragment: mutationFragment,
+    fragmentName: mutationFragmentName,
   };
 
   const queryOptions: UseSingleOptions<any> = {
@@ -182,6 +191,7 @@ export const FormContainer = (props: FormContainerProps) => {
     // TODO: what this option does?
     // queryName: `${prefix}FormQuery`,
     fragment: queryFragment,
+    fragmentName: queryFragmentName,
     // fragmentName?
     input: {
       id: documentId,
@@ -195,6 +205,17 @@ export const FormContainer = (props: FormContainerProps) => {
       skip: formType === "new",
     },
   };
+  /* debug
+  console.log(
+    "MUT",
+    (mutationFragment as any).loc.source.body,
+    mutationFragmentName
+  );
+  console.log(
+    "QUERY",
+    (queryFragment as any).loc.source.body,
+    queryFragmentName
+  );*/
   const { data, loading, refetch } = useSingle(queryOptions);
   const document = data; // TODO: get the item from data
   // TODO: pass the creation functions down to the Form

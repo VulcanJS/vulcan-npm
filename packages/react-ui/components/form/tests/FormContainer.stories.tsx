@@ -46,10 +46,7 @@ const singleMock: OperationNameMockedResponse<{
   },
   result: {},
 };
-console.log(
-  createOperationName(OneField),
-  (buildCreateQuery({ model: OneField }) as any).loc.source.body
-);
+
 const createMock: OperationNameMockedResponse<any> = {
   request: {
     operationName: createOperationName(OneField),

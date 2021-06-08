@@ -25,8 +25,12 @@ import compact from "lodash/compact";
 const intlSuffix = "_intl";
 
 // PostsEditFormQueryFragment/PostsNewFormMutationFragment/etc.
-const getFragmentName = (formType, collectionName, fragmentType) =>
-  [collectionName, formType, "form", fragmentType, "fragment"]
+const getFragmentName = (
+  formType: FormType,
+  multiTypeName: string,
+  fragmentType: "mutation" | "query"
+) =>
+  [multiTypeName, formType, "form", fragmentType, "fragment"]
     .map(capitalize)
     .join("");
 
@@ -206,15 +210,16 @@ const getFormFragments = ({
       `Model "${model.name}" has no mutable fields, cannot create a form for it. Please add createable/updateable fields to model schema.`
     );
 
+  const queryFragmentName = getFragmentName(
+    formType,
+    multiTypeName, // previously collectionName //name,
+    "query"
+  );
   // generate query fragment based on the fields that can be edited. Note: always add _id, and userId if possible.
   // TODO: support nesting
   const queryFragmentText = getSchemaFragment({
     schema,
-    fragmentName: `fragment ${getFragmentName(
-      formType,
-      multiTypeName, // previously collectionName //name,
-      "query"
-    )} on ${typeName}`,
+    fragmentName: `fragment ${queryFragmentName} on ${typeName}`,
     options: { formType, isMutation: false },
     fieldNames: queryFieldNames,
   });
@@ -226,13 +231,14 @@ const getFormFragments = ({
   }
   const generatedQueryFragment = gql(queryFragmentText);
 
+  const mutationFragmentName = getFragmentName(
+    formType,
+    multiTypeName, // previously collectionName,
+    "mutation"
+  );
   const mutationFragmentText = getSchemaFragment({
     schema,
-    fragmentName: `fragment ${getFragmentName(
-      formType,
-      multiTypeName, // previously collectionName,
-      "mutation"
-    )} on ${typeName}`,
+    fragmentName: `fragment ${mutationFragmentName} on ${typeName}`,
     options: { formType, isMutation: true },
     fieldNames: mutationFieldNames,
   });
@@ -257,6 +263,8 @@ const getFormFragments = ({
   return {
     queryFragment: generatedQueryFragment,
     mutationFragment: generatedMutationFragment,
+    queryFragmentName,
+    mutationFragmentName,
     extraQueries,
   };
 };
