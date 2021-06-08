@@ -1,3 +1,5 @@
+# Vulcan NPM
+
 ## Contribute
 
 For faster development, you may instead want to contribute to [Vulcan Next Starter](https://github.com/VulcanJS/vulcan-next-starter/issues/1). NPM packages will be published in this repo when they reach sufficient maturity.
@@ -29,6 +31,8 @@ Now `@vulcanjs/xxx` will be available in your own application.
 ## Tips
 
 ### Dependency from a local package to another local package
+
+Install packages using `lerna bootstrap`. 
 
 To add a dependency between 2 local Vulcan packages: 
 
