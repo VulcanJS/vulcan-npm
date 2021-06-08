@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/graphql",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "main": "./dist/index.js",
   "files": [
     "dist/"
@@ -10,11 +10,11 @@
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/core": "^0.1.6-alpha.2",
-    "@vulcanjs/model": "^0.1.10",
-    "@vulcanjs/permissions": "^0.1.10",
-    "@vulcanjs/schema": "^0.1.11",
-    "@vulcanjs/utils": "^0.1.9",
+    "@vulcanjs/core": "^0.1.12",
+    "@vulcanjs/model": "^0.1.12",
+    "@vulcanjs/permissions": "^0.1.12",
+    "@vulcanjs/schema": "^0.1.12",
+    "@vulcanjs/utils": "^0.1.12",
     "apollo-server": "^2.18.2",
     "graphql-date": "^1.0.3",
     "graphql-type-json": "^0.3.2",

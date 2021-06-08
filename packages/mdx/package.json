@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/mdx",
-  "version": "0.1.9",
+  "version": "0.1.12",
   "description": "Vulcan MDX (Markdown + JSX) helpers",
   "main": "./dist/index.js",
   "files": [
@@ -23,6 +23,5 @@
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {}
+  }
 }
