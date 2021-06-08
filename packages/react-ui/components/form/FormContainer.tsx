@@ -37,7 +37,7 @@ Or:
 component is also added to wait for withSingle's loading prop to be false)
 
 */
-import React from "react";
+import React, { useRef } from "react";
 // import // withCurrentUser,
 // Utils,
 // getFragment,
@@ -56,6 +56,22 @@ import {
   UseSingleOptions,
 } from "@vulcanjs/react-hooks";
 import { useVulcanComponents } from "./VulcanComponents/Consumer";
+import { FetchResult, MutationResult } from "@apollo/client";
+import { FormType } from "./typings";
+import { CreateDocumentInput } from "./Form/typings";
+
+// Mutation that yield a success result
+type SuccessfulFetchResult<TData = Object> = FetchResult<TData> & {
+  data: TData;
+};
+/**
+ * Typeguared to allow considering the request as successful
+ */
+const isSuccessful = function <T = any>(
+  result: FetchResult<T> | undefined
+): result is SuccessfulFetchResult<T> {
+  return !!result?.data;
+};
 
 export interface FormContainerProps {
   model: VulcanGraphqlModel;
@@ -179,12 +195,53 @@ export const FormContainer = (props: FormContainerProps) => {
       skip: formType === "new",
     },
   };
-  const { data, loading } = useSingle(queryOptions);
+  const { data, loading, refetch } = useSingle(queryOptions);
   const document = data; // TODO: get the item from data
   // TODO: pass the creation functions down to the Form
   const [createDocument] = useCreate(mutationOptions);
   const [updateDocument] = useUpdate(mutationOptions);
   const [deleteDocument] = useDelete(mutationOptions);
+
+  // callbacks
+  /*
+  const formRef = useRef(null);
+  const newMutationSuccessCallback = function <TData = Object>(
+    result: SuccessfulFetchResult<TData>
+  ) {
+    getDocumentFromResult(result, "new");
+  };
+  const editMutationSuccessCallback = function <TData = Object>(
+    result: SuccessfulFetchResult<TData>
+  ) {
+    getDocumentFromResult(result, "edit");
+  };
+  */
+
+  /*
+  The create hook already creates a document prop in a more stable way
+  const getDocumentFromResult = function <TData = Object>(
+    // must be called only on valid results
+    result: SuccessfulFetchResult<TData> | undefined
+  ) {
+    if (!result) return undefined;
+    // TODO: quite risky... we should have a better way to get the document
+    let document = result.data[Object.keys(result.data)[0]].data; // document is always on first property
+
+    return document;
+  };*/
+  // for new mutation, run refetch function if it exists
+  /*
+  if (mutationType === "new" && refetch) refetch();
+  */
+
+  const createAndReturnDocument = async (input: CreateDocumentInput) => {
+    const result = await createDocument(input);
+    const { errors, document } = result;
+    return {
+      document,
+      errors,
+    };
+  };
 
   if (isEdit && loading) {
     return <VulcanComponents.Loading />;
@@ -193,7 +250,7 @@ export const FormContainer = (props: FormContainerProps) => {
     <VulcanComponents.Form
       document={document}
       loading={loading}
-      createDocument={createDocument}
+      createDocument={createAndReturnDocument /*createDocument*/}
       updateDocument={updateDocument}
       deleteDocument={deleteDocument}
       {...childProps}

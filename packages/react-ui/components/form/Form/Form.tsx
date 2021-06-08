@@ -12,9 +12,9 @@ This component expects:
 
 */
 
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { runCallbacks, getErrors } from "@vulcanjs/core";
-import { IntlProviderContext, useIntlContext } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/i18n";
 import { removeProperty } from "@vulcanjs/utils";
 import _filter from "lodash/filter";
 import cloneDeep from "lodash/cloneDeep";
@@ -50,7 +50,7 @@ import { useWarnOnUnsaved } from "../useWarnOnUnsaved";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 
 import type { FormType } from "../typings";
-import { FormProps, FormState } from "./typings";
+import { CreateDocumentResult, FormProps, FormState } from "./typings";
 import { MutationResult } from "@apollo/client";
 
 // props that should trigger a form reset
@@ -304,7 +304,7 @@ const getData = (
 };
 
 export const Form = (props: FormProps) => {
-  const { initCallback } = props;
+  const { initCallback, createDocument, createDocumentMeta } = props;
   const initialState = getInitialStateFromProps(props);
   const { schema, originalSchema, flatSchema } = initialState;
   const isFirstRender = useRef(true);
@@ -572,32 +572,30 @@ export const Form = (props: FormProps) => {
     setDisabled(false);
   };
 
-  const newMutationSuccessCallback = function <TData = Object>(
-    result: SuccessfulMutationResult<TData>
+  const newMutationSuccessCallback = function <TModel = Object>(
+    result: CreateDocumentResult<TModel>
   ) {
     mutationSuccessCallback(result, "new");
   };
 
-  const editMutationSuccessCallback = function <TData = Object>(
-    result: SuccessfulMutationResult<TData>
+  const editMutationSuccessCallback = function <TModel = Object>(
+    result: CreateDocumentResult<TModel>
   ) {
     mutationSuccessCallback(result, "edit");
   };
 
   const formRef = useRef(null);
-  const mutationSuccessCallback = function <TData = Object>(
+  const mutationSuccessCallback = function <TModel = Object>(
     // must be called only on valid results
-    result: SuccessfulMutationResult<TData>,
+    result: CreateDocumentResult<TModel>,
     mutationType: FormType
   ) {
     // TODO: use a reducer
     setDisabled(true);
     setSuccess(true);
-    // TODO: quite risky... we should have a better way to get the document
-    let document = result.data[Object.keys(result.data)[0]].data; // document is always on first property
-
     // for new mutation, run refetch function if it exists
     if (mutationType === "new" && props.refetch) props.refetch();
+    let { document } = result;
 
     // call the clear form method (i.e. trigger setState) only if the form has not been unmounted
     // (we are in an async callback, everything can happen!)
@@ -689,23 +687,17 @@ export const Form = (props: FormProps) => {
     if (formType === "new") {
       // create document form
       try {
-        const result = await props.createDocument({
+        const result = await createDocument({
           input: {
             data,
             contextName,
           },
         });
-        // TODO: what to do with this?
-        const meta = props.createDocumentMeta;
         // in new versions of Apollo Client errors are no longer thrown/caught
         // but can instead be provided as props by the useMutation hook
-        if (meta?.error) {
-          mutationErrorCallback(document, meta.error);
-        } else if (!isSuccessful(result)) {
-          mutationErrorCallback(
-            document,
-            "Create mutation succeeded but yielded no data."
-          );
+        if (result.errors?.length) {
+          // TODO: previously got from meta, we could have more than 1 error
+          mutationErrorCallback(document, result.errors[0]);
         } else {
           newMutationSuccessCallback(result);
         }
@@ -864,9 +856,9 @@ type SuccessfulMutationResult<TData = Object> = MutationResult<TData> & {
  * Typeguared to allow considering the request as successful
  */
 const isSuccessful = function <T = any>(
-  result: MutationResult<T>
+  result: MutationResult<T> | undefined
 ): result is SuccessfulMutationResult<T> {
-  return !!result.data;
+  return !!result?.data;
 };
 
 export default Form;

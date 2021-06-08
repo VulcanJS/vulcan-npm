@@ -88,16 +88,12 @@ An example would be a createdAt date added automatically on creation even though
   // mutations from container
   // => replace the "onSubmit" of a normal form
   /**
-   * Called on document creation
-   * The result should have the same shape as the result of the graphql create mutation:
-   * { result: { data: { foo: {...}}}}
+   * The result is usually extracted from a graphql mutation
+   * But we have a simplified abstracted API, so we could also use the Form without graphql
    */
-  createDocument: <TData = Object>(createArgs: {
-    input: {
-      data: any;
-      contextName?: string;
-    };
-  }) => Promise<MutationResult<TData>>;
+  createDocument: <TModel = any>(createArgs: {}) => Promise<
+    CreateDocumentResult<TModel>
+  >;
   updateDocument: Function;
   deleteDocument: Function;
   // ??
@@ -105,4 +101,17 @@ An example would be a createdAt date added automatically on creation even though
   updateDocumentMeta?: { error?: any };
   // EXPERIMENTAL: allowing to manually set the form children
   children?: React.ReactNode;
+}
+
+// Should be input that can be passed to a createDocument mutation
+export interface CreateDocumentInput {
+  input: {
+    data: any;
+    contextName?: string;
+  };
+}
+
+export interface CreateDocumentResult<TDocument = any> {
+  document: TDocument;
+  errors: Array<any>;
 }
