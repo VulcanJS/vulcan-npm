@@ -3,8 +3,8 @@ import React, { Component, useContext } from "react";
 import { getString } from "../../intl"; // previously was in meteor/vulcan:lib
 // TODO: do we still need the shape?
 import { intlShape } from "./shape";
+import { Message } from "./typings";
 
-interface Message {}
 type Formatter<T = any> = (val: T, ...args: any) => string;
 
 interface IntlProps {

@@ -1,3 +1,4 @@
+import { FormattedMessage } from "@vulcanjs/i18n";
 import { FormError } from "../FormError";
 // TODO: currently we need the default export because we pass components manually
 import FormComponent from "../FormComponent";
@@ -49,7 +50,7 @@ import { PossibleCoreComponents, PossibleFormComponents } from "./typings";
 
 const defaultCoreComponents: PossibleCoreComponents = {
   Loading,
-  FormattedMessage: () => null,
+  FormattedMessage,
   Alert: () => null,
   Button,
   Icon: () => null,
