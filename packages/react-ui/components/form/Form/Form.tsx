@@ -595,7 +595,7 @@ export const Form = (props: FormProps) => {
     mutationType: FormType
   ) {
     // TODO: use a reducer
-    setDisabled(true);
+    setDisabled(false);
     setSuccess(true);
     // for new mutation, run refetch function if it exists
     if (mutationType === "new" && props.refetch) props.refetch();
