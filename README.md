@@ -4,6 +4,8 @@
 
 For faster development, you may instead want to contribute to [Vulcan Next Starter](https://github.com/VulcanJS/vulcan-next-starter/issues/1). NPM packages will be published in this repo when they reach sufficient maturity.
 
+After you've read the README, also check `./docs/contribute.md` for more information about contributions.
+
 ## Install Vulcan NPM and start coding
 
 Please use [Yarn](https://yarnpkg.com/)
