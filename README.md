@@ -45,6 +45,11 @@ yarn lerna add @vulcanjs/<your-dependency> --scope=@vulcanjs/<the-parent-package
 You need this command because the package won't exist yet on NPMJS, so you need Lerna to manage the dependency.
 You can run it from anywhere, and the `--scope` part is mandatory (otherwise the package get added everywhere).
 
+#### Windows
+
+To use a testing database on windows, you could encounter an unexpected issue ; a solution is to download Visual C++ redistribuable.
+See https://github.com/nodkz/mongodb-memory-server/issues/475
+
 ## Resources
 
 - [Babel monorepo](https://github.com/babel/babel), a great example of Lerna project
