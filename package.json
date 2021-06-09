@@ -11,7 +11,8 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "depcheck": "lerna exec --no-bail -- 'echo \"\n***** $LERNA_PACKAGE_NAME *****\" && depcheck'"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.19",
@@ -35,6 +36,7 @@
     "babel-jest": "^26.3.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-define": "^2.0.0",
+    "depcheck": "^1.4.1",
     "jest": "^26.4.2",
     "lerna": "^3.22.1",
     "mongoose": "^5.10.16",
