@@ -2,10 +2,8 @@ import {
   buildDefaultMutationResolvers,
   performMutationCheck,
 } from "../resolvers/defaultMutationResolvers";
-import expect from "expect";
 import { createGraphqlModel } from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
-const test = it;
 
 describe("graphql/mutation resolvers", function () {
   const Foo = createGraphqlModel({

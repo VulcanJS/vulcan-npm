@@ -1,5 +1,4 @@
 import { createGraphqlModel } from "@vulcanjs/graphql";
-import expect from "expect";
 import { print } from "graphql/language/printer";
 
 import getFormFragments from "../modules/formFragments";

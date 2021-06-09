@@ -1,11 +1,16 @@
-import { Components, registerComponent, Utils, expandQueryFragments } from 'meteor/vulcan:lib';
-import React, { useState } from 'react';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
-import moment from 'moment';
-import isEmpty from 'lodash/isEmpty';
+import {
+  Components,
+  registerComponent,
+  Utils,
+  expandQueryFragments,
+} from "meteor/vulcan:lib";
+import React, { useState } from "react";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import moment from "moment";
+import isEmpty from "lodash/isEmpty";
 
-const getCount = columnFilters => {
+const getCount = (columnFilters) => {
   if (!columnFilters) {
     return 0;
   } else if (Array.isArray(columnFilters._in)) {
@@ -21,14 +26,27 @@ const getCount = columnFilters => {
 };
 
 const Filter = ({ count }) => (
-  <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+  <svg
+    width="16"
+    height="16"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 448 512"
+  >
     <path
       fill="#000"
       d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-6 400H54c-3.3 0-6-2.7-6-6V86c0-3.3 2.7-6 6-6h340c3.3 0 6 2.7 6 6v340c0 3.3-2.7 6-6 6z"
       fillOpacity={count ? 0.8 : 0.3}
     />
     {count ? (
-      <text x="50%" y="55%" fill="#000" fontSize="300px" textAnchor="middle" alignmentBaseline="middle" fillOpacity={0.8}>
+      <text
+        x="50%"
+        y="55%"
+        fill="#000"
+        fontSize="300px"
+        textAnchor="middle"
+        alignmentBaseline="middle"
+        fillOpacity={0.8}
+      >
         {count}
       </text>
     ) : (
@@ -41,21 +59,32 @@ const Filter = ({ count }) => (
   </svg>
 );
 
-const DatatableFilter = props => {
+const DatatableFilter = (props) => {
   const { columnFilters, label, query, Components } = props;
   return (
     <span className="datatable-filter">
       <Components.ModalTrigger
-        title={<Components.FormattedMessage id="datatable.filter_column" values={{ label }} defaultMessage={`Filter “${label}”`} />}
+        title={
+          <Components.FormattedMessage
+            id="datatable.filter_column"
+            values={{ label }}
+            defaultMessage={`Filter “${label}”`}
+          />
+        }
         size="small"
-        trigger={<Filter count={getCount(columnFilters)} />}>
-        {query ? <Components.DatatableFilterContentsWithData {...props} /> : <Components.DatatableFilterContents {...props} />}
+        trigger={<Filter count={getCount(columnFilters)} />}
+      >
+        {query ? (
+          <Components.DatatableFilterContentsWithData {...props} />
+        ) : (
+          <Components.DatatableFilterContents {...props} />
+        )}
       </Components.ModalTrigger>
     </span>
   );
 };
 
-registerComponent('DatatableFilter', DatatableFilter);
+registerComponent("DatatableFilter", DatatableFilter);
 
 /*
 
@@ -63,11 +92,12 @@ DatatableFilterContents Components
 
 */
 
-const DatatableFilterContentsWithData = props => {
+const DatatableFilterContentsWithData = (props) => {
   const { query, options } = props;
 
   // if query is a function, execute it
-  const queryText = typeof query === 'function' ? query({ mode: 'static' }) : query;
+  const queryText =
+    typeof query === "function" ? query({ mode: "static" }) : query;
   const filterQuery = gql(expandQueryFragments(queryText));
 
   const { loading, error, data } = useQuery(filterQuery);
@@ -79,14 +109,27 @@ const DatatableFilterContentsWithData = props => {
   } else {
     // note: options function expects the entire props object
     const queryOptions = options({ data });
-    return <Components.DatatableFilterContents {...props} options={queryOptions} />;
+    return (
+      <Components.DatatableFilterContents {...props} options={queryOptions} />
+    );
   }
 };
 
-registerComponent('DatatableFilterContentsWithData', DatatableFilterContentsWithData);
+registerComponent(
+  "DatatableFilterContentsWithData",
+  DatatableFilterContentsWithData
+);
 
-const DatatableFilterContents = props => {
-  const { Components, name, field, options, columnFilters, submitFilters, filterComponent } = props;
+const DatatableFilterContents = (props) => {
+  const {
+    Components,
+    name,
+    field,
+    options,
+    columnFilters,
+    submitFilters,
+    filterComponent,
+  } = props;
   const fieldType = Utils.getFieldType(field);
 
   const [filters, setFilters] = useState(columnFilters);
@@ -131,26 +174,34 @@ const DatatableFilterContents = props => {
       {contents}
       <Components.Button
         variant="link"
-        style={{ display: 'inline-block', marginRight: 10 }}
+        style={{ display: "inline-block", marginRight: 10 }}
         className="datatable_filter_clear"
         onClick={() => {
           setFilters(undefined);
-        }}>
-        <Components.FormattedMessage id="datatable.clear_all" defaultMessage="Clear All" />
+        }}
+      >
+        <Components.FormattedMessage
+          id="datatable.clear_all"
+          defaultMessage="Clear All"
+        />
       </Components.Button>
       <Components.Button
         type="submit"
         className="datatable_filter_submit"
         onClick={() => {
           submitFilters({ name, filters });
-        }}>
-        <Components.FormattedMessage id="datatable.submit" defaultMessage="Submit" />
+        }}
+      >
+        <Components.FormattedMessage
+          id="datatable.submit"
+          defaultMessage="Submit"
+        />
       </Components.Button>
     </form>
   );
 };
 
-registerComponent('DatatableFilterContents', DatatableFilterContents);
+registerComponent("DatatableFilterContents", DatatableFilterContents);
 
 /*
 
@@ -168,11 +219,16 @@ Checkboxes
 Operator: _in
 
 */
-const checkboxOperator = '_in';
-const DatatableFilterCheckboxes = ({ Components, options, filters = { [checkboxOperator]: [] }, setFilters }) => (
+const checkboxOperator = "_in";
+const DatatableFilterCheckboxes = ({
+  Components,
+  options,
+  filters = { [checkboxOperator]: [] },
+  setFilters,
+}) => (
   <Components.FormComponentCheckboxGroup
     path="filter"
-    itemProperties={{ layout: 'inputOnly' }}
+    itemProperties={{ layout: "inputOnly" }}
     inputProperties={{ options }}
     value={filters[checkboxOperator]}
     updateCurrentValues={({ filter: newValues }) => {
@@ -185,30 +241,33 @@ const DatatableFilterCheckboxes = ({ Components, options, filters = { [checkboxO
   />
 );
 
-registerComponent('DatatableFilterCheckboxes', DatatableFilterCheckboxes);
+registerComponent("DatatableFilterCheckboxes", DatatableFilterCheckboxes);
 
 /*
 
 Booleans
 
 */
-const booleanOptions = [{ label: 'True', value: true }, { label: 'False', value: false }];
+const booleanOptions = [
+  { label: "True", value: true },
+  { label: "False", value: false },
+];
 const DatatableFilterBooleans = ({ filters = { _eq: [] }, setFilters }) => (
   <Components.FormComponentRadioGroup
     path="filter"
-    itemProperties={{ layout: 'inputOnly' }}
+    itemProperties={{ layout: "inputOnly" }}
     inputProperties={{
       options: booleanOptions,
-      value: filters['_eq'],
-      onChange: e => {
+      value: filters["_eq"],
+      onChange: (e) => {
         const value = e.target.value; // note: this will be a string
-        setFilters({ _eq: value === 'true' ? true : false });
+        setFilters({ _eq: value === "true" ? true : false });
       },
     }}
   />
 );
 
-registerComponent('DatatableFilterBooleans', DatatableFilterBooleans);
+registerComponent("DatatableFilterBooleans", DatatableFilterBooleans);
 
 /*
 
@@ -222,43 +281,53 @@ const DatatableFilterDates = ({ filters, setFilters }) => (
     <Components.FormComponentDate
       path="_gte"
       itemProperties={{
-        label: <Components.FormattedMessage id="datatable.after" defaultMessage="After" />,
-        layout: 'horizontal',
+        label: (
+          <Components.FormattedMessage
+            id="datatable.after"
+            defaultMessage="After"
+          />
+        ),
+        layout: "horizontal",
       }}
       inputProperties={{}}
-      value={filters && moment(filters._gte, 'YYYY-MM-DD')}
-      updateCurrentValues={newValues => {
-        if (!newValues._gte || newValues._gte === '') {
+      value={filters && moment(filters._gte, "YYYY-MM-DD")}
+      updateCurrentValues={(newValues) => {
+        if (!newValues._gte || newValues._gte === "") {
           const newFilters = Object.assign({}, filters);
           delete newFilters._gte;
           setFilters(newFilters);
         } else {
-          setFilters({ ...filters, _gte: newValues._gte.format('YYYY-MM-DD') });
+          setFilters({ ...filters, _gte: newValues._gte.format("YYYY-MM-DD") });
         }
       }}
     />
     <Components.FormComponentDate
       path="_lte"
       itemProperties={{
-        label: <Components.FormattedMessage id="datatable.before" defaultMessage="Before" />,
-        layout: 'horizontal',
+        label: (
+          <Components.FormattedMessage
+            id="datatable.before"
+            defaultMessage="Before"
+          />
+        ),
+        layout: "horizontal",
       }}
       inputProperties={{}}
-      value={filters && moment(filters._lte, 'YYYY-MM-DD')}
-      updateCurrentValues={newValues => {
-        if (!newValues._lte || newValues._lte === '') {
+      value={filters && moment(filters._lte, "YYYY-MM-DD")}
+      updateCurrentValues={(newValues) => {
+        if (!newValues._lte || newValues._lte === "") {
           const newFilters = Object.assign({}, filters);
           delete newFilters._lte;
           setFilters(newFilters);
         } else {
-          setFilters({ ...filters, _lte: newValues._lte.format('YYYY-MM-DD') });
+          setFilters({ ...filters, _lte: newValues._lte.format("YYYY-MM-DD") });
         }
       }}
     />
   </div>
 );
 
-registerComponent('DatatableFilterDates', DatatableFilterDates);
+registerComponent("DatatableFilterDates", DatatableFilterDates);
 
 /*
 
@@ -272,13 +341,18 @@ const DatatableFilterNumbers = ({ filters, setFilters }) => (
     <Components.FormComponentNumber
       path="_gte"
       itemProperties={{
-        label: <Components.FormattedMessage id="datatable.greater_than" defaultMessage="Greater than" />,
-        layout: 'horizontal',
+        label: (
+          <Components.FormattedMessage
+            id="datatable.greater_than"
+            defaultMessage="Greater than"
+          />
+        ),
+        layout: "horizontal",
       }}
       inputProperties={{
-        onChange: event => {
+        onChange: (event) => {
           const value = event.target.value;
-          if (!value || value === '') {
+          if (!value || value === "") {
             const newFilters = Object.assign({}, filters);
             delete newFilters._gte;
             setFilters(newFilters);
@@ -292,11 +366,16 @@ const DatatableFilterNumbers = ({ filters, setFilters }) => (
     <Components.FormComponentNumber
       path="_lte"
       itemProperties={{
-        label: <Components.FormattedMessage id="datatable.lower_than" defaultMessage="Lower than" />,
-        layout: 'horizontal',
+        label: (
+          <Components.FormattedMessage
+            id="datatable.lower_than"
+            defaultMessage="Lower than"
+          />
+        ),
+        layout: "horizontal",
       }}
       inputProperties={{
-        onChange: event => {
+        onChange: (event) => {
           const value = event.target.value;
           if (!value) {
             const newFilters = Object.assign({}, filters);
@@ -312,4 +391,4 @@ const DatatableFilterNumbers = ({ filters, setFilters }) => (
   </div>
 );
 
-registerComponent('DatatableFilterNumbers', DatatableFilterNumbers);
+registerComponent("DatatableFilterNumbers", DatatableFilterNumbers);

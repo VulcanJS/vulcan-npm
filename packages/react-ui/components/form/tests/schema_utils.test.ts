@@ -1,5 +1,4 @@
 import { getNestedFieldSchemaOrType } from "../modules/schema_utils";
-import expect from "expect";
 
 const addressSchema = {
   street: {

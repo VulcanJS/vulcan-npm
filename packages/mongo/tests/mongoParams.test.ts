@@ -1,9 +1,6 @@
 import { VulcanSelector } from "@vulcanjs/graphql/typings";
 import { createModel } from "@vulcanjs/model";
-import expect from "expect";
 import { filterFunction } from "../mongoParams";
-
-const test = it;
 
 describe("vulcan:lib/mongoParams", () => {
   test("keep multiple filters", async () => {

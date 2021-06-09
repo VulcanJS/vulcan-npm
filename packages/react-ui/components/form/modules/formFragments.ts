@@ -5,7 +5,7 @@
  */
 import _uniq from "lodash/uniq";
 import _intersection from "lodash/intersection";
-import gql from "graphql-tag";
+import { gql } from "@apollo/client";
 import {
   getCreateableFields,
   getUpdateableFields,

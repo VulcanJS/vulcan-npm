@@ -1,9 +1,6 @@
 import { createModel } from "@vulcanjs/model";
 
-import expect from "expect";
-
-import SimpleSchema from "simpl-schema";
-import extendModel, { createGraphqlModel } from "../../extendModel";
+import { createGraphqlModel } from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
 import { normalizeGraphQLSchema } from "../../testUtils";
 import { getDefaultFragmentText } from "../defaultFragment";
