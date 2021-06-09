@@ -1,3 +1,7 @@
+// No need to use ts-jest https://github.com/vercel/next.js/discussions/13528#discussioncomment-22933
+// Client and server Jest config
+// You can find two projects below, corresponding to the client-side config and the server-side config
+
 // configuration that must be set for each project but does not change
 const commonConfig = {
   // A map from regular expressions to paths to transformers
