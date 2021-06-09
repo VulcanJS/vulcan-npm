@@ -21,11 +21,7 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/core": "^0.1.12",
-    "@vulcanjs/schema": "^0.1.12",
-    "@vulcanjs/utils": "^0.1.12",
-    "moment-timezone": "^0.5.31",
-    "simpl-schema": "^1.10.1"
+    "@vulcanjs/schema": "^0.1.12"
   },
   "devDependencies": {
     "ts-loader": "^8.0.3"

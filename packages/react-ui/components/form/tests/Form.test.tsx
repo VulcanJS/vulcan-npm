@@ -1,6 +1,4 @@
 import React from "react";
-// TODO: for some reason we have to call it Form in storybook
-import expect from "expect";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 // @see https://storybook.js.org/addons/@storybook/react-testing
 import { composeStories } from "@storybook/testing-react";

@@ -1,5 +1,4 @@
 import React from "react";
-import expect from "expect";
 import { MockedProvider } from "@apollo/client/testing";
 // import { print } from "graphql";
 

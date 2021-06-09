@@ -12,7 +12,7 @@
     "coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "depcheck": "lerna exec --no-bail -- 'echo \"\n***** $LERNA_PACKAGE_NAME *****\" && depcheck'"
+    "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.19",

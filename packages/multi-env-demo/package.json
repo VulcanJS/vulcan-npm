@@ -24,9 +24,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "@vulcanjs/core": "^0.1.12",
-    "@vulcanjs/schema": "^0.1.12",
-    "@vulcanjs/utils": "^0.1.12"
-  }
+  "dependencies": {}
 }
