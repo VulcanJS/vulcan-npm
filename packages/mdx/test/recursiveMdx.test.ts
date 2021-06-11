@@ -1,9 +1,8 @@
-import { getMdxPaths } from '../../mdx';
+import { getMdxPaths } from '../../mdx/index';
 
 describe("vulcan/mdx/recursiveMdx", () => {
     test("Access nested files", async () => {
         const files = await getMdxPaths('packages/mdx/test')
-        console.log("\n\n\n\n\n\n\n >>> FILES : ", files);
         expect(files).toHaveLength(4);       
     });
     test("Path of index.md correct", async () => {
