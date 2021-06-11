@@ -35,58 +35,61 @@ interface CreateGraphqlModelOptions
     CreateGraphqlModelServerOptions {}
 
 // Reusable model extension function
-const extendModel = (
-  options: CreateGraphqlModelOptions
-) /*: ExtendModelFunc<VulcanGraphqlModel>*/ => (
-  model: VulcanModel
-): VulcanGraphqlModel => {
-  const name = model.name;
-  const {
-    typeName = name,
-    multiTypeName,
-    queryResolvers,
-    mutationResolvers,
-  } = options;
+const extendModel =
+  (
+    options: CreateGraphqlModelOptions
+  ) /*: ExtendModelFunc<VulcanGraphqlModel>*/ =>
+  (model: VulcanModel): VulcanGraphqlModel => {
+    const name = model.name;
+    const {
+      typeName = name,
+      multiTypeName,
+      queryResolvers,
+      mutationResolvers,
+    } = options;
 
-  const singleResolverName = camelCaseify(typeName);
-  const multiResolverName = camelCaseify(multiTypeName);
+    const singleResolverName = camelCaseify(typeName);
+    const multiResolverName = camelCaseify(multiTypeName);
 
-  // compute base properties
-  const graphqlModel = {
-    singleResolverName,
-    multiResolverName,
-    ...options,
-  };
-  // compute default fragment
-  const extendedModel = {
-    ...model,
-    graphql: graphqlModel,
-  };
-  const defaultFragment = getDefaultFragmentText(extendedModel);
-  const defaultFragmentName = getDefaultFragmentName(extendedModel);
+    // compute base properties
+    const graphqlModel = {
+      singleResolverName,
+      multiResolverName,
+      ...options,
+    };
+    // compute default fragment
+    const extendedModel = {
+      ...model,
+      graphql: graphqlModel,
+    };
+    const defaultFragment = getDefaultFragmentText(extendedModel);
+    const defaultFragmentName = getDefaultFragmentName(extendedModel);
 
-  if (!defaultFragment) {
-    // TODO: is this a normal scenario?
-    console.warn(
-      `Could not generate a default fragment for type ${graphqlModel.typeName}`
-    );
-  }
+    if (!defaultFragment) {
+      // This can legitimately happen if the schema only have nested fields for instance
+      // However, in the future, it would be better to guarantee that we can generate a default fragment
+      // for all scenarios except actually empty schemas
+      console.warn(
+        `Could not generate a default fragment for type ${graphqlModel.typeName}.
+        Please make at least one field of the model ${model.name} readable, using canRead.`
+      );
+    }
 
-  // server-only
-  const extendedGraphqlModel = {
-    ...graphqlModel,
-    defaultFragment,
-    defaultFragmentName,
     // server-only
-    queryResolvers,
-    mutationResolvers,
+    const extendedGraphqlModel = {
+      ...graphqlModel,
+      defaultFragment,
+      defaultFragmentName,
+      // server-only
+      queryResolvers,
+      mutationResolvers,
+    };
+    const finalModel: VulcanGraphqlModel = {
+      ...model,
+      graphql: extendedGraphqlModel,
+    };
+    return finalModel;
   };
-  const finalModel: VulcanGraphqlModel = {
-    ...model,
-    graphql: extendedGraphqlModel,
-  };
-  return finalModel;
-};
 
 /**
  * Helper to simplify the syntax
@@ -121,7 +124,7 @@ export const createGraphqlModel = (
 // import merge from "lodash/merge";
 // import _omit from "lodash/omit";
 // import mergeWith from "lodash/mergeWith";
-// import { createSchema, isCollectionType } from "./schema_utils.js";
+// import { createSchema, isCollectionType } from "./schema_utils";
 
 // // will be set to `true` if there is one or more intl schema fields
 // export let hasIntlFields = false;

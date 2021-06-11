@@ -1,0 +1,27 @@
+{
+  "name": "@vulcanjs/i18n",
+  "version": "0.1.13",
+  "description": "Vulcan i18n helpers",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vulcanjs/schema": "^0.1.13",
+    "@vulcanjs/utils": "^0.1.13",
+    "prop-types": "^15.7.2",
+    "simpl-schema": "^1.12.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2"
+  }
+}

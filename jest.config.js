@@ -1,11 +1,32 @@
 // No need to use ts-jest https://github.com/vercel/next.js/discussions/13528#discussioncomment-22933
-// Client-side Jest config
-// You might need to setup another config file for server tests
-module.exports = {
-  // preset: "ts-jest",
-  testEnvironment: "jsdom", // might need to change for Node on the server
-  // All imported modules in your tests should be mocked automatically
-  // automock: false,
+// Client and server Jest config
+// You can find two projects below, corresponding to the client-side config and the server-side config
+
+// configuration that must be set for each project but does not change
+const commonConfig = {
+  // A map from regular expressions to paths to transformers
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
+  },
+  // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "/cypress/",
+    "/storybook/",
+    //"/.next/",
+    "/stories/",
+  ],
+  // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
+  transformIgnorePatterns: [
+    '/node_modules/',
+    '^.+\\.module\\.(css|sass|scss)$',
+  ],
+  // A map from regular expressions to module names that allow to stub out resources with a single module
+  moduleNameMapper: {
+    '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
+  },
+  // The directory where Jest should output its coverage files
+  coverageDirectory: "coverage-unit",
 
   // Stop running tests after `n` failures
   // bail: 0,
@@ -21,29 +42,6 @@ module.exports = {
 
   // Indicates whether the coverage information should be collected while executing the test
   // collectCoverage: false,
-
-  // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: undefined,
-  collectCoverageFrom: [
-    "packages/**/*.{js,jsx,ts,tsx}",
-    "!**/*.d.ts",
-    //"!**/stor{y,ies}.{js,ts,jsx,tsx}",
-    //"!**/*.stor{y,ies}.{js,ts,jsx,tsx}",
-    "!**/node_modules/**",
-    //"!**/cypress/**",
-    //"!**/.storybook/**",
-    //"!**/stories/**",
-    //"!**/storybook-static/**",
-    "!jest.config.js",
-    //"!**/out/**",
-    "!**/dist/**",
-    "!**/public/**",
-    "!**/build/**",
-    "!**/coverage/**",
-  ],
-
-  // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage-unit",
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -112,9 +110,6 @@ module.exports = {
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
 
-  // Run tests from one or more projects
-  projects: ["<rootDir>/packages/*"],
-
   // Use this configuration option to add custom reporters to Jest
   // reporters: undefined,
 
@@ -142,38 +137,17 @@ module.exports = {
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
 
-  // The paths to modules that run some code to configure or set up the testing environment before each test
-  // setupFiles: [],
-
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
 
-  // The test environment that will be used for testing
-  // testEnvironment: "jest-environment-jsdom",
-
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
 
   // Adds a location field to test results
   // testLocationInResults: false,
-
-  // The glob patterns Jest uses to detect test files
-  // testMatch: [
-  //   "**/__tests__/**/*.[jt]s?(x)",
-  //   "**/?(*.)+(spec|test).[tj]s?(x)"
-  // ],
-
-  // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "/cypress/",
-    "/storybook/",
-    //"/.next/",
-    "/stories/",
-  ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],
@@ -190,19 +164,6 @@ module.exports = {
   // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
   // timers: "real",
 
-  // A map from regular expressions to paths to transformers
-  // transform: undefined,
-  transform: {
-    //"^.+\\.[jt]sx?$": "ts-jest",
-    "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
-    // MDX support
-    // "^.+\\.(md|mdx)$": "jest-transformer-mdx",
-  },
-
-  // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
@@ -215,4 +176,61 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-};
+}
+
+module.exports = {
+  // shared configuration for global features, such as coverage computation
+  // An array of glob patterns indicating a set of files for which coverage information should be collected
+  collectCoverageFrom: [
+    '**/*.{js,jsx,ts,tsx}',
+    '!**/*.d.ts',
+    '!**/node_modules/**',
+    // we have to explicitely exclude tests from coverage when using "projects" options
+    // because Jest can't tell anymore which files is a test or not as it varies per environment
+    '!**/__tests__/**/*.[jt]s?(x)',
+    '!**/*.test.[jt]s?(x)',
+    '!coverage/**',
+    '!.next/**',
+    // we exclude configuration files from coverage computation
+    '!*.js',
+    //"!**/stor{y,ies}.{js,ts,jsx,tsx}",
+    //"!**/*.stor{y,ies}.{js,ts,jsx,tsx}",
+    //"!**/cypress/**",
+    //"!**/.storybook/**",
+    //"!**/stories/**",
+    //"!**/storybook-static/**",
+    // "!jest.config.js",
+    //"!**/out/**",
+    // "!**/dist/**",
+    // "!**/public/**",
+    // "!**/build/**",
+    // "!**/coverage/**",
+  ],
+
+  // configuration for each environment (client or server)
+  projects: [
+    {
+      ...commonConfig,
+      name: 'client',
+      displayName: 'client',
+      // testEnvironment: "jsdom", // defautl already
+      testMatch: [
+        '**/!(*.server).test.[jt]s?(x)',
+      ],
+      modulePaths: ['<rootDir>'],
+      // The paths to modules that run some code to configure or set up the testing environment before each test
+      setupFiles: ["./jest/setup.js"],
+    },
+    {
+      ...commonConfig,
+      name: 'server',
+      displayName: 'server',
+      testEnvironment: 'node',
+      testMatch: [
+        '**/*.server.test.[jt]s?(x)',
+      ],
+      // The paths to modules that run some code to configure or set up the testing environment before each test
+      setupFiles: ["./jest/setup.server.js"],
+    },
+  ],
+}

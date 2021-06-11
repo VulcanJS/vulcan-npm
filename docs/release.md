@@ -17,6 +17,11 @@ Make packages public by adding this config in every public package:
 ```sh
 # Merge potential hotfixes
 git checkout master && git pull && git checkout devel && git pull && git merge master && git merge devel
+# Check missing dependencies (NOTE: there might be false positive and false negative, be careful! Don't remove too many "unused" packages!)
+# - Ignore dependencies to storybook or jest (handled at the root level)
+# - Beware of things that should stay peer deps, like React
+# - Ignore dependencies that should disappear (work in progress)
+yarn run depcheck
 # Clear all node_modules
 yarn clean
 # Reinstall to get a fresh version (takes a while)

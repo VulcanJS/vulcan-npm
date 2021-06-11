@@ -38,7 +38,7 @@ import {
   modifierToData,
   dataToModifier,
 } from "./validation";
-import { runCallbacks } from "../../callbacks";
+import { runCallbacks } from "@vulcanjs/core";
 
 import { throwError } from "./errors";
 import { getModelConnector } from "./context";
@@ -48,7 +48,7 @@ import isEmpty from "lodash/isEmpty";
 import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
-import { restrictViewableFields } from "../../permissions";
+import { restrictViewableFields } from "@vulcanjs/permissions";
 
 interface CreateMutatorInput {
   model: VulcanGraphqlModel;
@@ -117,7 +117,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
   context = {},
 }: CreateMutatorInput): Promise<{ data: TModel }> => {
   // we don't want to modify the original document
-  let data: Partial<TModel> = clone(originalData);
+  let data: Partial<TModel> = clone(originalData) as TModel;
 
   const { schema } = model;
 
@@ -270,7 +270,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 
   // get original document from database or arguments
   const connector = getModelConnector(context, model);
-  const currentDocument = await connector.findOne(model, selector);
+  const currentDocument = await connector.findOne(selector);
 
   if (!currentDocument) {
     throw new Error(
@@ -429,7 +429,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   const connector = getModelConnector<TModel>(context, model);
 
   // get document from database
-  let document = await connector.findOne(model, selector);
+  let document = await connector.findOne(selector);
 
   if (!document) {
     throw new Error(

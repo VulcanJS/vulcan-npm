@@ -4,6 +4,7 @@ import {
   sortInputType,
 } from "./filtering";
 import { camelCaseify } from "@vulcanjs/utils";
+import { VulcanGraphqlModel } from "../typings";
 
 // eslint-disable-next-line
 const deprecated1 = `# Deprecated (use 'filter/id' fields instead).`;
@@ -15,14 +16,15 @@ const multiReturnProperty = "results";
 
 /* ------------------------------------- Query Types ------------------------------------- */
 
-/*
-
-A query for a single document
-
-movie(input: SingleMovieInput) : SingleMovieOutput
-
-*/
 export const singleQueryType = (typeName) => camelCaseify(typeName);
+/**
+ * Operation name for the single query
+ * @param typeName
+ * @returns
+ */
+// same as singleQueryType but for a model
+export const singleOperationName = (model: VulcanGraphqlModel) =>
+  singleQueryType(model.graphql.typeName);
 export const singleQueryTemplate = ({ typeName }) =>
   `${singleQueryType(typeName)}(input: ${singleInputType(
     typeName,
@@ -178,6 +180,7 @@ query singleMovieQuery($input: SingleMovieInput) {
 }
 
 */
+
 // TODO: with hooks, extraQueries becomes less necessary?
 export const singleClientTemplate = ({
   typeName,

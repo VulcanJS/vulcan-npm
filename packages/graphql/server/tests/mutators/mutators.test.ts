@@ -1,5 +1,3 @@
-import expect from "expect";
-
 import {
   createMutator,
   updateMutator,
@@ -93,21 +91,24 @@ describe("graphql/resolvers/mutators", function () {
 
   describe("create and update mutator", () => {
     // create fake context
-    const defaultContext: {
+    let defaultContext: {
       Foo: { connector: Partial<Connector>; model: VulcanGraphqlModel };
-    } = {
-      Foo: {
-        model: Foo,
-        connector: {
-          create: async () => "1", // returns the new doc id
-          findOneById: async () => ({
-            id: "1",
-          }),
-          findOne: async () => ({ id: "1" }),
-          update: async () => ({ id: "1" }),
-        },
-      },
     };
+    beforeEach(() => {
+      defaultContext = {
+        Foo: {
+          model: Foo,
+          connector: {
+            create: async () => "1", // returns the new doc id
+            findOneById: async () => ({
+              id: "1",
+            }),
+            findOne: async () => ({ id: "1" }),
+            update: async () => ({ id: "1" }),
+          },
+        },
+      };
+    });
     test("can run createMutator", async function () {
       const { data: resultDocument } = await createMutator({
         ...createArgs,
@@ -137,13 +138,46 @@ describe("graphql/resolvers/mutators", function () {
       });
       expect(data).toEqual(dataOriginal);
     });
+    test("update mutator should pass the right selector to get the current document", async () => {
+      const data = { _id: "1", foo: "fooUpdate" };
+      defaultContext.Foo.connector.findOne = jest.fn(async () => data);
+      await updateMutator({
+        ...updateArgs,
+        dataId: data._id,
+        context: defaultContext,
+        data,
+      });
+      expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
+        _id: "1",
+      });
+    });
   });
   describe("delete mutator", () => {
+    // create fake context
+    let defaultContext: {
+      Foo: { connector: Partial<Connector>; model: VulcanGraphqlModel };
+    };
     const defaultParams = {
       model: Foo,
       context: {},
       asAdmin: true, // bypass field restriction
     };
+    beforeEach(() => {
+      defaultContext = {
+        Foo: {
+          model: Foo,
+          connector: {
+            create: async () => "1", // returns the new doc id
+            findOneById: async () => ({
+              id: "1",
+            }),
+            findOne: async () => ({ id: "1" }),
+            update: async () => ({ id: "1" }),
+            delete: async () => {},
+          },
+        },
+      };
+    });
     test("refuse deletion if selector is empty", async () => {
       const emptySelector = {};
 
@@ -200,6 +234,19 @@ describe("graphql/resolvers/mutators", function () {
       await expect(
         deleteMutator({ ...params, selector: validSlugSelector })
       ).resolves.toEqual({ data: foo });
+    });
+
+    test("pass the right selector to get the current document", async () => {
+      const data = { _id: "1", foo: "fooUpdate" };
+      defaultContext.Foo.connector.findOne = jest.fn(async () => data);
+      await deleteMutator({
+        ...defaultParams,
+        context: defaultContext,
+        selector: { _id: "1" },
+      });
+      expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
+        _id: "1",
+      });
     });
   });
 

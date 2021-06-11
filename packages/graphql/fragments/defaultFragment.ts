@@ -28,19 +28,17 @@ const getObjectFragment = ({
   options,
 }: GetObjectFragmentInput): string | null => {
   const fieldNames = getFragmentFieldNames({ schema, options });
-  const childFragments =
-    fieldNames.length &&
-    fieldNames
-      .map((fieldName) =>
-        getFieldFragment({
-          schema,
-          fieldName,
-          options,
-          getObjectFragment: getObjectFragment,
-        })
-      )
-      // remove empty values
-      .filter((f) => !!f);
+  const childFragments = fieldNames
+    .map((fieldName) =>
+      getFieldFragment({
+        schema,
+        fieldName,
+        options,
+        getObjectFragment: getObjectFragment,
+      })
+    )
+    // remove empty values
+    .filter((f) => !!f);
   if (childFragments.length) {
     return `${fragmentName} { ${childFragments.join("\n")} }`;
   }

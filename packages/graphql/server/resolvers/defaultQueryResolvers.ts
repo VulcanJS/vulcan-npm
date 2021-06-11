@@ -14,7 +14,7 @@ import {
   checkFields,
   isMemberOf,
   restrictViewableFields,
-} from "../../permissions";
+} from "@vulcanjs/permissions";
 import { QueryResolverDefinitions } from "../typings";
 import { Connector } from "./connector";
 import { ContextWithUser } from "./typings";

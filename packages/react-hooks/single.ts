@@ -8,37 +8,54 @@ import {
   singleClientTemplate,
   VulcanGraphqlModel,
   SingleInput,
+  getModelFragment,
+  Fragment,
 } from "@vulcanjs/graphql";
 
 import { computeQueryVariables } from "./variables";
 import {
   OperationVariables,
   useQuery,
-  QueryOptions,
   gql,
   QueryResult,
+  QueryHookOptions,
 } from "@apollo/client";
-import { Fragment } from "./typings";
 
 const defaultInput = {
   enableCache: false,
   allowNull: false,
 };
 
+/**
+ * GraphQL query for a single query
+ * @param param0
+ * @returns
+ */
 export const buildSingleQuery = ({
-  typeName,
+  model,
   fragmentName,
   fragment,
   extraQueries,
 }: {
-  typeName: string;
+  model: VulcanGraphqlModel;
+  //typeName: string;
   fragmentName?: string;
   fragment?: Fragment;
   extraQueries?: string;
 }) => {
+  const { typeName } = model.graphql;
+  const { finalFragment, finalFragmentName } = getModelFragment({
+    model,
+    fragment,
+    fragmentName,
+  });
   const query = gql`
-    ${singleClientTemplate({ typeName, fragmentName, extraQueries })}
-    ${fragment}
+    ${singleClientTemplate({
+      typeName,
+      fragmentName: finalFragmentName,
+      extraQueries,
+    })}
+    ${finalFragment}
   `;
   return query;
 };
@@ -49,38 +66,27 @@ export const buildSingleQuery = ({
  * @param {*} props
  */
 const buildQueryOptions = <TData = any, TVariables = OperationVariables>(
-  options,
+  options: UseSingleOptions<any, TData, TVariables>,
   props
-): Partial<QueryOptions<TData, TVariables>> => {
-  let {
-    pollInterval = 20000,
-    // generic apollo graphQL options
-    queryOptions = {},
-  } = options;
-
+): Partial<QueryHookOptions<TData, TVariables>> => {
   // if this is the SSR process, set pollInterval to null
   // see https://github.com/apollographql/apollo-client/issues/1704#issuecomment-322995855
-  pollInterval = typeof window === "undefined" ? null : pollInterval;
-
-  // OpenCrud backwards compatibility
-  const graphQLOptions: Partial<
-    QueryOptions</*TVariables*/ any, TData> & { pollInterval?: number }
-  > = {
-    variables: {
-      ...computeQueryVariables(
-        { ...options, input: _merge({}, defaultInput, options.input || {}) }, // needed to merge in defaultInput, could be improved
-        props
-      ),
-    },
-    pollInterval, // note: pollInterval can be set to 0 to disable polling (20s by default)
-  };
-
-  // see https://www.apollographql.com/docs/react/features/error-handling/#error-policies
-  graphQLOptions.errorPolicy = "all";
+  const pollInterval =
+    typeof window === "undefined"
+      ? undefined
+      : options?.queryOptions?.pollInterval ?? 2000;
 
   return {
-    ...graphQLOptions,
-    ...queryOptions,
+    variables: {
+      ...(computeQueryVariables(
+        { ...options, input: _merge({}, defaultInput, options.input || {}) }, // needed to merge in defaultInput, could be improved
+        props
+      ) as TVariables),
+    },
+    // see https://www.apollographql.com/docs/react/features/error-handling/#error-policies
+    errorPolicy: "all",
+    ...(options?.queryOptions || {}),
+    pollInterval, // note: pollInterval can be set to 0 to disable polling (20s by default)
   };
 };
 
@@ -109,12 +115,13 @@ interface SingleResult<TModel = any, TData = any> extends QueryResult<TData> {
   fragment: string;
   document: TModel; // shortcut to get the document
 }
-interface UseSingleOptions<TModel> {
+export interface UseSingleOptions<TModel, TData = any, TVariables = any> {
   model: VulcanGraphqlModel;
   input?: SingleInput<TModel>;
   fragment?: Fragment;
   fragmentName?: string;
   extraQueries?: string;
+  queryOptions?: QueryHookOptions<TData, TVariables>;
 }
 
 /**
@@ -122,7 +129,7 @@ interface UseSingleOptions<TModel> {
  * @param options
  * @param props
  */
-export const useSingle = <TModel = any>(
+export const useSingle = <TModel = any, TData = any>(
   options: UseSingleOptions<TModel>,
   props = {}
 ): SingleResult<TModel> => {
@@ -136,13 +143,13 @@ export const useSingle = <TModel = any>(
   const { typeName, singleResolverName: resolverName } = model.graphql;
 
   const query = buildSingleQuery({
-    typeName,
+    model,
     fragmentName,
     fragment,
     extraQueries,
   });
 
-  const queryResult = useQuery(query, buildQueryOptions(options, props));
+  const queryResult = useQuery<TData>(query, buildQueryOptions(options, props));
   const result = buildSingleResult<TModel>(
     options,
     { fragment, fragmentName, resolverName },

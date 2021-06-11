@@ -3,6 +3,7 @@
     "allowJs": false,
     "alwaysStrict": true,
     "declaration": true,
+    "declarationMap": true, // Allow navigation to definition in VS Code https://stackoverflow.com/questions/54459847/vscode-lerna-typescript-monorepo-code-navigation
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
@@ -21,6 +22,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
+    "strictBindCallApply": true, // @see https://github.com/storybookjs/storybook/issues/11916
     "sourceMap": true,
     "strict": false,
     "target": "es6",

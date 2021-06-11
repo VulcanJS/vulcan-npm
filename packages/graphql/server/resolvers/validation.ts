@@ -8,18 +8,8 @@ import {
 import _forEach from "lodash/forEach";
 import { VulcanModel } from "@vulcanjs/model";
 import { ContextWithUser } from "./typings";
-import { canCreateField, canUpdateField } from "../../permissions";
-import { toSimpleSchema } from "@vulcanjs/schema";
-
-export interface ValidationError {
-  id: "errors.disallowed_property_detected" | string;
-  path?: string;
-  properties: {
-    modelName?: string;
-    name?: string; // field name
-    [key: string]: any; // other error props
-  };
-}
+import { canCreateField, canUpdateField } from "@vulcanjs/permissions";
+import { toSimpleSchema, ValidationError } from "@vulcanjs/schema";
 
 interface Modifier {
   $set?: Object;

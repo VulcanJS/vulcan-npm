@@ -18,7 +18,7 @@ import {
   hasArrayNestedChild,
 } from "@vulcanjs/schema";
 import { getGraphQLType } from "../utils";
-import { isIntlField, isIntlDataField } from "../intl";
+import { isIntlField, isIntlDataField } from "@vulcanjs/i18n";
 import { capitalize } from "@vulcanjs/utils";
 import {
   AnyResolverMap,

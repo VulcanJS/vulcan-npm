@@ -225,7 +225,6 @@ export interface QueryInput<TModel = any> extends FilterableInput<TModel> {
 export interface FilterableInput<TModel = any> {
   id?: string;
   filter?: VulcanSelector<TModel>;
-
   sort?: { [fieldName in keyof TModel]?: VulcanSelectorSortOption };
   limit?: number;
   search?: string;

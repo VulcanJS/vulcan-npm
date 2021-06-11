@@ -27,3 +27,6 @@ coverage/
 coverage-unit/
 dist
 package-lock.json
+
+#vscode extension
+.vscode/snipsnap.code-snippets
