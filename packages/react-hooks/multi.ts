@@ -124,24 +124,23 @@ export const buildMultiQueryOptions = <TModel, TData>(
  * Query updater after a fetch more
  * @param resolverName
  */
-export const fetchMoreUpdateQuery = (resolverName: string) => (
-  previousResults,
-  { fetchMoreResult }
-) => {
-  // no more post to fetch
-  if (!fetchMoreResult[resolverName]?.results?.length) {
-    return previousResults;
-  }
-  const newResults = {
-    ...previousResults,
-    [resolverName]: { ...previousResults[resolverName] },
+export const fetchMoreUpdateQuery =
+  (resolverName: string) =>
+  (previousResults, { fetchMoreResult }) => {
+    // no more post to fetch
+    if (!fetchMoreResult[resolverName]?.results?.length) {
+      return previousResults;
+    }
+    const newResults = {
+      ...previousResults,
+      [resolverName]: { ...previousResults[resolverName] },
+    };
+    newResults[resolverName].results = [
+      ...previousResults[resolverName].results,
+      ...fetchMoreResult[resolverName].results,
+    ];
+    return newResults;
   };
-  newResults[resolverName].results = [
-    ...previousResults[resolverName].results,
-    ...fetchMoreResult[resolverName].results,
-  ];
-  return newResults;
-};
 
 const buildMultiResult = <TModel, TData, TVariables>(
   options: UseMultiOptions<TModel, TData, TVariables>,
@@ -155,9 +154,8 @@ const buildMultiResult = <TModel, TData, TVariables>(
   const graphQLErrors = get(queryResult, "error.networkError.result.errors");
   const { refetch, networkStatus, error, fetchMore, data } = queryResult;
   // Note: Scalar types like Dates are NOT converted. It should be done at the UI level.
-  const documents = data && data[resolverName] && data[resolverName].results;
-  const totalCount =
-    data && data[resolverName] && data[resolverName].totalCount;
+  const documents = data?.[resolverName]?.results;
+  const totalCount = data?.[resolverName]?.data[resolverName]?.totalCount;
   // see https://github.com/apollographql/apollo-client/blob/master/packages/apollo-client/src/core/networkStatus.ts
   const loadingInitial = networkStatus === 1;
   const loadingMore = networkStatus === 3 || networkStatus === 2;

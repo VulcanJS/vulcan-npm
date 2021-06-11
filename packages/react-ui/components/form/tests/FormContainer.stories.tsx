@@ -1,7 +1,6 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { SmartForm, SmartFormProps } from "../FormContainer";
-import { createGraphqlModel, createOperationName } from "@vulcanjs/graphql";
 
 // Mocking graphql
 import { MockedProvider } from "@apollo/client/testing";
@@ -12,51 +11,61 @@ import {
 } from "operation-name-mock-link";
 import { VulcanComponentsProvider } from "../VulcanComponents/Provider";
 import { ExpectedErrorBoundary } from "../../../testing/ExpectedErrorBoundary";
-import { singleOperationName } from "@vulcanjs/graphql";
-import { buildSingleQuery, buildCreateQuery } from "@vulcanjs/react-hooks";
+import {} from "@vulcanjs/graphql";
+import {
+  singleOperationName,
+  createGraphqlModel,
+  createOperationName,
+  updateOperationName,
+} from "@vulcanjs/graphql";
+import {
+  buildSingleQuery,
+  buildCreateQuery,
+  buildUpdateQuery,
+} from "@vulcanjs/react-hooks";
+import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 
 // dummy simplified model
-interface OneFieldType {
-  text: string;
-}
-const OneField = createGraphqlModel({
-  name: "OneField",
-  schema: {
-    text: {
-      type: String,
-      canRead: ["anyone"],
-      canUpdate: ["anyone"],
-      canCreate: ["anyone"],
-    },
-  },
-  graphql: {
-    typeName: "OneField",
-    multiTypeName: "OneFields",
-  },
-});
-
 const singleMock: OperationNameMockedResponse<{
-  empty: { result: OneFieldType };
+  oneField: { result: OneFieldType };
 }> = {
   request: {
-    operationName: singleOperationName(OneField),
+    operationName: singleOperationName(OneFieldGraphql),
     query: buildSingleQuery({
-      model: OneField,
+      model: OneFieldGraphql,
     }),
   },
-  result: {},
+  result: {
+    data: {
+      oneField: { result: { text: "hello", __typename: "OneField" } },
+    },
+  },
 };
 
 const createMock: OperationNameMockedResponse<any> = {
   request: {
-    operationName: createOperationName(OneField),
-    query: buildCreateQuery({ model: OneField }),
+    operationName: createOperationName(OneFieldGraphql),
+    query: buildCreateQuery({ model: OneFieldGraphql }),
   },
   result: {
     data: {
       createOneField: {
         // always return the same object whatever the user created
         data: { text: "Hello" },
+      },
+    },
+  },
+};
+const updateMock: OperationNameMockedResponse<any> = {
+  request: {
+    operationName: updateOperationName(OneFieldGraphql),
+    query: buildUpdateQuery({ model: OneFieldGraphql }),
+  },
+  result: {
+    data: {
+      updateOneField: {
+        // always return the same object whatever the user created
+        data: { text: "successfully updated document" },
       },
     },
   },
@@ -78,7 +87,7 @@ export default {
     ),
   ],
   args: {
-    model: OneField,
+    model: OneFieldGraphql,
   },
   parameters: { actions: {} },
 } as Meta<SmartFormProps>;
@@ -98,13 +107,15 @@ CreateSmartForm.decorators = [
     </MockedProvider>
   ),
 ];
-export const EditSmartForm = SmartFormTemplate.bind({});
-EditSmartForm.args = {
+export const UpdateSmartForm = SmartFormTemplate.bind({});
+UpdateSmartForm.args = {
   documentId: "1",
 };
-EditSmartForm.decorators = [
+UpdateSmartForm.decorators = [
   (Story) => (
-    <MockedProvider link={new OperationNameMockLink([singleMock], false)}>
+    <MockedProvider
+      link={new OperationNameMockLink([singleMock, updateMock], false)}
+    >
       <Story />
     </MockedProvider>
   ),

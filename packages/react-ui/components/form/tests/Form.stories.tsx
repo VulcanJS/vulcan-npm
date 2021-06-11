@@ -192,6 +192,13 @@ ArrayOfStringsForm.args = { model: models.ArrayOfStrings };
 export const AddressesForm = FormTemplate.bind({});
 AddressesForm.args = { model: models.Addresses };
 
+// EDIT MODE
+export const WithDocument = FormTemplate.bind({});
+WithDocument.args = {
+  model: models.OneField,
+  document: { text: "hello there" },
+};
+
 // @see https://github.com/storybookjs/storybook/pull/14550
 export const WarnOnUnsavedChanges = () => (
   <div>

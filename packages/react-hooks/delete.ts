@@ -39,6 +39,7 @@ export const buildDeleteQuery = ({ typeName, fragmentName, fragment }) =>
   `;
 
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
+import { DeleteVariables } from "@vulcanjs/graphql";
 
 /**
  * Compute new list for removed elements
@@ -63,12 +64,6 @@ const multiQueryUpdaterAfterDelete = multiQueryUpdater(
   computeNewDataAfterDelete
 );
 
-interface DeleteInput {
-  id: string;
-}
-interface DeleteVariables {
-  input: DeleteInput;
-}
 interface UseDeleteOptions
   extends VulcanMutationHookOptions,
     Partial<DeleteVariables> {}

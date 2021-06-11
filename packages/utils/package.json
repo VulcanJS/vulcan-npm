@@ -26,6 +26,7 @@
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "dependencies": {
     "@vulcanjs/model": "^0.1.13",
+    "debug": "^4.3.1",
     "lodash": "^4.17.21"
   }
 }

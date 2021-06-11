@@ -46,7 +46,12 @@ import { gql } from "@apollo/client";
 
 import getFormFragments from "./modules/formFragments";
 // import { VulcanModel } from "@vulcanjs/model";
-import { VulcanGraphqlModel } from "@vulcanjs/graphql";
+import {
+  VulcanGraphqlModel,
+  CreateVariables,
+  UpdateVariables,
+  DeleteVariables,
+} from "@vulcanjs/graphql";
 import { capitalize } from "@vulcanjs/utils";
 import {
   useSingle,
@@ -56,9 +61,10 @@ import {
   UseSingleOptions,
 } from "@vulcanjs/react-hooks";
 import { useVulcanComponents } from "./VulcanComponents/Consumer";
-import { FetchResult, MutationResult } from "@apollo/client";
-import { FormType } from "./typings";
-import { CreateDocumentInput } from "./Form/typings";
+import { FetchResult } from "@apollo/client";
+// import { FormType } from "./typings";
+import { debugVulcan } from "@vulcanjs/utils";
+const debugForm = debugVulcan("form");
 
 // Mutation that yield a success result
 type SuccessfulFetchResult<TData = Object> = FetchResult<TData> & {
@@ -216,8 +222,18 @@ export const FormContainer = (props: FormContainerProps) => {
     (queryFragment as any).loc.source.body,
     queryFragmentName
   );*/
-  const { data, loading, refetch } = useSingle(queryOptions);
-  const document = data; // TODO: get the item from data
+  const { data, document, loading, refetch } = useSingle(queryOptions);
+  if (formType !== "new") {
+    debugForm(
+      "useSingle result",
+      "data",
+      data,
+      "document",
+      document,
+      "loading",
+      loading
+    );
+  }
   // TODO: pass the creation functions down to the Form
   const [createDocument] = useCreate(mutationOptions);
   const [updateDocument] = useUpdate(mutationOptions);
@@ -255,13 +271,25 @@ export const FormContainer = (props: FormContainerProps) => {
   if (mutationType === "new" && refetch) refetch();
   */
 
-  const createAndReturnDocument = async (input: CreateDocumentInput) => {
-    const result = await createDocument(input);
+  const createAndReturnDocument = async (variables: CreateVariables) => {
+    const result = await createDocument(variables);
     const { errors, document } = result;
     return {
       document,
       errors,
     };
+  };
+  const updateAndReturnDocument = async (variables: UpdateVariables) => {
+    const result = await updateDocument(variables);
+    const { errors, document } = result;
+    return {
+      document,
+      errors,
+    };
+  };
+
+  const deleteDocumentAndRefetch = async (variables: DeleteVariables) => {
+    await deleteDocument(variables);
   };
 
   if (isEdit && loading) {
@@ -272,8 +300,9 @@ export const FormContainer = (props: FormContainerProps) => {
       document={document}
       loading={loading}
       createDocument={createAndReturnDocument /*createDocument*/}
-      updateDocument={updateDocument}
-      deleteDocument={deleteDocument}
+      updateDocument={updateAndReturnDocument}
+      deleteDocument={deleteDocumentAndRefetch}
+      refetch={refetch}
       {...childProps}
       {...props}
     />
