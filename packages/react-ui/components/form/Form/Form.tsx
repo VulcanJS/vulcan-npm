@@ -50,7 +50,12 @@ import { useWarnOnUnsaved } from "../useWarnOnUnsaved";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 
 import type { FormType } from "../typings";
-import { CreateDocumentResult, FormProps, FormState } from "./typings";
+import {
+  CreateDocumentResult,
+  FormProps,
+  FormState,
+  UpdateDocumentResult,
+} from "./typings";
 import { MutationResult } from "@apollo/client";
 
 // props that should trigger a form reset
@@ -304,9 +309,10 @@ const getData = (
 };
 
 export const Form = (props: FormProps) => {
-  const { initCallback, createDocument, createDocumentMeta } = props;
+  const { initCallback, createDocument, updateDocument, deleteDocument } =
+    props;
   const initialState = getInitialStateFromProps(props);
-  const { schema, originalSchema, flatSchema } = initialState;
+  const { schema, originalSchema, flatSchema, initialDocument } = initialState;
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (isFirstRender.current) {
@@ -467,11 +473,12 @@ export const Form = (props: FormProps) => {
     }
   }*/
 
-  const [currentDocument, setCurrentDocument] = useState<{
-    title?: string;
-    _id?: string;
-    name?: string;
-  }>({});
+  const [currentDocument, setCurrentDocument] =
+    useState<{
+      title?: string;
+      _id?: string;
+      name?: string;
+    }>(initialDocument);
 
   /*
 
@@ -536,7 +543,6 @@ export const Form = (props: FormProps) => {
     }
   };
 
-  const [initialDocument, setInitialDocument] = useState<Object>({});
   const [disabled, setDisabled] = useState<boolean>(false); // TODO
   const [success, setSuccess] = useState<boolean>(false); // TODO
   /**
@@ -572,7 +578,7 @@ export const Form = (props: FormProps) => {
     setCurrentValues({});
     setDeletedValues([]);
     setCurrentDocument(document || initialDocument);
-    setInitialDocument(document || initialDocument);
+    // setInitialDocument(document || initialDocument);
     setDisabled(false);
   };
 
@@ -583,7 +589,7 @@ export const Form = (props: FormProps) => {
   };
 
   const editMutationSuccessCallback = function <TModel = Object>(
-    result: CreateDocumentResult<TModel>
+    result: UpdateDocumentResult<TModel>
   ) {
     mutationSuccessCallback(result, "edit");
   };
@@ -598,7 +604,9 @@ export const Form = (props: FormProps) => {
     setDisabled(false);
     setSuccess(true);
     // for new mutation, run refetch function if it exists
-    if (mutationType === "new" && props.refetch) props.refetch();
+    // TODO: the create mutation should already return the freshest value, do we really need that?
+    // instead we might want to update currentResult with the result of the creation
+    if (mutationType === "new") refetchForm();
     let { document } = result;
 
     // call the clear form method (i.e. trigger setState) only if the form has not been unmounted
@@ -697,8 +705,6 @@ export const Form = (props: FormProps) => {
             contextName,
           },
         });
-        // in new versions of Apollo Client errors are no longer thrown/caught
-        // but can instead be provided as props by the useMutation hook
         if (result.errors?.length) {
           // TODO: previously got from meta, we could have more than 1 error
           mutationErrorCallback(document, result.errors[0]);
@@ -712,19 +718,16 @@ export const Form = (props: FormProps) => {
       // update document form
       try {
         const documentId = currentDocument._id;
-        const result = await props.updateDocument({
+        const result = await updateDocument({
           input: {
             id: documentId,
             data,
             contextName,
           },
         });
-        // TODO: ?? what is Meta?
-        const meta = props.updateDocumentMeta;
-        // in new versions of Apollo Client errors are no longer thrown/caught
-        // but can instead be provided as props by the useMutation hook
-        if (meta?.error) {
-          mutationErrorCallback(document, meta.error);
+        // TODO: handle more than 1 error
+        if (result.errors?.length) {
+          mutationErrorCallback(document, result.errors[0]);
         } else {
           editMutationSuccessCallback(result);
         }
@@ -739,7 +742,7 @@ export const Form = (props: FormProps) => {
   Delete document handler
 
   */
-  const deleteDocument = () => {
+  const deleteDocumentWithConfirm = () => {
     const document = currentDocument;
     const documentId = props.document._id;
     const documentTitle = document.title || document.name || "";
@@ -750,13 +753,12 @@ export const Form = (props: FormProps) => {
     );
 
     if (window.confirm(deleteDocumentConfirm)) {
-      props
-        .deleteDocument({ input: { id: documentId } })
+      deleteDocument({ input: { id: documentId } })
         .then((mutationResult) => {
           // the mutation result looks like {data:{collectionRemove: null}} if succeeded
           if (props.removeSuccessCallback)
             props.removeSuccessCallback({ documentId, documentTitle });
-          if (props.refetch) props.refetch();
+          refetchForm();
         })
         .catch((error) => {
           // eslint-disable-next-line no-console
@@ -792,7 +794,7 @@ export const Form = (props: FormProps) => {
       formType,
     },
     {
-      deleteDocument,
+      deleteDocument: deleteDocumentWithConfirm,
     }
   );
   const isChanged = isNotSameDocument(initialDocument, currentDocument);

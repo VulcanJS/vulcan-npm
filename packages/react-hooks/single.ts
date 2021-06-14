@@ -99,7 +99,7 @@ const buildSingleResult = <TModel = any, TData = any>(
   const result = {
     ...queryResult,
     // Note: Scalar types like Dates are NOT converted. It should be done at the UI level.
-    document: data && data[resolverName] && data[resolverName].result,
+    document: data?.[resolverName]?.result,
     fragmentName,
     fragment,
   };
@@ -140,7 +140,7 @@ export const useSingle = <TModel = any, TData = any>(
     extraQueries,
   } = options;
 
-  const { typeName, singleResolverName: resolverName } = model.graphql;
+  const { singleResolverName: resolverName } = model.graphql;
 
   const query = buildSingleQuery({
     model,

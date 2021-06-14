@@ -29,13 +29,17 @@
 
 import { useMutation, MutationResult, gql, FetchResult } from "@apollo/client";
 
-import { updateClientTemplate } from "@vulcanjs/graphql";
+import {
+  Fragment,
+  getModelFragment,
+  updateClientTemplate,
+} from "@vulcanjs/graphql";
 
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 // import { computeQueryVariables } from "./variables";
 import { computeNewDataAfterCreate } from "./create";
 import { VulcanMutationHookOptions } from "./typings";
-import { UpdateVariables } from "@vulcanjs/graphql"; // TODO: import client code only
+import { UpdateVariables, VulcanGraphqlModel } from "@vulcanjs/graphql"; // TODO: import client code only
 
 // We can reuse the same function to compute the new list after an element update
 const computeNewDataAfterUpdate: ComputeNewDataFunc = computeNewDataAfterCreate;
@@ -44,11 +48,26 @@ const multiQueryUpdaterAfterUpdate = multiQueryUpdater(
   computeNewDataAfterUpdate
 );
 
-export const buildUpdateQuery = ({ typeName, fragmentName, fragment }) =>
-  gql`
-    ${updateClientTemplate({ typeName, fragmentName })}
-    ${fragment}
+export const buildUpdateQuery = ({
+  model,
+  fragmentName,
+  fragment,
+}: {
+  model: VulcanGraphqlModel;
+  fragmentName?: string;
+  fragment?: Fragment;
+}) => {
+  const { typeName } = model.graphql;
+  const { finalFragment, finalFragmentName } = getModelFragment({
+    model,
+    fragment,
+    fragmentName,
+  });
+  return gql`
+    ${updateClientTemplate({ typeName, fragmentName: finalFragmentName })}
+    ${finalFragment}
   `;
+};
 
 // Options of the hook
 interface UseUpdateOptions<TModel = any>
@@ -82,7 +101,7 @@ export const useUpdate = <TModel = any>(
 
   const { typeName } = model.graphql;
 
-  const query = buildUpdateQuery({ typeName, fragmentName, fragment });
+  const query = buildUpdateQuery({ model, fragmentName, fragment });
 
   const resolverName = `update${typeName}`;
 
