@@ -1,5 +1,11 @@
 import React from "react";
-import { render, fireEvent, waitFor, screen } from "@testing-library/react";
+import {
+  render,
+  fireEvent,
+  waitFor,
+  screen,
+  act,
+} from "@testing-library/react";
 // @see https://storybook.js.org/addons/@storybook/react-testing
 import { composeStories } from "@storybook/testing-react";
 import * as stories from "./Form.stories"; // import all stories from the stories file
@@ -11,7 +17,9 @@ import {
   ArrayFullCustom,
   ArrayOfCustomObjects,
   addressSchema,
+  OneField,
 } from "../../tests/fixtures/models";
+import { create } from "underscore";
 // Every component that is returned maps 1:1 with the stories,
 // but they already contain all decorators from story level, meta level and global level.
 // => here the form comes with default I18n context and default components to simplify the setup
@@ -224,6 +232,31 @@ describe("vulcan-forms/Form", function () {
         const arrayField = fields[0];
         expect(arrayField.arrayField).toBeDefined();
       });
+    });
+  });
+
+  describe("Form submission", function () {
+    test("create a new empty document", async () => {
+      // @see https://stackoverflow.com/a/41939921/5513532 keep the "args" there for correct typing
+      let createPromise = Promise.resolve({
+        document: {},
+        errors: [],
+      });
+      const createDocument = jest.fn((args) => createPromise);
+      const { getByRole } = render(
+        // @ts-ignore
+        <DefaultForm model={OneField} createDocument={createDocument} />
+      );
+      const submitButton = getByRole("button", { name: /submit/i });
+      submitButton.click();
+      // @see https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
+      // When using a promise, you need to wait for it to be done in the "act"
+      await act(() => {
+        // it could be improved by checking visual state (does the form show success message etc.)
+        return createPromise;
+      });
+      expect(createDocument).toHaveBeenCalledTimes(1);
+      expect(createDocument.mock.calls[0][0]).toEqual({ input: { data: {} } });
     });
   });
 

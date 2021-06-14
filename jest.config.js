@@ -6,7 +6,7 @@
 const commonConfig = {
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
+    "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
   },
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
@@ -18,12 +18,12 @@ const commonConfig = {
   ],
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    '/node_modules/',
-    '^.+\\.module\\.(css|sass|scss)$',
+    "/node_modules/",
+    "^.+\\.module\\.(css|sass|scss)$",
   ],
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
+    "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
   },
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage-unit",
@@ -164,7 +164,6 @@ const commonConfig = {
   // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
   // timers: "real",
 
-
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
 
@@ -176,23 +175,23 @@ const commonConfig = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-}
+};
 
 module.exports = {
   // shared configuration for global features, such as coverage computation
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
-    '**/*.{js,jsx,ts,tsx}',
-    '!**/*.d.ts',
-    '!**/node_modules/**',
+    "**/*.{js,jsx,ts,tsx}",
+    "!**/*.d.ts",
+    "!**/node_modules/**",
     // we have to explicitely exclude tests from coverage when using "projects" options
     // because Jest can't tell anymore which files is a test or not as it varies per environment
-    '!**/__tests__/**/*.[jt]s?(x)',
-    '!**/*.test.[jt]s?(x)',
-    '!coverage/**',
-    '!.next/**',
+    "!**/__tests__/**/*.[jt]s?(x)",
+    "!**/*.test.[jt]s?(x)",
+    "!coverage/**",
+    "!.next/**",
     // we exclude configuration files from coverage computation
-    '!*.js',
+    "!*.js",
     //"!**/stor{y,ies}.{js,ts,jsx,tsx}",
     //"!**/*.stor{y,ies}.{js,ts,jsx,tsx}",
     //"!**/cypress/**",
@@ -211,26 +210,23 @@ module.exports = {
   projects: [
     {
       ...commonConfig,
-      name: 'client',
-      displayName: 'client',
+      name: "client",
+      displayName: "client",
       // testEnvironment: "jsdom", // defautl already
-      testMatch: [
-        '**/!(*.server).test.[jt]s?(x)',
-      ],
-      modulePaths: ['<rootDir>'],
+      testMatch: ["**/!(*.server).test.[jt]s?(x)"],
+      modulePaths: ["<rootDir>"],
       // The paths to modules that run some code to configure or set up the testing environment before each test
       setupFiles: ["./jest/setup.js"],
+      setupFilesAfterEnv: ["./jest/setupFilesAfterEnv.ts"],
     },
     {
       ...commonConfig,
-      name: 'server',
-      displayName: 'server',
-      testEnvironment: 'node',
-      testMatch: [
-        '**/*.server.test.[jt]s?(x)',
-      ],
+      name: "server",
+      displayName: "server",
+      testEnvironment: "node",
+      testMatch: ["**/*.server.test.[jt]s?(x)"],
       // The paths to modules that run some code to configure or set up the testing environment before each test
       setupFiles: ["./jest/setup.server.js"],
     },
   ],
-}
+};

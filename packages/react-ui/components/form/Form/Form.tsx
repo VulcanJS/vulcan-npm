@@ -634,9 +634,9 @@ export const Form = (props: FormProps) => {
     setDisabled(false);
 
     // eslint-disable-next-line no-console
-    console.log("// graphQL Error");
+    console.error("// graphQL Error");
     // eslint-disable-next-line no-console
-    console.log(error);
+    console.error(error);
 
     // run mutation failure callbacks on error, we do not allow the callbacks to change the error
     runCallbacks({
