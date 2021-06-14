@@ -11,7 +11,7 @@ type MdxPath = {
  * Get all MD/MDX files paths on a folder and his subfolder.
  * Returns an array of {params: {fileName: [ 'exampleSubFolder', 'exampleFile' ]}
  */
-export async function getMdxPaths(docsDir: string) {
+export async function getMdxPaths(docsDir: string): Promise<MdxPath[]> {
    // relative to the project root
   const fullPath = path.resolve(docsDir);
   let paths: MdxPath[] = [];
@@ -53,11 +53,11 @@ export async function* getFiles(dir: string) {
 /**
  * extract the first header out of the mdx to use for autogeneration of head tags
  */
-export function getFirstHeader(mdText) {
+export function getFirstHeader(mdText: string): string|undefined {
   return mdText.match(/^<.+?>(.+?)<.+?>/)?.[1];
 }
 
-export async function getSource(docFolder: string, fileNames: [string]) {
+export async function getSource(docFolder: string, fileNames: [string]): Promise<{filePath: string, source: string}> {
   const fullPath = path.resolve(docFolder, ...fileNames)
   let isFolder: boolean;
   try {
