@@ -145,3 +145,15 @@ export const Addresses = createModel({
   //typeName: "Address",
   schema: addressSchema,
 });
+
+export const OneField = createModel({
+  name: "OneField",
+  schema: {
+    text: {
+      type: String,
+      canRead: ["anyone"],
+      canUpdate: ["anyone"],
+      canCreate: ["anyone"],
+    },
+  },
+});

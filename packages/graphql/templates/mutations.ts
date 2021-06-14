@@ -34,6 +34,8 @@ updateMovie(input: UpdateMovieInput) : MovieOutput
 
 */
 export const updateMutationType = (typeName) => `update${typeName}`;
+export const updateOperationName = (model: VulcanGraphqlModel) =>
+  updateMutationType(model.graphql.typeName);
 export const updateMutationTemplate = ({ typeName }) =>
   `${updateMutationType(typeName)}(
   input: ${updateInputType(typeName)},

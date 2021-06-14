@@ -1,12 +1,17 @@
 import { MutationResult } from "@apollo/client";
+import type {
+  CreateVariables,
+  UpdateVariables,
+  DeleteVariables,
+} from "@vulcanjs/graphql";
 import { VulcanModel } from "@vulcanjs/model";
 import { User } from "@vulcanjs/permissions";
-import { VulcanSchema } from "@vulcanjs/schema/dist/typings";
+import { VulcanSchema } from "@vulcanjs/schema";
 
 export interface FormState {
   schema: any;
-  initialDocument: any;
-  currentDocument: any;
+  initialDocument: Object;
+  currentDocument: Object;
   deletedValues: any;
   errors: any;
   currentValues: any;
@@ -16,22 +21,42 @@ export interface FormState {
   originalSchema: any;
 }
 export interface FormProps<TModel = { [key in string]: any }> {
-  refetch?: Function;
+  /**
+   * Function that retriggers data fetching in edit mode
+   * Usually provided by the useSingle but could be any function
+   */
+  refetch?: () => void;
+  /**
+   * Document id in update mode
+   */
   id?: string;
-  // TODO: merge
-  components?: {};
   /* The model in which to edit or insert a document. */
   model: VulcanModel;
   /** Passing directly a raw schema (TODO: model is still mandatory atm) */
   schema?: VulcanSchema;
+  /**
+   * Passing directly a document (TODO: not yet tested in the new version)
+   */
   document?: any;
+  /**
+   * Disable the form
+   */
   disabled?: boolean;
+  /**
+   * currentUser to check authorizations to update/create some fields
+   */
   currentUser?: User;
   addFields?: Array<string>;
   removeFields?: Array<string>;
   // deprecated
   //hideFields?: any;
+  /**
+   * Will prevent leaving the page/unmounting the form on unsaved changes
+   */
   warnUnsavedChanges?: boolean;
+  /**
+   * Label so that graphql queries are contextualized
+   */
   contextName?: string;
   itemProperties?: Object;
   showDelete?: boolean;
@@ -40,6 +65,7 @@ export interface FormProps<TModel = { [key in string]: any }> {
   revertLabel?: string;
   //
   revertCallback?: Function;
+  // TODO: probably should be removed
   successComponent?: any;
   /* Instead of passing collection you can pass the name of the collection.*/
   // collectionName?: string;
@@ -91,27 +117,27 @@ An example would be a createdAt date added automatically on creation even though
    * The result is usually extracted from a graphql mutation
    * But we have a simplified abstracted API, so we could also use the Form without graphql
    */
-  createDocument: <TModel = any>(createArgs: {}) => Promise<
-    CreateDocumentResult<TModel>
-  >;
-  updateDocument: Function;
-  deleteDocument: Function;
-  // ??
-  createDocumentMeta?: { error?: any };
-  updateDocumentMeta?: { error?: any };
+  createDocument: <TModel = any>(
+    createVars: CreateVariables
+  ) => Promise<CreateDocumentResult<TModel>>;
+  updateDocument: <TModel = any>(
+    vars: UpdateVariables
+  ) => Promise<UpdateDocumentResult<TModel>>;
+  deleteDocument: (vars: DeleteVariables) => Promise<void>;
+  // Other results from the Apollo query => should be ignored, in order to avoid dependency to graphql in the Form
+  // instead the container is responsible for passing errors and stuff
+  // createDocumentMeta?: { error?: any };
+  // updateDocumentMeta?: { error?: any };
   // EXPERIMENTAL: allowing to manually set the form children
   children?: React.ReactNode;
 }
 
-// Should be input that can be passed to a createDocument mutation
-export interface CreateDocumentInput {
-  input: {
-    data: any;
-    contextName?: string;
-  };
+export interface CreateDocumentResult<TDocument = any> {
+  document: TDocument;
+  errors: Array<any>;
 }
 
-export interface CreateDocumentResult<TDocument = any> {
+export interface UpdateDocumentResult<TDocument = any> {
   document: TDocument;
   errors: Array<any>;
 }

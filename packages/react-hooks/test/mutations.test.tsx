@@ -87,7 +87,7 @@ describe("react-hooks/mutations", () => {
       useUpdate,
       {
         request: {
-          query: buildUpdateQuery({ typeName, fragmentName, fragment }),
+          query: buildUpdateQuery({ model: Foo, fragmentName, fragment }),
           variables: {
             //selector: { documentId: foo._id },
             input: {
@@ -136,7 +136,7 @@ describe("react-hooks/mutations", () => {
       useDelete,
       {
         request: {
-          query: buildDeleteQuery({ typeName, fragment, fragmentName }),
+          query: buildDeleteQuery({ model: Foo, fragment, fragmentName }),
           variables: {
             input: {
               data: foo,
