@@ -57,7 +57,6 @@ import {
   UpdateDocumentResult,
 } from "./typings";
 import { MutationResult } from "@apollo/client";
-import { model } from "mongoose";
 
 // props that should trigger a form reset
 const RESET_PROPS = [

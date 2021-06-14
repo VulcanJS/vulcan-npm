@@ -19,7 +19,6 @@ import {
   addressSchema,
   OneField,
 } from "../../tests/fixtures/models";
-import { create } from "underscore";
 // Every component that is returned maps 1:1 with the stories,
 // but they already contain all decorators from story level, meta level and global level.
 // => here the form comes with default I18n context and default components to simplify the setup
