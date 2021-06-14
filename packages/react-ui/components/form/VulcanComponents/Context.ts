@@ -1,9 +1,9 @@
 import React from "react";
 import type { PossibleVulcanComponents } from "./typings";
+import { Dummy } from "./Dummy";
 
 // We need this to shut TypeScript up
 // You should use the Provider to get the right default values
-const Dummy = () => "Dummy component";
 export const VulcanComponentsContext =
   React.createContext<PossibleVulcanComponents>({
     Alert: Dummy,
