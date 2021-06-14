@@ -4,7 +4,7 @@
 
 Start by reading the Readme for basic install information.
 
-## Lerna
+## Lerna Tips
 
 ### Yarn workspaces
 
@@ -14,7 +14,26 @@ They are equivalent to using NPM + Lerne "Hoist" feature.
 
 https://classic.yarnpkg.com/blog/2017/08/02/introducing-workspaces/
 
-### Common issues
+### Dependency from a local package to another local package
+
+Install packages using `lerna bootstrap`. 
+
+To add a dependency between 2 local Vulcan packages: 
+
+```sh
+yarn lerna add @vulcanjs/<your-dependency> --scope=@vulcanjs/<the-parent-package>
+```
+
+You need this command because the package won't exist yet on NPMJS, so you need Lerna to manage the dependency.
+You can run it from anywhere, and the `--scope` part is mandatory (otherwise the package get added everywhere).
+
+## Common issues
+
+### Forgetting to include tests and stories in tsconfig.json
+
+This is necessary to get the right typings in VS code. If you ever need to exclude them, eg to fasten the build, then create a dedicated `tsconfig.build.json` for instance and live `tsconfig.json` alone.
+
+See [this long standing VS code ticket](https://github.com/microsoft/vscode/issues/12463)/
 
 #### TypeScript syntax not recknognized in end-application
 
