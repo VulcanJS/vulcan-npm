@@ -7,6 +7,7 @@ import { createModel } from "@vulcanjs/model";
 import SimpleSchema from "simpl-schema";
 import * as models from "../../tests/fixtures/models";
 import { VulcanComponentsProvider } from "../../VulcanComponents/Provider";
+import { action } from "@storybook/addon-actions";
 
 export default {
   component: Form,
@@ -23,10 +24,18 @@ export default {
       name: "Biography",
       schema: {},
     }),
+    createDocument: (variables) => {
+      action("createDocument");
+      return Promise.resolve({ document: variables.input.data, errors: [] });
+    },
+    updateDocument: (variables) => {
+      action("updateDocument");
+      return Promise.resolve({ document: variables.input.data, errors: [] });
+    },
   },
   argTypes: {
-    createDocument: { action: "createDocument" },
-    updateDocument: { action: "updateDocument" },
+    // createDocument: { action: "createDocument" },
+    // updateDocument: { action: "updateDocument" },
     deleteDocument: { action: "deleteDocument" },
   },
   parameters: { actions: { argTypesRegex: "^.*Callback$" } },

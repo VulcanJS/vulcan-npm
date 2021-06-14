@@ -57,6 +57,7 @@ import {
   UpdateDocumentResult,
 } from "./typings";
 import { MutationResult } from "@apollo/client";
+import { model } from "mongoose";
 
 // props that should trigger a form reset
 const RESET_PROPS = [
@@ -258,7 +259,7 @@ const getData = (
   { submitFormCallbacks, form }: any
 ) => {
   const { currentDocument } = state;
-  const { prefilledProps } = props;
+  const { model, prefilledProps } = props;
   // we want to keep prefilled data even for hidden/removed fields
   let data = prefilledProps || {};
 
@@ -266,6 +267,7 @@ const getData = (
   data = omitBy(data, (value, key) => key.endsWith(".$"));
 
   const args = {
+    schema: model.schema,
     excludeRemovedFields: false,
     excludeHiddenFields: false,
     replaceIntlFields: true,
@@ -682,7 +684,7 @@ export const Form = (props: FormProps) => {
     // complete the data with values from custom components
     // note: it follows the same logic as SmartForm's getDocument method
     let data = getData(
-      { replaceIntlFields: true, addExtraFields: false },
+      { replaceIntlFields: true, addExtraFields: false, mutableFields },
       props,
       {
         currentDocument,

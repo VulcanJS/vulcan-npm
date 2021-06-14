@@ -243,10 +243,36 @@ describe("vulcan-forms/Form", function () {
         errors: [],
       });
       const createDocument = jest.fn((args) => createPromise);
-      const { getByRole } = render(
+      render(
         // @ts-ignore
         <DefaultForm model={OneField} createDocument={createDocument} />
       );
+      const submitButton = screen.getByRole("button", { name: /submit/i });
+      fireEvent.click(submitButton);
+      // @see https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
+      // When using a promise, you need to wait for it to be done in the "act"
+      await act(() => {
+        // it could be improved by checking visual state (does the form show success message etc.)
+        return createPromise;
+      });
+      expect(createDocument).toHaveBeenCalledTimes(1);
+      expect(createDocument.mock.calls[0][0]).toEqual({ input: { data: {} } });
+    });
+    test("create a new non-empty document", async () => {
+      // @see https://stackoverflow.com/a/41939921/5513532 keep the "args" there for correct typing
+      let createPromise = Promise.resolve({
+        document: {},
+        errors: [],
+      });
+      const createDocument = jest.fn((args) => createPromise);
+      const { getByRole, getByLabelText } = render(
+        // @ts-ignore
+        <DefaultForm model={OneField} createDocument={createDocument} />
+      );
+      const input = getByLabelText("Text");
+      // @see https://testing-library.com/docs/example-input-event/
+      // we could also simulate humain typing
+      fireEvent.change(input, { target: { value: "hello" } });
       const submitButton = getByRole("button", { name: /submit/i });
       submitButton.click();
       // @see https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
@@ -256,7 +282,9 @@ describe("vulcan-forms/Form", function () {
         return createPromise;
       });
       expect(createDocument).toHaveBeenCalledTimes(1);
-      expect(createDocument.mock.calls[0][0]).toEqual({ input: { data: {} } });
+      expect(createDocument.mock.calls[0][0]).toEqual({
+        input: { data: { text: "hello" } },
+      });
     });
   });
 
