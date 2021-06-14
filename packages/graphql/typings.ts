@@ -128,18 +128,28 @@ export interface ApolloVariables<TInput> {
 }
 
 // Mutation/Hooks typings
-export interface CreateInput<TModel = any> {
+interface CommonInput {
+  contextName?: string;
+}
+export interface CreateInput<TModel = any> extends CommonInput {
   data: TModel;
 }
 export interface CreateVariables<TModel = any> {
   input: CreateInput<TModel>;
 }
-export interface UpdateInput<TModel> {
+export interface UpdateInput<TModel> extends CommonInput {
   data: TModel;
   id?: string;
 }
 export interface UpdateVariables<TModel = any> {
   input: UpdateInput<TModel>;
+}
+
+export interface DeleteInput extends CommonInput {
+  id: string;
+}
+export interface DeleteVariables {
+  input: DeleteInput;
 }
 
 // Filtering and selectors
