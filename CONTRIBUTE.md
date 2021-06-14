@@ -35,6 +35,8 @@ This is necessary to get the right typings in VS code. If you ever need to exclu
 
 See [this long standing VS code ticket](https://github.com/microsoft/vscode/issues/12463)/
 
+If you want to specifiy the files to include in the build, look at `tsconfig.build.json` instead. This is the file that will actually be used by `ts-loader`.
+
 #### TypeScript syntax not recknognized in end-application
 
 You are importing non built code directly. Example:

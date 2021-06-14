@@ -43,7 +43,12 @@ module.exports = {
               ],
             },
           },
-          { loader: "ts-loader" },
+          {
+            loader: "ts-loader",
+            options: {
+              configFile: "tsconfig.build.json",
+            },
+          },
         ],
         exclude: /node_modules/,
       },
