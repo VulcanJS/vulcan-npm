@@ -3,11 +3,24 @@ import { getLabel } from "../fields";
 
 describe("react-components/components/Form - Fields", () => {
   describe("getLabel", () => {
+    const common = {
+      formatDate: () => "",
+      formatTime: () => "",
+      formatRelative: () => "",
+      formatNumber: () => "",
+      formatPlural: () => "",
+      formatHTMLMessage: () => "",
+      now: Date.now(),
+      locale: "en",
+    };
+    // TODO: make this a reusable fixture
     const contextWithI18n = {
       formatMessage: (m) => m,
+      ...common,
     };
     const context = {
       formatMessage: () => "", // key not found, will fallback to label or name
+      ...common,
     };
     test("internationalize label if possible", () => {
       const model = createModel({
