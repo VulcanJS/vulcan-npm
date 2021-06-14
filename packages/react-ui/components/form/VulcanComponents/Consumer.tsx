@@ -1,4 +1,4 @@
-import { deprecate } from "@vulcanjs/utils/debug";
+import { deprecate } from "@vulcanjs/utils";
 import React, { useContext } from "react";
 import { VulcanComponentsContext } from "./Context";
 import { PossibleVulcanComponents } from "./typings";

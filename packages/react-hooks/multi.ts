@@ -155,7 +155,7 @@ const buildMultiResult = <TModel, TData, TVariables>(
   const { refetch, networkStatus, error, fetchMore, data } = queryResult;
   // Note: Scalar types like Dates are NOT converted. It should be done at the UI level.
   const documents = data?.[resolverName]?.results;
-  const totalCount = data?.[resolverName]?.data[resolverName]?.totalCount;
+  const totalCount = data?.[resolverName]?.totalCount;
   // see https://github.com/apollographql/apollo-client/blob/master/packages/apollo-client/src/core/networkStatus.ts
   const loadingInitial = networkStatus === 1;
   const loadingMore = networkStatus === 3 || networkStatus === 2;

@@ -27,16 +27,36 @@
  */
 
 import { useMutation, MutationResult, gql } from "@apollo/client";
-import { deleteClientTemplate } from "@vulcanjs/graphql";
+import {
+  deleteClientTemplate,
+  Fragment,
+  getModelFragment,
+  VulcanGraphqlModel,
+} from "@vulcanjs/graphql";
 import { removeFromData } from "./cacheUpdate";
 import { computeQueryVariables } from "./variables";
 import { VulcanMutationHookOptions } from "./typings";
 
-export const buildDeleteQuery = ({ typeName, fragmentName, fragment }) =>
-  gql`
-    ${deleteClientTemplate({ typeName, fragmentName })}
-    ${fragment}
+export const buildDeleteQuery = ({
+  model,
+  fragment,
+  fragmentName,
+}: {
+  model: VulcanGraphqlModel;
+  fragmentName?: string;
+  fragment?: Fragment;
+}) => {
+  const { typeName } = model.graphql;
+  const { finalFragment, finalFragmentName } = getModelFragment({
+    model,
+    fragment,
+    fragmentName,
+  });
+  return gql`
+    ${deleteClientTemplate({ typeName, fragmentName: finalFragmentName })}
+    ${finalFragment}
   `;
+};
 
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { DeleteVariables } from "@vulcanjs/graphql";
@@ -93,7 +113,7 @@ export const useDelete = <TModel>(
   const query = buildDeleteQuery({
     fragment,
     fragmentName,
-    typeName,
+    model,
   });
 
   const resolverName = `delete${typeName}`;
