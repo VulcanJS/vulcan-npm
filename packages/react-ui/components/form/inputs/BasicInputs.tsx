@@ -10,12 +10,18 @@ import { useVulcanComponents } from "../VulcanComponents/Consumer";
  */
 const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
   const { inputProperties } = props;
-  const { label, name } = inputProperties;
+  const { label, name, ...otherInputProperties } = inputProperties;
 
   return (
     <div>
       <label htmlFor={name}>{label}</label>
-      <input {...props.inputProperties} type={props.type} />
+      <input
+        {...otherInputProperties}
+        id={name} // needed for accessibility. NOTE: we might need to use "context" as a prefix when having
+        // multiple forms for the same kind of data
+        name={name}
+        type={props.type}
+      />
     </div>
   );
 }; // TODO: might need some sanitization

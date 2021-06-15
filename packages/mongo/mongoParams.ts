@@ -60,7 +60,7 @@ const conversionTable = {
 };
 
 // get all fields mentioned in an expression like [ { foo: { _gt: 2 } }, { bar: { _eq : 3 } } ]
-const getFieldNames = (expressionArray) => {
+const getExpressionFieldNames = (expressionArray) => {
   return expressionArray.map((exp) => {
     const [fieldName] = Object.keys(exp);
     return fieldName;
@@ -79,14 +79,8 @@ export const filterFunction = async (
   context?: any
 ): Promise<FilterFunctionOutput> => {
   // eslint-disable-next-line no-unused-vars
-  const {
-    filter,
-    limit,
-    sort,
-    search,
-    /*filterArguments,*/ offset,
-    id,
-  } = input;
+  const { filter, limit, sort, search, /*filterArguments,*/ offset, id } =
+    input;
   let selector: FilterQuery<any> = {};
   let options: QueryFindOptions = {
     sort: {},
@@ -153,20 +147,26 @@ export const filterFunction = async (
     Object.keys(filter).forEach((fieldName) => {
       switch (fieldName) {
         case "_and":
-          filteredFields = filteredFields.concat(getFieldNames(filter._and));
+          filteredFields = filteredFields.concat(
+            getExpressionFieldNames(filter._and)
+          );
           // Bypass TypeScript check (_and is present if we reach this line)
           // @ts-expect-error: Object is possibly 'undefined'.
           selector["$and"] = filter._and.map(convertExpression);
           break;
 
         case "_or":
-          filteredFields = filteredFields.concat(getFieldNames(filter._or));
+          filteredFields = filteredFields.concat(
+            getExpressionFieldNames(filter._or)
+          );
           // @ts-expect-error: Object is possibly 'undefined'.
           selector["$or"] = filter._or.map(convertExpression);
           break;
 
         case "_not":
-          filteredFields = filteredFields.concat(getFieldNames(filter._not));
+          filteredFields = filteredFields.concat(
+            getExpressionFieldNames(filter._not)
+          );
           // @ts-expect-error: Object is possibly 'undefined'.
           selector["$not"] = filter._not.map(convertExpression);
           break;

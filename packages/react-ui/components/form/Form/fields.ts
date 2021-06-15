@@ -130,7 +130,7 @@ const getOptionLabel = (
 
   */
 export const getFieldNames = (
-  props: FormProps,
+  props: Pick<FormProps, "fields" | "addFields" | "removeFields">,
   currentDocument,
   optionsFromArgs: {
     excludeHiddenFields?: boolean;
@@ -139,7 +139,7 @@ export const getFieldNames = (
     addExtraFields?: boolean;
     schema?: VulcanSchema;
     mutableFields?: Array<any>;
-  } = {}
+  }
 ) => {
   const { fields, addFields, removeFields } = props;
   const defaultOptions = {

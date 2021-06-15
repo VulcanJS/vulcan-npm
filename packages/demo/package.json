@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/demo",
-  "version": "0.1.13",
+  "version": "0.2.0",
   "description": "Vulcan core features",
   "main": "dist/index.js",
   "files": [

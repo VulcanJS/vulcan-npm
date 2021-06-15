@@ -31,8 +31,6 @@
   "exclude": [
     "node_modules",
     "**/*.d.ts",
-    "**/*.spec.ts",
-    "**/*.tests.ts",
     "**/dist/*",
     "**/webpack.config.js"
   ]

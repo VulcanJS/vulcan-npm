@@ -258,7 +258,7 @@ const getData = (
   { submitFormCallbacks, form }: any
 ) => {
   const { currentDocument } = state;
-  const { prefilledProps } = props;
+  const { model, prefilledProps } = props;
   // we want to keep prefilled data even for hidden/removed fields
   let data = prefilledProps || {};
 
@@ -266,6 +266,7 @@ const getData = (
   data = omitBy(data, (value, key) => key.endsWith(".$"));
 
   const args = {
+    schema: model.schema,
     excludeRemovedFields: false,
     excludeHiddenFields: false,
     replaceIntlFields: true,
@@ -634,9 +635,9 @@ export const Form = (props: FormProps) => {
     setDisabled(false);
 
     // eslint-disable-next-line no-console
-    console.log("// graphQL Error");
+    console.error("// graphQL Error");
     // eslint-disable-next-line no-console
-    console.log(error);
+    console.error(error);
 
     // run mutation failure callbacks on error, we do not allow the callbacks to change the error
     runCallbacks({
@@ -682,7 +683,7 @@ export const Form = (props: FormProps) => {
     // complete the data with values from custom components
     // note: it follows the same logic as SmartForm's getDocument method
     let data = getData(
-      { replaceIntlFields: true, addExtraFields: false },
+      { replaceIntlFields: true, addExtraFields: false, mutableFields },
       props,
       {
         currentDocument,

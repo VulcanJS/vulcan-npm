@@ -4,7 +4,9 @@
 
 For faster development, you may instead want to contribute to [Vulcan Next Starter](https://github.com/VulcanJS/vulcan-next-starter/issues/1). NPM packages will be published in this repo when they reach sufficient maturity.
 
-After you've read the README, also check `./docs/contribute.md` for more information about contributions.
+After you've read the README, also check `./CONTRIBUTE.md` for more information about contributions.
+
+See Vulcan Next for detailed documentation: [https://github.com/VulcanJS/vulcan-next](https://github.com/VulcanJS/vulcan-next)
 
 ## Install Vulcan NPM and start coding
 
@@ -30,22 +32,7 @@ We use Yalc and not `yarn link` because linking is not sufficient, it raises a l
 
 Now `@vulcanjs/xxx` will be available in your own application.
 
-## Tips
-
-### Dependency from a local package to another local package
-
-Install packages using `lerna bootstrap`. 
-
-To add a dependency between 2 local Vulcan packages: 
-
-```sh
-yarn lerna add @vulcanjs/<your-dependency> --scope=@vulcanjs/<the-parent-package>
-```
-
-You need this command because the package won't exist yet on NPMJS, so you need Lerna to manage the dependency.
-You can run it from anywhere, and the `--scope` part is mandatory (otherwise the package get added everywhere).
-
-#### Windows
+## Windows
 
 To use a testing database on windows, you could encounter an unexpected issue ; a solution is to download Visual C++ redistribuable.
 See https://github.com/nodkz/mongodb-memory-server/issues/475
