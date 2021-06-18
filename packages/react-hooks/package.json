@@ -31,6 +31,8 @@
   },
   "devDependencies": {
     "@testing-library/react-hooks": "^3.4.1",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "mock-apollo-client": "^1.1.0",
+    "@vulcanjs/schema": "^0.2.0"
   }
 }
