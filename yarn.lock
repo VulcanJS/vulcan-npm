@@ -10539,6 +10539,11 @@ mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.3:
   dependencies:
     minimist "^1.2.5"
 
+mock-apollo-client@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/mock-apollo-client/-/mock-apollo-client-1.1.0.tgz#0589ae458a2539518e870bb0c08961f30a9eaec1"
+  integrity sha512-OXCvwAwwHbieMMipcE3wGdPONPHC+f65EEiyC1XpYaS5Jk6/c7oBe9t8knwzAqyCQ9nZziHdR8UDqORPTfkcFw==
+
 modify-values@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/modify-values/-/modify-values-1.0.1.tgz#b3939fa605546474e3e3e3c63d64bd43b4ee6022"

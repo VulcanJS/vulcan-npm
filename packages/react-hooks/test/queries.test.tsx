@@ -11,6 +11,9 @@ import { renderHook, act } from "@testing-library/react-hooks";
 
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { createGraphqlModel } from "@vulcanjs/graphql/extendModel";
+import { VulcanDocument } from "@vulcanjs/schema";
+
+import { createMockClient } from "mock-apollo-client";
 
 describe("react-hooks/queries", function () {
   const typeName = "Foo";
@@ -32,6 +35,10 @@ describe("react-hooks/queries", function () {
       multiTypeName,
     },
   });
+  interface FooType extends VulcanDocument {
+    id: string;
+    hello: string;
+  }
 
   const fragment = Foo.graphql.defaultFragment;
   const fragmentName = Foo.graphql.defaultFragmentName;
@@ -263,6 +270,35 @@ describe("react-hooks/queries", function () {
       });
       // await waitForNextUpdate();
       expect(queryResult.documents).toEqual([fooWithTypename, fooWithTypename]);
+    });
+    test("loadMore respects filters", async () => {
+      const apolloClient = createMockClient();
+      const onRequest = jest.fn().mockResolvedValue({
+        data: {
+          foos: {
+            results: [],
+            totalCount: 10,
+          },
+        },
+      });
+      apolloClient.setRequestHandler(defaultQuery, onRequest);
+
+      const { result } = renderHook(
+        () =>
+          useMulti<FooType>({
+            model: Foo,
+            input: { limit: 1, filter: { hello: { _eq: "world" } } },
+            queryOptions: {
+              client: apolloClient,
+            },
+          })
+        //{ wrapper }
+      );
+      let queryResult = result.current;
+      expect(queryResult.loadMore).toBeInstanceOf(Function);
+      await act(async () => {
+        await queryResult.loadMore();
+      });
     });
   });
 });
