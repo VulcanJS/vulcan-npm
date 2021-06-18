@@ -283,7 +283,7 @@ describe("react-hooks/queries", function () {
       });
       apolloClient.setRequestHandler(defaultQuery, onRequest);
 
-      const { result } = renderHook(
+      const { result, waitForValueToChange } = renderHook(
         () =>
           useMulti<FooType>({
             model: Foo,
@@ -294,10 +294,22 @@ describe("react-hooks/queries", function () {
           })
         //{ wrapper }
       );
+      // wait for loading to be done
+      await waitForValueToChange(() => result.current.loading);
       let queryResult = result.current;
-      expect(queryResult.loadMore).toBeInstanceOf(Function);
       await act(async () => {
         await queryResult.loadMore();
+      });
+      expect(onRequest).toHaveBeenCalledTimes(2);
+      expect(onRequest.mock.calls[1][0]).toMatchObject({
+        input: {
+          filter: {
+            hello: {
+              _eq: "world",
+            },
+          },
+          limit: 1,
+        },
       });
     });
   });
