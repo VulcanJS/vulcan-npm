@@ -1,7 +1,7 @@
 import { promises as fsPromises } from "fs";
 import path from "path";
 
-type MdxPath = {
+export type MdxPath = {
   params: {
     fileName: Array<String>
   }
