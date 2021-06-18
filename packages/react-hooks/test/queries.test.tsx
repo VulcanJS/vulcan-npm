@@ -11,6 +11,9 @@ import { renderHook, act } from "@testing-library/react-hooks";
 
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { createGraphqlModel } from "@vulcanjs/graphql/extendModel";
+import { VulcanDocument } from "@vulcanjs/schema";
+
+import { createMockClient } from "mock-apollo-client";
 
 describe("react-hooks/queries", function () {
   const typeName = "Foo";
@@ -32,6 +35,10 @@ describe("react-hooks/queries", function () {
       multiTypeName,
     },
   });
+  interface FooType extends VulcanDocument {
+    id: string;
+    hello: string;
+  }
 
   const fragment = Foo.graphql.defaultFragment;
   const fragmentName = Foo.graphql.defaultFragmentName;
@@ -187,8 +194,13 @@ describe("react-hooks/queries", function () {
           request: {
             query: defaultQuery,
             variables: {
-              // get an offset to load only relevant data
-              input: { limit: 1, offset: 1 },
+              ...defaultVariables,
+              input: {
+                ...defaultVariables?.input,
+                limit: 1,
+                // get an offset to load only relevant data
+                offset: 1,
+              },
             },
           },
           result: {
@@ -205,8 +217,13 @@ describe("react-hooks/queries", function () {
           request: {
             query: defaultQuery,
             variables: {
-              // get an offset to load only relevant data
-              input: { limit: 1, offset: 2 },
+              ...defaultVariables,
+              input: {
+                ...defaultVariables?.input,
+                limit: 1,
+                // get an offset to load only relevant data
+                offset: 2,
+              },
             },
           },
           result: {
@@ -263,6 +280,47 @@ describe("react-hooks/queries", function () {
       });
       // await waitForNextUpdate();
       expect(queryResult.documents).toEqual([fooWithTypename, fooWithTypename]);
+    });
+    test("loadMore respects filters", async () => {
+      const apolloClient = createMockClient();
+      const onRequest = jest.fn().mockResolvedValue({
+        data: {
+          foos: {
+            results: [],
+            totalCount: 10,
+          },
+        },
+      });
+      apolloClient.setRequestHandler(defaultQuery, onRequest);
+
+      const { result, waitForValueToChange } = renderHook(
+        () =>
+          useMulti<FooType>({
+            model: Foo,
+            input: { limit: 1, filter: { hello: { _eq: "world" } } },
+            queryOptions: {
+              client: apolloClient,
+            },
+          })
+        //{ wrapper }
+      );
+      // wait for loading to be done
+      await waitForValueToChange(() => result.current.loading);
+      let queryResult = result.current;
+      await act(async () => {
+        await queryResult.loadMore();
+      });
+      expect(onRequest).toHaveBeenCalledTimes(2);
+      expect(onRequest.mock.calls[1][0]).toMatchObject({
+        input: {
+          filter: {
+            hello: {
+              _eq: "world",
+            },
+          },
+          limit: 1,
+        },
+      });
     });
   });
 });

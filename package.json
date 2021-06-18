@@ -41,6 +41,7 @@
     "depcheck": "^1.4.1",
     "jest": "^26.4.2",
     "lerna": "^3.22.1",
+    "mock-apollo-client": "^1.1.0",
     "mongoose": "^5.10.16",
     "operation-name-mock-link": "^0.0.6",
     "react": "^17.0.1",

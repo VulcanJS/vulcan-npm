@@ -152,10 +152,12 @@ const buildMultiResult = <TModel, TData, TVariables>(
 
   // workaround for https://github.com/apollographql/apollo-client/issues/2810
   const graphQLErrors = get(queryResult, "error.networkError.result.errors");
-  const { refetch, networkStatus, error, fetchMore, data } = queryResult;
+  const { refetch, networkStatus, error, fetchMore, data, loading, variables } =
+    queryResult;
   // Note: Scalar types like Dates are NOT converted. It should be done at the UI level.
-  const documents = data?.[resolverName]?.results;
-  const totalCount = data?.[resolverName]?.totalCount;
+  // We are foreced to recast because resolverName is dynamic, so we cannot type "data" correctly yet
+  const documents = data?.[resolverName]?.results as Array<TModel> | undefined;
+  const totalCount = data?.[resolverName]?.totalCount as number | undefined;
   // see https://github.com/apollographql/apollo-client/blob/master/packages/apollo-client/src/core/networkStatus.ts
   const loadingInitial = networkStatus === 1;
   const loadingMore = networkStatus === 3 || networkStatus === 2;
@@ -178,16 +180,28 @@ const buildMultiResult = <TModel, TData, TVariables>(
      * @param providedInput
      */
     loadMore() {
+      if (!documents) {
+        if (loading) {
+          throw new Error(
+            "Called loadMore while documents were still loading. Please wait for the first documents to be loaded before loading more"
+          );
+        } else {
+          throw new Error(
+            "No 'documents' were returned by initial query (it probably failed with an error), impossible to call loadMore"
+          );
+        }
+      }
       // get terms passed as argument or else just default to incrementing the offset
       if (options.pollInterval)
         throw new Error("Can't call loadMore when polling is set.");
-      const offsetInput = {
-        ...paginationInput,
-        offset: documents.length,
-      };
+      const offsetVariables = merge({}, variables, {
+        input: {
+          offset: documents.length,
+        },
+      });
 
       return fetchMore({
-        variables: { input: offsetInput },
+        variables: offsetVariables,
         updateQuery: fetchMoreUpdateQuery(resolverName),
       });
     },
@@ -199,7 +213,8 @@ const buildMultiResult = <TModel, TData, TVariables>(
 };
 
 interface UseMultiOptions<TModel, TData, TVariables>
-  extends QueryHookOptions<TData, TVariables> {
+  // we support pollInterval at the root as a legacy behaviour
+  extends Pick<QueryHookOptions<TData, TVariables>, "pollInterval"> {
   model: VulcanGraphqlModel;
   input?: MultiInput<TModel>;
   fragment?: string | DocumentNode;
