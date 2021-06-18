@@ -152,7 +152,7 @@ const buildMultiResult = <TModel, TData, TVariables>(
 
   // workaround for https://github.com/apollographql/apollo-client/issues/2810
   const graphQLErrors = get(queryResult, "error.networkError.result.errors");
-  const { refetch, networkStatus, error, fetchMore, data, loading } =
+  const { refetch, networkStatus, error, fetchMore, data, loading, variables } =
     queryResult;
   // Note: Scalar types like Dates are NOT converted. It should be done at the UI level.
   // We are foreced to recast because resolverName is dynamic, so we cannot type "data" correctly yet
@@ -194,13 +194,14 @@ const buildMultiResult = <TModel, TData, TVariables>(
       // get terms passed as argument or else just default to incrementing the offset
       if (options.pollInterval)
         throw new Error("Can't call loadMore when polling is set.");
-      const offsetInput = {
-        ...paginationInput,
-        offset: documents.length,
-      };
+      const offsetVariables = merge({}, variables, {
+        input: {
+          offset: documents.length,
+        },
+      });
 
       return fetchMore({
-        variables: { input: offsetInput },
+        variables: offsetVariables,
         updateQuery: fetchMoreUpdateQuery(resolverName),
       });
     },

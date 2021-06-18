@@ -194,8 +194,13 @@ describe("react-hooks/queries", function () {
           request: {
             query: defaultQuery,
             variables: {
-              // get an offset to load only relevant data
-              input: { limit: 1, offset: 1 },
+              ...defaultVariables,
+              input: {
+                ...defaultVariables?.input,
+                limit: 1,
+                // get an offset to load only relevant data
+                offset: 1,
+              },
             },
           },
           result: {
@@ -212,8 +217,13 @@ describe("react-hooks/queries", function () {
           request: {
             query: defaultQuery,
             variables: {
-              // get an offset to load only relevant data
-              input: { limit: 1, offset: 2 },
+              ...defaultVariables,
+              input: {
+                ...defaultVariables?.input,
+                limit: 1,
+                // get an offset to load only relevant data
+                offset: 2,
+              },
             },
           },
           result: {
