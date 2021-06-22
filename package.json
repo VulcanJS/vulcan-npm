@@ -9,7 +9,7 @@
     "unlink-yarn-legacy": "lerna exec yarn unlink",
     "clean": "rm -Rf ./node_modules ./packages/*/dist ./packages/*/node_modules",
     "test": "jest",
-    "typecheck": "tsx --noEmit",
+    "typecheck": "tsc --noEmit",
     "coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",

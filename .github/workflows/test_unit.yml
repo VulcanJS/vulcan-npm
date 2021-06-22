@@ -1,4 +1,5 @@
-# This is a basic workflow to help you get started with Actions
+# Use https://github.com/nektos/act to test actions locally
+# act
 
 name: Build and Unit test
 
@@ -21,15 +22,26 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2.1.5
-      - run: npm i -g yarn || true # Not necessary on Github but useful to test locally with `act`
-      - run: yarn install --frozen-lockfile --check-files
+      - name: Install Yarn (if needed)
+        run: npm i -g yarn || true # Not necessary on Github but useful to test locally with `act`
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --check-files
 
       #build:
       #  runs-on: ubuntu-latest
       #  needs: install
       #
       #    steps:
-      - run: yarn run build
+      - name: Build
+        run: yarn run build
       # Steps represent a sequence of tasks that will be executed as part of the job
       #  steps:
-      - run: yarn run test #:unit
+      - name: Run tests
+        run: yarn run test #:unit
+        # At the moment, this doesn't fail the workflow
+        # Because a lot of dependencies will be incorrect until we stabilize Vulcan NPM a bit more
+      - name: Check dependencies
+        run: yarn run depcheck || true
+        # This doesn't fail the workflow, because it can only fail for unit test and stories
+      - name: Check types
+        run: yarn run typecheck || true

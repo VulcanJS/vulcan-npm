@@ -6,7 +6,7 @@ Work in progress
 
 Make packages public by adding this config in every public package:
 
-```
+```json
  "publishConfig": {
     "access": "public"
   }
@@ -34,6 +34,22 @@ yarn test
 # NOTE: "yarn publish" already has a meaning so we can't override it, we need to call "yarn lerna publish"
  # NOTE: directly calling learn publish might publish only changed package, but change detection is not always reliable
  # so we may use force publish
+yarn lerna publish # --force-publish
+# Changelog update
+yarn run auto-changelog
+git commit -am "bump version"
+git push
+git push --tags
+```
+
+## Simpler script
+
+If you want to trigger a release quickly without manually checking deps or whatever, you can simply run the Github workflow locally:
+
+```sh
+git checkout master && git pull && git checkout devel && git pull && git merge master && git merge devel
+# yarn add -g act # @see https://github.com/nektos/act
+act # this will run the same steps as the release basically
 yarn lerna publish # --force-publish
 # Changelog update
 yarn run auto-changelog
