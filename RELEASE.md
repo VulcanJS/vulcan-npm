@@ -50,6 +50,8 @@ If you want to trigger a release quickly without manually checking deps or whate
 git checkout main && git pull
 # yarn add -g act # @see https://github.com/nektos/act
 act # this will run the same steps as the release basically
+# PLEASE always build before publishing! Otherwise you will publish empty packages
+yarn run build
 yarn lerna publish # --force-publish
 # Changelog update
 yarn run auto-changelog
