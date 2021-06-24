@@ -45,7 +45,7 @@ export const currentUserFragment = `
     # email
     # emailHash
     # slug
-    # groups
+    groups
     # services
     # avatarUrl
     # pageUrl
