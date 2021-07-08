@@ -41,6 +41,8 @@ import {
 import { runCallbacks } from "@vulcanjs/core";
 
 import { throwError } from "./errors";
+import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
+import { isMemberOf } from "@vulcanjs/permissions";
 import { getModelConnector } from "./context";
 import pickBy from "lodash/pickBy";
 import clone from "lodash/clone";
@@ -103,6 +105,58 @@ const validateMutationData = async ({
     });
   }
 };
+
+type OperationName = "create" | "update" | "delete";
+const operationChecks: {
+  [operationName in OperationName]: keyof ModelMutationPermissionsOptions;
+} = {
+  create: "canCreate",
+  update: "canUpdate",
+  delete: "canDelete",
+};
+
+interface MutationCheckOptions {
+  user?: any;
+  document?: VulcanDocument;
+  model: VulcanGraphqlModel;
+  context: any;
+  operationName: OperationName;
+}
+/*
+
+Perform security check
+
+*/
+export const performMutationCheck = (options: MutationCheckOptions) => {
+  const { user, document, model, context, operationName } = options;
+  const { typeName } = model.graphql;
+  const permissionsCheck = model.permissions?.[operationChecks[operationName]];
+  let allowOperation = false;
+  const fullOperationName = `${typeName}:${operationName}`;
+  const documentId = document?._id;
+  const data = { documentId, operationName: fullOperationName };
+  // 1. if no permission has been defined, throw error
+  if (!permissionsCheck) {
+    throwError({ id: "app.no_permissions_defined", data });
+  }
+  // 2. if no document is passed, throw error
+  if (!document) {
+    throwError({ id: "app.document_not_found", data });
+  }
+
+  if (typeof permissionsCheck === "function") {
+    allowOperation = permissionsCheck(options);
+  } else if (Array.isArray(permissionsCheck)) {
+    allowOperation = isMemberOf(user, permissionsCheck, document);
+  }
+
+  // 3. if permission check is defined but fails, disallow operation
+  if (!allowOperation) {
+    throwError({ id: "app.operation_not_allowed", data });
+  }
+};
+
+
 /*
 
 Create
@@ -148,6 +202,16 @@ export const createMutator = async <TModel extends VulcanDocument>({
       properties,
     });
   }
+
+  /* autorization */
+  performMutationCheck({
+    user: currentUser,
+    document: data,
+    model,
+    context,
+    operationName: "create",
+  });
+
 
   /* If user is logged in, check if userId field is in the schema and add it to document if needed */
   if (currentUser) {
@@ -271,6 +335,15 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   // get original document from database or arguments
   const connector = getModelConnector(context, model);
   const currentDocument = await connector.findOne(selector);
+
+  /* autorization */
+  performMutationCheck({
+    user: currentUser,
+    document: currentDocument,
+    model,
+    context,
+    operationName: "update",
+  });
 
   if (!currentDocument) {
     throw new Error(
