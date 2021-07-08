@@ -33,7 +33,7 @@ describe("graphql/mutation resolvers", function () {
       expect(() =>
         performMutationCheck({
           model: Foo,
-          document: null,
+          document: undefined,
           context: {},
           operationName: "create",
         })
