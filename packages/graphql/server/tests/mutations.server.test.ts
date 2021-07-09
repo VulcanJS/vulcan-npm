@@ -1,6 +1,5 @@
 import {
-  buildDefaultMutationResolvers,
-  performMutationCheck,
+  buildDefaultMutationResolvers
 } from "../resolvers/defaultMutationResolvers";
 import { createGraphqlModel } from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
@@ -24,40 +23,6 @@ describe("graphql/mutation resolvers", function () {
     expect(mutations.create).toBeDefined();
     expect(mutations.update).toBeDefined();
     expect(mutations.delete).toBeDefined();
-  });
-  describe("performMutationCheck", () => {
-    test("throws a 'document not found' error if there is no document", () => {
-      const errSpy = jest
-        .spyOn(console, "error")
-        .mockImplementationOnce(() => {}); // silences console.error
-      expect(() =>
-        performMutationCheck({
-          model: Foo,
-          document: undefined,
-          context: {},
-          operationName: "create",
-        })
-      ).toThrow(
-        '[{"id":"app.document_not_found","data":{"operationName":"Foo:create"}}]'
-      );
-      expect(errSpy).toHaveBeenCalled();
-    });
-    test("throws an 'operation not allowed' if permission are set but user is not allowed", () => {
-      const errSpy = jest
-        .spyOn(console, "error")
-        .mockImplementationOnce(() => {}); // silences console.error
-      expect(() =>
-        performMutationCheck({
-          model: Foo,
-          document: {},
-          context: { currentUser: null },
-          operationName: "create",
-        })
-      ).toThrow(
-        '[{"id":"app.operation_not_allowed","data":{"operationName":"Foo:create"}}]'
-      );
-      expect(errSpy).toHaveBeenCalled();
-    });
   });
   /*
   describe("delete mutation", () => {

@@ -2,6 +2,7 @@ import {
   createMutator,
   updateMutator,
   deleteMutator,
+  performMutationCheck
 } from "../../resolvers/mutators";
 import merge from "lodash/merge";
 
@@ -68,15 +69,20 @@ const Foo = createGraphqlModel({
   schema,
   name: "Foo",
   graphql: { typeName: "Foo", multiTypeName: "Foos" },
-});
+  permissions: {
+    canCreate: ["members"],
+    canUpdate: ["members"],
+    canDelete: ["members"],
+  },
+}) as VulcanGraphqlModel;
 
-const currentUser = {};
+const currentUser = { _id: "42" };
 
 describe("graphql/resolvers/mutators", function () {
   const defaultArgs = {
     model: Foo,
     document: { foo2: "bar" },
-    currentUser: null,
+    currentUser,
     validate: false,
   };
   const createArgs = {
@@ -89,7 +95,7 @@ describe("graphql/resolvers/mutators", function () {
     model: Foo,
   };
 
-  describe("create and update mutator", () => {
+  describe("create, update and delete mutators", () => {
     // create fake context
     let defaultContext: {
       Foo: { connector: Partial<Connector>; model: VulcanGraphqlModel };
@@ -109,50 +115,54 @@ describe("graphql/resolvers/mutators", function () {
         },
       };
     });
-    test("can run createMutator", async function () {
-      const { data: resultDocument } = await createMutator({
-        ...createArgs,
-        context: defaultContext,
-        data: { foo: "bar" },
+    describe("create mutator", () => {
+      test("can run createMutator", async function () {
+        const { data: resultDocument } = await createMutator({
+          ...createArgs,
+          context: defaultContext,
+          data: { foo: "bar" },
+        });
+        expect(resultDocument).toBeDefined();
       });
-      expect(resultDocument).toBeDefined();
+      test("create should not mutate the provided data", async () => {
+        const data = { foo: "foo" };
+        const dataOriginal = { ...data };
+        await createMutator({
+          ...createArgs,
+          context: defaultContext,
+          data,
+        });
+        expect(data).toEqual(dataOriginal);
+      });
     });
-    test("create should not mutate the provided data", async () => {
-      const data = { foo: "foo" };
-      const dataOriginal = { ...data };
-      await createMutator({
-        ...createArgs,
-        context: defaultContext,
-        data,
+    describe("update mutator", () => {
+      test("update should not mutate the provided data", async () => {
+        const data = { _id: "1", foo: "fooUpdate" };
+        const dataOriginal = { ...data };
+        await updateMutator({
+          ...updateArgs,
+          dataId: data._id,
+          context: defaultContext,
+          data,
+        });
+        expect(data).toEqual(dataOriginal);
       });
-      expect(data).toEqual(dataOriginal);
-    });
-    test("update should not mutate the provided data", async () => {
-      const data = { _id: "1", foo: "fooUpdate" };
-      const dataOriginal = { ...data };
-      await updateMutator({
-        ...updateArgs,
-        dataId: data._id,
-        context: defaultContext,
-        data,
-      });
-      expect(data).toEqual(dataOriginal);
-    });
-    test("update mutator should pass the right selector to get the current document", async () => {
-      const data = { _id: "1", foo: "fooUpdate" };
-      defaultContext.Foo.connector.findOne = jest.fn(async () => data);
-      await updateMutator({
-        ...updateArgs,
-        dataId: data._id,
-        context: defaultContext,
-        data,
-      });
-      expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
-        _id: "1",
+      test("update mutator should pass the right selector to get the current document", async () => {
+        const data = { _id: "1", foo: "fooUpdate" };
+        defaultContext.Foo.connector.findOne = jest.fn(async () => data);
+        await updateMutator({
+          ...updateArgs,
+          dataId: data._id,
+          context: defaultContext,
+          data,
+        });
+        expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
+          _id: "1",
+        });
       });
     });
   });
-  describe("delete mutator", () => {
+  describe("delete mutator and callbacks", () => {
     // create fake context
     let defaultContext: {
       Foo: { connector: Partial<Connector>; model: VulcanGraphqlModel };
@@ -173,7 +183,7 @@ describe("graphql/resolvers/mutators", function () {
             }),
             findOne: async () => ({ id: "1" }),
             update: async () => ({ id: "1" }),
-            delete: async () => {},
+            delete: async () => { },
           },
         },
       };
@@ -185,7 +195,8 @@ describe("graphql/resolvers/mutators", function () {
         deleteMutator({ ...defaultParams, selector: emptySelector })
       ).rejects.toThrow();
     });
-    test("refuse deletion if doucment is not found", async () => {
+    test("refuse deletion if document is not found", async () => {
+      jest.spyOn(console, "error").mockImplementationOnce(() => { }); // silences console.error
       const nullSelector = { documentId: null };
 
       const context = {
@@ -217,7 +228,7 @@ describe("graphql/resolvers/mutators", function () {
             delete: async () => foo,
           },
         },
-        currentUser, // need a currentUser
+        currentUser,
       });
 
       const params = {
@@ -236,13 +247,15 @@ describe("graphql/resolvers/mutators", function () {
       ).resolves.toEqual({ data: foo });
     });
 
-    test("pass the right selector to get the current document", async () => {
+    test("pass the right id to get the current document", async () => {
       const data = { _id: "1", foo: "fooUpdate" };
       defaultContext.Foo.connector.findOne = jest.fn(async () => data);
       await deleteMutator({
         ...defaultParams,
         context: defaultContext,
-        selector: { _id: "1" },
+        currentUser,
+        selector: {},
+        dataId: "1",
       });
       expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
         _id: "1",
@@ -276,7 +289,7 @@ describe("graphql/resolvers/mutators", function () {
       context,
       // we test while being logged out
       asAdmin: false,
-      currentUser: null,
+      currentUser,
     };
     const createArgs = {
       ...defaultArgs,
@@ -335,9 +348,14 @@ describe("graphql/resolvers/mutators", function () {
         schema,
         name: "Foo",
         graphql: { typeName: "Foo", multiTypeName: "Foos" },
+        permissions: {
+          canCreate: ["members"],
+          canUpdate: ["members"],
+          canDelete: ["members"],
+        },
       });
       const context = merge({}, defaultContext, {
-        currentUser: { _id: "42" },
+        currentUser: { _id: "42" }, // To remove ?
         Foo: {
           model: Foo,
           connector: { create: async (data) => ({ _id: 1, ...data }) },
@@ -379,7 +397,7 @@ describe("graphql/resolvers/mutators", function () {
       context,
       // we test while being logged out
       asAdmin: false,
-      currentUser: null,
+      currentUser,
     };
     describe("fields filtering", () => {
       test("filter out non allowed field before returning new document", async () => {
@@ -427,5 +445,41 @@ describe("graphql/resolvers/mutators", function () {
         expect(createdDocument).toEqual(expectedDocument);
       });
     });
+  });
+});
+
+
+describe("performMutationCheck", () => {
+  test("throws a 'document not found' error if there is no document", () => {
+    const errSpy = jest
+      .spyOn(console, "error")
+      .mockImplementationOnce(() => { }); // silences console.error
+    expect(() =>
+      performMutationCheck({
+        model: Foo,
+        document: undefined,
+        context: {},
+        operationName: "create",
+      })
+    ).toThrow(
+      '[{"id":"app.document_not_found","data":{"operationName":"Foo:create"}}]'
+    );
+    expect(errSpy).toHaveBeenCalled();
+  });
+  test("throws an 'operation not allowed' if permission are set but user is not allowed", () => {
+    const errSpy = jest
+      .spyOn(console, "error")
+      .mockImplementationOnce(() => { }); // silences console.error
+    expect(() =>
+      performMutationCheck({
+        model: Foo,
+        document: {},
+        context: { currentUser },
+        operationName: "create",
+      })
+    ).toThrow(
+      '[{"id":"app.operation_not_allowed","data":{"operationName":"Foo:create"}}]'
+    );
+    expect(errSpy).toHaveBeenCalled();
   });
 });
