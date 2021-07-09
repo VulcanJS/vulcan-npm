@@ -147,12 +147,25 @@ describe("graphql/resolvers/mutators", function () {
         });
         expect(data).toEqual(dataOriginal);
       });
-      test("update mutator should pass the right selector to get the current document", async () => {
+      test("update mutator should pass the right selector to get the current document taking dataId argument", async () => {
         const data = { _id: "1", foo: "fooUpdate" };
         defaultContext.Foo.connector.findOne = jest.fn(async () => data);
         await updateMutator({
           ...updateArgs,
           dataId: data._id,
+          context: defaultContext,
+          data,
+        });
+        expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
+          _id: "1",
+        });
+      });
+      test("update mutator should pass the right selector to get the current document taking selector argument", async () => {
+        const data = { _id: "1", foo: "fooUpdate" };
+        defaultContext.Foo.connector.findOne = jest.fn(async () => data);
+        await updateMutator({
+          ...updateArgs,
+          selector: { _id: data._id },
           context: defaultContext,
           data,
         });
@@ -311,7 +324,7 @@ describe("graphql/resolvers/mutators", function () {
       });
       const { data: resultDocument } = await updateMutator({
         ...updateArgs,
-        dataId: foo._id,
+        selector: { _id: foo._id },
         data: { foo2: "update" },
       });
       expect(resultDocument.publicAuto).toEqual("UPDATED");
@@ -414,7 +427,7 @@ describe("graphql/resolvers/mutators", function () {
         });
         const { data: resultDocument } = await updateMutator({
           ...defaultArgs,
-          dataId: foo._id,
+          selector: { _id: foo._id },
           data: { foo2: "update" },
         });
         expect(resultDocument.privateAuto).not.toBeDefined();

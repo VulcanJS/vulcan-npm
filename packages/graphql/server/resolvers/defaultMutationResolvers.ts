@@ -40,8 +40,8 @@ interface BuildDefaultMutationResolversInput {
 interface GetDocumentSelectorInput {
   // TODO: put in common with the single resolver variables type, that have the same fields
   variables: {
-    _id: string;
-    input?: any; // SingleInput
+    _id?: string;
+    input: any; // SingleInput
   };
   model: VulcanGraphqlModel;
   context: any;
@@ -54,9 +54,9 @@ const getDocumentSelector = async ({
 }: GetDocumentSelectorInput): Promise<{ selector: Object; }> => {
   const { _id, input } = variables;
   let selector;
-  // _id bypass input so we return an empty object
+  // if there's an Id, just return it without looking at the input
   if (_id) {
-    return { selector }
+    return { selector: { _id } }
   }
 
   const connector = getModelConnector(context, model);
@@ -122,7 +122,6 @@ export function buildDefaultMutationResolvers({
           model,
           selector,
           data,
-          dataId: _id,
           currentUser: context.currentUser,
           validate: true,
           context,
@@ -135,13 +134,12 @@ export function buildDefaultMutationResolvers({
     mutations.delete = {
       description: `Mutation for deleting a ${typeName} document`,
       name: getDeleteMutationName(typeName),
-      async mutation(root, { input, _id }, context) {
+      async mutation(root, { input }, context) {
         const model = getModel(context, typeName);
 
         const { selector } = await getDocumentSelector({
           variables: {
-            input,
-            _id,
+            input
           },
           model,
           context,
@@ -149,8 +147,7 @@ export function buildDefaultMutationResolvers({
 
         return await deleteMutator({
           model,
-          selector, // Never used, only accepts id ?
-          dataId: _id,
+          selector,
           currentUser: context.currentUser,
           validate: true,
           context,
