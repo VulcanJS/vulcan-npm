@@ -53,42 +53,17 @@ const getDocumentSelector = async ({
   context,
 }: GetDocumentSelectorInput): Promise<{ selector: Object; }> => {
   const { _id, input } = variables;
-  let selector ;
+  let selector;
   // _id bypass input so we return an empty object
   if (_id) {
     return { selector }
   }
-  
+
   const connector = getModelConnector(context, model);
   const filterParameters = await connector._filter(input, context);
   selector = filterParameters.selector;
   return { selector };
 };
-
-/* // get a single document based on the mutation params
-const getMutationDocument = async ({
-  variables,
-  model,
-  context,
-}: GetDocumentSelectorInput): Promise<{
-  selector: Object;
-  document?: VulcanDocument;
-}> => {
-  const connector = getModelConnector(context, model);
-  let document;
-  let selector;
-  const { _id, input } = variables;
-  if (_id) {
-    // _id bypass input
-    document = await connector.findOneById(_id);
-  } else {
-    const filterParameters = await connector._filter(input, context);
-    selector = filterParameters.selector;
-    // get entire unmodified document from database
-    document = await connector.findOne(selector);
-  }
-  return { selector, document };
-}; */
 
 /*
 
@@ -156,47 +131,33 @@ export function buildDefaultMutationResolvers({
     };
   }
 
-  // if (mutationOptions.delete) {
-  //   mutations.delete = {
-  //     description: `Mutation for deleting a ${typeName} document`,
-  //     name: getDeleteMutationName(typeName),
-  //     async mutation(root, { input, _id }, context) {
-  //       const model = getModel(context, typeName);
-  //       const { currentUser } = context;
+  if (mutationOptions.delete) {
+    mutations.delete = {
+      description: `Mutation for deleting a ${typeName} document`,
+      name: getDeleteMutationName(typeName),
+      async mutation(root, { input, _id }, context) {
+        const model = getModel(context, typeName);
 
-  //       let document ;
-  //       const { document /*selector*/ } = await getMutationDocument({
-  //         variables: {
-  //           input,
-  //           _id,
-  //         },
-  //         model,
-  //         context,
-  //       });
+        const { selector } = await getDocumentSelector({
+          variables: {
+            input,
+            _id,
+          },
+          model,
+          context,
+        });
 
-  //       performMutationCheck({
-  //         user: currentUser,
-  //         document,
-  //         model,
-  //         context,
-  //         operationName: "delete",
-  //       });
-  //       if (!document?._id)
-  //         throw new Error(
-  //           "Perform mutation check did not catch an empty document._id during a delete mutation"
-  //         ); // should not happen with the check, defnesive code
-
-  //       return await deleteMutator({
-  //         model,
-  //         selector: { _id: document._id },
-  //         currentUser: context.currentUser,
-  //         validate: true,
-  //         context,
-  //         // document,
-  //       });
-  //     },
-  //   };
-  // }
+        return await deleteMutator({
+          model,
+          selector, // Never used, only accepts id ?
+          dataId: _id,
+          currentUser: context.currentUser,
+          validate: true,
+          context,
+        });
+      },
+    };
+  }
 
   return mutations;
 }

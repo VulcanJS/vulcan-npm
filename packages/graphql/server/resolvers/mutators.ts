@@ -122,6 +122,7 @@ interface MutationCheckOptions {
   context: any;
   operationName: OperationName;
 }
+
 /*
 
 Perform security check
@@ -156,6 +157,11 @@ export const performMutationCheck = (options: MutationCheckOptions) => {
   }
 };
 
+// OpenCRUD backwards compatibility
+// TODO: what can we remove?
+const selectorOrId = async (selector, dataId) => {
+  return isEmpty(selector) ? { _id: dataId } : selector;
+}
 
 /*
 
@@ -203,7 +209,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
     });
   }
 
-  /* autorization */
+  /* Autorization */
   performMutationCheck({
     user: currentUser,
     document: data,
@@ -315,19 +321,14 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   const { typeName } = model.graphql;
   const mutatorName = "update";
   const { schema } = model;
+  let data = { ...dataInput } || modifierToData({ $set: set, $unset: unset });
 
   // get currentUser from context if possible
   if (!currentUser && context.currentUser) {
     currentUser = context.currentUser;
   }
 
-  // OpenCRUD backwards compatibility
-  // TODO: what can we remove?
-  selector = selector || { _id: dataId };
-  let data = { ...dataInput } || modifierToData({ $set: set, $unset: unset });
-
-  // startDebugMutator(collectionName, "Update", { selector, data });
-
+  selector = await selectorOrId(selector, dataId);
   if (isEmpty(selector)) {
     throw new Error("Selector cannot be empty");
   }
@@ -336,7 +337,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   const connector = getModelConnector(context, model);
   const currentDocument = await connector.findOne(selector);
 
-  /* autorization */
+  /* Autorization */
   performMutationCheck({
     user: currentUser,
     document: currentDocument,
@@ -353,6 +354,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     );
   }
 
+  // TODO : Delete this ?
   // get a "preview" of the new, updated document
   let updatedDocument = { ...currentDocument, ...data };
   // remove null fields
@@ -468,6 +470,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 interface DeleteMutatorInput {
   model: VulcanGraphqlModel;
   selector: Object;
+  dataId?: string;
   currentUser?: any;
   context?: ContextWithUser;
   validate?: boolean;
@@ -480,6 +483,7 @@ Delete
 */
 export const deleteMutator = async <TModel extends VulcanDocument>({
   model,
+  dataId,
   selector,
   currentUser,
   validate,
@@ -495,14 +499,23 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
     currentUser = context.currentUser;
   }
 
+  selector = await selectorOrId(selector, dataId);
   if (isEmpty(selector)) {
     throw new Error("Selector cannot be empty");
   }
 
-  const connector = getModelConnector<TModel>(context, model);
-
   // get document from database
+  const connector = getModelConnector<TModel>(context, model);
   let document = await connector.findOne(selector);
+
+  /* Autorization */
+  performMutationCheck({
+    user: currentUser,
+    document,
+    model,
+    context,
+    operationName: "delete",
+  });
 
   if (!document) {
     throw new Error(
