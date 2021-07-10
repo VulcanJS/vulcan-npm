@@ -1,4 +1,4 @@
-import { validateDocument, validateData } from "../resolvers/validation";
+import { validateDatas } from "../resolvers/validation";
 import { createModel } from "@vulcanjs/model";
 // import Users from "meteor/vulcan:users"
 
@@ -19,9 +19,9 @@ describe("vulcan:lib/validation", () => {
         },
       });
       // create
-      const errors = validateDocument({ foo: "bar" }, model, defaultContext);
+      const errors = validateDatas({ document: { foo: "bar" }, model, context: defaultContext, mutatorName: 'create' });
       expect(errors).toHaveLength(0);
-      const updateErrors = validateData({ foo: "bar" }, model, defaultContext);
+      const updateErrors = validateDatas({ document: { foo: "bar" }, model, context: defaultContext, mutatorName: 'update' });
       expect(updateErrors).toHaveLength(0);
     });
     test("create error for non creatable field", () => {
@@ -40,21 +40,23 @@ describe("vulcan:lib/validation", () => {
           },
         },
       });
-      const errors = validateDocument(
-        { foo: "bar", bar: "foo" },
+      const errors = validateDatas({
+        document: { foo: "bar", bar: "foo" },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'create'
+      });
       expect(errors).toHaveLength(1);
       expect(errors[0]).toMatchObject({
         id: "errors.disallowed_property_detected",
         properties: { name: "foo" },
       });
-      const updateErrors = validateData(
-        { foo: "bar", bar: "foo" },
+      const updateErrors = validateDatas({
+        document: { foo: "bar", bar: "foo" },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'update'
+      });
       expect(updateErrors).toHaveLength(1);
       expect(updateErrors[0]).toMatchObject({
         id: "errors.disallowed_property_detected",
@@ -91,23 +93,25 @@ describe("vulcan:lib/validation", () => {
         },
       });
       // create
-      const errors = validateDocument(
-        { nested: { foo: "bar", bar: "foo" } },
+      const errors = validateDatas({
+        document: { nested: { foo: "bar", bar: "foo" } },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'create'
+      });
       expect(errors).toHaveLength(1);
       expect(errors[0]).toMatchObject({
         id: "errors.disallowed_property_detected",
         properties: { name: "nested.foo" },
       });
       // update with set and unset
-      const updateErrors = validateData(
-        { nested: { foo: "bar", bar: "foo", zed: null } },
-        // { nested: { foo: "bar", bar: "foo", zed: "hello" } },
+      const updateErrors = validateDatas({
+        document: { nested: { foo: "bar", bar: "foo", zed: null } },
+        // document: { nested: { foo: "bar", bar: "foo", zed: 'hello' } },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'update'
+      });
       expect(updateErrors).toHaveLength(2);
       expect(updateErrors[0]).toMatchObject(
         {
@@ -145,23 +149,24 @@ describe("vulcan:lib/validation", () => {
           },
         },
       });
-      const errors = validateDocument(
-        { nested: [{ foo: "bar", bar: "foo" }] },
+      const errors = validateDatas({
+        document: { nested: [{ foo: "bar", bar: "foo" }] },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'create'
+      });
       expect(errors).toHaveLength(1);
       expect(errors[0]).toMatchObject({
         id: "errors.disallowed_property_detected",
         properties: { name: "nested[0].foo" },
       });
 
-      const updateErrors = validateData(
-        { nested: [{ foo: "bar", bar: "foo" }] },
-        // { nested: [{ foo: "bar", bar: "foo" }] },
+      const updateErrors = validateDatas({
+        document: { nested: [{ foo: "bar", bar: "foo" }] },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'update'
+      });
       expect(updateErrors).toHaveLength(1);
       expect(updateErrors[0]).toMatchObject({
         id: "errors.disallowed_property_detected",
@@ -196,23 +201,25 @@ describe("vulcan:lib/validation", () => {
         },
       });
       // create
-      const errors = validateDocument(
-        { nested: { nok: "bar", ok: "foo" } },
+      const errors = validateDatas({
+        document: { nested: { nok: "bar", ok: "foo" } },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'create'
+      });
       expect(errors).toHaveLength(1);
       expect(errors[0]).toMatchObject({
         id: "errors.disallowed_property_detected",
         properties: { name: "nested.nok" },
       });
       // update with set and unset
-      const updateErrors = validateData(
-        { nested: { nok: "bar", ok: "foo", zed: null } },
-        // { nested: { nok: "bar", ok: "foo", zed: "hello" } },
+      const updateErrors = validateDatas({
+        document: { nested: { nok: "bar", ok: "foo", zed: null } },
+        // document: { nested: { nok: "bar", ok: "foo", zed: "hello" } }, 
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'update'
+      });
       expect(updateErrors).toHaveLength(2);
       expect(updateErrors[0]).toMatchObject(
         {
@@ -244,19 +251,20 @@ describe("vulcan:lib/validation", () => {
           },
         },
       });
-      const errors = validateDocument(
-        { nested: { foo: "bar" } },
+      const errors = validateDatas({
+        document: { nested: { foo: "bar" } },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'create'
+      });
       expect(errors).toHaveLength(0);
 
-      const updateErrors = validateData(
-        { nested: { foo: "bar" } },
-        // { nested: { foo: "bar" } },
+      const updateErrors = validateDatas({
+        document: { nested: { foo: "bar" } },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'update'
+      });
       expect(updateErrors).toHaveLength(0);
     });
     test("do not check native arrays", () => {
@@ -273,19 +281,20 @@ describe("vulcan:lib/validation", () => {
           },
         },
       });
-      const errors = validateDocument(
-        { array: [1, 2, 3] },
+      const errors = validateDatas({
+        document: { array: [1, 2, 3] },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'create'
+      });
       expect(errors).toHaveLength(0);
 
-      const updateErrors = validateData(
-        { array: [1, 2, 3] },
-        // { array: [1, 2, 3] },
+      const updateErrors = validateDatas({
+        document: { array: [1, 2, 3] },
         model,
-        defaultContext
-      );
+        context: defaultContext,
+        mutatorName: 'update'
+      });
       expect(updateErrors).toHaveLength(0);
     });
   });

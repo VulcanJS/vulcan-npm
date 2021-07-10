@@ -33,10 +33,9 @@ to the client.
 */
 
 import {
-  validateDocument,
-  validateData,
+  validateDatas,
   modifierToData,
-  dataToModifier,
+  dataToModifier
 } from "./validation";
 import { runCallbacks } from "@vulcanjs/core";
 
@@ -71,7 +70,6 @@ const validateMutationData = async ({
   mutatorName,
   context,
   properties,
-  validationFunction,
 }: {
   model: VulcanGraphqlModel; // data model
   mutatorName: DefaultMutatorName;
@@ -81,12 +79,8 @@ const validateMutationData = async ({
   validationFunction?: Function;
 }): Promise<void> => {
   const { typeName } = model.graphql;
-  // basic simple schema validatio
-  const simpleSchemaValidationErrors = data
-    ? validationFunction
-      ? validationFunction(data, model, context) // for update, we use validateData instead of validateDocument
-      : validateDocument(data, model, context)
-    : []; // delete mutator has no data, so we skip the simple schema validation
+  // basic simple schema validation
+  const simpleSchemaValidationErrors = validateDatas({document: data, model, context, mutatorName});
   // custom validation
   const customValidationErrors = await runCallbacks({
     hookName: `${typeName}.${mutatorName}.validate`,
@@ -227,12 +221,9 @@ export const createMutator = async <TModel extends VulcanDocument>({
     });
   }
 
-
   /* If user is logged in, check if userId field is in the schema and add it to document if needed */
   if (currentUser) {
-    // TODO: clean this using "has"
-    const userIdInSchema = "userId" in schema;
-    if (!!userIdInSchema && !data.userId) data.userId = currentUser._id;
+    if (schema.hasOwnProperty('userId') && !data.userId) data.userId = currentUser._id;
   }
   /* 
   
@@ -388,7 +379,6 @@ export const updateMutator = async <TModel extends VulcanDocument>({
       mutatorName,
       context,
       properties,
-      validationFunction: validateData, // TODO: update uses validateData instead of validateDocument => why?
     });
   }
 

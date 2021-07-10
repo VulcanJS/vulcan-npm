@@ -38,7 +38,6 @@ interface BuildDefaultMutationResolversInput {
 }
 
 interface GetDocumentSelectorInput {
-  // TODO: put in common with the single resolver variables type, that have the same fields
   variables: {
     _id?: string;
     input: any; // SingleInput

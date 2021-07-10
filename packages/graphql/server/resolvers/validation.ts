@@ -8,6 +8,7 @@ import {
 import _forEach from "lodash/forEach";
 import { VulcanModel } from "@vulcanjs/model";
 import { ContextWithUser } from "./typings";
+import { DefaultMutatorName } from "../../typings";
 import { canCreateField, canUpdateField } from "@vulcanjs/permissions";
 import { toSimpleSchema, ValidationError } from "@vulcanjs/schema";
 
@@ -74,60 +75,14 @@ const validateDocumentPermissions = (
   );
   return validationErrors;
 };
-/*
 
-  If document is not trusted, run validation steps:
-
-  1. Check that the current user has permission to edit each field
-  2. Run SimpleSchema validation step
-
-*/
-export const validateDocument = (
-  document: VulcanDocument,
-  model: VulcanModel,
-  context: any,
-  validationContextName = "defaultContext" // TODO: what is this?
-): Array<ValidationError> => {
-  const { schema } = model;
-
-  let validationErrors: Array<ValidationError> = [];
-
-  // validate creation permissions (and other Vulcan-specific constraints)
-  validationErrors = validationErrors.concat(
-    validateDocumentPermissions(document, document, schema, context, "create")
-  );
-  // build the schema on the fly
-  // TODO: does it work with nested schema???
-  const simpleSchema = toSimpleSchema(schema);
-  // run simple schema validation (will check the actual types, required fields, etc....)
-  const validationContext = simpleSchema.namedContext(validationContextName);
-  validationContext.validate(document);
-
-  if (!validationContext.isValid()) {
-    const errors = (validationContext as any).validationErrors();
-    errors.forEach((error) => {
-      // eslint-disable-next-line no-console
-      // console.log(error);
-      if (error.type.includes("intlError")) {
-        const intlError = JSON.parse(error.type.replace("intlError|", ""));
-        validationErrors = validationErrors.concat(intlError);
-      } else {
-        validationErrors.push({
-          id: `errors.${error.type}`,
-          path: error.name,
-          properties: {
-            modelName: model.name,
-            // typeName: collection.options.typeName,
-            ...error,
-          },
-        });
-      }
-    });
-  }
-
-  return validationErrors;
-};
-
+interface ValidateDatasInput {
+  document: VulcanDocument;
+  model: VulcanModel;
+  context: any;
+  mutatorName: DefaultMutatorName;
+  validationContextName?: string;
+}
 /*
 
   If document is not trusted, run validation steps:
@@ -136,63 +91,64 @@ export const validateDocument = (
   2. Run SimpleSchema validation step
 
 */
-export const validateModifier = (
-  modifier: Modifier,
-  document: VulcanDocument,
-  model: VulcanModel,
+export const validateDatas = ({
+  document,
+  model,
   context,
-  validationContextName = "defaultContext"
-) => {
+  mutatorName,
+  validationContextName = "defaultContext" // TODO: what is this?
+}: ValidateDatasInput): Array<ValidationError> => {
   const { schema } = model;
-  const set = modifier.$set;
-  const unset = modifier.$unset;
 
   let validationErrors: Array<ValidationError> = [];
 
-  // 1. check that the current user has permission to edit each field
+  // delete mutator has no data, so we skip the simple schema validation
+  if (mutatorName === 'delete') {
+      return validationErrors;
+  }
+  // validate operation permissions on each field (and other Vulcan-specific constraints)
   validationErrors = validationErrors.concat(
-    validateDocumentPermissions(document, document, schema, context, "update")
+      validateDocumentPermissions(document, document, schema, context, mutatorName)
   );
-
-  // 2. run SS validation
-  const validationContext = toSimpleSchema(schema).namedContext(
-    validationContextName
-  );
-  validationContext.validate(
-    { $set: set, $unset: unset },
-    { modifier: true, extendedCustomContext: { documentId: document._id } }
-  );
-
+  // build the schema on the fly
+  // TODO: does it work with nested schema???
+  const simpleSchema = toSimpleSchema(schema);
+  // run simple schema validation (will check the actual types, required fields, etc....)
+  const validationContext = simpleSchema.namedContext(validationContextName);
+  // validate the schema, depends on which operation you want to do.
+  if (mutatorName === 'create') {
+      validationContext.validate(document);
+  }
+  if (mutatorName === 'update') {
+      const modifier: Modifier = dataToModifier(document);
+      const set = modifier.$set;
+      const unset = modifier.$unset
+      validationContext.validate(
+          { $set: set, $unset: unset },
+          { modifier: true, extendedCustomContext: { documentId: document._id } }
+      );
+  }
   if (!validationContext.isValid()) {
-    const errors = validationContext.validationErrors();
-    errors.forEach((error) => {
-      // eslint-disable-next-line no-console
-      // console.log(error);
-      if (error?.type?.includes("intlError")) {
-        validationErrors = validationErrors.concat(
-          JSON.parse(error.type.replace("intlError|", ""))
-        );
-      } else {
-        validationErrors.push({
-          id: `errors.${error.type}`,
-          path: error.name,
-          properties: {
-            modelName: model.name,
-            // typeName: collection.options.typeName,
-            ...error,
-          },
-        });
-      }
-    });
+      const errors = (validationContext as any).validationErrors();
+      errors.forEach((error) => {
+          // eslint-disable-next-line no-console
+          // console.log(error);
+          if (error.type.includes("intlError")) {
+              const intlError = JSON.parse(error.type.replace("intlError|", ""));
+              validationErrors = validationErrors.concat(intlError);
+          } else {
+              validationErrors.push({
+                  id: `errors.${error.type}`,
+                  path: error.name,
+                  properties: {
+                      modelName: model.name,
+                      // typeName: collection.options.typeName,
+                      ...error,
+                  },
+              });
+          }
+      });
   }
 
   return validationErrors;
-};
-
-export const validateData = (
-  data: VulcanDocument,
-  model: VulcanModel,
-  context
-) => {
-  return validateModifier(dataToModifier(data), data, model, context);
 };
