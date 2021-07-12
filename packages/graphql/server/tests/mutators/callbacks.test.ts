@@ -25,14 +25,15 @@ const defaultModelOptions = {
   schema,
   name: "Foo",
 };
+const membersPermissions = {
+  canCreate: ["members"],
+  canUpdate: ["members"],
+  canDelete: ["members"],
+};
 const Foo = createGraphqlModel({
   ...defaultModelOptions,
   graphql: { typeName: "Foo", multiTypeName: "Foos" },
-  permissions: {
-    canCreate: ["members"],
-    canUpdate: ["members"],
-    canDelete: ["members"],
-  },
+  permissions: membersPermissions,
 });
 describe("graphql/resolvers/mutators callbacks", function () {
   const currentUser = { _id: "42" };
@@ -86,11 +87,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
               },
             },
           }),
-          permissions: {
-            canCreate: ["members"],
-            canUpdate: ["members"],
-            canDelete: ["members"],
-          },
+          permissions: membersPermissions,
         });
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo, connector: { create } },
@@ -122,11 +119,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
               },
             },
           }),
-          permissions: {
-            canCreate: ["members"],
-            canUpdate: ["members"],
-            canDelete: ["members"],
-          },
+          permissions: membersPermissions,
         });
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo, connector: { create } },
@@ -166,11 +159,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
               },
             },
           }),
-          permissions: {
-            canCreate: ["members"],
-            canUpdate: ["members"],
-            canDelete: ["members"],
-          },
+          permissions: membersPermissions,
         });
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo },
@@ -201,11 +190,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
               },
             },
           }),
-          permissions: {
-            canCreate: ["members"],
-            canUpdate: ["members"],
-            canDelete: ["members"],
-          },
+          permissions: membersPermissions,
         }) as VulcanGraphqlModel;
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo },

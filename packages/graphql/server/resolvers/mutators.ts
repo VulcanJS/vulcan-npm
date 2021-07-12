@@ -33,7 +33,7 @@ to the client.
 */
 
 import {
-  validateDatas,
+  validateData,
   modifierToData,
   dataToModifier
 } from "./validation";
@@ -80,7 +80,7 @@ const validateMutationData = async ({
 }): Promise<void> => {
   const { typeName } = model.graphql;
   // basic simple schema validation
-  const simpleSchemaValidationErrors = validateDatas({document: data, model, context, mutatorName});
+  const simpleSchemaValidationErrors = validateData({ document: data, model, context, mutatorName });
   // custom validation
   const customValidationErrors = await runCallbacks({
     hookName: `${typeName}.${mutatorName}.validate`,
@@ -113,8 +113,8 @@ interface MutationCheckOptions {
   user?: any;
   document?: VulcanDocument;
   model: VulcanGraphqlModel;
-  context: any;
   operationName: OperationName;
+  asAdmin?: boolean
 }
 
 /*
@@ -123,7 +123,7 @@ Perform security check
 
 */
 export const performMutationCheck = (options: MutationCheckOptions) => {
-  const { user, document, model, context, operationName } = options;
+  const { user, document, model, operationName, asAdmin = false } = options;
   const { typeName } = model.graphql;
   const permissionsCheck = model.permissions?.[operationChecks[operationName]];
   let allowOperation = false;
@@ -139,14 +139,14 @@ export const performMutationCheck = (options: MutationCheckOptions) => {
     throwError({ id: "app.document_not_found", data });
   }
 
-  if (typeof permissionsCheck === "function") {
+  if (!asAdmin && typeof permissionsCheck === "function") {
     allowOperation = permissionsCheck(options);
-  } else if (Array.isArray(permissionsCheck)) {
+  } else if (!asAdmin && Array.isArray(permissionsCheck)) {
     allowOperation = isMemberOf(user, permissionsCheck, document);
   }
 
   // 3. if permission check is defined but fails, disallow operation
-  if (!allowOperation) {
+  if (!asAdmin && !allowOperation) {
     throwError({ id: "app.operation_not_allowed", data });
   }
 };
@@ -211,15 +211,13 @@ export const createMutator = async <TModel extends VulcanDocument>({
   }
 
   /* Autorization */
-  if (!asAdmin) {
-    performMutationCheck({
-      user: currentUser,
-      document: data,
-      model,
-      context,
-      operationName: "create",
-    });
-  }
+  performMutationCheck({
+    user: currentUser,
+    document: data,
+    model,
+    operationName: "create",
+    asAdmin
+  });
 
   /* If user is logged in, check if userId field is in the schema and add it to document if needed */
   if (currentUser) {
@@ -338,15 +336,13 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   const currentDocument = await connector.findOne(selector);
 
   /* Autorization */
-  if (!asAdmin) {
-    performMutationCheck({
-      user: currentUser,
-      document: currentDocument,
-      model,
-      context,
-      operationName: "update",
-    });
-  }
+  performMutationCheck({
+    user: currentUser,
+    document: currentDocument,
+    model,
+    operationName: "update",
+    asAdmin
+  });
 
   if (!currentDocument) {
     throw new Error(
@@ -504,15 +500,13 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   let document = await connector.findOne(selector);
 
   /* Autorization */
-  if (!asAdmin) {
-    performMutationCheck({
-      user: currentUser,
-      document,
-      model,
-      context,
-      operationName: "delete",
-    });
-  }
+  performMutationCheck({
+    user: currentUser,
+    document,
+    model,
+    operationName: "delete",
+    asAdmin
+  });
 
   if (!document) {
     throw new Error(

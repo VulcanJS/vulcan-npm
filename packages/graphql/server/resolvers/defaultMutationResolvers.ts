@@ -105,7 +105,7 @@ export function buildDefaultMutationResolvers({
       async mutation(root, { input }, context: ContextWithUser) {
         const model = getModel(context, typeName);
         const data = input.data;
-        const _id = input.id || (data && typeof data === "object" && data._id); // use provided id or documentId if available
+        const _id = input.id || (data?._id); // use provided id or documentId if available
 
         const { selector } = await getDocumentSelector({
           variables: {

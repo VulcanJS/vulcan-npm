@@ -1,3 +1,10 @@
+/* 
+
+Differences with vulcan Meteor:
+Removed validateDocument and refactored validateData, so now we use only validateData called with mutatorName.
+
+*/
+
 import pickBy from "lodash/pickBy";
 import mapValues from "lodash/mapValues";
 import {
@@ -76,7 +83,7 @@ const validateDocumentPermissions = (
   return validationErrors;
 };
 
-interface ValidateDatasInput {
+interface ValidateDataInput {
   document: VulcanDocument;
   model: VulcanModel;
   context: any;
@@ -91,24 +98,24 @@ interface ValidateDatasInput {
   2. Run SimpleSchema validation step
 
 */
-export const validateDatas = ({
+export const validateData = ({
   document,
   model,
   context,
   mutatorName,
   validationContextName = "defaultContext" // TODO: what is this?
-}: ValidateDatasInput): Array<ValidationError> => {
+}: ValidateDataInput): Array<ValidationError> => {
   const { schema } = model;
 
   let validationErrors: Array<ValidationError> = [];
 
   // delete mutator has no data, so we skip the simple schema validation
   if (mutatorName === 'delete') {
-      return validationErrors;
+    return validationErrors;
   }
   // validate operation permissions on each field (and other Vulcan-specific constraints)
   validationErrors = validationErrors.concat(
-      validateDocumentPermissions(document, document, schema, context, mutatorName)
+    validateDocumentPermissions(document, document, schema, context, mutatorName)
   );
   // build the schema on the fly
   // TODO: does it work with nested schema???
@@ -117,37 +124,37 @@ export const validateDatas = ({
   const validationContext = simpleSchema.namedContext(validationContextName);
   // validate the schema, depends on which operation you want to do.
   if (mutatorName === 'create') {
-      validationContext.validate(document);
+    validationContext.validate(document);
   }
   if (mutatorName === 'update') {
-      const modifier: Modifier = dataToModifier(document);
-      const set = modifier.$set;
-      const unset = modifier.$unset
-      validationContext.validate(
-          { $set: set, $unset: unset },
-          { modifier: true, extendedCustomContext: { documentId: document._id } }
-      );
+    const modifier: Modifier = dataToModifier(document);
+    const set = modifier.$set;
+    const unset = modifier.$unset
+    validationContext.validate(
+      { $set: set, $unset: unset },
+      { modifier: true, extendedCustomContext: { documentId: document._id } }
+    );
   }
   if (!validationContext.isValid()) {
-      const errors = (validationContext as any).validationErrors();
-      errors.forEach((error) => {
-          // eslint-disable-next-line no-console
-          // console.log(error);
-          if (error.type.includes("intlError")) {
-              const intlError = JSON.parse(error.type.replace("intlError|", ""));
-              validationErrors = validationErrors.concat(intlError);
-          } else {
-              validationErrors.push({
-                  id: `errors.${error.type}`,
-                  path: error.name,
-                  properties: {
-                      modelName: model.name,
-                      // typeName: collection.options.typeName,
-                      ...error,
-                  },
-              });
-          }
-      });
+    const errors = (validationContext as any).validationErrors();
+    errors.forEach((error) => {
+      // eslint-disable-next-line no-console
+      // console.log(error);
+      if (error.type.includes("intlError")) {
+        const intlError = JSON.parse(error.type.replace("intlError|", ""));
+        validationErrors = validationErrors.concat(intlError);
+      } else {
+        validationErrors.push({
+          id: `errors.${error.type}`,
+          path: error.name,
+          properties: {
+            modelName: model.name,
+            // typeName: collection.options.typeName,
+            ...error,
+          },
+        });
+      }
+    });
   }
 
   return validationErrors;
