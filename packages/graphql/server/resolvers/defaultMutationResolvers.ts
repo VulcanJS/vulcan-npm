@@ -5,13 +5,10 @@ Default mutations
 */
 
 import { createMutator, updateMutator, deleteMutator } from "./mutators";
-import { getModel, getModelConnector } from "./context";
-import { throwError } from "./errors";
+import { getModel } from "./context";
 
 import { ContextWithUser } from "./typings";
-import { VulcanDocument } from "@vulcanjs/schema";
 import { MutationResolverDefinitions } from "../typings";
-import { VulcanGraphqlModel } from "../../typings";
 
 const defaultOptions = {
   create: true,
@@ -36,33 +33,6 @@ interface BuildDefaultMutationResolversInput {
   typeName: string;
   options?: MutationOptions;
 }
-
-interface GetDocumentSelectorInput {
-  variables: {
-    _id?: string;
-    input: any; // SingleInput
-  };
-  model: VulcanGraphqlModel;
-  context: any;
-}
-
-const getDocumentSelector = async ({
-  variables,
-  model,
-  context,
-}: GetDocumentSelectorInput): Promise<{ selector: Object; }> => {
-  const { _id, input } = variables;
-  let selector;
-  // if there's an Id, just return it without looking at the input
-  if (_id) {
-    return { selector: { _id } }
-  }
-
-  const connector = getModelConnector(context, model);
-  const filterParameters = await connector._filter(input, context);
-  selector = filterParameters.selector;
-  return { selector };
-};
 
 /*
 
@@ -105,21 +75,11 @@ export function buildDefaultMutationResolvers({
       async mutation(root, { input }, context: ContextWithUser) {
         const model = getModel(context, typeName);
         const data = input.data;
-        const _id = input.id || (data?._id); // use provided id or documentId if available
-
-        const { selector } = await getDocumentSelector({
-          variables: {
-            input,
-            _id,
-          },
-          model,
-          context,
-        });
 
         // call editMutator boilerplate function
         return await updateMutator({
           model,
-          selector,
+          input,
           data,
           currentUser: context.currentUser,
           validate: true,
@@ -136,17 +96,9 @@ export function buildDefaultMutationResolvers({
       async mutation(root, { input }, context) {
         const model = getModel(context, typeName);
 
-        const { selector } = await getDocumentSelector({
-          variables: {
-            input
-          },
-          model,
-          context,
-        });
-
         return await deleteMutator({
           model,
-          selector,
+          input,
           currentUser: context.currentUser,
           validate: true,
           context,

@@ -169,6 +169,19 @@ describe("graphql/resolvers/mutators", function () {
           _id: "1",
         });
       });
+      test("update mutator should pass the right selector to get the current document taking input argument", async () => {
+        const data = { _id: "1", foo: "fooUpdate" };
+        defaultContext.Foo.connector.findOne = jest.fn(async () => data);
+        await updateMutator({
+          ...updateArgs,
+          input: { id: data._id },
+          context: defaultContext,
+          data,
+        });
+        expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
+          _id: "1",
+        });
+      });
     });
   });
   describe("delete mutator and callbacks", () => {
@@ -263,7 +276,6 @@ describe("graphql/resolvers/mutators", function () {
         ...defaultParams,
         context: defaultContext,
         currentUser,
-        selector: {},
         dataId: "1",
       });
       expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({

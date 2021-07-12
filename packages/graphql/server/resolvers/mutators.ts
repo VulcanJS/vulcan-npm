@@ -3,7 +3,11 @@
 
 Mutations have five steps:
 
-1. Validation
+1. Authorization
+
+First we check if the user requesting the mutation has the authorization to do so.
+
+2. Validation
 
 If the mutator call is not trusted (for example, it comes from a GraphQL mutation),
 we'll run all validate steps:
@@ -12,19 +16,19 @@ we'll run all validate steps:
 - Add userId to document (insert only).
 - Run validation callbacks.
 
-2. Before Callbacks
+3. Before Callbacks
 
-The second step is to run the mutation argument through all the [before] callbacks.
+The third step is to run the mutation argument through all the [before] callbacks.
 
-3. Operation
+4. Operation
 
 We then perform the insert/update/remove operation.
 
-4. After Callbacks
+5. After Callbacks
 
 We then run the mutation argument through all the [after] callbacks.
 
-5. Async Callbacks
+6. Async Callbacks
 
 Finally, *after* the operation is performed, we execute any async callbacks.
 Being async, they won't hold up the mutation and slow down its response time
@@ -43,23 +47,14 @@ import { throwError } from "./errors";
 import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
 import { isMemberOf } from "@vulcanjs/permissions";
 import { getModelConnector } from "./context";
-import pickBy from "lodash/pickBy";
+import { FilterableInput } from "../../typings";
+import { deprecate } from "@vulcanjs/utils/dist";
 import clone from "lodash/clone";
 import isEmpty from "lodash/isEmpty";
 import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
 import { restrictViewableFields } from "@vulcanjs/permissions";
-
-interface CreateMutatorInput {
-  model: VulcanGraphqlModel;
-  document?: VulcanDocument;
-  data: VulcanDocument;
-  context?: ContextWithUser;
-  currentUser?: any; // allow to impersonate an user from server directly
-  asAdmin?: boolean; // bypass security checks like field restriction
-  validate?: boolean; // run validation, can be bypassed when calling from a server
-}
 
 /**
  * Throws if some data are invalid
@@ -144,24 +139,45 @@ export const performMutationCheck = (options: MutationCheckOptions) => {
   } else if (!asAdmin && Array.isArray(permissionsCheck)) {
     allowOperation = isMemberOf(user, permissionsCheck, document);
   }
-
   // 3. if permission check is defined but fails, disallow operation
   if (!asAdmin && !allowOperation) {
     throwError({ id: "app.operation_not_allowed", data });
   }
 };
 
-interface GetIdOrSelectorInput {
-  selector?: Object;
-  _id?: string;
+interface GetSelectorInput {
+  context: ContextWithUser,
+  model: VulcanGraphqlModel,
+  dataId?: string,
+  selector?: Object,
+  input?: FilterableInput<VulcanDocument>
 }
-// OpenCRUD backwards compatibility
-/**
- * Allows to use the mutator with just a dataId instead of using the selector like in defaultMutationResolvers.
- * Needs at least one non-empty argument
- */
-const getIdOrSelector = async ({ selector, _id }: GetIdOrSelectorInput) => {
-  return isEmpty(_id) ? selector : { _id };
+
+async function getSelector({ dataId, selector, input, context, model }: GetSelectorInput
+) {
+  if (dataId) {
+    selector = { _id: dataId };
+  } else if (selector) {
+    deprecate('0.2.3',
+      'please use input that is more generic instead of selector.'
+    );
+    selector = selector;
+  } else if (input) {
+    const connector = getModelConnector(context, model);
+    const filterParameters = await connector._filter(input, context);
+    selector = filterParameters.selector;
+  }
+  return selector;
+}
+
+interface CreateMutatorInput {
+  model: VulcanGraphqlModel;
+  document?: VulcanDocument;
+  data: VulcanDocument;
+  context?: ContextWithUser;
+  currentUser?: any; // allow to impersonate an user from server directly
+  asAdmin?: boolean; // bypass security checks like field restriction
+  validate?: boolean; // run validation, can be bypassed when calling from a server
 }
 
 /*
@@ -199,6 +215,15 @@ export const createMutator = async <TModel extends VulcanDocument>({
   const { typeName } = model.graphql;
   const mutatorName = "create";
 
+  /* Authorization */
+  performMutationCheck({
+    user: currentUser,
+    document: data,
+    model,
+    operationName: "create",
+    asAdmin
+  });
+
   /* Validation */
   if (validate) {
     await validateMutationData({
@@ -210,18 +235,9 @@ export const createMutator = async <TModel extends VulcanDocument>({
     });
   }
 
-  /* Autorization */
-  performMutationCheck({
-    user: currentUser,
-    document: data,
-    model,
-    operationName: "create",
-    asAdmin
-  });
-
-  /* If user is logged in, check if userId field is in the schema and add it to document if needed */
-  if (currentUser) {
-    if (schema.hasOwnProperty('userId') && !data.userId) data.userId = currentUser._id;
+  /* If userId field is missing in the document, add it if user is logged in */
+  if (!data.userId && schema.hasOwnProperty('userId') && currentUser) {
+    data.userId = currentUser._id;
   }
   /* 
   
@@ -283,11 +299,9 @@ export const createMutator = async <TModel extends VulcanDocument>({
   return { data: document };
 };
 
-interface UpdateMutatorInput {
+interface UpdateMutatorCommonInput {
   model: VulcanGraphqlModel;
-  selector?: Object;
   data?: VulcanDocument;
-  dataId?: string;
   set?: Object;
   unset?: Object;
   currentUser?: any;
@@ -299,12 +313,14 @@ interface UpdateMutatorInput {
 /*
 
 Update
+Accepts a document reference by id, Vulan input or selector (deprecated, use input instead).
 
 */
 export const updateMutator = async <TModel extends VulcanDocument>({
   model,
   dataId,
   selector,
+  input,
   data: dataInput,
   set,
   // FIXME: babel does build, probably because "set" is reserved
@@ -314,7 +330,12 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   validate,
   asAdmin,
   context = {},
-}: UpdateMutatorInput): Promise<{ data: TModel }> => {
+}: UpdateMutatorCommonInput & (
+  { dataId: string, selector?: undefined, input?: undefined } |
+  { selector: Object, dataId?: undefined, input?: undefined } |
+  { input: FilterableInput<VulcanDocument>, dataId?: undefined, selector?: undefined }
+)): Promise<{ data: TModel }> => {
+
   set = set || {};
   const { typeName } = model.graphql;
   const mutatorName = "update";
@@ -326,16 +347,19 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     currentUser = context.currentUser;
   }
 
-  selector = await getIdOrSelector({ selector, _id: dataId });
+  // get selector from the right input
+  dataId = dataId || input?.id || data?._id
+  selector = await getSelector({ dataId, selector, input, context, model });
+  // this shouldn't be reachable
   if (isEmpty(selector)) {
-    throw new Error("Selector cannot be empty, please give an id or a proper selector");
+    throw new Error("Selector cannot be empty, please give an id or a proper input");
   }
 
   // get original document from database or arguments
   const connector = getModelConnector(context, model);
   const currentDocument = await connector.findOne(selector);
 
-  /* Autorization */
+  /* Authorization */
   performMutationCheck({
     user: currentUser,
     document: currentDocument,
@@ -458,10 +482,8 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   return { data: document };
 };
 
-interface DeleteMutatorInput {
+interface DeleteMutatorCommonInput {
   model: VulcanGraphqlModel;
-  selector?: Object;
-  dataId?: string;
   currentUser?: any;
   context?: ContextWithUser;
   validate?: boolean;
@@ -470,17 +492,24 @@ interface DeleteMutatorInput {
 /*
 
 Delete
+Accepts a document reference by id, Vulan input or selector (deprecated, use input instead).
 
 */
 export const deleteMutator = async <TModel extends VulcanDocument>({
   model,
   dataId,
   selector,
+  input,
   currentUser,
   validate,
   asAdmin,
   context = {},
-}: DeleteMutatorInput): Promise<{ data: TModel }> => {
+}: DeleteMutatorCommonInput & (
+  { dataId: string, selector?: undefined, input?: undefined } |
+  { selector: Object, dataId?: undefined, input?: undefined } |
+  { input: FilterableInput<VulcanDocument>, dataId?: undefined, selector?: undefined }
+)): Promise<{ data: TModel }> => {
+
   const mutatorName = "delete";
   const { typeName } = model.graphql;
   const { schema } = model;
@@ -490,16 +519,19 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
     currentUser = context.currentUser;
   }
 
-  selector = await getIdOrSelector({ selector, _id: dataId });
+  // get selector from the right input
+  dataId = dataId || input?.id
+  selector = await getSelector({ dataId, selector, input, context, model });
+  // this shouldn't be reachable
   if (isEmpty(selector)) {
-    throw new Error("Selector cannot be empty");
+    throw new Error("Selector cannot be empty, please give an id or a proper input");
   }
 
   // get document from database
   const connector = getModelConnector<TModel>(context, model);
   let document = await connector.findOne(selector);
 
-  /* Autorization */
+  /* Authorization */
   performMutationCheck({
     user: currentUser,
     document,

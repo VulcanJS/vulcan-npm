@@ -203,6 +203,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
             ...createArgs,
             model: Foo,
             context,
+            currentUser,
             data,
             validate: true, // enable document validation
           });
