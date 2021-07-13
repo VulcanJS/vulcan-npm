@@ -48,7 +48,7 @@ import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
 import { isMemberOf } from "@vulcanjs/permissions";
 import { getModelConnector } from "./context";
 import { FilterableInput } from "../../typings";
-import { deprecate } from "@vulcanjs/utils/dist";
+import { deprecate } from "@vulcanjs/utils";
 import clone from "lodash/clone";
 import isEmpty from "lodash/isEmpty";
 import { ContextWithUser } from "./typings";
@@ -159,7 +159,7 @@ async function getSelector({ dataId, selector, input, context, model }: GetSelec
     selector = { _id: dataId };
   } else if (selector) {
     deprecate('0.2.3',
-      'please use input that is more generic instead of selector.'
+    "'selector' attribute of mutators is deprecated, use 'input' instead"
     );
     selector = selector;
   } else if (input) {
