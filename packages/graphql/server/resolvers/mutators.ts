@@ -47,7 +47,7 @@ import { throwError } from "./errors";
 import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
 import { isMemberOf } from "@vulcanjs/permissions";
 import { getModelConnector } from "./context";
-import { FilterableInput } from "../../typings";
+import { UpdateInput, DeleteInput, FilterableInput } from "../../typings";
 import { deprecate } from "@vulcanjs/utils";
 import clone from "lodash/clone";
 import isEmpty from "lodash/isEmpty";
@@ -159,7 +159,7 @@ async function getSelector({ dataId, selector, input, context, model }: GetSelec
     selector = { _id: dataId };
   } else if (selector) {
     deprecate('0.2.3',
-    "'selector' attribute of mutators is deprecated, use 'input' instead"
+      "'selector' attribute of mutators is deprecated, use 'input' instead"
     );
     selector = selector;
   } else if (input) {
@@ -333,7 +333,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 }: UpdateMutatorCommonInput & (
   { dataId: string, selector?: undefined, input?: undefined } |
   { selector: Object, dataId?: undefined, input?: undefined } |
-  { input: FilterableInput<VulcanDocument>, dataId?: undefined, selector?: undefined }
+  { input: UpdateInput<VulcanDocument>, dataId?: undefined, selector?: undefined }
 )): Promise<{ data: TModel }> => {
 
   set = set || {};
@@ -507,7 +507,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
 }: DeleteMutatorCommonInput & (
   { dataId: string, selector?: undefined, input?: undefined } |
   { selector: Object, dataId?: undefined, input?: undefined } |
-  { input: FilterableInput<VulcanDocument>, dataId?: undefined, selector?: undefined }
+  { input: DeleteInput, dataId?: undefined, selector?: undefined }
 )): Promise<{ data: TModel }> => {
 
   const mutatorName = "delete";
