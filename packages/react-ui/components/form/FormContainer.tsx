@@ -289,7 +289,7 @@ export const FormContainer = (props: FormContainerProps) => {
   };
 
   const deleteDocumentAndRefetch = async (variables: DeleteVariables) => {
-    await deleteDocument(variables);
+    await deleteDocument(variables as any);
   };
 
   if (isEdit && loading) {

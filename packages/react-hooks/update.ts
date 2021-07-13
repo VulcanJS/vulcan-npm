@@ -87,7 +87,7 @@ type UseUpdateResult<T = any> = [UpdateFunc<T>, MutationResult<T>]; // return th
 /**
  * const [updateFoo] = useUpdate({model: Foo})
  * ...
- * await updateFoo({input: { _id: "1234", data: myNewFoo }})
+ * await updateFoo({input: { id: "1234", data: myNewFoo }})
  */
 export const useUpdate = <TModel = any>(
   options: UseUpdateOptions

@@ -25,11 +25,18 @@ const defaultModelOptions = {
   schema,
   name: "Foo",
 };
+const membersPermissions = {
+  canCreate: ["members"],
+  canUpdate: ["members"],
+  canDelete: ["members"],
+};
 const Foo = createGraphqlModel({
   ...defaultModelOptions,
   graphql: { typeName: "Foo", multiTypeName: "Foos" },
+  permissions: membersPermissions,
 });
 describe("graphql/resolvers/mutators callbacks", function () {
+  const currentUser = { _id: "42" };
   describe("create callbacks", () => {
     // create fake context
     const defaultPartialContext: {
@@ -80,6 +87,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
               },
             },
           }),
+          permissions: membersPermissions,
         });
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo, connector: { create } },
@@ -89,6 +97,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
           ...createArgs,
           model: Foo,
           context,
+          currentUser,
           data,
         });
         expect((create.mock.calls[0] as any)[0]).toEqual(data); // callback is NOT yet acalled
@@ -110,6 +119,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
               },
             },
           }),
+          permissions: membersPermissions,
         });
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo, connector: { create } },
@@ -119,6 +129,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
           ...createArgs,
           model: Foo,
           context,
+          currentUser,
           data,
         });
         const dataArg = (create.mock.calls[0] as any)[0];
@@ -148,6 +159,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
               },
             },
           }),
+          permissions: membersPermissions,
         });
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo },
@@ -157,6 +169,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
           ...createArgs,
           model: Foo,
           context,
+          currentUser,
           data,
         });
         expect(asyncLong).toHaveBeenCalledTimes(1);
@@ -166,7 +179,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
       test("return a custom validation error", async () => {
         const errSpy = jest
           .spyOn(console, "error")
-          .mockImplementationOnce(() => {}); // silences console.error
+          .mockImplementationOnce(() => { }); // silences console.error
         const validate = jest.fn(() => ["ERROR"]);
         const Foo = createGraphqlModel({
           ...defaultModelOptions,
@@ -177,6 +190,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
               },
             },
           }),
+          permissions: membersPermissions,
         }) as VulcanGraphqlModel;
         const context = merge({}, defaultPartialContext, {
           Foo: { model: Foo },
@@ -189,10 +203,11 @@ describe("graphql/resolvers/mutators callbacks", function () {
             ...createArgs,
             model: Foo,
             context,
+            currentUser,
             data,
             validate: true, // enable document validation
           });
-        } catch (e) {}
+        } catch (e) { }
         expect(validate).toHaveBeenCalledTimes(1);
         expect(errSpy).toHaveBeenCalled();
       });

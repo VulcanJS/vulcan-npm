@@ -137,7 +137,7 @@ export interface CreateInput<TModel = any> extends CommonInput {
 export interface CreateVariables<TModel = any> {
   input: CreateInput<TModel>;
 }
-export interface UpdateInput<TModel> extends CommonInput {
+export interface UpdateInput<TModel> extends CommonInput, FilterableInput {
   data: TModel;
   id?: string;
 }
@@ -145,8 +145,8 @@ export interface UpdateVariables<TModel = any> {
   input: UpdateInput<TModel>;
 }
 
-export interface DeleteInput extends CommonInput {
-  id: string;
+export interface DeleteInput extends CommonInput, FilterableInput {
+  id?: string;
 }
 export interface DeleteVariables {
   input: DeleteInput;
@@ -161,7 +161,7 @@ type VulcanSelectorSortOption = "asc" | "desc";
  */
 
 type FieldSelector<TModel = any> = {
-  [key in keyof TModel]?: ConditionSelector; // TODO: we cannot yet pass native values | string | number | boolean | null | ;
+  [key in keyof TModel]?: ConditionSelector; // NOTE: we cannot yet pass native values | string | number | boolean | null | ;
 } &
   { [key in PossibleOperators]?: never };
 
