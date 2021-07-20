@@ -5,15 +5,10 @@ Default mutations
 */
 
 import { createMutator, updateMutator, deleteMutator } from "./mutators";
-import { getModel, getModelConnector } from "./context";
-import { throwError } from "./errors";
+import { getModel } from "./context";
 
 import { ContextWithUser } from "./typings";
-import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
-import { VulcanDocument } from "@vulcanjs/schema";
 import { MutationResolverDefinitions } from "../typings";
-import { VulcanGraphqlModel } from "../../typings";
-import { isMemberOf } from "@vulcanjs/permissions";
 
 const defaultOptions = {
   create: true,
@@ -27,56 +22,6 @@ const getUpdateMutationName = (typeName) => `update${typeName}`;
 const getDeleteMutationName = (typeName) => `delete${typeName}`;
 const getUpsertMutationName = (typeName) => `upsert${typeName}`;
 
-type OperationName = "create" | "update" | "delete";
-const operationChecks: {
-  [operationName in OperationName]: keyof ModelMutationPermissionsOptions;
-} = {
-  create: "canCreate",
-  update: "canUpdate",
-  delete: "canDelete",
-};
-
-interface MutationCheckOptions {
-  user?: any;
-  document?: VulcanDocument;
-  model: VulcanGraphqlModel;
-  context: any;
-  operationName: OperationName;
-}
-/*
-
-Perform security check before calling mutators
-
-*/
-export const performMutationCheck = (options: MutationCheckOptions) => {
-  const { user, document, model, context, operationName } = options;
-  const { typeName } = model.graphql;
-  const { Users } = context;
-  const permissionsCheck = model.permissions?.[operationChecks[operationName]];
-  let allowOperation = false;
-  const fullOperationName = `${typeName}:${operationName}`;
-  const documentId = document?._id;
-  const data = { documentId, operationName: fullOperationName };
-  // 1. if no permission has been defined, throw error
-  if (!permissionsCheck) {
-    throwError({ id: "app.no_permissions_defined", data });
-  }
-  // 2. if no document is passed, throw error
-  if (!document) {
-    throwError({ id: "app.document_not_found", data });
-  }
-
-  if (typeof permissionsCheck === "function") {
-    allowOperation = permissionsCheck(options);
-  } else if (Array.isArray(permissionsCheck)) {
-    allowOperation = isMemberOf(user, permissionsCheck, document);
-  }
-
-  // 3. if permission check is defined but fails, disallow operation
-  if (!allowOperation) {
-    throwError({ id: "app.operation_not_allowed", data });
-  }
-};
 
 interface MutationOptions {
   create?: boolean;
@@ -89,40 +34,6 @@ interface BuildDefaultMutationResolversInput {
   options?: MutationOptions;
 }
 
-interface GetMutationDocumentInput {
-  // TODO: put in common with the single resolver variables type, that have the same fields
-  variables: {
-    _id: string;
-    input?: any; // SingleInput
-  };
-  model: VulcanGraphqlModel;
-  context: any;
-}
-
-// get a single document based on the mutation params
-const getMutationDocument = async ({
-  variables,
-  model,
-  context,
-}: GetMutationDocumentInput): Promise<{
-  selector: Object;
-  document?: VulcanDocument;
-}> => {
-  const connector = getModelConnector(context, model);
-  let document;
-  let selector;
-  const { _id, input } = variables;
-  if (_id) {
-    // _id bypass input
-    document = await connector.findOneById(_id);
-  } else {
-    const filterParameters = await connector._filter(input, context);
-    selector = filterParameters.selector;
-    // get entire unmodified document from database
-    document = await connector.findOne(selector);
-  }
-  return { selector, document };
-};
 /*
 
 Default Mutations
@@ -145,15 +56,6 @@ export function buildDefaultMutationResolvers({
       name: getCreateMutationName(typeName),
       async mutation(root, { input: { data } }, context: ContextWithUser) {
         const model = getModel(context, typeName);
-        const { currentUser } = context;
-
-        performMutationCheck({
-          user: currentUser,
-          document: data,
-          model,
-          context,
-          operationName: "create",
-        });
 
         return await createMutator({
           model,
@@ -172,36 +74,16 @@ export function buildDefaultMutationResolvers({
       name: getUpdateMutationName(typeName),
       async mutation(root, { input }, context: ContextWithUser) {
         const model = getModel(context, typeName);
-        const { currentUser } = context;
         const data = input.data;
-        const _id = input.id || (data && typeof data === "object" && data._id); // use provided id or documentId if available
-
-        const { document, selector } = await getMutationDocument({
-          variables: {
-            input,
-            _id,
-          },
-          model,
-          context,
-        });
-
-        performMutationCheck({
-          user: currentUser,
-          document,
-          model,
-          context,
-          operationName: "update",
-        });
 
         // call editMutator boilerplate function
         return await updateMutator({
           model,
-          selector,
+          input,
           data,
           currentUser: context.currentUser,
           validate: true,
           context,
-          // document,
         });
       },
     };
@@ -211,38 +93,15 @@ export function buildDefaultMutationResolvers({
     mutations.delete = {
       description: `Mutation for deleting a ${typeName} document`,
       name: getDeleteMutationName(typeName),
-      async mutation(root, { input, _id }, context) {
+      async mutation(root, { input }, context) {
         const model = getModel(context, typeName);
-        const { currentUser } = context;
-
-        const { document /*selector*/ } = await getMutationDocument({
-          variables: {
-            input,
-            _id,
-          },
-          model,
-          context,
-        });
-
-        performMutationCheck({
-          user: currentUser,
-          document,
-          model,
-          context,
-          operationName: "delete",
-        });
-        if (!document?._id)
-          throw new Error(
-            "Perform mutation check did not catch an empty document._id during a delete mutation"
-          ); // should not happen with the check, defnesive code
 
         return await deleteMutator({
           model,
-          selector: { _id: document._id },
+          input,
           currentUser: context.currentUser,
           validate: true,
           context,
-          // document,
         });
       },
     };
