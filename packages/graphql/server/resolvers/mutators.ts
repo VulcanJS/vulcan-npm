@@ -45,7 +45,7 @@ import { isMemberOf } from "@vulcanjs/permissions";
 import { getModelConnector } from "./context";
 import { UpdateInput, DeleteInput, FilterableInput } from "../../typings";
 import { deprecate } from "@vulcanjs/utils";
-import clone from "lodash/clone";
+import cloneDeep from "lodash/cloneDeep";
 import isEmpty from "lodash/isEmpty";
 import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
@@ -201,7 +201,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
   context = {},
 }: CreateMutatorInput): Promise<{ data: TModel }> => {
   // we don't want to modify the original document
-  let data: Partial<TModel> = clone(originalData) as TModel;
+  let data: Partial<TModel> = cloneDeep(originalData) as TModel;
 
   const { schema } = model;
 
@@ -363,10 +363,10 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   const { schema } = model;
   let data;
   if (input) {
-    data = input.data; // normal case when using the useUpdate hook/default update resolver
+    data = cloneDeep(input.data); // normal case when using the useUpdate hook/default update resolver
   } else {
     // passing data directly (eg when calling the mutator manually)
-    data = dataFromRoot;
+    data = cloneDeep(dataFromRoot);
     // same but with set/unset modifiers
     if (!data) data = modifierToData({ $set: set, $unset: unset });
   }
@@ -414,7 +414,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   */
   const properties = {
     data,
-    originalData: clone(data),
+    originalData: cloneDeep(data),
     originalDocument: currentDocument,
     currentUser,
     model,
