@@ -16,7 +16,7 @@ Make packages public by adding this config in every public package:
 
 ```sh
 # Merge potential hotfixes
-git checkout main && git pull && git checkout devel && git pull && git merge main && git merge devel
+git checkout main && git pull
 # Check missing dependencies (NOTE: there might be false positive and false negative, be careful! Don't remove too many "unused" packages!)
 # - Ignore dependencies to storybook or jest (handled at the root level)
 # - Beware of things that should stay peer deps, like React
