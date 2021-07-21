@@ -5,7 +5,7 @@ import set from "lodash/set";
 import size from "lodash/size";
 
 import { removePrefix, filterPathsByPrefix } from "./path_utils";
-import { VulcanFieldSchema } from "@vulcanjs/schema/dist/typings";
+import { VulcanFieldSchema } from "@vulcanjs/schema";
 
 // add support for nested properties
 export const deepValue = function (obj, path) {

@@ -19,7 +19,6 @@ import {
 } from "@vulcanjs/graphql";
 import { capitalize } from "@vulcanjs/utils";
 import type { FormType } from "../typings";
-import { VulcanSchema } from "@vulcanjs/schema/dist/typings";
 import compact from "lodash/compact";
 //  getFieldFragment,
 const intlSuffix = "_intl";

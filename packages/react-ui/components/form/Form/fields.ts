@@ -28,7 +28,7 @@ import reject from "lodash/reject";
 import intersection from "lodash/intersection";
 import _filter from "lodash/filter";
 import { capitalize } from "@vulcanjs/utils";
-import { VulcanFieldSchema } from "@vulcanjs/schema/dist/typings";
+import { VulcanFieldSchema } from "@vulcanjs/schema";
 import { VulcanModel } from "@vulcanjs/model";
 
 /*
