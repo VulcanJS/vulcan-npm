@@ -252,8 +252,10 @@ describe("graphql/typeDefs", () => {
       const fields = parseSchema(schema, "Foo");
       const nestedFields = fields.nestedFieldsList[0];
       // one field in the nested object
-      expect(nestedFields.fields.mainType).toHaveLength(1);
-      expect(nestedFields.fields.mainType[0].name).toEqual("firstNestedField");
+      expect(nestedFields?.fields?.mainType).toHaveLength(1);
+      expect(nestedFields?.fields?.mainType[0].name).toEqual(
+        "firstNestedField"
+      );
     });
     test("generate fields for nested objects", () => {
       const schema = {
@@ -278,9 +280,13 @@ describe("graphql/typeDefs", () => {
       const nestedFields = fields.nestedFieldsList[0];
       expect(nestedFields.typeName).toEqual("FooNestedField");
       // one field in the nested object
-      expect(nestedFields.fields.mainType).toHaveLength(2);
-      expect(nestedFields.fields.mainType[0].name).toEqual("firstNestedField");
-      expect(nestedFields.fields.mainType[1].name).toEqual("secondNestedField");
+      expect(nestedFields?.fields?.mainType).toHaveLength(2);
+      expect(nestedFields?.fields?.mainType[0].name).toEqual(
+        "firstNestedField"
+      );
+      expect(nestedFields?.fields?.mainType[1].name).toEqual(
+        "secondNestedField"
+      );
     });
   });
   describe("model parsing to GraphQL schema and type", () => {
@@ -1087,7 +1093,8 @@ describe("graphql/typeDefs", () => {
       });
       const { queries } = parseModel(Foo);
       expect(queries).toHaveLength(2); // single and multi
-      if (queries.length !== 2) return; // to make ts happy
+      if (!queries) return;
+      if (queries.length < 2) return; // to make ts happy
       const single = queries[0];
       const multi = queries[1];
       expect(single.query).toContain("foo(");
@@ -1115,7 +1122,8 @@ describe("graphql/typeDefs", () => {
       });
       const { mutations } = parseModel(Foo);
       expect(mutations).toHaveLength(3); // create, update, delete
-      if (mutations.length !== 3) return; // make ts happy
+      if (!mutations) return;
+      if (mutations.length < 3) return; // make ts happy
       const create = mutations[0];
       const update = mutations[1];
       const deleteMutation = mutations[2];

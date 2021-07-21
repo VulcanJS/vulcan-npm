@@ -28,6 +28,8 @@ yarn clean
 yarn
 # Build
 yarn build
+# Typechecking
+yarn typecheck
 # Unit test
 yarn test
 # Deploy (Lerna will prompt questions for versionning)

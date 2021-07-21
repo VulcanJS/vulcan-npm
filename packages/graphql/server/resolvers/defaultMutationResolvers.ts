@@ -22,7 +22,6 @@ const getUpdateMutationName = (typeName) => `update${typeName}`;
 const getDeleteMutationName = (typeName) => `delete${typeName}`;
 const getUpsertMutationName = (typeName) => `upsert${typeName}`;
 
-
 interface MutationOptions {
   create?: boolean;
   update?: boolean;
@@ -74,13 +73,11 @@ export function buildDefaultMutationResolvers({
       name: getUpdateMutationName(typeName),
       async mutation(root, { input }, context: ContextWithUser) {
         const model = getModel(context, typeName);
-        const data = input.data;
 
         // call editMutator boilerplate function
         return await updateMutator({
           model,
           input,
-          data,
           currentUser: context.currentUser,
           validate: true,
           context,

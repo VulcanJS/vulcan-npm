@@ -55,7 +55,7 @@ interface SingleResolverOutput<TModel> {
 export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
   typeName,
   options,
-}: BuildDefaultQueryResolversInput): QueryResolverDefinitions {
+}: BuildDefaultQueryResolversInput): Required<QueryResolverDefinitions> {
   const resolverOptions = { ...defaultOptions, ...(options || {}) };
 
   const multi = {

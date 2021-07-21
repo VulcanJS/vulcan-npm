@@ -2,7 +2,7 @@ import {
   createMutator,
   updateMutator,
   deleteMutator,
-  performMutationCheck
+  performMutationCheck,
 } from "../../resolvers/mutators";
 import merge from "lodash/merge";
 
@@ -174,9 +174,8 @@ describe("graphql/resolvers/mutators", function () {
         defaultContext.Foo.connector.findOne = jest.fn(async () => data);
         await updateMutator({
           ...updateArgs,
-          input: { id: data._id },
+          input: { id: data._id, data },
           context: defaultContext,
-          data,
         });
         expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
           _id: "1",
@@ -205,7 +204,7 @@ describe("graphql/resolvers/mutators", function () {
             }),
             findOne: async () => ({ id: "1" }),
             update: async () => ({ id: "1" }),
-            delete: async () => { },
+            delete: async () => {},
           },
         },
       };
@@ -218,7 +217,7 @@ describe("graphql/resolvers/mutators", function () {
       ).rejects.toThrow();
     });
     test("refuse deletion if document is not found", async () => {
-      jest.spyOn(console, "error").mockImplementationOnce(() => { }); // silences console.error
+      jest.spyOn(console, "error").mockImplementationOnce(() => {}); // silences console.error
       const nullSelector = { documentId: null };
 
       const context = {
@@ -480,7 +479,7 @@ describe("performMutationCheck", () => {
   test("throws a 'document not found' error if there is no document", () => {
     const errSpy = jest
       .spyOn(console, "error")
-      .mockImplementationOnce(() => { }); // silences console.error
+      .mockImplementationOnce(() => {}); // silences console.error
     expect(() =>
       performMutationCheck({
         model: Foo,
@@ -495,7 +494,7 @@ describe("performMutationCheck", () => {
   test("throws an 'operation not allowed' if permission are set but user is not allowed", () => {
     const errSpy = jest
       .spyOn(console, "error")
-      .mockImplementationOnce(() => { }); // silences console.error
+      .mockImplementationOnce(() => {}); // silences console.error
     expect(() =>
       performMutationCheck({
         user: currentUser,
