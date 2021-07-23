@@ -1,11 +1,11 @@
 /*
 
 
-Mutations have five steps:
+Mutations have six steps:
 
 1. Authorization
 
-First we check if the user requesting the mutation has the authorization to do so.
+First we check if the document exists and if the user requesting the mutation has the authorization to do so.
 
 2. Validation
 
@@ -58,6 +58,7 @@ import { restrictViewableFields } from "@vulcanjs/permissions";
 const validateMutationData = async ({
   model,
   data,
+  originalDocument,
   mutatorName,
   context,
   properties,
@@ -67,12 +68,14 @@ const validateMutationData = async ({
   context: Object; // Graphql context
   properties: Object; // arguments of the callback, can vary depending on the mutator
   data?: any; // data to validate
+  originalDocument?: VulcanDocument;
   validationFunction?: Function;
 }): Promise<void> => {
   const { typeName } = model.graphql;
   // basic simple schema validation
   const simpleSchemaValidationErrors = validateData({
     document: data,
+    originalDocument,
     model,
     context,
     mutatorName,
@@ -399,14 +402,6 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     asAdmin,
   });
 
-  if (!currentDocument) {
-    throw new Error(
-      `Could not find document to update for selector: ${JSON.stringify(
-        selector
-      )}`
-    );
-  }
-
   /*
 
   Properties
@@ -427,6 +422,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     await validateMutationData({
       model,
       data,
+      originalDocument: properties.originalDocument,
       mutatorName,
       context,
       properties,
@@ -572,14 +568,6 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
     operationName: "delete",
     asAdmin,
   });
-
-  if (!document) {
-    throw new Error(
-      `Could not find document to delete for selector: ${JSON.stringify(
-        selector
-      )}`
-    );
-  }
 
   /*
 

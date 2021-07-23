@@ -84,6 +84,7 @@ const validateDocumentPermissions = (
 };
 
 interface ValidateDataInput {
+  originalDocument?: VulcanDocument;
   document: VulcanDocument;
   model: VulcanModel;
   context: any;
@@ -99,6 +100,7 @@ interface ValidateDataInput {
 
 */
 export const validateData = ({
+  originalDocument,
   document,
   model,
   context,
@@ -115,7 +117,7 @@ export const validateData = ({
   }
   // validate operation permissions on each field (and other Vulcan-specific constraints)
   validationErrors = validationErrors.concat(
-    validateDocumentPermissions(document, document, schema, context, mutatorName)
+    validateDocumentPermissions(originalDocument ? originalDocument : document, document, schema, context, mutatorName)
   );
   // build the schema on the fly
   // TODO: does it work with nested schema???

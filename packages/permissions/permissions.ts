@@ -23,6 +23,7 @@ import {
   VulcanDocument,
   forEachDocumentField,
 } from "@vulcanjs/schema";
+import { isEqual } from "lodash";
 
 // TODO: define user as a specific VulcanModel? So we get the typing already
 export interface User extends VulcanDocument {
@@ -170,7 +171,9 @@ export const owns = function (user: User | null, document: VulcanDocument) {
   try {
     if (!!document.userId) {
       // case 1: document is a post or a comment, use userId to check
-      return user._id === document.userId;
+      // Can't use "===" nor "==" here because of mongoDB ids types.
+      // TODO: check https://github.com/VulcanJS/vulcan-npm/issues/63
+      return isEqual(user._id, document.userId);
     } else {
       // case 2: document is a user, use _id or slug to check
       return document.slug
