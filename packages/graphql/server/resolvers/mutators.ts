@@ -422,7 +422,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     await validateMutationData({
       model,
       data,
-      originalDocument: properties.originalDocument,
+      originalDocument: currentDocument,
       mutatorName,
       context,
       properties,
