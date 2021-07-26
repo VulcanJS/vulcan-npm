@@ -11,6 +11,17 @@ export type MongooseConnector<TModel = any> = Connector<
   QueryFindOptions
 >;
 
+// Change the _id from object to string.
+const convertIdAndTransformToJSON = async (doc) => {
+  if (!Array.isArray(doc)) {
+    return doc ? { ...doc.toJSON(), _id: doc._id.toString() } : null;
+  } else {
+    return doc.map((document) => {
+      return { ...document.toJSON(), _id: document._id.toString() };
+    });
+  }
+};
+
 export const createMongooseConnector = <TModel = any>(
   model: VulcanModel
 ): MongooseConnector<TModel> => {
@@ -27,20 +38,26 @@ export const createMongooseConnector = <TModel = any>(
   // 2. create the connector
   return {
     find: async (selector, options) => {
-      const documents = await MongooseModel.find(
-        selector || {},
-        null,
-        options
-      ).exec();
-      return documents.map((d) => d.toJSON());
+      const documents = await convertIdAndTransformToJSON(
+        await MongooseModel.find(
+          selector || {},
+          null,
+          options
+        ).exec()
+      );
+      return documents;
     },
     findOne: async (selector) => {
-      const document = await MongooseModel.findOne(selector).exec();
-      return document && document.toJSON();
+      const document = await convertIdAndTransformToJSON(
+        await MongooseModel.findOne(selector).exec()
+      );
+      return document;
     },
     findOneById: async (id) => {
-      const document = await MongooseModel.findById(id).exec();
-      return document && document.toJSON();
+      const document = await convertIdAndTransformToJSON(
+        await MongooseModel.findById(id).exec()
+      );
+      return document;
       //throw new Error("findOneById not yet implemented in Mongoose connector");
     },
     count: async (selector) => {
@@ -49,8 +66,10 @@ export const createMongooseConnector = <TModel = any>(
     },
     create: async (document) => {
       const mongooseDocument = new MongooseModel(document);
-      const createdDocument = await mongooseDocument.save();
-      return createdDocument && createdDocument.toJSON();
+      const createdDocument = await convertIdAndTransformToJSON(
+        await mongooseDocument.save()
+      );
+      return createdDocument;
     },
     update: async (selector, modifier, options) => {
       if (options) {
@@ -65,12 +84,16 @@ export const createMongooseConnector = <TModel = any>(
       /*const updateResult = */ await MongooseModel.update(selector, modifier);
       // NOTE: update result is NOT the updated document but the number of updated docs
       // we need to fetch it again
-      const updatedDocument = await MongooseModel.findOne(selector).exec();
-      return updatedDocument && updatedDocument.toJSON();
+      const updatedDocument = await convertIdAndTransformToJSON(
+        await MongooseModel.findOne(selector).exec()
+      );
+      return updatedDocument;
     },
     delete: async (selector) => {
-      const deletedRawDocument = await MongooseModel.findOne(selector).exec();
-      const deletedDocument = deletedRawDocument && deletedRawDocument.toJSON();
+      const deletedRawDocument = await convertIdAndTransformToJSON(
+        await MongooseModel.findOne(selector).exec()
+      );
+      const deletedDocument = deletedRawDocument;
       await MongooseModel.deleteMany(selector);
       return deletedDocument;
     },

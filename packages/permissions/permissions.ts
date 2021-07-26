@@ -171,7 +171,7 @@ export const owns = function (user: User | null, document: VulcanDocument) {
   try {
     if (!!document.userId) {
       // case 1: document is a post or a comment, use userId to check
-      // Can't use "===" nor "==" here because of mongoDB ids types.
+      // Not sure if we can use "===" nor "==" here because of mongoDB ids types.
       // TODO: check https://github.com/VulcanJS/vulcan-npm/issues/63
       return isEqual(user._id, document.userId);
     } else {

@@ -4,7 +4,8 @@ import {
   getDocumentBasedPermissionFieldNames,
   getReadableFields,
   restrictViewableFields,
-} from "../permissions";
+  owns
+} from "../permissions/permissions";
 
 describe("vulcan:users/permissions", () => {
   const Dummies = createModel({
@@ -147,6 +148,31 @@ describe("vulcan:users/permissions", () => {
         });
         expect(fields).toEqual({ nested: { ok: "foo" } });
       });
+    });
+  });
+  const document = {
+    _id: "123",
+    userId: "foo"
+  };
+  const rightUser = {
+    _id: "foo",
+    groups: [],
+    isAdmin: false
+  }
+  const wrongUser = {
+    _id: "bar",
+    groups: [],
+    isAdmin: false
+  }
+
+  describe('owns', () => {
+    test("owns returns true when it's the right couple user-document", () => {
+      const value = owns(rightUser, document);
+      expect(value).toBe(true);
+    });
+    test("owns returns false when it's the a wrong couple user-document", () => {
+      const value = owns(wrongUser, document);
+      expect(value).toBe(false)
     });
   });
 });
