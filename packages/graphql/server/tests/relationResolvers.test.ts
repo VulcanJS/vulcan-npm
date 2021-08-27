@@ -1,5 +1,6 @@
 import { createGraphqlModel } from "../../extendModel";
 import { hasMany, hasOne } from "../resolvers/relationResolvers";
+import merge from "lodash/merge";
 
 const authorModel = createGraphqlModel({
   name: "Author",
@@ -46,6 +47,20 @@ const initHasManyParams = () => ({
     typeName: "BlogPost",
   },
 });
+const initContext = (passedContext = {}) =>
+  merge(
+    {},
+    {
+      BlogPost: {
+        connector: {
+          _filter: jest.fn(() => ({ selector: null })),
+          find: jest.fn(() => []),
+        },
+        model: blogPostModel,
+      },
+    },
+    passedContext
+  );
 describe("hasMany", () => {
   test("get related documents", async () => {
     const manyResolver = hasMany(initHasManyParams());
@@ -53,21 +68,21 @@ describe("hasMany", () => {
     const posts = [{ _id: "1", title: "1" }];
     // NOTE: an integration test would be more useful for this basic scenario
     const res = await manyResolver(author, null, {
-      BlogPost: {
-        connector: {
-          _filter: jest.fn(() => ({ selector: null })),
-          find: jest.fn(() => posts),
-        },
-        model: blogPostModel,
-      },
+      ...initContext({
+        BlogPost: { connector: { find: jest.fn(() => posts) } },
+      }),
     });
     expect(res).toEqual(posts);
   });
-  test.skip("remove unallowed fields", async () => {
+  test("remove unallowed fields", async () => {
     const manyResolver = hasMany(initHasManyParams());
     const author = { blogPostIds: ["1"] };
     const posts = [{ _id: "1", title: "1", privateInfo: "PRIVATE" }];
-    const res = await manyResolver(author, null, {});
+    const res = await manyResolver(author, null, {
+      ...initContext({
+        BlogPost: { connector: { find: jest.fn(() => posts) } },
+      }),
+    });
     expect(res).toEqual([{ _id: "1", title: "1" }]);
   });
   test.skip("remove unallowed documents", () => {});
