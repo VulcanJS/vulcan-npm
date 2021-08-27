@@ -14,6 +14,10 @@ export const buildApolloSchema = (
   typeDefs: string;
   resolvers: any;
 } /*IExecutableSchemaDefinition<any>*/ => {
+  if (!models.length)
+    throw new Error(
+      "You need at least one Vulcan model when calling buildApolloSchema"
+    );
   // TODO: merge all models
   const { resolvers, typeDefs } = parseAllModels(models);
   const mergedTypeDefs = `${defaultTypeDefs}

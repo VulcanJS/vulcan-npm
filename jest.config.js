@@ -228,5 +228,24 @@ module.exports = {
       // The paths to modules that run some code to configure or set up the testing environment before each test
       setupFiles: ["./jest/setup.server.js"],
     },
+    // integration tests
+    {
+      ...commonConfig,
+      name: "integration-server",
+      displayName: "integration-server",
+      testEnvironment: "node",
+      roots: undefined,
+      rootDir: ".",
+      testMatch: ["<rootDir>/test/integration/server/**/*.test.[jt]s?(x)"],
+    },
+    {
+      ...commonConfig,
+      name: "integration-client",
+      displayName: "integration-client",
+      testEnvironment: "node",
+      roots: undefined,
+      rootDir: ".",
+      testMatch: ["<rootDir>/test/integration/client/**/*.test.[jt]s?(x)"],
+    },
   ],
 };
