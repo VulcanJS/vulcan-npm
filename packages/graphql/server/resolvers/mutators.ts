@@ -1,14 +1,12 @@
 /*
 
 
-Mutations have six steps:
+Mutators have following steps:
 
 1. Authorization
-
 First we check if the document exists and if the user requesting the mutation has the authorization to do so.
 
 2. Validation
-
 If the mutator call is not trusted (for example, it comes from a GraphQL mutation),
 we'll run all validate steps:
 
@@ -51,6 +49,7 @@ import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
 import { restrictViewableFields } from "@vulcanjs/permissions";
+import { Options } from "graphql/utilities/extendSchema";
 
 /**
  * Throws if some data are invalid
@@ -110,7 +109,7 @@ const operationChecks: {
 
 interface MutationCheckOptions {
   user?: any;
-  document?: VulcanDocument;
+  document?: VulcanDocument | null;
   model: VulcanGraphqlModel;
   operationName: OperationName;
   asAdmin?: boolean;
@@ -157,6 +156,12 @@ interface GetSelectorInput {
   input?: FilterableInput<VulcanDocument>;
 }
 
+/**
+ * Get the selector, in the format that matches the relevant connector
+ * (for instance Mongo)
+ * @param param0
+ * @returns
+ */
 async function getSelector({
   dataId,
   selector,
@@ -311,56 +316,100 @@ export const createMutator = async <TModel extends VulcanDocument>({
 
 interface UpdateMutatorCommonInput {
   model: VulcanGraphqlModel;
+  /**
+   * Using a "set" syntax
+   * @deprecated
+   */
   set?: Object;
+  /**
+   * Using an "unset" syntax
+   * @deprecated
+   */
   unset?: Object;
+  /**
+   * User that triggered the update request
+   * Set to null only if the update request is triggered by the app itself
+   * Example where you can set it to null or undefined: seeding data
+   */
   currentUser?: any;
+  /**
+   * Should validate the data
+   *
+   * NEVER SET IT TO FALSE if the input comes from an user request!
+   * @default true
+   */
   validate?: boolean;
+  /**
+   * Set asAdmin to true when the update is controlled by the application
+   * Example: seeding data
+   *
+   * NEVER SET IT TO TRUE if the input comes from an user request!
+   * @default false
+   */
   asAdmin?: boolean;
   context?: ContextWithUser;
 }
 
+interface DataIdInput {
+  dataId: string;
+  data: VulcanDocument; // you must pass data at the root in this case
+  // do not use the other fields to avoid ambiguity
+  selector?: undefined;
+  input?: undefined;
+}
+interface SelectorInput {
+  /**
+   * Selector must be in the connector format
+   * Eg a Mongo selector
+   * @deprecated Use input or dataId instead
+   */
+  selector: Object;
+  data: VulcanDocument; // you must pass data at the root in this case
+  // do not use the other fields to avoid ambiguity
+  dataId?: undefined;
+  input?: undefined;
+}
+interface VulcanInput {
+  /**
+   * Vulcan input
+   *
+   * Data represents the fields to update:
+   * - id will be used to find the right document (you cannot update the id of a document)
+   * - Fields that are not listed are left untouched
+   * - Fields with value "null" will be unset from the document
+   * - Fields with a non-null value will be updated
+   *
+   * @example { data: { id: 42, fieldToUpdate: "bar", fieldToRemove: null}}
+   */
+  input: UpdateInput<VulcanDocument>;
+  dataId?: undefined;
+  selector?: undefined;
+  data?: undefined; // data are passed through the input in this case
+}
+export type UpdateMutatorInput = UpdateMutatorCommonInput &
+  (DataIdInput | VulcanInput | SelectorInput);
+
 /*
 
 Update
-Accepts a document reference by id, Vulan input or selector (deprecated, use input instead).
+Accepts a document reference by id, or Vulcan input
+
+Using a Mongo selector directly is deprecated, use an input instead.
 
 */
 export const updateMutator = async <TModel extends VulcanDocument>({
   model,
-  dataId,
-  selector,
+  dataId: dataIdFromArgs,
+  selector: selectorFromArgs,
   input,
   data: dataFromRoot,
-  set,
-  // FIXME: babel does build, probably because "set" is reserved
-  // set = {},
+  set: setFromArgs = {},
   unset = {},
   currentUser,
   validate,
   asAdmin,
   context = {},
-}: UpdateMutatorCommonInput &
-  (
-    | {
-        dataId: string;
-        selector?: undefined;
-        input?: undefined;
-        data: VulcanDocument; // you must pass data at the root in this case
-      }
-    | {
-        selector: Object;
-        dataId?: undefined;
-        input?: undefined;
-        data: VulcanDocument; // you must pass data at the root in this case
-      }
-    | {
-        input: UpdateInput<VulcanDocument>;
-        dataId?: undefined;
-        selector?: undefined;
-        data?: undefined; // data are passed through the input in this case
-      }
-  )): Promise<{ data: TModel }> => {
-  set = set || {};
+}: UpdateMutatorInput): Promise<{ data: TModel }> => {
   const { typeName } = model.graphql;
   const mutatorName = "update";
   const { schema } = model;
@@ -371,7 +420,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     // passing data directly (eg when calling the mutator manually)
     data = cloneDeep(dataFromRoot);
     // same but with set/unset modifiers
-    if (!data) data = modifierToData({ $set: set, $unset: unset });
+    if (!data) data = modifierToData({ $set: setFromArgs, $unset: unset });
   }
 
   // get currentUser from context if possible
@@ -379,9 +428,15 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     currentUser = context.currentUser;
   }
 
-  // get selector from the right input
-  dataId = dataId || input?.id || data?._id;
-  selector = await getSelector({ dataId, selector, input, context, model });
+  // get Mongo selector from the right input
+  const dataId = dataIdFromArgs || input?.id || data?._id;
+  const selector = await getSelector({
+    dataId,
+    selector: selectorFromArgs,
+    input,
+    context,
+    model,
+  });
   // this shouldn't be reachable
   if (isEmpty(selector)) {
     throw new Error(
@@ -391,16 +446,18 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 
   // get original document from database or arguments
   const connector = getModelConnector(context, model);
-  const currentDocument = await connector.findOne(selector);
+  const foundCurrentDocument = await connector.findOne(selector);
 
   /* Authorization */
   performMutationCheck({
     user: currentUser,
-    document: currentDocument,
+    document: foundCurrentDocument,
     model,
     operationName: "update",
     asAdmin,
   });
+  // PerformMutationCheck will already check that the document has been found, we can cast safely
+  let currentDocument = foundCurrentDocument as TModel;
 
   /*
 
@@ -524,8 +581,8 @@ Accepts a document reference by id, Vulan input or selector (deprecated, use inp
 */
 export const deleteMutator = async <TModel extends VulcanDocument>({
   model,
-  dataId,
-  selector,
+  dataId: dataIdFromArgs,
+  selector: selectorFromArgs,
   input,
   currentUser,
   validate,
@@ -534,7 +591,15 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
 }: DeleteMutatorCommonInput &
   (
     | { dataId: string; selector?: undefined; input?: undefined }
-    | { selector: Object; dataId?: undefined; input?: undefined }
+    | {
+        /**
+         * Custom selector (eg Mongo)
+         * @deprecated Use Vulcan input instead
+         */
+        selector: Object;
+        dataId?: undefined;
+        input?: undefined;
+      }
     | { input: DeleteInput; dataId?: undefined; selector?: undefined }
   )): Promise<{ data: TModel }> => {
   const mutatorName = "delete";
@@ -547,8 +612,14 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   }
 
   // get selector from the right input
-  dataId = dataId || input?.id;
-  selector = await getSelector({ dataId, selector, input, context, model });
+  const dataId = dataIdFromArgs || input?.id;
+  const selector = await getSelector({
+    dataId,
+    selector: selectorFromArgs,
+    input,
+    context,
+    model,
+  });
   // this shouldn't be reachable
   if (isEmpty(selector)) {
     throw new Error(
@@ -558,16 +629,20 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
 
   // get document from database
   const connector = getModelConnector<TModel>(context, model);
-  let document = await connector.findOne(selector);
+  let foundDocument = await connector.findOne(selector);
 
-  /* Authorization */
+  /* Authorization
+  Will also check if document is defined
+  */
   performMutationCheck({
     user: currentUser,
-    document,
+    document: foundDocument,
     model,
     operationName: "delete",
     asAdmin,
   });
+  // Force a cast because performMutationCheck will validate the document existence
+  let document = foundDocument as TModel;
 
   /*
 

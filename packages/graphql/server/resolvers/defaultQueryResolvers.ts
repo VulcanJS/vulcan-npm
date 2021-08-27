@@ -205,7 +205,7 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
 
         // check again that the fields used for filtering were all valid, this time based on retrieved document
         // this second check is necessary for document based permissions like canRead:["owners", customFunctionThatNeedDoc]
-        if (filteredFields.length) {
+        if (doc && filteredFields.length) {
           doc = canFilterDocument(currentUser, model, filteredFields, doc)
             ? doc
             : null;

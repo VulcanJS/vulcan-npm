@@ -20,7 +20,7 @@ const defaultOptions = {
 const getCreateMutationName = (typeName) => `create${typeName}`;
 const getUpdateMutationName = (typeName) => `update${typeName}`;
 const getDeleteMutationName = (typeName) => `delete${typeName}`;
-const getUpsertMutationName = (typeName) => `upsert${typeName}`;
+//const getUpsertMutationName = (typeName) => `upsert${typeName}`;
 
 interface MutationOptions {
   create?: boolean;
@@ -71,10 +71,19 @@ export function buildDefaultMutationResolvers({
     mutations.update = {
       description: `Mutation for updating a ${typeName} document`,
       name: getUpdateMutationName(typeName),
+      /**
+       * Example consumption from a hook:
+       *
+       * const [updateUser] = useUpdate({model: User})
+       * updateUser({input: { data: { id: 42, newField: "hello" }}})
+       *
+       * @param root
+       * @param param1
+       * @param context
+       * @returns
+       */
       async mutation(root, { input }, context: ContextWithUser) {
         const model = getModel(context, typeName);
-
-        // call editMutator boilerplate function
         return await updateMutator({
           model,
           input,
@@ -92,7 +101,6 @@ export function buildDefaultMutationResolvers({
       name: getDeleteMutationName(typeName),
       async mutation(root, { input }, context) {
         const model = getModel(context, typeName);
-
         return await deleteMutator({
           model,
           input,

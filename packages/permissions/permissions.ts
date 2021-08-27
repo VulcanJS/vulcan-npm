@@ -81,7 +81,7 @@ class Group {
  */
 export const getGroups = (
   user: User | null,
-  document?: VulcanDocument
+  document?: VulcanDocument | null
 ): Array<Group> => {
   let userGroups = [
     "anyone",
@@ -138,7 +138,7 @@ const getActions = (user: Users) => {
 export const isMemberOf = (
   user: User | null,
   groupOrGroups: Array<Group> | Group,
-  document?: VulcanDocument
+  document?: VulcanDocument | null
 ) => {
   const groups = Array.isArray(groupOrGroups) ? groupOrGroups : [groupOrGroups];
   return intersection(getGroups(user, document), groups).length > 0;
@@ -170,9 +170,10 @@ export const owns = function (user: User | null, document: VulcanDocument) {
   if (!user) return false;
   try {
     if (!!document.userId) {
-      // case 1: document is a post or a comment, use userId to check
-      // Not sure if we can use "===" nor "==" here because of mongoDB ids types.
-      // TODO: check https://github.com/VulcanJS/vulcan-npm/issues/63
+      // case 1: document has been created by a user, user userId
+      // isEqual is robust to the scenario where the "_id" is not a string but an ObjectId
+      // However, _id is usually expected to be a string
+      // @see check https://github.com/VulcanJS/vulcan-npm/issues/63
       return isEqual(user._id, document.userId);
     } else {
       // case 2: document is a user, use _id or slug to check

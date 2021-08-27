@@ -6,6 +6,12 @@ import { FilterableInput } from "../../typings";
  */
 export interface Connector<
   TModel extends VulcanDocument = any,
+  /**
+   * Type of Selector, in the Connector domain
+   * => Mongo selector for mongo etc.
+   * So connectors share the same main API, but selectors may have different shapes to fit the spécificities of the connector
+   * The _filter function let's you convert generic Vulcan Input format into the connector specific selector format
+   */
   TSelector = any,
   TOptions = any
 > {
@@ -22,9 +28,9 @@ export interface Connector<
   }>;
   // replaces collection.loader.load
   // @see https://github.com/GraphQLGuide/apollo-datasource-mongodb/#findonebyid
-  findOneById: (_id: string) => Promise<TModel>;
+  findOneById: (_id: string) => Promise<TModel | null>;
   // replaces get
-  findOne: (selector?: TSelector, options?: TOptions) => Promise<TModel>;
+  findOne: (selector?: TSelector, options?: TOptions) => Promise<TModel | null>;
   /**
    * Find data in the database
    */
@@ -39,5 +45,5 @@ export interface Connector<
     options?: { removeEmptyStrings: boolean }
   ) => Promise<TModel>;
   // Returns the delete object
-  delete: (selector: TSelector) => Promise<TModel>;
+  delete: (selector: TSelector) => Promise<TModel | null>;
 }

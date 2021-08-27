@@ -11,16 +11,37 @@ export type MongooseConnector<TModel = any> = Connector<
   QueryFindOptions
 >;
 
-// Change the _id from object to string.
-const convertIdAndTransformToJSON = async (doc) => {
-  if (!Array.isArray(doc)) {
-    return doc ? { ...doc.toJSON(), _id: doc._id.toString() } : null;
+/**
+ * Converts Mongo ObjectId to string
+ *
+ * Connectors are expected to use string ids
+ * It was the default behaviour in Meteor for Mongo,
+ * but Mongoose/raw Mongo default behaviour is to use ObjectId
+ *
+ * => we prefer string ids in Vulcan for a consistent representation, in particular
+ * between the GraphQL client (that will always use string ids) and the server
+ *
+ * TODO: not sure why we need to turn the document into JSON though
+ */
+type MongoDoc<TModel> = {
+  toJSON: () => TModel;
+  _id: { toString: () => string };
+};
+function convertIdAndTransformToJSON<TModel>(doc: MongoDoc<TModel>): TModel;
+function convertIdAndTransformToJSON<TModel>(
+  docs: Array<MongoDoc<TModel>>
+): Array<TModel>;
+function convertIdAndTransformToJSON<TModel>(
+  docOrDocs: MongoDoc<TModel> | Array<MongoDoc<TModel>>
+): TModel | Array<TModel> {
+  if (!Array.isArray(docOrDocs)) {
+    return { ...docOrDocs.toJSON(), _id: docOrDocs._id.toString() };
   } else {
-    return doc.map((document) => {
+    return docOrDocs.map((document) => {
       return { ...document.toJSON(), _id: document._id.toString() };
     });
   }
-};
+}
 
 export const createMongooseConnector = <TModel = any>(
   model: VulcanModel
@@ -38,23 +59,20 @@ export const createMongooseConnector = <TModel = any>(
   // 2. create the connector
   return {
     find: async (selector, options) => {
-      const documents = await convertIdAndTransformToJSON(
-        await MongooseModel.find(
-          selector || {},
-          null,
-          options
-        ).exec()
-      );
-      return documents;
+      const found = await MongooseModel.find(
+        selector || {},
+        null,
+        options
+      ).exec();
+      return convertIdAndTransformToJSON<TModel>(found);
     },
     findOne: async (selector) => {
-      const document = await convertIdAndTransformToJSON(
-        await MongooseModel.findOne(selector).exec()
-      );
+      const found = await MongooseModel.findOne(selector).exec();
+      const document = await convertIdAndTransformToJSON<TModel>(found);
       return document;
     },
     findOneById: async (id) => {
-      const document = await convertIdAndTransformToJSON(
+      const document = await convertIdAndTransformToJSON<TModel>(
         await MongooseModel.findById(id).exec()
       );
       return document;
@@ -66,10 +84,8 @@ export const createMongooseConnector = <TModel = any>(
     },
     create: async (document) => {
       const mongooseDocument = new MongooseModel(document);
-      const createdDocument = await convertIdAndTransformToJSON(
-        await mongooseDocument.save()
-      );
-      return createdDocument;
+      const createdDocument = await mongooseDocument.save();
+      return convertIdAndTransformToJSON(createdDocument);
     },
     update: async (selector, modifier, options) => {
       if (options) {
@@ -81,18 +97,18 @@ export const createMongooseConnector = <TModel = any>(
           options
         );
       }
-      /*const updateResult = */ await MongooseModel.update(selector, modifier);
+      /*const updateResult = */ await MongooseModel.updateOne(
+        selector,
+        modifier
+      );
       // NOTE: update result is NOT the updated document but the number of updated docs
       // we need to fetch it again
-      const updatedDocument = await convertIdAndTransformToJSON(
-        await MongooseModel.findOne(selector).exec()
-      );
-      return updatedDocument;
+      const updatedDocument = await MongooseModel.findOne(selector).exec();
+      return convertIdAndTransformToJSON(updatedDocument);
     },
     delete: async (selector) => {
-      const deletedRawDocument = await convertIdAndTransformToJSON(
-        await MongooseModel.findOne(selector).exec()
-      );
+      const docFromDb = await MongooseModel.findOne(selector).exec();
+      const deletedRawDocument = convertIdAndTransformToJSON<TModel>(docFromDb);
       const deletedDocument = deletedRawDocument;
       await MongooseModel.deleteMany(selector);
       return deletedDocument;

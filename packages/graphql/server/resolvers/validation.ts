@@ -105,19 +105,25 @@ export const validateData = ({
   model,
   context,
   mutatorName,
-  validationContextName = "defaultContext" // TODO: what is this?
+  validationContextName = "defaultContext", // TODO: what is this?
 }: ValidateDataInput): Array<ValidationError> => {
   const { schema } = model;
 
   let validationErrors: Array<ValidationError> = [];
 
   // delete mutator has no data, so we skip the simple schema validation
-  if (mutatorName === 'delete') {
+  if (mutatorName === "delete") {
     return validationErrors;
   }
   // validate operation permissions on each field (and other Vulcan-specific constraints)
   validationErrors = validationErrors.concat(
-    validateDocumentPermissions(originalDocument ? originalDocument : document, document, schema, context, mutatorName)
+    validateDocumentPermissions(
+      originalDocument ? originalDocument : document,
+      document,
+      schema,
+      context,
+      mutatorName
+    )
   );
   // build the schema on the fly
   // TODO: does it work with nested schema???
@@ -125,13 +131,13 @@ export const validateData = ({
   // run simple schema validation (will check the actual types, required fields, etc....)
   const validationContext = simpleSchema.namedContext(validationContextName);
   // validate the schema, depends on which operation you want to do.
-  if (mutatorName === 'create') {
+  if (mutatorName === "create") {
     validationContext.validate(document);
   }
-  if (mutatorName === 'update') {
+  if (mutatorName === "update") {
     const modifier: Modifier = dataToModifier(document);
     const set = modifier.$set;
-    const unset = modifier.$unset
+    const unset = modifier.$unset;
     validationContext.validate(
       { $set: set, $unset: unset },
       { modifier: true, extendedCustomContext: { documentId: document._id } }
