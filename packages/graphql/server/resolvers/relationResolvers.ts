@@ -24,7 +24,7 @@ interface RelationInput {
  */
 export const hasOne =
   ({ fieldName, relation }: RelationInput): QueryResolver =>
-  async (document, args, context) => {
+  async (document: VulcanDocument, args: any, context) => {
     // if document doesn't have a "foreign key" field, return null
     if (!document[fieldName]) return null;
     const documentId = document[fieldName];
@@ -55,12 +55,12 @@ export const hasMany =
     // get related collection
     // get related documents
     const relatedModel = getModel(context, relation.typeName);
-    const connector = context[relatedModel.name];
-    const input = { _id: { $in: documentIds } };
+    const connector = getModelConnector(context, relatedModel);
+    const input = { filter: { _id: { _in: documentIds } } };
     let { selector } = await connector._filter(input, context);
     const relatedDocuments = await connector.find(selector);
     // filter related document to restrict viewable fields
-    return context.Users.restrictViewableFields(
+    return restrictViewableFields(
       context.currentUser,
       relatedModel,
       relatedDocuments
