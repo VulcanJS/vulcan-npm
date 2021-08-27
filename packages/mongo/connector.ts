@@ -68,13 +68,12 @@ export const createMongooseConnector = <TModel = any>(
     },
     findOne: async (selector) => {
       const found = await MongooseModel.findOne(selector).exec();
-      const document = await convertIdAndTransformToJSON<TModel>(found);
+      const document = found && convertIdAndTransformToJSON<TModel>(found);
       return document;
     },
     findOneById: async (id) => {
-      const document = await convertIdAndTransformToJSON<TModel>(
-        await MongooseModel.findById(id).exec()
-      );
+      const found = await MongooseModel.findById(id).exec();
+      const document = found && convertIdAndTransformToJSON<TModel>(found);
       return document;
       //throw new Error("findOneById not yet implemented in Mongoose connector");
     },
@@ -108,7 +107,8 @@ export const createMongooseConnector = <TModel = any>(
     },
     delete: async (selector) => {
       const docFromDb = await MongooseModel.findOne(selector).exec();
-      const deletedRawDocument = convertIdAndTransformToJSON<TModel>(docFromDb);
+      const deletedRawDocument =
+        docFromDb && convertIdAndTransformToJSON<TModel>(docFromDb);
       const deletedDocument = deletedRawDocument;
       await MongooseModel.deleteMany(selector);
       return deletedDocument;
