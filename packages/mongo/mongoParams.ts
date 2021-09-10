@@ -1,14 +1,12 @@
 /**
  * Converts Vulcan selector and options to Mongo parameters (selector, fields)
  */
-import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
 import isEmpty from "lodash/isEmpty";
 import escapeStringRegexp from "escape-string-regexp";
 import merge from "lodash/merge";
 import { isEmptyOrUndefined } from "@vulcanjs/utils";
 import { VulcanModel } from "@vulcanjs/model";
-import { SingleInput } from "../graphql/typings";
 import { FilterQuery, QueryFindOptions } from "mongoose";
 import { FilterableInput } from "@vulcanjs/graphql";
 

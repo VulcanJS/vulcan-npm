@@ -29,6 +29,10 @@ You can run it from anywhere, and the `--scope` part is mandatory (otherwise the
 
 ## Common issues
 
+## No index.d.ts in dist
+
+You mistakenly imported local code from another package, like importing from `../graphql` instead of `@vulcanjs/graphql` in `@vulcanjs/mongo`. Find the culprit import and fix them will repair the build.
+
 ### Forgetting to include tests and stories in tsconfig.json
 
 This is necessary to get the right typings in VS code. If you ever need to exclude them, eg to fasten the build, then create a dedicated `tsconfig.build.json` for instance and live `tsconfig.json` alone.

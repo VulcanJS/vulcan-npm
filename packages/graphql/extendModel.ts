@@ -14,7 +14,7 @@ import { VulcanModel, createModel, CreateModelOptions } from "@vulcanjs/model";
 import {
   getDefaultFragmentText,
   getDefaultFragmentName,
-} from "../graphql/fragments/defaultFragment";
+} from "./fragments/defaultFragment";
 import { camelCaseify } from "@vulcanjs/utils";
 import {
   MutationResolverDefinitions,
