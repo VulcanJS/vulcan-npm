@@ -106,12 +106,13 @@ export const createMongooseConnector = <TModel = any>(
       return convertIdAndTransformToJSON(updatedDocument);
     },
     delete: async (selector) => {
-      const docFromDb = await MongooseModel.findOne(selector).exec();
-      const deletedRawDocument =
-        docFromDb && convertIdAndTransformToJSON<TModel>(docFromDb);
-      const deletedDocument = deletedRawDocument;
+      // NOTE: we don't return deleted document, as this is a deleteMany operation
+      // const docFromDb = await MongooseModel.findOne(selector).exec();
+      // const deletedRawDocument =
+      //   docFromDb && convertIdAndTransformToJSON<TModel>(docFromDb);
+      // const deletedDocument = deletedRawDocument;
       await MongooseModel.deleteMany(selector);
-      return deletedDocument;
+      return true; //deletedDocument;
     },
     // This function is meant at generating options for Find and select
     _filter: async (input, context) => {

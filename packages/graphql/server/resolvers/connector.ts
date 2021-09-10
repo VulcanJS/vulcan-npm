@@ -44,6 +44,6 @@ export interface Connector<
     modifier: Object,
     options?: { removeEmptyStrings: boolean }
   ) => Promise<TModel>;
-  // Returns the delete object
-  delete: (selector: TSelector) => Promise<TModel | null>;
+  // Returns true (NOTE: this is a deleteMany operation, so it doesn't return the document but a success response)
+  delete: (selector: TSelector) => Promise<true>;
 }
