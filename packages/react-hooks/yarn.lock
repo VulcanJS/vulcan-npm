@@ -318,10 +318,10 @@
     debug "^4.3.1"
     lodash "^4.17.21"
 
-"@vulcanjs/graphql@^0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@vulcanjs/graphql/-/graphql-0.2.4.tgz#c8edc15999f8f33631b12d478b47f530a51ec562"
-  integrity sha512-8jEVmMBYWHDYyWI7XvRa5hxZSAbdNXVcNbMCLJYDYQYzwjXTskKCT9YQ2gKib2SH6Fz/eHWNBlZJQFnR+mmMbQ==
+"@vulcanjs/graphql@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/graphql/-/graphql-0.2.5.tgz#b3f563f72408f3212c663601ffb659c9abf039ba"
+  integrity sha512-yehZO20vpQsVuip/uWZW7wQ4bWA9jwnwV5xV6kfA7p2b7ZjL1hz02Y+n7xAw3P//ySL2RFOdZQnjxtxXLclEHA==
   dependencies:
     "@vulcanjs/core" "^0.2.0"
     "@vulcanjs/i18n" "^0.2.0"
@@ -353,12 +353,12 @@
   dependencies:
     "@vulcanjs/schema" "^0.2.0"
 
-"@vulcanjs/mongo@^0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@vulcanjs/mongo/-/mongo-0.2.4.tgz#3aa07d8e3e90d83be6362c14cc04acea02b85b3d"
-  integrity sha512-f+bOtLbtFtnGFjBZiy7aB/AVE6BzGejR4RXgj5/Cbm/IZRNPLh6l3A8gJ9Rat6aqDd2A5gXgwm5SAhfMw44plQ==
+"@vulcanjs/mongo@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/mongo/-/mongo-0.2.5.tgz#051630ea4738a9a84aa208556a74e98d14dca87d"
+  integrity sha512-mV8jgZRkZQcbcDEvOX7UQhA9UlKcNBDqPm3hvLIdaBxcSnAVccsLU1bjCM/lenif8iz1e/PSevBBAox4HWh0lw==
   dependencies:
-    "@vulcanjs/graphql" "^0.2.4"
+    "@vulcanjs/graphql" "^0.2.5"
     "@vulcanjs/model" "^0.2.0"
     "@vulcanjs/utils" "^0.2.0"
     escape-string-regexp "4.0.0"
@@ -1258,9 +1258,9 @@ object-keys@^1.0.12, object-keys@^1.1.1:
   integrity sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
 
 object-path@^0.11.4:
-  version "0.11.5"
-  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.5.tgz#d4e3cf19601a5140a55a16ad712019a9c50b577a"
-  integrity sha512-jgSbThcoR/s+XumvGMTMf81QVBmah+/Q7K7YduKeKVWL7N111unR2d6pZZarSk6kY/caeNxUDyxOvMWyzoU2eg==
+  version "0.11.8"
+  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.8.tgz#ed002c02bbdd0070b78a27455e8ae01fc14d4742"
+  integrity sha512-YJjNZrlXJFM42wTBn6zgOJVar9KFJvzx6sTWDte8sWZF//cnjl0BxHNpfZx+ZffXX63A9q0b1zsFiBX4g4X5KA==
 
 object.assign@^4.1.2:
   version "4.1.2"
