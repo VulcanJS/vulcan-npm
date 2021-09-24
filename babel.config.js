@@ -1,4 +1,34 @@
-const plugins = ["@babel/plugin-transform-runtime"];
+const plugins = [
+  "@babel/plugin-transform-runtime",
+  // @see https://mui.com/guides/minimizing-bundle-size/
+  [
+    "babel-plugin-import",
+    {
+      libraryName: "@mui/material",
+      libraryDirectory: "",
+      camel2DashComponentName: false,
+    },
+    "core",
+  ],
+  [
+    "babel-plugin-import",
+    {
+      libraryName: "@mui/icons-material",
+      libraryDirectory: "",
+      camel2DashComponentName: false,
+    },
+    "icons",
+  ],
+  // @see https://github.com/ant-design/babel-plugin-import
+  [
+    "babel-plugin-import",
+    {
+      libraryName: "lodash",
+      libraryDirectory: "",
+      camel2DashComponentName: false, // default: true
+    },
+  ],
+];
 
 // We need babel for code instrumentation
 const enableCoverage = process.env.COVERAGE && process.env.COVERAGE !== "false";
