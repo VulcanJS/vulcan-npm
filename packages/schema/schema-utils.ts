@@ -9,15 +9,15 @@ import _isArray from "lodash/isArray";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _omit from "lodash/omit";
-import moment from "moment-timezone";
 // import SimpleSchema from "simpl-schema";
 import { VulcanDocument, VulcanFieldSchema, VulcanSchema } from "./typings";
 
 export const formattedDateResolver = (fieldName) => {
-  return (document = {}, args: any = {}, context: any = {}) => {
+  return async (document = {}, args: any = {}, context: any = {}) => {
     const { format } = args;
     const { timezone /*= getSetting("timezone")*/ } = context;
     if (!document[fieldName]) return;
+    const moment = (await import("moment-timezone")).default;
     let m = moment(document[fieldName]);
     if (timezone) {
       m = m.tz(timezone);

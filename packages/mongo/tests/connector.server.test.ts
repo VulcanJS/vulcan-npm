@@ -159,8 +159,8 @@ describe("vulcan/mongo/connector", () => {
     test("delete", async () => {
       const docToCreate = { text: "hello" };
       const createdDoc = await connector.create(docToCreate);
-      const deletedDoc = await connector.delete(createdDoc);
-      expect(deletedDoc).toMatchObject(createdDoc);
+      const deleted = await connector.delete(createdDoc);
+      expect(deleted).toBe(true);
       const foundDoc = await connector.findOne({ _id: createdDoc._id });
       expect(foundDoc).toBeNull();
     });
