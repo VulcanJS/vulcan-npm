@@ -204,7 +204,9 @@ describe("graphql/resolvers/mutators", function () {
             }),
             findOne: async () => ({ id: "1" }),
             update: async () => ({ id: "1" }),
-            delete: async () => {},
+            delete: async () => {
+              return true;
+            },
           },
         },
       };

@@ -14,8 +14,8 @@ import { buildApolloSchema } from "@vulcanjs/graphql";
 
 import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://github.com/nodkz/mongodb-memory-server
 import { contextFromReq } from "./utils/context";
-import { createGraphqlModel } from "@vulcanjs/graphql";
 import { buildDefaultQueryResolvers } from "@vulcanjs/graphql";
+import { createGraphqlModelServer } from "@vulcanjs/graphql";
 
 let mongod;
 let mongoUri;
@@ -40,7 +40,7 @@ afterAll(async () => {
 describe("crud operations", () => {
   test("setup an apollo server", () => {
     const models = [
-      createGraphqlModel({
+      createGraphqlModelServer({
         name: "Contributor",
         schema: {
           _id: {

@@ -4,7 +4,10 @@
  */
 import { createModel } from "@vulcanjs/model";
 
-import extendModel, { createGraphqlModel } from "../../../extendModel";
+import {
+  createGraphqlModelServer,
+  extendModelServer,
+} from "../../../extendModel";
 import { VulcanGraphqlModel } from "../../../typings";
 import { parseAllModels } from "../../parseAllModels";
 import { buildDefaultQueryResolvers } from "../../resolvers/defaultQueryResolvers";
@@ -12,7 +15,7 @@ import { buildDefaultMutationResolvers } from "../../resolvers/defaultMutationRe
 
 describe("graphql/typeDefs", () => {
   describe("parseAllModels", () => {
-    const Foo = createGraphqlModel({
+    const Foo = createGraphqlModelServer({
       schema: {
         foo: {
           type: String,
@@ -40,7 +43,7 @@ describe("graphql/typeDefs", () => {
       },
       name: "Bar",
       extensions: [
-        extendModel({
+        extendModelServer({
           multiTypeName: "Bars",
           typeName: "Bar",
           queryResolvers: buildDefaultQueryResolvers({ typeName: "Foo" }),

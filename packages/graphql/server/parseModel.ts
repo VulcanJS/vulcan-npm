@@ -26,7 +26,7 @@ import {
 
 import _isEmpty from "lodash/isEmpty";
 import _initial from "lodash/initial";
-import { VulcanGraphqlModel } from "../typings";
+import { VulcanGraphqlModel, VulcanGraphqlModelServer } from "../typings";
 import { ModelResolverMap, AnyResolverMap } from "./typings";
 import {
   ParsedModelMutationResolvers,
@@ -203,7 +203,9 @@ interface ParseModelOutput
   schemaResolvers?: Array<AnyResolverMap>;
   resolvers?: ModelResolverMap;
 }
-export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
+export const parseModel = (
+  model: VulcanGraphqlModelServer
+): ParseModelOutput => {
   const typeDefs: Array<string> = [];
 
   // const {
@@ -216,10 +218,11 @@ export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
   const { schema, name: modelName } = model;
   const { typeName, multiTypeName } = model.graphql;
 
-  const { nestedFieldsList, fields, resolvers: schemaResolvers } = parseSchema(
-    schema,
-    typeName
-  );
+  const {
+    nestedFieldsList,
+    fields,
+    resolvers: schemaResolvers,
+  } = parseSchema(schema, typeName);
 
   const { mainType } = fields;
 
@@ -258,8 +261,8 @@ export const parseModel = (model: VulcanGraphqlModel): ParseModelOutput => {
   const resolvers: ModelResolverMap = {};
   let queries;
   let mutations;
-  const queryDefinitions = model.graphql.queryResolvers; // TODO: get from Model?
-  const mutationDefinitions = model.graphql.mutationResolvers; // TODO: get from Model?
+  const queryDefinitions = model.graphql?.queryResolvers; // TODO: get from Model?
+  const mutationDefinitions = model.graphql?.mutationResolvers; // TODO: get from Model?
   if (queryDefinitions) {
     const parsedQueries = parseQueryResolvers({
       queryResolverDefinitions: queryDefinitions,

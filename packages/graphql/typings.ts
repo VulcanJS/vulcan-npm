@@ -10,6 +10,7 @@ import {
   VulcanFieldSchema,
   VulcanSchema,
 } from "@vulcanjs/schema";
+import { Merge } from "@vulcanjs/utils";
 import { ContextWithUser } from "./server/resolvers";
 
 // SCHEMA TYPINGS
@@ -30,13 +31,19 @@ export interface RelationDefinition {
 }
 
 interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
-  // GRAPHQL
-  resolveAs?: Array<ResolveAsDefinition> | ResolveAsDefinition;
   relation?: RelationDefinition; // define a relation to another model
   typeName?: string; // the GraphQL type to resolve the field with
 }
+// @server-only
+interface VulcanGraphqlFieldSchemaServer extends VulcanGraphqlFieldSchema {
+  // this is a custom function => it has to be defined only on the server
+  resolveAs?: Array<ResolveAsDefinition> | ResolveAsDefinition;
+}
 // Base schema + GraphQL Fields
 export type VulcanGraphqlSchema = VulcanSchema<VulcanGraphqlFieldSchema>;
+// @server-only
+export type VulcanGraphqlSchemaServer =
+  VulcanSchema<VulcanGraphqlFieldSchemaServer>;
 
 // MODEL TYPINGS
 // Those typings extends the raw model/schema system
@@ -44,7 +51,7 @@ export interface VulcanGraphqlModelSkeleton extends VulcanModel {
   graphql: Pick<GraphqlModel, "typeName">;
 }
 // information relevant for server and client
-interface GraphqlSharedModel {
+interface GraphqlModel {
   typeName: string;
   multiTypeName: string; // plural name for the multi resolver
   multiResolverName: string;
@@ -53,17 +60,14 @@ interface GraphqlSharedModel {
   defaultFragmentName?: string;
 }
 // Client only model fields
-interface GraphqlClientModel {}
+// interface GraphqlClientModel extends GraphqlModel {}
+
 // Server only model fields
-interface GraphqlServerModel {
+export interface GraphqlModelServer extends GraphqlModel {
   queryResolvers?: QueryResolverDefinitions;
   mutationResolvers?: MutationResolverDefinitions;
   callbacks?: MutationCallbackDefinitions;
 }
-// With client and server fields (at this point, we can't actually differentiate them)
-export type GraphqlModel = GraphqlSharedModel &
-  GraphqlServerModel &
-  GraphqlClientModel;
 
 // TODO: not used yet. A schema for graphql might contain those additional fields.
 // export interface VulcanFieldSchemaGraphql extends VulcanFieldSchema {
@@ -73,6 +77,11 @@ export type GraphqlModel = GraphqlSharedModel &
 // Extended model with extended schema
 export interface VulcanGraphqlModel extends VulcanModel<VulcanGraphqlSchema> {
   graphql: GraphqlModel;
+}
+// @server-only
+export interface VulcanGraphqlModelServer
+  extends VulcanModel<VulcanGraphqlSchemaServer> {
+  graphql: GraphqlModelServer;
 }
 
 // Mutations

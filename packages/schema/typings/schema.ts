@@ -96,10 +96,6 @@ interface VulcanField<TField = any> {
   group?: FieldGroup; // form fieldset group
   arrayItem?: any; // properties for array items
 
-  onCreate?: (input: OnCreateInput) => Promise<TField> | TField; // field insert callback, called server-side
-  onUpdate?: (input: OnUpdateInput) => Promise<TField> | TField; // field edit callback, called server-side
-  onDelete?: (input: OnDeleteInput) => Promise<void> | TField; // field remove callback, called server-side
-
   searchable?: boolean; // whether a field is searchable
   description?: string; // description/help
   beforeComponent?: any; // before form component
@@ -113,11 +109,27 @@ interface VulcanField<TField = any> {
   orderable?: boolean; // field can be used to order results when querying for data (backwards-compatibility)
   sortable?: boolean; // field can be used to order results when querying for data
 
-  apiOnly?: boolean; // field should not be inserted in database
-
   intl?: boolean; // set to `true` to make a field international
   isIntlData?: boolean; // marker for the actual schema fields that hold intl strings
   intlId?: string; // set an explicit i18n key for a field
+}
+
+// @server-only
+interface VulcanFieldServer<TField = any> extends VulcanField<TField> {
+  apiOnly?: boolean; // field should not be inserted in database
+  onCreate?: (input: OnCreateInput) => Promise<TField> | TField; // field insert callback, called server-side
+  onUpdate?: (input: OnUpdateInput) => Promise<TField> | TField; // field edit callback, called server-side
+  onDelete?: (input: OnDeleteInput) => Promise<void> | TField; // field remove callback, called server-side
+}
+interface VulcanFieldShared<TField = any> extends VulcanField<TField> {
+  /** This is a server-only field. You may want to use VulcanSchemaServer type instead. */
+  apiOnly?: never;
+  /** This is a server-only field. You may want to use VulcanSchemaServer type instead. */
+  onCreate?: never;
+  /** This is a server-only field. You may want to use VulcanSchemaServer type instead. */
+  onUpdate?: never;
+  /** This is a server-only field. You may want to use VulcanSchemaServer type instead. */
+  onDelete?: never;
 }
 
 export interface VulcanFieldSchema<TField = any>
@@ -125,11 +137,27 @@ export interface VulcanFieldSchema<TField = any>
     SchemaDefinition<TField> {
   type: VulcanFieldType;
 }
+// @server-only
+export type VulcanFieldSchemaServer<TField = any> = VulcanFieldSchema<TField> &
+  VulcanFieldServer<TField>;
+export type VulcanFieldSchemaShared<TField = any> = VulcanFieldSchema<TField> &
+  VulcanFieldShared<TField>;
+
 export type VulcanFieldType = SchemaDefinition<any>["type"] | VulcanFieldSchema;
 
 // Extendable Vulcan schema
 export type VulcanSchema<TSchemaFieldExtension = any> = {
   [key: string]: VulcanFieldSchema & TSchemaFieldExtension;
+};
+/**
+ * @server-only
+ */
+export type VulcanSchemaServer<TSchemaFieldExtension = any> = {
+  [key: string]: VulcanFieldSchemaServer & TSchemaFieldExtension;
+};
+/** Safer type that adds server-only fields with "never" type and a nice error message */
+export type VulcanSchemaShared<TSchemaFieldExtension = any> = {
+  [key: string]: VulcanFieldSchemaServer & TSchemaFieldExtension;
 };
 
 /**

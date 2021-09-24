@@ -41,7 +41,12 @@ import { throwError } from "./errors";
 import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
 import { isMemberOf } from "@vulcanjs/permissions";
 import { getModelConnector } from "./context";
-import { UpdateInput, DeleteInput, FilterableInput } from "../../typings";
+import {
+  UpdateInput,
+  DeleteInput,
+  FilterableInput,
+  VulcanGraphqlModelServer,
+} from "../../typings";
 import { deprecate } from "@vulcanjs/utils";
 import cloneDeep from "lodash/cloneDeep";
 import isEmpty from "lodash/isEmpty";
@@ -49,7 +54,6 @@ import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
 import { restrictViewableFields } from "@vulcanjs/permissions";
-import { Options } from "graphql/utilities/extendSchema";
 
 /**
  * Throws if some data are invalid
@@ -62,7 +66,7 @@ const validateMutationData = async ({
   context,
   properties,
 }: {
-  model: VulcanGraphqlModel; // data model
+  model: VulcanGraphqlModelServer; // data model
   mutatorName: DefaultMutatorName;
   context: Object; // Graphql context
   properties: Object; // arguments of the callback, can vary depending on the mutator
@@ -186,7 +190,7 @@ async function getSelector({
 }
 
 interface CreateMutatorInput {
-  model: VulcanGraphqlModel;
+  model: VulcanGraphqlModelServer;
   document?: VulcanDocument;
   data: VulcanDocument;
   context?: ContextWithUser;
@@ -269,8 +273,6 @@ export const createMutator = async <TModel extends VulcanDocument>({
       let autoValue;
       // TODO: run for nested
       if (schema[fieldName].onCreate) {
-        // TS is triggering an error for unknown reasons because there is already an if
-        // @ts-expect-error Cannot invoke an object which is possibly 'undefined'.
         autoValue = await schema[fieldName].onCreate(properties); // eslint-disable-line no-await-in-loop
       }
       if (typeof autoValue !== "undefined") {
@@ -315,7 +317,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
 };
 
 interface UpdateMutatorCommonInput {
-  model: VulcanGraphqlModel;
+  model: VulcanGraphqlModelServer;
   /**
    * Using a "set" syntax
    * @deprecated
@@ -494,8 +496,6 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   for (let fieldName of Object.keys(schema)) {
     let autoValue;
     if (schema[fieldName].onUpdate) {
-      // TS is triggering an error for unknown reasons because there is already an if
-      // @ts-expect-error Cannot invoke an object which is possibly 'undefined'.
       autoValue = await schema[fieldName].onUpdate(properties); // eslint-disable-line no-await-in-loop
     }
     if (typeof autoValue !== "undefined") {
@@ -567,7 +567,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 };
 
 interface DeleteMutatorCommonInput {
-  model: VulcanGraphqlModel;
+  model: VulcanGraphqlModelServer;
   currentUser?: any;
   context?: ContextWithUser;
   validate?: boolean;
@@ -664,8 +664,6 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   /* Run fields onDelete */
   for (let fieldName of Object.keys(schema)) {
     if (schema[fieldName].onDelete) {
-      // TS is triggering an error for unknown reasons because there is already an if
-      // @ts-expect-error Cannot invoke an object which is possibly 'undefined'.
       await schema[fieldName].onDelete(properties); // eslint-disable-line no-await-in-loop
     }
   }

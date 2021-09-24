@@ -3,8 +3,10 @@
  * (= type definitions)
  */
 
-import { createGraphqlModel } from "../../../extendModel";
-import { VulcanGraphqlModel } from "../../../typings";
+import {
+  createGraphqlModel,
+  createGraphqlModelServer,
+} from "../../../extendModel";
 import { normalizeGraphQLSchema } from "../../../testUtils";
 import { parseSchema } from "../../parseSchema";
 import { parseModel } from "../../parseModel";
@@ -12,8 +14,8 @@ import { buildDefaultMutationResolvers } from "../../resolvers/defaultMutationRe
 import { buildDefaultQueryResolvers } from "../../resolvers/defaultQueryResolvers";
 import { getGraphQLType } from "../../../utils";
 
-const FooModel = (schema): VulcanGraphqlModel =>
-  createGraphqlModel({
+const FooModel = (schema) =>
+  createGraphqlModelServer({
     schema,
     name: "Foo",
     graphql: { multiTypeName: "Foos", typeName: "Foo" },
@@ -1074,7 +1076,7 @@ describe("graphql/typeDefs", () => {
 
   describe("model resolvers", () => {
     test("generate query resolver types", () => {
-      const Foo = createGraphqlModel({
+      const Foo = createGraphqlModelServer({
         schema: {
           foo: {
             type: String,
@@ -1101,7 +1103,7 @@ describe("graphql/typeDefs", () => {
       expect(multi.query).toContain("foos(");
     });
     test("generate mutation resolver types", () => {
-      const Foo = createGraphqlModel({
+      const Foo = createGraphqlModelServer({
         schema: {
           foo: {
             type: String,

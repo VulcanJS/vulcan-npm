@@ -1,4 +1,7 @@
-import { createGraphqlModel } from "../../../extendModel";
+import {
+  createGraphqlModel,
+  createGraphqlModelServer,
+} from "../../../extendModel";
 import { VulcanGraphqlModel } from "../../../typings";
 import { createMutator } from "../../resolvers/mutators";
 import { Connector } from "../../resolvers";
@@ -77,7 +80,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
       test("run asynchronous 'after' callback before document is returned", async function () {
         const after = jest.fn(async (doc) => ({ ...doc, createdAfter: 1 }));
         const create = jest.fn(async (data) => ({ _id: 1, ...data }));
-        const Foo = createGraphqlModel({
+        const Foo = createGraphqlModelServer({
           schema,
           name: "Foo",
           graphql: merge({}, modelGraphqlOptions, {
@@ -109,7 +112,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
       test("run asynchronous 'before' callback before document is saved", async function () {
         const before = jest.fn(async (doc) => ({ ...doc, createdBefore: 1 }));
         const create = jest.fn(async (data) => ({ _id: 1, ...data }));
-        const Foo = createGraphqlModel({
+        const Foo = createGraphqlModelServer({
           schema,
           name: "Foo",
           graphql: merge({}, modelGraphqlOptions, {
@@ -150,7 +153,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
               setTimeout(() => resolve(true), 10000)
             )
         );
-        const Foo = createGraphqlModel({
+        const Foo = createGraphqlModelServer({
           ...defaultModelOptions,
           graphql: merge({}, modelGraphqlOptions, {
             callbacks: {
@@ -179,9 +182,9 @@ describe("graphql/resolvers/mutators callbacks", function () {
       test("return a custom validation error", async () => {
         const errSpy = jest
           .spyOn(console, "error")
-          .mockImplementationOnce(() => { }); // silences console.error
+          .mockImplementationOnce(() => {}); // silences console.error
         const validate = jest.fn(() => ["ERROR"]);
-        const Foo = createGraphqlModel({
+        const Foo = createGraphqlModelServer({
           ...defaultModelOptions,
           graphql: merge({}, modelGraphqlOptions, {
             callbacks: {
@@ -207,7 +210,7 @@ describe("graphql/resolvers/mutators callbacks", function () {
             data,
             validate: true, // enable document validation
           });
-        } catch (e) { }
+        } catch (e) {}
         expect(validate).toHaveBeenCalledTimes(1);
         expect(errSpy).toHaveBeenCalled();
       });
