@@ -23,7 +23,7 @@ import {
   VulcanDocument,
   forEachDocumentField,
 } from "@vulcanjs/schema";
-import { isEqual } from "lodash";
+import isEqual from "lodash/isEqual";
 
 // TODO: define user as a specific VulcanModel? So we get the typing already
 export interface User extends VulcanDocument {
