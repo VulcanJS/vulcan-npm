@@ -6,6 +6,10 @@
   "files": [
     "dist/"
   ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./client": "./dist/client/index.js"
+  },
   "author": "eric-burel <eb@lebrun-burel.com>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
