@@ -7,7 +7,7 @@ import { createModel } from "@vulcanjs/model";
 import {
   createGraphqlModelServer,
   extendModelServer,
-} from "../../../extendModel";
+} from "../../../extendModel.server";
 import { VulcanGraphqlModel } from "../../../typings";
 import { parseAllModels } from "../../parseAllModels";
 import { buildDefaultQueryResolvers } from "../../resolvers/defaultQueryResolvers";

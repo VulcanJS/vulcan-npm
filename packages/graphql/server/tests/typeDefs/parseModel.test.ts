@@ -3,10 +3,7 @@
  * (= type definitions)
  */
 
-import {
-  createGraphqlModel,
-  createGraphqlModelServer,
-} from "../../../extendModel";
+import { createGraphqlModelServer } from "../../../extendModel.server";
 import { normalizeGraphQLSchema } from "../../../testUtils";
 import { parseSchema } from "../../parseSchema";
 import { parseModel } from "../../parseModel";

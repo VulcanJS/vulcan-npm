@@ -1,7 +1,7 @@
 import {
   createGraphqlModel,
   createGraphqlModelServer,
-} from "../../../extendModel";
+} from "../../../extendModel.server";
 import { VulcanGraphqlModel } from "../../../typings";
 import { createMutator } from "../../resolvers/mutators";
 import { Connector } from "../../resolvers";

@@ -5,7 +5,7 @@ import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://githu
 // @see https://mongoosejs.com/docs/jest.html
 import mongoose from "mongoose";
 import { createModel } from "@vulcanjs/model";
-import { Connector } from "@vulcanjs/graphql";
+import { Connector } from "@vulcanjs/graphql/server";
 
 describe("vulcan/mongo/connector", () => {
   let mongod;

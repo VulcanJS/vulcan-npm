@@ -6,7 +6,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import { ApolloServer, gql } from "apollo-server-express";
 import { makeExecutableSchema, mergeSchemas } from "graphql-tools";
-import { buildApolloSchema } from "@vulcanjs/graphql";
+import { buildApolloSchema } from "@vulcanjs/graphql/server";
 
 // import mongoConnection from "~/api/middlewares/mongoConnection";
 // import corsOptions from "~/api/cors";
@@ -14,8 +14,8 @@ import { buildApolloSchema } from "@vulcanjs/graphql";
 
 import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://github.com/nodkz/mongodb-memory-server
 import { contextFromReq } from "./utils/context";
-import { buildDefaultQueryResolvers } from "@vulcanjs/graphql";
-import { createGraphqlModelServer } from "@vulcanjs/graphql";
+import { buildDefaultQueryResolvers } from "@vulcanjs/graphql/server";
+import { createGraphqlModelServer } from "@vulcanjs/graphql/server";
 
 let mongod;
 let mongoUri;
