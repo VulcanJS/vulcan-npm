@@ -1,4 +1,4 @@
-import { Connector } from "@vulcanjs/graphql";
+import { Connector } from "@vulcanjs/graphql/server";
 import { VulcanModel } from "@vulcanjs/model";
 // Compute a Mongo selector
 import { filterFunction } from "./mongoParams";

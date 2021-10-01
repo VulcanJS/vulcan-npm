@@ -47,6 +47,8 @@ module.exports = {
             loader: "ts-loader",
             options: {
               configFile: "tsconfig.build.json",
+              // will only include files imported by index.ts/index.server.ts etc.
+              onlyCompileBundledFiles: true,
             },
           },
         ],

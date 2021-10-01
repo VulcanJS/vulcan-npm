@@ -28,7 +28,7 @@
 
 import { useMutation, MutationResult, gql, FetchResult } from "@apollo/client";
 
-import { filterFunction } from "@vulcanjs/mongo";
+import { filterFunction } from "@vulcanjs/mongo/client";
 import {
   createClientTemplate,
   getModelFragment,

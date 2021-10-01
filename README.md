@@ -25,7 +25,7 @@ If you want to connect your local Vulcan NPM install to an existing application,
 
 It's a 2 step process:
 
-- you publish the packages locally using Yalc `yarn run local-publish` 
+- you publish the packages locally using Yalc `yarn run publish:local` 
 - you install them, using Yalc, in your app.
 
 We use Yalc and not `yarn link` because linking is not sufficient, it raises a lot of issues with locally installed packages.

@@ -21,7 +21,8 @@
     "deepmerge": "^4.2.2",
     "graphql-date": "^1.0.3",
     "graphql-type-json": "^0.3.2",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "moment-timezone": "^0.5.33"
   },
   "peerDependencies": {
     "apollo-server": "^2.18.2",
@@ -34,7 +35,9 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "webpack --config ./webpack.config.js"
+    "build:common": "webpack --config ./webpack.config.js",
+    "build:server": "webpack --config ./webpack.config.server.js",
+    "build": "yarn run build:common && yarn run build:server"
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"

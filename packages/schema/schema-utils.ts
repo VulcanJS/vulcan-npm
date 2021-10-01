@@ -12,20 +12,6 @@ import _omit from "lodash/omit";
 // import SimpleSchema from "simpl-schema";
 import { VulcanDocument, VulcanFieldSchema, VulcanSchema } from "./typings";
 
-export const formattedDateResolver = (fieldName) => {
-  return async (document = {}, args: any = {}, context: any = {}) => {
-    const { format } = args;
-    const { timezone /*= getSetting("timezone")*/ } = context;
-    if (!document[fieldName]) return;
-    const moment = (await import("moment-timezone")).default;
-    let m = moment(document[fieldName]);
-    if (timezone) {
-      m = m.tz(timezone);
-    }
-    return format === "ago" ? m.fromNow() : m.format(format);
-  };
-};
-
 /*
 export const createSchema = (schema, apiSchema = {}, dbSchema = {}) => {
   let modifiedSchema = { ...schema };

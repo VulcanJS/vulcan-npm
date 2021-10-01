@@ -5,108 +5,101 @@
  *
  * End user is supposed to use only the "createGraphqlModel" function
  */
-import { VulcanGraphqlModel, VulcanGraphqlSchema } from "./typings";
+import {
+  VulcanGraphqlModel,
+  MutationCallbackDefinitions,
+  VulcanGraphqlSchema,
+  VulcanGraphqlModelServer,
+  VulcanGraphqlSchemaServer,
+} from "./typings";
 import { VulcanModel, createModel, CreateModelOptions } from "@vulcanjs/model";
 import {
   getDefaultFragmentText,
   getDefaultFragmentName,
 } from "./fragments/defaultFragment";
 import { camelCaseify, Merge } from "@vulcanjs/utils";
+import {
+  MutationResolverDefinitions,
+  QueryResolverDefinitions,
+} from "./server/typings";
+import {
+  buildDefaultMutationResolvers,
+  buildDefaultQueryResolvers,
+} from "./server/resolvers";
+// don't forget to reexport common code
+export * from "./extendModel";
+import extendModel, { GraphqlModelOptions } from "./extendModel";
 /**
- * Typing is tricky here:
- * - we want to tell the user when they tried to use a server-only field client-side, and point them to the right solution (type: never)
- * - we want the sever version to define those server only fields correctly (type: whatever)
- * - we want to define functions that accept any of those types (eg when they use only the shared fields)
- *
- * This type is meant for internal use
- *
- * This SO question is similar but all answsers break inheritance, using types instead of cleaner interfaces
- * @see https://stackoverflow.com/questions/41285211/overriding-interface-property-type-defined-in-typescript-d-ts-file
+ * This type is meant to be exposed server side
+ *  @server-only
  */
-export interface GraphqlModelOptions {
-  typeName: string; // Canonical name of the model = its graphQL type name
-  multiTypeName: string; // Plural version, to be defined manually (automated pluralization leads to unexpected results)
-}
-/**
- * This type is meant to be exposed in the "default", shared helper
- *
- * It adds "never" types to help the user detecting when they do something wrong (trying to define server fields client side)
- */
-export interface GraphqlModelOptionsShared extends GraphqlModelOptions {
-  /** This is a server-only field. Please use "createGraphqlModelServer" if you want to create a model server-side */
-  queryResolvers?: never;
-  /** This is a server-only field. Please use "createGraphqlModelServer" if you want to create a model server-side */
-  mutationResolvers?: never;
-  /** This is a server-only field. Please use "createGraphqlModelServer" if you want to create a model server-side */
-  callbacks?: never;
+export interface GraphqlModelOptionsServer extends GraphqlModelOptions {
+  /** Custom query resolvers (single, multi). Set to "null" if you don't want Vulcan to set any resolvers. Leave undefined if you want to use default resolvers. */
+  queryResolvers?: Partial<QueryResolverDefinitions>;
+  /** Custom mutation resolvers (create, update, delete). Set to "null" if you don't want Vulcan to set any resolvers. Leave undefined if you want to use default resolvers. */
+  mutationResolvers?: Partial<MutationResolverDefinitions>;
+  callbacks?: MutationCallbackDefinitions;
 }
 
-// Reusable model extension function
-const extendModel =
-  (options: GraphqlModelOptions) /*: ExtendModelFunc<VulcanGraphqlModel>*/ =>
-  (model: VulcanModel): VulcanGraphqlModel => {
-    const name = model.name;
-    const { typeName = name, multiTypeName } = options;
-
-    const singleResolverName = camelCaseify(typeName);
-    const multiResolverName = camelCaseify(multiTypeName);
-
-    // compute base properties
-    const graphqlModel = {
-      singleResolverName,
-      multiResolverName,
-      ...options,
-    };
-    // compute default fragment
-    const extendedModel = {
-      ...model,
-      graphql: graphqlModel,
-    };
-    const defaultFragment = getDefaultFragmentText(extendedModel);
-    const defaultFragmentName = getDefaultFragmentName(extendedModel);
-
-    if (!defaultFragment) {
-      // This can legitimately happen if the schema only have nested fields for instance
-      // However, in the future, it would be better to guarantee that we can generate a default fragment
-      // for all scenarios except actually empty schemas
-      console.warn(
-        `Could not generate a default fragment for type ${graphqlModel.typeName}.
-        Please make at least one field of the model ${model.name} readable, using canRead.`
-      );
+/**
+ * Adds server-only fields as well
+ * @param options
+ * @returns
+ */
+export const extendModelServer =
+  (
+    options: GraphqlModelOptionsServer
+  ) /*: ExtendModelFunc<VulcanGraphqlModel>*/ =>
+  (model: VulcanModel): VulcanGraphqlModelServer => {
+    const extendedModel = extendModel(options)(model);
+    const {
+      mutationResolvers: mutationResolversFromOptions,
+      queryResolvers: queryResolversFromOptions,
+    } = options;
+    let mutationResolvers = mutationResolversFromOptions,
+      queryResolvers = queryResolversFromOptions;
+    // NOTE: we use default only if the value is "undefined", if it is explicitely "null" we leave it empty (user will define resolvers manually)
+    if (typeof mutationResolvers === "undefined") {
+      mutationResolvers = buildDefaultMutationResolvers({
+        typeName: extendedModel.graphql.typeName,
+      });
     }
-
-    const extendedGraphqlModel = {
-      ...graphqlModel,
-      defaultFragment,
-      defaultFragmentName,
+    if (typeof queryResolvers === "undefined") {
+      queryResolvers = buildDefaultQueryResolvers({
+        typeName: extendedModel.graphql.typeName,
+      });
+    }
+    /**
+     * If mutationResolvers and queryResolvers are not explicitely null,
+     * use the default ones
+     */
+    const finalModel = extendedModel as VulcanGraphqlModelServer;
+    finalModel.graphql = {
+      ...extendedModel.graphql,
+      mutationResolvers: mutationResolvers ? mutationResolvers : undefined,
+      queryResolvers: queryResolvers ? queryResolvers : undefined,
     };
-    const finalModel: VulcanGraphqlModel = {
-      ...model,
-      graphql: extendedGraphqlModel,
-    };
+    const name = model.name;
     return finalModel;
   };
 
-export interface CreateGraphqlModelOptionsShared
-  extends CreateModelOptions<VulcanGraphqlSchema> {
-  // we use the "Shared" version of the type, that is meant to be used for exported functions
-  // => it will display nicer messages when you try to mistakenly use a server-only field
-  graphql: GraphqlModelOptionsShared;
+export interface CreateGraphqlModelOptionsServer
+  extends CreateModelOptions<VulcanGraphqlSchemaServer> {
+  graphql: GraphqlModelOptionsServer;
 }
+
 /**
- * Let's you create a full-fledged graphql model
- *
- * Equivalent to a Vulcan Meteor createCollection
+ * @server-only
  */
-export const createGraphqlModel = (
-  options: CreateGraphqlModelOptionsShared
-): VulcanGraphqlModel => {
+export const createGraphqlModelServer = (
+  options: CreateGraphqlModelOptionsServer
+): VulcanGraphqlModelServer => {
   // TODO:
   const { graphql, ...baseOptions } = options;
   const model = createModel({
     ...baseOptions,
-    extensions: [extendModel(options.graphql)],
-  }) as VulcanGraphqlModel;
+    extensions: [extendModelServer(options.graphql)],
+  }) as VulcanGraphqlModelServer;
   return model;
 };
 

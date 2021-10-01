@@ -15,7 +15,9 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "webpack --config ./webpack.config.js"
+    "build:client": "webpack --config ./webpack.config.client.js",
+    "build:server": "webpack --config ./webpack.config.server.js",
+    "build": "yarn run build:client && yarn run build:server"
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"

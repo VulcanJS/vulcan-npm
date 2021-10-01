@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "lodash": "^4.17.21",
-    "moment-timezone": "^0.5.33",
     "simpl-schema": "^1.12.0"
   }
 }
