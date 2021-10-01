@@ -5,6 +5,20 @@
   "files": [
     "dist/"
   ],
+  "exports": {
+    "./": "./dist/index.js",
+    "./server": "./dist/server/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "./": [
+        "./dist/index.d.ts"
+      ],
+      "./server": [
+        "./dist/server/index.d.ts"
+      ]
+    }
+  },
   "description": "Vulcan graphQL schema generator",
   "author": "eric-burel <eb@lebrun-burel.com>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
