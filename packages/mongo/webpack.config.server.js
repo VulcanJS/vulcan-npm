@@ -8,4 +8,11 @@ module.exports = merge(baseConfig, {
     // NOTE: @vulcanjs/mongo is a server-first package, so here the default build is server
     path: path.resolve(__dirname, "dist"),
   },
+  resolve: {
+    alias: {
+      // @see https://github.com/lerna/lerna/issues/3006
+      // hack to fix package leaks
+      "@vulcanjs/graphql/server": "not_found",
+    },
+  },
 });
