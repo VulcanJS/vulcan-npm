@@ -31,7 +31,18 @@ You can run it from anywhere, and the `--scope` part is mandatory (otherwise the
 
 ## No index.d.ts in dist
 
+You may end up with a build folder like this:
+```
+dist/mongo/...
+dist/graphql/...
+dist/your-package/...
+```
+instead of just having your package code.
+
 You mistakenly imported local code from another package, like importing from `../graphql` instead of `@vulcanjs/graphql` in `@vulcanjs/mongo`. Find the culprit import and fix them will repair the build.
+
+If your import are correct and you still have this issue, this also seems to unexpectedly affect "@vulcanjs/mongo/client" (client entrypoint) as well.
+In this case, set a false webpack alias for the faulty package (see react-hooks for instance)
 
 ### Forgetting to include tests and stories in tsconfig.json
 

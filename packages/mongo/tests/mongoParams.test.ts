@@ -1,4 +1,4 @@
-import { VulcanSelector } from "@vulcanjs/graphql/typings";
+import { VulcanSelector } from "@vulcanjs/graphql";
 import { createModel } from "@vulcanjs/model";
 import { filterFunction } from "../mongoParams";
 
