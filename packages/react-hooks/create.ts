@@ -42,7 +42,7 @@ import { addToData, matchSelector } from "./cacheUpdate";
 import { CreateVariables } from "@vulcanjs/graphql"; // TODO: we should depend only on client code
 
 import debug from "debug";
-import { VulcanGraphqlModel } from "@vulcanjs/graphql/typings";
+import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 const debugApollo = debug("vn:apollo");
 /**
  * Compute the new list after a create mutation

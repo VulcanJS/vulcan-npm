@@ -10,7 +10,7 @@ import { buildMultiQuery, buildMultiQueryOptions } from "../multi";
 import { renderHook, act } from "@testing-library/react-hooks";
 
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
-import { createGraphqlModel } from "@vulcanjs/graphql/extendModel";
+import { createGraphqlModel } from "@vulcanjs/graphql";
 import { VulcanDocument } from "@vulcanjs/schema";
 
 import { createMockClient } from "mock-apollo-client";

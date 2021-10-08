@@ -11,7 +11,7 @@ import { buildDeleteQuery } from "../delete";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { renderHook, act } from "@testing-library/react-hooks";
-import { createGraphqlModel } from "@vulcanjs/graphql/extendModel";
+import { createGraphqlModel } from "@vulcanjs/graphql";
 
 const test = it;
 
