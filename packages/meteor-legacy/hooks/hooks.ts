@@ -8,19 +8,15 @@ import {
   gql,
 } from "@apollo/client";
 
-import { ApolloVariables } from "@vulcanjs/graphql/typings";
+import { ApolloVariables } from "@vulcanjs/graphql";
 
 // We modify the result function so that variables can be provided as first param,
 // which is more intuitive
 // Normal mutation function type (sadly not exported directly by Apollo)
-type MutationFunction<
-  TData = any,
-  TVariables = OperationVariables
-> = MutationTuple<TData, TVariables>["0"];
-type MutationResult<
-  TData = any,
-  TVariables = OperationVariables
-> = MutationTuple<TData, TVariables>["1"];
+type MutationFunction<TData = any, TVariables = OperationVariables> =
+  MutationTuple<TData, TVariables>["0"];
+type MutationResult<TData = any, TVariables = OperationVariables> =
+  MutationTuple<TData, TVariables>["1"];
 
 type MutationFunctionResult<TData, TVariables> = ReturnType<
   MutationFunction<TData, TVariables>
