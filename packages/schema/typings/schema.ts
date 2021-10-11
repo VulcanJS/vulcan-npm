@@ -19,7 +19,7 @@ export type FieldTypeName =
   | "Date";
 
 type PermissionFunction = (
-  user: Object | null | undefined,
+  user: VulcanDocument | null | undefined,
   document?: Object
 ) => boolean;
 type PermissionDefinition = String | PermissionFunction | Function;
@@ -82,7 +82,7 @@ interface VulcanField<TField = any> {
   // Field-level resolver
   // TODO: review those fields
   // Field is hidden in forms
-  hidden?: boolean;
+  hidden?: boolean | ((args: { props: any; document: any }) => boolean);
   // "mustComplete", // mustComplete: true means the field is required to have a complete profile
   form?: any; // extra form properties
   inputProperties?: any; // extra form properties
@@ -146,19 +146,25 @@ export type VulcanFieldSchemaShared<TField = any> = VulcanFieldSchema<TField> &
 export type VulcanFieldType = SchemaDefinition<any>["type"] | VulcanFieldSchema;
 
 // Extendable Vulcan schema
-export type VulcanSchema<TSchemaFieldExtension = any> = {
+/**
+ * Type to be used to allow any custom field, but also keep
+ * autocompletion of existing fields (contrary to "any")
+ */
+type AnyObject = { [key: string]: any };
+
+export type VulcanSchema<TSchemaFieldExtension = AnyObject> = {
   [key: string]: VulcanFieldSchema & TSchemaFieldExtension;
 };
 /**
  * @server-only
  */
-export type VulcanSchemaServer<TSchemaFieldExtension = any> = {
+export type VulcanSchemaServer<TSchemaFieldExtension = AnyObject> = {
   [key: string]: VulcanFieldSchemaServer & TSchemaFieldExtension;
 };
 /** Safer type that adds server-only fields with "never" type and a nice error message */
-export type VulcanSchemaShared<TSchemaFieldExtension = any> = {
-  [key: string]: VulcanFieldSchemaServer & TSchemaFieldExtension;
-};
+//export type VulcanSchemaShared<TSchemaFieldExtension = any> = {
+//  [key: string]: VulcanFieldSchemaServer & TSchemaFieldExtension;
+//};
 
 /**
  * Version obtained after running new SimpleSchema({...})._schema

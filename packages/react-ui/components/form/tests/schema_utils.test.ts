@@ -26,6 +26,7 @@ describe("schema_utils", function () {
         "addresses",
         simpleSchema
       );
+      if (!nestedSchema) throw new Error("Schema not found");
       // nestedSchema is a complex SimpleSchema object, so we can only
       // test its type instead (might not be the simplest way though)
       expect(Object.keys(nestedSchema)).toEqual(Object.keys(addressSchema));
@@ -40,6 +41,7 @@ describe("schema_utils", function () {
         "meetingPlace",
         simpleSchema
       );
+      if (!nestedSchema) throw new Error("nested schema not found");
       expect(Object.keys(nestedSchema)).toEqual(Object.keys(addressSchema));
     });
     it("return null for other types", function () {

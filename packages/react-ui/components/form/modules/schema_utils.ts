@@ -53,6 +53,10 @@ export const getEditableFields = function (schema, user, document) {
   return fields;
 };
 
+const isNestedSchema = (schema: any): schema is VulcanSchema => {
+  return typeof schema === "object";
+};
+
 /**
  * Vulcan Schema => Form Schema
  * TODO: type this better
@@ -87,20 +91,20 @@ export const convertSchema = (
         schema
       );
 
-      // call convertSchema recursively on the subSchema
-      const convertedSubSchema = convertSchema(subSchemaOrType, options);
       // nested schema can be a field schema ({type, canRead, etc.}) (convertedSchema will be null)
       // or a schema on its own with subfields (convertedSchema will return smth)
-      if (!convertedSubSchema) {
-        // subSchema is a simple field in this case (eg array of numbers)
-        jsonSchema[fieldName].isSimpleArrayField = true; //getFieldSchema(`${fieldName}.$`, schema);
-      } else {
+      if (isNestedSchema(subSchemaOrType)) {
+        // call convertSchema recursively on the subSchema
+        const convertedSubSchema = convertSchema(subSchemaOrType, options);
         // subSchema is a full schema with multiple fields (eg array of objects)
         if (flatten) {
           jsonSchema = { ...jsonSchema, ...convertedSubSchema };
         } else {
           jsonSchema[fieldName].schema = convertedSubSchema;
         }
+      } else {
+        // subSchema is a simple field in this case (eg array of numbers)
+        jsonSchema[fieldName].isSimpleArrayField = true; //getFieldSchema(`${fieldName}.$`, schema);
       }
     }
   });

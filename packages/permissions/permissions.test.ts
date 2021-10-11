@@ -4,7 +4,7 @@ import {
   getDocumentBasedPermissionFieldNames,
   getReadableFields,
   restrictViewableFields,
-  owns
+  owns,
 } from "../permissions/permissions";
 
 describe("vulcan:users/permissions", () => {
@@ -43,9 +43,8 @@ describe("vulcan:users/permissions", () => {
 
   describe("fields allowed for filtering", () => {
     test("get fields that needs to be checked against the document to be tested", () => {
-      const documentBasedPermissionFields = getDocumentBasedPermissionFieldNames(
-        Dummies
-      );
+      const documentBasedPermissionFields =
+        getDocumentBasedPermissionFieldNames(Dummies);
       expect(documentBasedPermissionFields).toContain("ownerField");
       expect(documentBasedPermissionFields).toContain("customField");
     });
@@ -152,27 +151,27 @@ describe("vulcan:users/permissions", () => {
   });
   const document = {
     _id: "123",
-    userId: "foo"
+    userId: "foo",
   };
   const rightUser = {
     _id: "foo",
     groups: [],
-    isAdmin: false
-  }
+    isAdmin: false,
+  };
   const wrongUser = {
     _id: "bar",
     groups: [],
-    isAdmin: false
-  }
+    isAdmin: false,
+  };
 
-  describe('owns', () => {
+  describe("owns", () => {
     test("owns returns true when it's the right couple user-document", () => {
       const value = owns(rightUser, document);
       expect(value).toBe(true);
     });
     test("owns returns false when it's the a wrong couple user-document", () => {
       const value = owns(wrongUser, document);
-      expect(value).toBe(false)
+      expect(value).toBe(false);
     });
   });
 });
