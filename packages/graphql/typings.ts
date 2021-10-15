@@ -16,12 +16,23 @@ import { ContextWithUser } from "./server/resolvers";
 // SCHEMA TYPINGS
 // Custom resolver
 export interface ResolveAsDefinition {
-  fieldName?: string;
+  /** Resolved field name
+   *
+   * @example if field is "userId", resolved fieldName should be "user"
+   **/
+  fieldName: string;
   typeName?: string;
-  type?: string;
-  description: string;
-  arguments: any;
+  /** Graphql typeName */
+  type: string;
+  /** Graphql description */
+  description?: string;
+  /** Graphql arguments of the resolver, if it takes some params */
+  arguments?: string;
   resolver?: QueryResolver;
+  /**
+   * Whether keeping the field or not
+   * @example if field is "userId" and resolved field is "user", set to true to keep "userId" in the document
+   */
   addOriginalField?: boolean;
 }
 export interface RelationDefinition {
