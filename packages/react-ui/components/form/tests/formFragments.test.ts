@@ -22,6 +22,12 @@ const makeModel = (schema) =>
     },
   });
 
+import { disableFragmentWarnings } from "graphql-tag";
+beforeEach(() => {
+  // @see https://github.com/apollographql/graphql-tag#warnings
+  // Let you define the same fragment twice in tests
+  disableFragmentWarnings();
+});
 describe("vulcan:form/formFragments", function () {
   test("generate valid query and mutation fragment", () => {
     const schema = {
