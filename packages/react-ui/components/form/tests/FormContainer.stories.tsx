@@ -22,7 +22,7 @@ import {
   buildSingleQuery,
   buildCreateQuery,
   buildUpdateQuery,
-} from "../../../../react-hooks/index"; //TODO: use @vulcanjs instead, fix the typescript issue
+} from "@vulcanjs/react-hooks";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 
 // dummy simplified model
