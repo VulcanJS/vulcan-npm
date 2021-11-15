@@ -15,7 +15,8 @@
     "coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'"
+    "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'",
+    "typedoc": "npx typedoc packages/core/index.ts packages/demo/index.ts packages/graphql/index.ts packages/i18n/index.ts  packages/mdx/index.ts packages/meteor-legacy/index.ts packages/model/index.ts packages/mongo/index.ts packages/multi-env-demo/index.ts packages/permissions/index.ts packages/react-hooks/index.ts packages/react-ui/index.ts packages/schema/index.ts packages/utils/index.ts"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.19",
@@ -49,6 +50,7 @@
     "operation-name-mock-link": "^0.0.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "typedoc": "^0.21.4",
     "typescript": "4.2.2",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
