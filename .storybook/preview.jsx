@@ -14,9 +14,23 @@ export const parameters = {
   },
 };
 
-import { InMemoryCache, ApolloClient, ApolloProvider } from "@apollo/client";
+// @see https://github.com/mswjs/examples/blob/master/examples/graphql-react-apollo/src/ApolloClient.js
+import {
+  InMemoryCache,
+  HttpLink,
+  ApolloClient,
+  ApolloProvider,
+} from "@apollo/client";
+const cache = new InMemoryCache();
+const link = new HttpLink({
+  uri: "http://localhost:3000/graphql",
+  // Use explicit `window.fetch` so that outgoing requests
+  // are captured and deferred until the Service Worker is ready.
+  fetch: (...args) => fetch(...args),
+});
+
 // Do not try to use the "real" apollo client because it will try to auth users
-const apolloClient = new ApolloClient({ cache: new InMemoryCache() });
+const apolloClient = new ApolloClient({ cache, link });
 /**
  * We wrap stories with a real ApolloProvider
  * @param {*} Story
