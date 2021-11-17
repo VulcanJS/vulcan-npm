@@ -18,11 +18,6 @@ import {
   createOperationName,
   updateOperationName,
 } from "@vulcanjs/graphql";
-import {
-  buildSingleQuery,
-  buildCreateQuery,
-  buildUpdateQuery,
-} from "@vulcanjs/react-hooks";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 import { graphql } from "msw";
 
