@@ -4,11 +4,6 @@ import { SmartForm, SmartFormProps } from "../FormContainer";
 
 // Mocking graphql
 import { MockedProvider } from "@apollo/client/testing";
-// @see https://www.npmjs.com/package/operation-name-mock-link
-import {
-  OperationNameMockedResponse,
-  OperationNameMockLink,
-} from "operation-name-mock-link";
 import { VulcanComponentsProvider } from "../VulcanComponents/Provider";
 import { ExpectedErrorBoundary } from "../../../testing/ExpectedErrorBoundary";
 import {} from "@vulcanjs/graphql";
@@ -127,6 +122,30 @@ UpdateSmartForm.parameters = {
     ...graphqlQueryStubsToMsw([singleMock]),
     ...graphqlMutationStubsToMsw([updateMock]),
   ],
+};
+
+const MemberOnlyModel = createGraphqlModel({
+  name: "MemberOnly",
+  schema: {
+    text: {
+      type: String,
+      canCreate: ["members"],
+      canRead: ["members"],
+    },
+  },
+  graphql: {
+    typeName: "Empty",
+    multiTypeName: "Empties",
+  },
+});
+export const MemberOnlySmartForm = SmartFormTemplate.bind({});
+MemberOnlySmartForm.args = {
+  model: MemberOnlyModel,
+};
+// TODO: add MSW mock to get current User + define useCurrentUser hook in vulcanjs/graphql
+export const MemberOnlyLoggedInSmartForm = SmartFormTemplate.bind({});
+MemberOnlyLoggedInSmartForm.args = {
+  model: MemberOnlyModel,
 };
 
 const NotCreateableModel = createGraphqlModel({
