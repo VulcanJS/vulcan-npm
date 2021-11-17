@@ -15,7 +15,8 @@
     "coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'"
+    "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'",
+    "typedoc": "typedoc"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.19",
@@ -55,6 +56,9 @@
     "webpack-merge": "^4.2.2",
     "webpack-node-externals": "^2.5.2",
     "yalc": "^1.0.0-pre.53"
+  },
+  "optionalDependencies": {
+    "typedoc": "^0.21.4"
   },
   "publishConfig": {
     "access": "public"
