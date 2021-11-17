@@ -13,7 +13,7 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "coverage": "jest --coverage",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 -s ./.storybook/public",
     "build-storybook": "build-storybook",
     "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'",
     "typedoc": "typedoc"
@@ -58,6 +58,8 @@
     "yalc": "^1.0.0-pre.53"
   },
   "optionalDependencies": {
+    "msw": "^0.35.0",
+    "msw-storybook-addon": "^1.4.1",
     "typedoc": "^0.21.4"
   },
   "publishConfig": {
@@ -74,5 +76,8 @@
       "**/@storybook/**"
     ]
   },
-  "dependencies": {}
+  "dependencies": {},
+  "msw": {
+    "workerDirectory": "./storybook/public"
+  }
 }

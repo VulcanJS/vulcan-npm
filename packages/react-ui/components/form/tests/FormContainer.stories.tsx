@@ -24,30 +24,57 @@ import {
   buildUpdateQuery,
 } from "@vulcanjs/react-hooks";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
+import { graphql } from "msw";
+
+// TODO: put this in a dedicated testing package
+// (we can't put in graphql package because its dependent on msw, which we don't ant to add
+// as @vulcanjs/graphql dependency)
+/**
+ * The constraint on variables matching is lighter than official Apollo MockedProvider mocks
+ *
+ * See our custom mockGraphQL command for usage
+ */
+interface GraphqlQueryStub<TData = any> {
+  operationName: string; // name of the query to intercept
+  response: { data: TData }; // the response
+}
+interface GraphqlMutationStub<TData = any> {
+  operationName: string; // name of the query to intercept
+  response: { data: TData }; // the response
+}
+const graphqlQueryStubsToMsw = (stubs: Array<GraphqlQueryStub>) => {
+  return stubs.map((stub) => {
+    const { operationName, response } = stub;
+    return graphql.query(operationName, (req, res, ctx) => {
+      return res(ctx.data(response.data));
+    });
+  });
+};
+const graphqlMutationStubsToMsw = (stubs: Array<GraphqlMutationStub>) => {
+  return stubs.map((stub) => {
+    const { operationName, response } = stub;
+    return graphql.mutation(operationName, (req, res, ctx) => {
+      return res(ctx.data(response.data));
+    });
+  });
+};
 
 // dummy simplified model
-const singleMock: OperationNameMockedResponse<{
+const singleMock: GraphqlMutationStub<{
   oneField: { result: OneFieldType };
 }> = {
-  request: {
-    operationName: singleOperationName(OneFieldGraphql),
-    query: buildSingleQuery({
-      model: OneFieldGraphql,
-    }),
-  },
-  result: {
+  operationName: singleOperationName(OneFieldGraphql),
+  response: {
     data: {
       oneField: { result: { text: "hello", __typename: "OneField" } },
     },
   },
 };
 
-const createMock: OperationNameMockedResponse<any> = {
-  request: {
-    operationName: createOperationName(OneFieldGraphql),
-    query: buildCreateQuery({ model: OneFieldGraphql }),
-  },
-  result: {
+const createMock: GraphqlMutationStub<any> = {
+  operationName: createOperationName(OneFieldGraphql),
+  //query: buildCreateQuery({ model: OneFieldGraphql }),
+  response: {
     data: {
       createOneField: {
         // always return the same object whatever the user created
@@ -56,12 +83,9 @@ const createMock: OperationNameMockedResponse<any> = {
     },
   },
 };
-const updateMock: OperationNameMockedResponse<any> = {
-  request: {
-    operationName: updateOperationName(OneFieldGraphql),
-    query: buildUpdateQuery({ model: OneFieldGraphql }),
-  },
-  result: {
+const updateMock: GraphqlMutationStub<any> = {
+  operationName: updateOperationName(OneFieldGraphql),
+  response: {
     data: {
       updateOneField: {
         // always return the same object whatever the user created
@@ -77,12 +101,7 @@ export default {
   decorators: [
     (Story) => (
       <VulcanComponentsProvider>
-        <MockedProvider
-          // We replace MockedProvider default link with our custom MockLink
-          link={new OperationNameMockLink([], false)}
-        >
-          <Story />
-        </MockedProvider>
+        <Story />
       </VulcanComponentsProvider>
     ),
   ],
@@ -100,26 +119,20 @@ export const DefaultSmartForm = SmartFormTemplate.bind({});
 
 export const CreateSmartForm = SmartFormTemplate.bind({});
 CreateSmartForm.args = {};
-CreateSmartForm.decorators = [
-  (Story) => (
-    <MockedProvider link={new OperationNameMockLink([createMock], false)}>
-      <Story />
-    </MockedProvider>
-  ),
-];
+CreateSmartForm.parameters = {
+  msw: graphqlMutationStubsToMsw([createMock]),
+};
+
 export const UpdateSmartForm = SmartFormTemplate.bind({});
 UpdateSmartForm.args = {
   documentId: "1",
 };
-UpdateSmartForm.decorators = [
-  (Story) => (
-    <MockedProvider
-      link={new OperationNameMockLink([singleMock, updateMock], false)}
-    >
-      <Story />
-    </MockedProvider>
-  ),
-];
+UpdateSmartForm.parameters = {
+  msw: [
+    ...graphqlQueryStubsToMsw([singleMock]),
+    ...graphqlMutationStubsToMsw([updateMock]),
+  ],
+};
 
 const NotCreateableModel = createGraphqlModel({
   name: "NotCreatable",
