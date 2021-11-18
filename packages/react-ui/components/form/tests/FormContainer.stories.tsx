@@ -3,7 +3,6 @@ import { Story, Meta } from "@storybook/react";
 import { SmartForm, SmartFormProps } from "../FormContainer";
 
 // Mocking graphql
-import { MockedProvider } from "@apollo/client/testing";
 import { VulcanComponentsProvider } from "../VulcanComponents/Provider";
 import { ExpectedErrorBoundary } from "../../../testing/ExpectedErrorBoundary";
 import {} from "@vulcanjs/graphql";
