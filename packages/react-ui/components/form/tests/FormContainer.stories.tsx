@@ -15,6 +15,7 @@ import {
 } from "@vulcanjs/graphql";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 import { graphql } from "msw";
+import { VulcanCurrentUserProvider } from "../../VulcanCurrentUser/Provider";
 
 // TODO: put this in a dedicated testing package
 // (we can't put in graphql package because its dependent on msw, which we don't ant to add
@@ -146,7 +147,24 @@ MemberOnlySmartForm.args = {
 export const MemberOnlyLoggedInSmartForm = SmartFormTemplate.bind({});
 MemberOnlyLoggedInSmartForm.args = {
   model: MemberOnlyModel,
+  currentUser: { _id: "1234", groups: ["members"] },
 };
+export const MemberOnlyLoggedInSmartFormContext = SmartFormTemplate.bind({});
+MemberOnlyLoggedInSmartFormContext.args = {
+  model: MemberOnlyModel,
+};
+MemberOnlyLoggedInSmartFormContext.decorators = [
+  (Story) => (
+    <VulcanCurrentUserProvider
+      value={{
+        currentUser: { _id: "1234", groups: ["members"] },
+        loading: false,
+      }}
+    >
+      <Story />
+    </VulcanCurrentUserProvider>
+  ),
+];
 
 const NotCreateableModel = createGraphqlModel({
   name: "NotCreatable",

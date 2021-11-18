@@ -1,9 +1,9 @@
 /**
- * TODO: handle this in @vulcanjs/graphql package instead?
+ * TODO: handle this in @vulcanjs/graphql package instead? Or /permissions
  */
 import { VulcanDocument } from "@vulcanjs/schema";
 
 export interface VulcanUser extends VulcanDocument {
   // minimal fields for the User model
-  roles: Array<string>;
+  groups: Array<string>;
 }

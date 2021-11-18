@@ -64,6 +64,8 @@ import { useVulcanComponents } from "./VulcanComponents/Consumer";
 import { FetchResult } from "@apollo/client";
 // import { FormType } from "./typings";
 import { debugVulcan } from "@vulcanjs/utils";
+import { useVulcanCurrentUser } from "../VulcanCurrentUser/Consumer";
+import { VulcanUser } from "../VulcanCurrentUser/typings";
 const debugForm = debugVulcan("form");
 
 // Mutation that yield a success result
@@ -101,12 +103,31 @@ export interface FormContainerProps {
   queryFragmentName?: string;
   /** Force a mutation fragment */
   mutationFragmentName?: string;
+  /**
+   * Force a currentUser, overriding the currentUser obtained
+   * via Context
+   *
+   * If you use many forms in your app,
+   * it might be better to set VulcanCurrentUserContext
+   * at the top-level of your app
+   * (eg in "pages/_app.js" for Next.js)
+   */
+  currentUser?: VulcanUser | null;
+  loadingCurrentUser?: boolean;
 }
 export type SmartFormProps = FormContainerProps;
 
 // Fonctionnal version to be able to use hooks
 export const FormContainer = (props: FormContainerProps) => {
-  const { model, documentId, slug, fields, addFields } = props;
+  const {
+    model,
+    documentId,
+    slug,
+    fields,
+    addFields,
+    currentUser: currentUserFromProps,
+    loadingCurrentUser: loadingCurrentUserFromProps,
+  } = props;
   const { schema } = model;
   // if a document is being passed, this is an edit form
   const isEdit = documentId || slug;
@@ -239,6 +260,24 @@ export const FormContainer = (props: FormContainerProps) => {
   const [updateDocument] = useUpdate(mutationOptions);
   const [deleteDocument] = useDelete(mutationOptions);
 
+  const {
+    currentUser: currentUserFromContext,
+    loading: loadingCurrentUserFromContext,
+  } = useVulcanCurrentUser();
+  const shouldGetCurrentUserFromProps =
+    typeof currentUserFromProps !== "undefined";
+  console.log(
+    "get from props",
+    currentUserFromProps,
+    shouldGetCurrentUserFromProps
+  );
+  const currentUser = shouldGetCurrentUserFromProps
+    ? currentUserFromProps
+    : currentUserFromContext;
+  const loadingCurrentUser = shouldGetCurrentUserFromProps
+    ? loadingCurrentUserFromProps
+    : loadingCurrentUserFromContext;
+
   // callbacks
   /*
   const formRef = useRef(null);
@@ -298,11 +337,12 @@ export const FormContainer = (props: FormContainerProps) => {
   return (
     <VulcanComponents.Form
       document={document}
-      loading={loading}
+      loading={loading || loadingCurrentUser}
       createDocument={createAndReturnDocument /*createDocument*/}
       updateDocument={updateAndReturnDocument}
       deleteDocument={deleteDocumentAndRefetch}
       refetch={refetch}
+      currentUser={currentUser}
       {...childProps}
       {...props}
     />
