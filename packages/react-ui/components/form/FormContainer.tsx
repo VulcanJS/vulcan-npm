@@ -266,11 +266,6 @@ export const FormContainer = (props: FormContainerProps) => {
   } = useVulcanCurrentUser();
   const shouldGetCurrentUserFromProps =
     typeof currentUserFromProps !== "undefined";
-  console.log(
-    "get from props",
-    currentUserFromProps,
-    shouldGetCurrentUserFromProps
-  );
   const currentUser = shouldGetCurrentUserFromProps
     ? currentUserFromProps
     : currentUserFromContext;
