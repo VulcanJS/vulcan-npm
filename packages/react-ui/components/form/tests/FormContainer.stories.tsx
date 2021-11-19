@@ -146,7 +146,7 @@ MemberOnlySmartForm.args = {
 export const MemberOnlyLoggedInSmartForm = SmartFormTemplate.bind({});
 MemberOnlyLoggedInSmartForm.args = {
   model: MemberOnlyModel,
-  currentUser: { _id: "1234", groups: ["members"] },
+  currentUser: { _id: "1234", groups: ["members"], isAdmin: false },
 };
 export const MemberOnlyLoggedInSmartFormContext = SmartFormTemplate.bind({});
 MemberOnlyLoggedInSmartFormContext.args = {
@@ -156,7 +156,7 @@ MemberOnlyLoggedInSmartFormContext.decorators = [
   (Story) => (
     <VulcanCurrentUserProvider
       value={{
-        currentUser: { _id: "1234", groups: ["members"] },
+        currentUser: { _id: "1234", groups: ["members"], isAdmin: false },
         loading: false,
       }}
     >

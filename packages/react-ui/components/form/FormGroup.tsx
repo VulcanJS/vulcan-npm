@@ -1,6 +1,6 @@
 import React, { PureComponent, useState } from "react";
 import _some from "lodash/some";
-import { User, isAdmin } from "@vulcanjs/permissions";
+import { VulcanUser, isAdmin } from "@vulcanjs/permissions";
 import { FieldGroup } from "@vulcanjs/schema";
 import { FormField } from "./typings";
 import { useVulcanComponents } from "./VulcanComponents/Consumer";
@@ -17,7 +17,7 @@ export interface FormGroupProps {
   hidden?: boolean | Function;
   disabled?: boolean;
   document: any;
-  currentUser?: User;
+  currentUser?: VulcanUser;
   itemProperties: any;
   formType: any;
   prefilledProps: any;

@@ -24,14 +24,7 @@ import {
   forEachDocumentField,
 } from "@vulcanjs/schema";
 import isEqual from "lodash/isEqual";
-
-// TODO: define user as a specific VulcanModel? So we get the typing already
-export interface User extends VulcanDocument {
-  groups: Array<string>;
-  isAdmin: boolean;
-  _id: string;
-}
-type Group = "anyone" | "guests" | "members" | "owners" | "admins" | string; // "guests";
+import { VulcanUser, GroupName } from "./typings";
 
 /**
  * @summary Users.groups object
@@ -80,9 +73,9 @@ class Group {
  * @param {Object} user
  */
 export const getGroups = (
-  user: User | null,
+  user: VulcanUser | null,
   document?: VulcanDocument | null
-): Array<Group> => {
+): Array<GroupName> => {
   let userGroups = [
     "anyone",
     // legacy
@@ -136,8 +129,8 @@ const getActions = (user: Users) => {
  * @param {String} group or array of groups
  */
 export const isMemberOf = (
-  user: User | null,
-  groupOrGroups: Array<Group> | Group,
+  user: VulcanUser | null,
+  groupOrGroups: Array<GroupName> | GroupName,
   document?: VulcanDocument | null
 ) => {
   const groups = Array.isArray(groupOrGroups) ? groupOrGroups : [groupOrGroups];
@@ -166,7 +159,10 @@ Users.canDo = (user, actionOrActions) => {
  * @param {Object|string} userOrUserId - The user or their userId
  * @param {Object} document - The document to check (post, comment, user object, etc.)
  */
-export const owns = function (user: User | null, document: VulcanDocument) {
+export const owns = function (
+  user: VulcanUser | null,
+  document: VulcanDocument
+) {
   if (!user) return false;
   try {
     if (!!document.userId) {
@@ -190,7 +186,7 @@ export const owns = function (user: User | null, document: VulcanDocument) {
  * @summary Check if a user is an admin
  * @param {Object|string} userOrUserId - The user or their userId
  */
-export const isAdmin = function (user: User | null | undefined): boolean {
+export const isAdmin = function (user: VulcanUser | null | undefined): boolean {
   return !!user?.isAdmin;
 };
 
@@ -202,7 +198,7 @@ export const isAdmin = function (user: User | null | undefined): boolean {
  * @returns {Boolean} - true if the user can read the field, false if not
  */
 export const canReadField = function (
-  user: User | null,
+  user: VulcanUser | null,
   field: Pick<VulcanFieldSchema, "canRead">,
   document?: Object
 ) {
@@ -230,7 +226,7 @@ export const canReadField = function (
 };
 
 export const getReadableFields = function (
-  user: User | null,
+  user: VulcanUser | null,
   model: VulcanModel,
   document?: VulcanDocument
 ) {
@@ -288,7 +284,7 @@ export const getDocumentBasedPermissionFieldNames = function (
  * @param {Object} fields - The list of fields
  */
 export const checkFields = (
-  user: User | null,
+  user: VulcanUser | null,
   model: VulcanModel,
   fields: Array<any>
 ) => {
@@ -318,7 +314,7 @@ export const checkFields = (
  * @param {Object} document - The retrieved document
  */
 export const canFilterDocument = (
-  user: User,
+  user: VulcanUser,
   model: VulcanModel,
   fields: Array<string>,
   document: VulcanDocument
@@ -337,7 +333,7 @@ export const canFilterDocument = (
 export const restrictDocument = (
   document: VulcanDocument,
   schema: VulcanSchema,
-  currentUser: User | null
+  currentUser: VulcanUser | null
 ): VulcanDocument => {
   let restrictedDocument = cloneDeep(document);
   forEachDocumentField(
@@ -385,7 +381,7 @@ export const restrictDocuments = function ({
   model,
   documents,
 }: {
-  user: User;
+  user: VulcanUser;
   model: VulcanModel;
   documents: Array<VulcanDocument>;
 }) {
@@ -410,7 +406,7 @@ export const restrictDocuments = function ({
  * @param {Object} field - The field being edited or inserted
  */
 export const canCreateField = function (
-  user: User,
+  user: VulcanUser,
   field: Pick<VulcanFieldSchema, "canCreate">
 ) {
   const canCreate = field.canCreate;
@@ -443,7 +439,7 @@ export const canCreateField = function (
  * @param {Object} document - The document being edited or inserted
  */
 export const canUpdateField = function (
-  user: User,
+  user: VulcanUser,
   field: Pick<VulcanFieldSchema, "canUpdate">,
   document: VulcanDocument
 ) {
@@ -478,8 +474,8 @@ export const canUpdateField = function (
  * @param {Object} document - The document being edited or inserted
  */
 export const permissionCheck = (options: {
-  check: Function | Array<Group>;
-  user: User;
+  check: Function | Array<GroupName>;
+  user: VulcanUser;
   document?: VulcanDocument;
 }) => {
   const { check, user, document } = options;
@@ -498,7 +494,7 @@ export const permissionCheck = (options: {
 interface CanActionOnDocumentOptions {
   model: VulcanModel;
   document: VulcanDocument;
-  user: User;
+  user: VulcanUser;
 }
 export const canReadDocument = (options: CanActionOnDocumentOptions) => {
   const { model } = options;

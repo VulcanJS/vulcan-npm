@@ -1,5 +1,5 @@
 import React from "react";
-import type { VulcanUser } from "./typings";
+import type { VulcanUser } from "@vulcanjs/permissions";
 
 export type VulcanCurrentUserContextType =
   | { currentUser: VulcanUser | null; loading: false }

@@ -65,7 +65,7 @@ import { FetchResult } from "@apollo/client";
 // import { FormType } from "./typings";
 import { debugVulcan } from "@vulcanjs/utils";
 import { useVulcanCurrentUser } from "../VulcanCurrentUser/Consumer";
-import { VulcanUser } from "../VulcanCurrentUser/typings";
+import { VulcanUser } from "@vulcanjs/permissions";
 const debugForm = debugVulcan("form");
 
 // Mutation that yield a success result

@@ -1,11 +1,10 @@
-import { MutationResult } from "@apollo/client";
 import type {
   CreateVariables,
   UpdateVariables,
   DeleteVariables,
 } from "@vulcanjs/graphql";
 import { VulcanModel } from "@vulcanjs/model";
-import { User } from "@vulcanjs/permissions";
+import { VulcanUser } from "@vulcanjs/permissions";
 import { VulcanSchema } from "@vulcanjs/schema";
 
 export interface FormState {
@@ -45,7 +44,7 @@ export interface FormProps<TModel = { [key in string]: any }> {
   /**
    * currentUser to check authorizations to update/create some fields
    */
-  currentUser?: User;
+  currentUser?: VulcanUser;
   addFields?: Array<string>;
   removeFields?: Array<string>;
   // deprecated

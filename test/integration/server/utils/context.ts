@@ -4,7 +4,6 @@
 import { Connector, VulcanGraphqlModel } from "@vulcanjs/graphql/server";
 
 import { createMongooseConnector } from "@vulcanjs/mongo";
-// import { User, UserConnector, UserType } from "~/models/user";
 import { Request } from "express";
 import debug from "debug";
 const debugGraphqlContext = debug("vn:graphql:context");
