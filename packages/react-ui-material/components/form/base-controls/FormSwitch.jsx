@@ -1,16 +1,16 @@
-import { Components } from 'meteor/vulcan:lib';
-import React from 'react';
-import createReactClass from 'create-react-class';
-import StartAdornment, { hideStartAdornment } from './StartAdornment';
-import EndAdornment from './EndAdornment';
-import ComponentMixin from './mixins/component';
-import { withStyles } from '../../../modules/makeStyles';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import FormControlLayout from './FormControlLayout';
-import FormHelper from './FormHelper';
+import { Components } from "meteor/vulcan:lib";
+import React from "react";
+import createReactClass from "create-react-class";
+import StartAdornment, { hideStartAdornment } from "./StartAdornment";
+import EndAdornment from "./EndAdornment";
+import ComponentMixin from "./mixins/component";
+import { withStyles } from "../../../lib/makeStyles";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import FormControlLayout from "./FormControlLayout";
+import FormHelper from "./FormHelper";
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   inputRoot: {
     height: 50,
   },
@@ -27,14 +27,14 @@ export const styles = theme => ({
 const FormSwitch = createReactClass({
   mixins: [ComponentMixin],
 
-  getDefaultProps: function() {
+  getDefaultProps: function () {
     return {
-      label: '',
+      label: "",
       value: false,
     };
   },
 
-  changeValue: function(event) {
+  changeValue: function (event) {
     const target = event.target;
     const value = target.checked;
 
@@ -45,25 +45,31 @@ const FormSwitch = createReactClass({
     });
   },
 
-  render: function() {
-    const startAdornment = hideStartAdornment(this.props) ? null : <StartAdornment {...this.props} classes={null} />;
+  render: function () {
+    const startAdornment = hideStartAdornment(this.props) ? null : (
+      <StartAdornment {...this.props} classes={null} />
+    );
     const endAdornment = <EndAdornment {...this.props} classes={null} />;
 
     const element = this.renderElement(startAdornment, endAdornment);
 
-    if (this.props.layout === 'elementOnly') {
+    if (this.props.layout === "elementOnly") {
       return element;
     }
 
     return (
-      <FormControlLayout {...this.getFormControlProperties()} hideLabel={true} htmlFor={this.getId()}>
+      <FormControlLayout
+        {...this.getFormControlProperties()}
+        hideLabel={true}
+        htmlFor={this.getId()}
+      >
         {element}
         <FormHelper {...this.getFormHelperProperties()} />
       </FormControlLayout>
     );
   },
 
-  renderElement: function(startAdornment, endAdornment) {
+  renderElement: function (startAdornment, endAdornment) {
     const { classes, disabled, value, label } = this.props;
 
     return (
@@ -80,7 +86,7 @@ const FormSwitch = createReactClass({
                 root: classes.switchRoot,
                 disabled: classes.switchDisabled,
               }}
-              ref={c => (this.element = c)}
+              ref={(c) => (this.element = c)}
               {...this.cleanSwitchProps(this.cleanProps(this.props))}
               id={this.getId()}
               checked={value === true}
@@ -91,7 +97,10 @@ const FormSwitch = createReactClass({
           label={
             <>
               {label}
-              <Components.RequiredIndicator optional={this.props.optional} value={value} />
+              <Components.RequiredIndicator
+                optional={this.props.optional}
+                value={value}
+              />
             </>
           }
         />

@@ -4,14 +4,14 @@
  * @Last modified by:   apollinaire
  * @Last modified time: 10-01-19
  */
-import React from 'react';
-import { withStyles } from '../../modules/makeStyles';
-import { registerComponent } from 'meteor/vulcan:core';
+import React from "react";
+import { withStyles } from "../../lib/makeStyles";
+import { registerComponent } from "meteor/vulcan:core";
 
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
-const AlertStyle = theme => ({
+const AlertStyle = (theme) => ({
   error: {
     color: theme.palette.error.main,
     backgroundColor: theme.palette.error[100],
@@ -23,9 +23,13 @@ const AlertStyle = theme => ({
 });
 
 const Alert = ({ children, variant, classes, ...rest }) => (
-  <Card className={variant === 'danger' ? classes.error : classes.other}>
+  <Card className={variant === "danger" ? classes.error : classes.other}>
     <CardContent>{children}</CardContent>
   </Card>
 );
 
-registerComponent({ name: 'Alert', component: Alert, hocs: [[withStyles, AlertStyle]] });
+registerComponent({
+  name: "Alert",
+  component: Alert,
+  hocs: [[withStyles, AlertStyle]],
+});

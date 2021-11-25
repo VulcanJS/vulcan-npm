@@ -1,20 +1,20 @@
-import { withStyles } from '../../../modules/makeStyles';
-import React from 'react';
-import createReactClass from 'create-react-class';
-import PropTypes from 'prop-types';
-import ComponentMixin from './mixins/component';
-import FormControlLayout from './FormControlLayout';
-import FormHelper from './FormHelper';
-import Select from '@mui/material/Select';
-import Input from '@mui/material/Input';
-import MenuItem from '@mui/material/MenuItem';
-import MenuList from '@mui/material/MenuList';
-import ListSubheader from '@mui/material/ListSubheader';
-import StartAdornment, { hideStartAdornment } from './StartAdornment';
-import EndAdornment from './EndAdornment';
-import _isArray from 'lodash/isArray';
-import classNames from 'classnames';
-import { styles } from './FormSuggest';
+import { withStyles } from "../../../lib/makeStyles";
+import React from "react";
+import createReactClass from "create-react-class";
+import PropTypes from "prop-types";
+import ComponentMixin from "./mixins/component";
+import FormControlLayout from "./FormControlLayout";
+import FormHelper from "./FormHelper";
+import Select from "@mui/material/Select";
+import Input from "@mui/material/Input";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import ListSubheader from "@mui/material/ListSubheader";
+import StartAdornment, { hideStartAdornment } from "./StartAdornment";
+import EndAdornment from "./EndAdornment";
+import _isArray from "lodash/isArray";
+import classNames from "classnames";
+import { styles } from "./FormSuggest";
 
 const FormSelect = createReactClass({
   element: null,
@@ -32,33 +32,33 @@ const FormSelect = createReactClass({
     showMenuIndicator: PropTypes.bool,
   },
 
-  getDefaultProps: function() {
+  getDefaultProps: function () {
     return {
       showMenuIndicator: true,
     };
   },
 
-  getInitialState: function() {
+  getInitialState: function () {
     return {
       isOpen: false,
     };
   },
 
-  handleOpen: function() {
+  handleOpen: function () {
     // this doesn't work
     this.setState({
       isOpen: true,
     });
   },
 
-  handleClose: function() {
+  handleClose: function () {
     // this doesn't work
     this.setState({
       isOpen: false,
     });
   },
 
-  handleChange: function(event) {
+  handleChange: function (event) {
     const target = event.target;
     let value;
     if (this.props.multiple && this.props.native) {
@@ -75,24 +75,27 @@ const FormSelect = createReactClass({
     this.changeValue(value);
   },
 
-  changeValue: function(value) {
+  changeValue: function (value) {
     this.props.handleChange(value);
   },
 
-  render: function() {
-    if (this.props.layout === 'elementOnly') {
+  render: function () {
+    if (this.props.layout === "elementOnly") {
       return this.renderElement();
     }
 
     return (
-      <FormControlLayout {...this.getFormControlProperties()} htmlFor={this.getId()}>
+      <FormControlLayout
+        {...this.getFormControlProperties()}
+        htmlFor={this.getId()}
+      >
         {this.renderElement()}
         <FormHelper {...this.getFormHelperProperties()} />
       </FormControlLayout>
     );
   },
 
-  renderElement: function() {
+  renderElement: function () {
     const renderOption = (item, key) => {
       //eslint-disable-next-line no-unused-vars
       const { group, label, ...rest } = item;
@@ -113,7 +116,10 @@ const FormSelect = createReactClass({
           {nodes}
         </optgroup>
       ) : (
-        <MenuList subheader={<ListSubheader component="div">{label}</ListSubheader>} key={key}>
+        <MenuList
+          subheader={<ListSubheader component="div">{label}</ListSubheader>}
+          key={key}
+        >
           {nodes}
         </MenuList>
       );
@@ -122,10 +128,10 @@ const FormSelect = createReactClass({
     const { options = [], classes } = this.props;
 
     let groups = options
-      .filter(function(item) {
+      .filter(function (item) {
         return item.group;
       })
-      .map(function(item) {
+      .map(function (item) {
         return item.group;
       });
     // Get the unique items in group.
@@ -134,26 +140,26 @@ const FormSelect = createReactClass({
     let optionNodes = [];
 
     if (groups.length === 0) {
-      optionNodes = options.map(function(item, index) {
+      optionNodes = options.map(function (item, index) {
         return renderOption(item, index);
       });
     } else {
       // For items without groups.
-      const itemsWithoutGroup = options.filter(function(item) {
+      const itemsWithoutGroup = options.filter(function (item) {
         return !item.group;
       });
 
-      itemsWithoutGroup.forEach(function(item, index) {
-        optionNodes.push(renderOption(item, 'no-group-' + index));
+      itemsWithoutGroup.forEach(function (item, index) {
+        optionNodes.push(renderOption(item, "no-group-" + index));
       });
 
-      groups.forEach(function(group, groupIndex) {
-        const groupItems = options.filter(function(item) {
+      groups.forEach(function (group, groupIndex) {
+        const groupItems = options.filter(function (item) {
           return item.group === group;
         });
 
-        const groupOptionNodes = groupItems.map(function(item, index) {
-          return renderOption(item, groupIndex + '-' + index);
+        const groupOptionNodes = groupItems.map(function (item, index) {
+          return renderOption(item, groupIndex + "-" + index);
         });
 
         optionNodes.push(renderGroup(group, groupIndex, groupOptionNodes));
@@ -162,20 +168,30 @@ const FormSelect = createReactClass({
 
     let value = this.props.value;
     if (!this.props.multiple && _isArray(value)) {
-      value = value.length ? value[0] : '';
+      value = value.length ? value[0] : "";
     }
 
     const startAdornment = hideStartAdornment(this.props) ? null : (
-      <StartAdornment {...this.props} value={value} classes={null} changeValue={this.changeValue} />
+      <StartAdornment
+        {...this.props}
+        value={value}
+        classes={null}
+        changeValue={this.changeValue}
+      />
     );
     const endAdornment = (
-      <EndAdornment {...this.props} value={value} classes={{ inputAdornment: classes.inputAdornment }} changeValue={this.changeValue} />
+      <EndAdornment
+        {...this.props}
+        value={value}
+        classes={{ inputAdornment: classes.inputAdornment }}
+        changeValue={this.changeValue}
+      />
     );
 
     return (
       <Select
         className="select"
-        ref={c => (this.element = c)}
+        ref={(c) => (this.element = c)}
         {...this.cleanProps(this.props)}
         value={value}
         onChange={this.handleChange}
@@ -190,11 +206,15 @@ const FormSelect = createReactClass({
             classes={{
               root: classes.inputRoot,
               focused: classes.inputFocused,
-              input: classNames(classes.input, !value && classes.inputPlaceholder),
+              input: classNames(
+                classes.input,
+                !value && classes.inputPlaceholder
+              ),
             }}
           />
         }
-        classes={{ icon: classes.selectIcon }}>
+        classes={{ icon: classes.selectIcon }}
+      >
         {optionNodes}
       </Select>
     );

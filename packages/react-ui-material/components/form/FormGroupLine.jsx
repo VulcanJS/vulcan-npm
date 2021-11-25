@@ -1,17 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { registerComponent } from 'meteor/vulcan:core';
-import { withStyles } from '../../modules/makeStyles';
-import Collapse from '@mui/material/Collapse';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import ExpandLessIcon from '@mui/icons-material/KeyboardArrowUp';
-import ExpandMoreIcon from '@mui/icons-material/KeyboardArrowDown';
-import classNames from 'classnames';
+import React from "react";
+import PropTypes from "prop-types";
+import { registerComponent } from "meteor/vulcan:core";
+import { withStyles } from "../../lib/makeStyles";
+import Collapse from "@mui/material/Collapse";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import ExpandLessIcon from "@mui/icons-material/KeyboardArrowUp";
+import ExpandMoreIcon from "@mui/icons-material/KeyboardArrowDown";
+import classNames from "classnames";
 
-const styles = theme => ({
+const styles = (theme) => ({
   layoutRoot: {
-    minWidth: '320px',
+    minWidth: "320px",
   },
 
   headerRoot: {
@@ -24,19 +24,19 @@ const styles = theme => ({
   },
 
   collapsible: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
 
   label: {},
 
   subtitle1: {
-    display: 'flex',
-    alignItems: 'center',
-    '& > div': {
-      display: 'flex',
-      alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
+    "& > div": {
+      display: "flex",
+      alignItems: "center",
     },
-    '& > div:first-child': {
+    "& > div:first-child": {
       ...theme.typography.subtitle1,
     },
     paddingTop: theme.spacing(1),
@@ -48,25 +48,40 @@ const styles = theme => ({
   },
 
   entered: {
-    overflow: 'visible',
+    overflow: "visible",
   },
 });
 
 const FormGroupHeaderLine = ({ toggle, collapsed, label, group, classes }) => {
-  const collapsible = (group && group.collapsible) || (group && group.name === 'admin');
+  const collapsible =
+    (group && group.collapsible) || (group && group.name === "admin");
 
   return (
     <div
-      className={classNames(classes.headerRoot, collapsible && classes.collapsible, 'form-group-header')}
-      onClick={collapsible ? toggle : null}>
+      className={classNames(
+        classes.headerRoot,
+        collapsible && classes.collapsible,
+        "form-group-header"
+      )}
+      onClick={collapsible ? toggle : null}
+    >
       <Divider className={classes.divider} />
 
       <Typography
-        className={classNames('form-group-header-title', classes.subtitle1, collapsible && classes.collapsible)}
+        className={classNames(
+          "form-group-header-title",
+          classes.subtitle1,
+          collapsible && classes.collapsible
+        )}
         variant="subtitle1"
-        gutterBottom>
+        gutterBottom
+      >
         <div className={classes.label}>{label}</div>
-        {collapsible && <div className={classes.toggle}>{collapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}</div>}
+        {collapsible && (
+          <div className={classes.toggle}>
+            {collapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+          </div>
+        )}
       </Typography>
     </div>
   );
@@ -80,15 +95,34 @@ FormGroupHeaderLine.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-FormGroupHeaderLine.displayName = 'FormGroupHeaderLine';
+FormGroupHeaderLine.displayName = "FormGroupHeaderLine";
 
-registerComponent('FormGroupHeaderLine', FormGroupHeaderLine, [withStyles, styles]);
+registerComponent("FormGroupHeaderLine", FormGroupHeaderLine, [
+  withStyles,
+  styles,
+]);
 
-const FormGroupLayoutLine = ({ label, anchorName, collapsed, hidden, hasErrors, heading, group, children, classes }) => {
+const FormGroupLayoutLine = ({
+  label,
+  anchorName,
+  collapsed,
+  hidden,
+  hasErrors,
+  heading,
+  group,
+  children,
+  classes,
+}) => {
   const collapsedIn = (!collapsed && !hidden) || hasErrors;
 
   return (
-    <div className={classNames(classes.layoutRoot, 'form-section', `form-section-${anchorName}`)}>
+    <div
+      className={classNames(
+        classes.layoutRoot,
+        "form-section",
+        `form-section-${anchorName}`
+      )}
+    >
       <a name={anchorName} />
 
       {heading}
@@ -112,6 +146,9 @@ FormGroupLayoutLine.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-FormGroupLayoutLine.displayName = 'FormGroupLayoutLine';
+FormGroupLayoutLine.displayName = "FormGroupLayoutLine";
 
-registerComponent('FormGroupLayoutLine', FormGroupLayoutLine, [withStyles, styles]);
+registerComponent("FormGroupLayoutLine", FormGroupLayoutLine, [
+  withStyles,
+  styles,
+]);

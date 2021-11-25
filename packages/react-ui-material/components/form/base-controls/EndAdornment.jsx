@@ -1,57 +1,57 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { instantiateComponent } from 'meteor/vulcan:core';
-import { intlShape } from 'meteor/vulcan:i18n';
-import { withStyles } from '../../../modules/makeStyles';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Cancel';
-import MenuDownIcon from '@mui/icons-material/ArrowDropDown';
-import classNames from 'classnames';
-import _omit from 'lodash/omit';
+import React from "react";
+import PropTypes from "prop-types";
+import { instantiateComponent } from "meteor/vulcan:core";
+import { intlShape } from "meteor/vulcan:i18n";
+import { withStyles } from "../../../lib/makeStyles";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Cancel";
+import MenuDownIcon from "@mui/icons-material/ArrowDropDown";
+import classNames from "classnames";
+import _omit from "lodash/omit";
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   inputAdornment: {
-    whiteSpace: 'nowrap',
-    marginTop: '0 !important',
-    '& > *': {
-      verticalAlign: 'bottom',
+    whiteSpace: "nowrap",
+    marginTop: "0 !important",
+    "& > *": {
+      verticalAlign: "bottom",
     },
-    '& > svg': {
+    "& > svg": {
       color: theme.palette.common.darkBlack,
     },
-    '& > * + *': {
+    "& > * + *": {
       marginLeft: 8,
     },
-    height: 'auto',
+    height: "auto",
   },
 
   menuIndicator: {
     padding: 10,
     marginRight: -40,
     marginLeft: -16,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     color: theme.palette.common.midBlack,
-    pointerEvents: 'none',
-    transition: theme.transitions.create(['opacity'], {
+    pointerEvents: "none",
+    transition: theme.transitions.create(["opacity"], {
       duration: theme.transitions.duration.short,
     }),
   },
 
   clearButton: {
     opacity: 0,
-    '& svg': {
+    "& svg": {
       width: 20,
       height: 20,
     },
     marginRight: -12,
     marginLeft: -4,
-    '&:first-child': {
+    "&:first-child": {
       marginLeft: -12,
     },
-    transition: theme.transitions.create('opacity', {
+    transition: theme.transitions.create("opacity", {
       duration: theme.transitions.duration.short,
     }),
   },
@@ -66,7 +66,15 @@ export const styles = theme => ({
 });
 
 const EndAdornment = (props, context) => {
-  const { classes, value, addonAfter, changeValue, showMenuIndicator, hideClear, disabled } = props;
+  const {
+    classes,
+    value,
+    addonAfter,
+    changeValue,
+    showMenuIndicator,
+    hideClear,
+    disabled,
+  } = props;
   const { intl } = context;
 
   if (!addonAfter && (!changeValue || hideClear || disabled)) return null;
@@ -74,31 +82,42 @@ const EndAdornment = (props, context) => {
 
   const clearButton = changeValue && !hideClear && !disabled && (
     <IconButton
-      className={classNames('clear-button', classes.clearButton, hasValue && 'has-value')}
-      onClick={event => {
+      className={classNames(
+        "clear-button",
+        classes.clearButton,
+        hasValue && "has-value"
+      )}
+      onClick={(event) => {
         event.preventDefault();
         changeValue(null);
       }}
-      onMouseDown={event => {
+      onMouseDown={(event) => {
         event.preventDefault();
       }}
       tabIndex={-1}
-      aria-label={intl.formatMessage({ id: 'forms.delete_field' })}
+      aria-label={intl.formatMessage({ id: "forms.delete_field" })}
       disabled={!hasValue}
-      size="large">
+      size="large"
+    >
       <CloseIcon />
     </IconButton>
   );
 
   const menuIndicator = showMenuIndicator && !disabled && (
-    <div className={classNames('menu-indicator', classes.menuIndicator, hasValue && 'has-value')}>
+    <div
+      className={classNames(
+        "menu-indicator",
+        classes.menuIndicator,
+        hasValue && "has-value"
+      )}
+    >
       <MenuDownIcon />
     </div>
   );
 
   return (
     <InputAdornment classes={{ root: classes.inputAdornment }} position="end">
-      {instantiateComponent(addonAfter, _omit(props, ['classes']))}
+      {instantiateComponent(addonAfter, _omit(props, ["classes"]))}
       {menuIndicator}
       {clearButton}
     </InputAdornment>

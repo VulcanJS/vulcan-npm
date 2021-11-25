@@ -1,30 +1,43 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Utils, replaceComponent, registerSetting, getSetting } from 'meteor/vulcan:core';
-import { intlShape } from 'meteor/vulcan:i18n';
-import { makeStyles } from '../../modules/makeStyles';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
-import DOMPurify from 'dompurify';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import {
+  Utils,
+  replaceComponent,
+  registerSetting,
+  getSetting,
+} from "meteor/vulcan:core";
+import { intlShape } from "meteor/vulcan:i18n";
+import { makeStyles } from "../../lib/makeStyles";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Slide from "@mui/material/Slide";
+import DOMPurify from "dompurify";
 
-registerSetting('flash.infoHideSeconds', 5, 'Seconds to display flash info messages');
-registerSetting('flash.errorHideSeconds', 15, 'Seconds to display flash error messages');
+registerSetting(
+  "flash.infoHideSeconds",
+  5,
+  "Seconds to display flash info messages"
+);
+registerSetting(
+  "flash.errorHideSeconds",
+  15,
+  "Seconds to display flash error messages"
+);
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     maxWidth: 600,
-    transition: theme.transitions.create(['opacity'], {
+    transition: theme.transitions.create(["opacity"], {
       duration: theme.transitions.duration.short,
     }),
     opacity: theme.opacity?.darker,
-    '&:hover': {
+    "&:hover": {
       opacity: 1,
     },
-    '& code': {
-      fontSize: '0.9rem',
+    "& code": {
+      fontSize: "0.9rem",
     },
   },
 
@@ -44,11 +57,11 @@ const Flash = (props, context) => {
   const classes = useStyles(props);
   const intl = context.intl;
   const { message, type, _id } = props.message;
-  const infoOrError = ['info', 'success'].includes(type) ? 'info' : 'error';
+  const infoOrError = ["info", "success"].includes(type) ? "info" : "error";
   const hideDuration = getSetting(`flash.${infoOrError}HideSeconds`) * 1000;
 
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') return;
+    if (reason === "clickaway") return;
 
     setIsOpen(false);
     setTimeout(() => {
@@ -60,8 +73,8 @@ const Flash = (props, context) => {
     <Snackbar
       key={message.content}
       anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
+        vertical: "bottom",
+        horizontal: "left",
       }}
       open={isOpen}
       TransitionComponent={Slide}
@@ -69,13 +82,20 @@ const Flash = (props, context) => {
       autoHideDuration={hideDuration}
       onClose={handleClose}
       ContentProps={{
-        'aria-describedby': _id,
+        "aria-describedby": _id,
       }}
       action={[
-        <IconButton key="close" aria-label={intl.formatMessage({ id: 'global.close' })} color="inherit" onClick={handleClose} size="large">
+        <IconButton
+          key="close"
+          aria-label={intl.formatMessage({ id: "global.close" })}
+          color="inherit"
+          onClick={handleClose}
+          size="large"
+        >
           <CloseIcon />
         </IconButton>,
-      ]}>
+      ]}
+    >
       <Alert
         onClose={handleClose}
         severity={infoOrError}
@@ -83,8 +103,12 @@ const Flash = (props, context) => {
         classes={{
           root: classes.alert,
           filledInfo: classes.infoAlert,
-        }}>
-        <span id={_id} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(message) }} />
+        }}
+      >
+        <span
+          id={_id}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(message) }}
+        />
       </Alert>
     </Snackbar>
   );
@@ -99,7 +123,7 @@ Flash.contextTypes = {
   intl: intlShape.isRequired,
 };
 
-Flash.displayName = 'Flash';
+Flash.displayName = "Flash";
 
-replaceComponent('Flash', Flash);
+replaceComponent("Flash", Flash);
 export default Flash;

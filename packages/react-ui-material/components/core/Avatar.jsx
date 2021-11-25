@@ -1,43 +1,43 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { registerComponent } from 'meteor/vulcan:core';
-import { intlShape } from 'meteor/vulcan:i18n';
-import { Link } from 'react-router-dom';
-import Users, { getProfileUrl } from 'meteor/vulcan:users';
-import { withStyles } from '../../modules/makeStyles';
-import MuiAvatar from '@mui/material/Avatar';
-import ButtonBase from '@mui/material/ButtonBase';
-import Tooltip from '@mui/material/Tooltip';
-import AdminIcon from '@mui/icons-material/Star';
-import classNames from 'classnames';
+import React from "react";
+import PropTypes from "prop-types";
+import { registerComponent } from "meteor/vulcan:core";
+import { intlShape } from "meteor/vulcan:i18n";
+import { Link } from "react-router-dom";
+import Users, { getProfileUrl } from "meteor/vulcan:users";
+import { withStyles } from "../../lib/makeStyles";
+import MuiAvatar from "@mui/material/Avatar";
+import ButtonBase from "@mui/material/ButtonBase";
+import Tooltip from "@mui/material/Tooltip";
+import AdminIcon from "@mui/icons-material/Star";
+import classNames from "classnames";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     padding: 0,
-    borderRadius: '50%',
-    display: 'inline-block',
-    verticalAlign: 'middle',
-    position: 'relative',
+    borderRadius: "50%",
+    display: "inline-block",
+    verticalAlign: "middle",
+    position: "relative",
   },
 
   avatar: {},
 
   statusIcon: {
-    position: 'absolute',
+    position: "absolute",
     top: -2,
     right: -2,
     width: 16,
     height: 16,
-    filter: 'drop-shadow(0 0 1px rgba(0, 0, 0, 0.9))',
+    filter: "drop-shadow(0 0 1px rgba(0, 0, 0, 0.9))",
   },
 
   statusIconProfile: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     right: 0,
     width: 32,
     height: 32,
-    filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9))',
+    filter: "drop-shadow(0 0 2px rgba(0, 0, 0, 0.9))",
   },
 
   admin: {
@@ -102,15 +102,23 @@ const styles = theme => ({
   none: {},
 });
 
-const Avatar = ({ classes, className, user, size, gutter, link, buttonRef }, { intl }) => {
+const Avatar = (
+  { classes, className, user, size, gutter, link, buttonRef },
+  { intl }
+) => {
   let avatarUrl = user.avatarUrl || Users.avatar.getUrl(user);
-  if (avatarUrl && avatarUrl.indexOf('gravatar.com') > -1) avatarUrl = null;
-  const statusIconClass = `statusIcon${size === 'profile' ? 'Profile' : ''}`;
+  if (avatarUrl && avatarUrl.indexOf("gravatar.com") > -1) avatarUrl = null;
+  const statusIconClass = `statusIcon${size === "profile" ? "Profile" : ""}`;
   const userStatus = Users.avatar.getUserStatus(user);
 
   const statusIcon = userStatus && (
-    <Tooltip title={intl.formatMessage({ id: `users.${userStatus}` })} placement="bottom">
-      <AdminIcon className={classNames(classes[statusIconClass], classes[userStatus])} />
+    <Tooltip
+      title={intl.formatMessage({ id: `users.${userStatus}` })}
+      placement="bottom"
+    >
+      <AdminIcon
+        className={classNames(classes[statusIconClass], classes[userStatus])}
+      />
     </Tooltip>
   );
 
@@ -118,8 +126,9 @@ const Avatar = ({ classes, className, user, size, gutter, link, buttonRef }, { i
     <MuiAvatar
       alt={Users.getDisplayName(user)}
       src={avatarUrl}
-      className={classNames('users-avatar', classes[size], classes.avatar)}
-      data-email={Users.getEmail(user)}>
+      className={classNames("users-avatar", classes[size], classes.avatar)}
+      data-email={Users.getEmail(user)}
+    >
       {!avatarUrl ? Users.avatar.getInitials(user) : null}
     </MuiAvatar>
   );
@@ -132,7 +141,8 @@ const Avatar = ({ classes, className, user, size, gutter, link, buttonRef }, { i
       classes={{ root: classNames(classes.root, classes[gutter]) }}
       component={Link}
       ref={buttonRef}
-      to={getProfileUrl(user)}>
+      to={getProfileUrl(user)}
+    >
       {avatar}
       {statusIcon}
     </ButtonBase>
@@ -148,15 +158,15 @@ Avatar.propTypes = {
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
   user: PropTypes.object.isRequired,
-  size: PropTypes.oneOf(['xsmall', 'small', 'medium', 'large', 'profile']),
-  gutter: PropTypes.oneOf(['bottom', 'left', 'right', 'sides', 'all', 'none']),
+  size: PropTypes.oneOf(["xsmall", "small", "medium", "large", "profile"]),
+  gutter: PropTypes.oneOf(["bottom", "left", "right", "sides", "all", "none"]),
   link: PropTypes.bool,
   buttonRef: PropTypes.func,
 };
 
 Avatar.defaultProps = {
-  size: 'small',
-  gutter: 'none',
+  size: "small",
+  gutter: "none",
   link: true,
 };
 
@@ -164,6 +174,6 @@ Avatar.contextTypes = {
   intl: intlShape.isRequired,
 };
 
-Avatar.displayName = 'Avatar';
+Avatar.displayName = "Avatar";
 
-registerComponent('Avatar', Avatar, [withStyles, styles]);
+registerComponent("Avatar", Avatar, [withStyles, styles]);

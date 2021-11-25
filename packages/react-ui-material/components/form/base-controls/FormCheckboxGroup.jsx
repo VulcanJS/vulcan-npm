@@ -1,72 +1,74 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-import ComponentMixin from './mixins/component';
-import { withStyles } from '../../../modules/makeStyles';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControlLayout from './FormControlLayout';
-import FormHelper from './FormHelper';
-import Checkbox from '@mui/material/Checkbox';
-import Switch from '@mui/material/Switch';
-import classNames from 'classnames';
-import isEmpty from 'lodash/isEmpty';
-import { Components } from 'meteor/vulcan:core';
-import without from 'lodash/without';
-import uniq from 'lodash/uniq';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import createReactClass from "create-react-class";
+import ComponentMixin from "./mixins/component";
+import { withStyles } from "../../../lib/makeStyles";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControlLayout from "./FormControlLayout";
+import FormHelper from "./FormHelper";
+import Checkbox from "@mui/material/Checkbox";
+import Switch from "@mui/material/Switch";
+import classNames from "classnames";
+import isEmpty from "lodash/isEmpty";
+import { Components } from "meteor/vulcan:core";
+import without from "lodash/without";
+import uniq from "lodash/uniq";
 
-const styles = theme => ({
+const styles = (theme) => ({
   group: {
-    marginTop: '8px',
+    marginTop: "8px",
   },
   twoColumn: {
-    display: 'block',
-    [theme.breakpoints.down('lg')]: {
-      '& > label': {
+    display: "block",
+    [theme.breakpoints.down("lg")]: {
+      "& > label": {
         marginRight: theme.spacing(5),
       },
     },
-    [theme.breakpoints.up('md')]: {
-      '& > label': {
-        width: '49%',
+    [theme.breakpoints.up("md")]: {
+      "& > label": {
+        width: "49%",
       },
     },
   },
   threeColumn: {
-    display: 'block',
-    [theme.breakpoints.down('sm')]: {
-      '& > label': {
+    display: "block",
+    [theme.breakpoints.down("sm")]: {
+      "& > label": {
         marginRight: theme.spacing(5),
       },
     },
-    [theme.breakpoints.up('xs')]: {
-      '& > label': {
-        width: '49%',
+    [theme.breakpoints.up("xs")]: {
+      "& > label": {
+        width: "49%",
       },
     },
-    [theme.breakpoints.up('md')]: {
-      '& > label': {
-        width: '32%',
+    [theme.breakpoints.up("md")]: {
+      "& > label": {
+        width: "32%",
       },
     },
   },
 });
 
 // this marker is used to identify "other" values
-export const otherMarker = '[other]';
+export const otherMarker = "[other]";
 
 // check if a string is an "other" value
-export const isOtherValue = s => s && typeof s === 'string' && s.substr(0, otherMarker.length) === otherMarker;
+export const isOtherValue = (s) =>
+  s && typeof s === "string" && s.substr(0, otherMarker.length) === otherMarker;
 
 // remove the "other" marker from a string
-export const removeOtherMarker = s => s && typeof s === 'string' && s.substr(otherMarker.length);
+export const removeOtherMarker = (s) =>
+  s && typeof s === "string" && s.substr(otherMarker.length);
 
 // add the "other" marker to a string
-export const addOtherMarker = s => `${otherMarker}${s}`;
+export const addOtherMarker = (s) => `${otherMarker}${s}`;
 
 // return array of values without the "other" value
-export const removeOtherValue = a => {
-  return a.filter(s => !isOtherValue(s));
+export const removeOtherValue = (a) => {
+  return a.filter((s) => !isOtherValue(s));
 };
 
 const OtherComponent = ({ value: _values, path, updateCurrentValues }) => {
@@ -83,41 +85,48 @@ const OtherComponent = ({ value: _values, path, updateCurrentValues }) => {
   // textfield properties
   const textFieldInputProperties = {
     value: textFieldValue,
-    onChange: fieldValue => {
+    onChange: (fieldValue) => {
       // first, update local state
       setTextFieldValue(fieldValue);
       // then update global form state
-      const newValue = isEmpty(fieldValue) ? withoutOtherValue : [...withoutOtherValue, addOtherMarker(fieldValue)];
+      const newValue = isEmpty(fieldValue)
+        ? withoutOtherValue
+        : [...withoutOtherValue, addOtherMarker(fieldValue)];
       updateCurrentValues({ [path]: newValue });
     },
   };
 
-  const textFieldItemProperties = { layout: 'elementOnly' };
+  const textFieldItemProperties = { layout: "elementOnly" };
 
   return (
     <div className="form-option-other">
       <FormControlLabel
         control={
           <Checkbox
-            inputRef={c => (this[name + '-' + 'other'] = c)}
+            inputRef={(c) => (this[name + "-" + "other"] = c)}
             checked={showOther}
-            onChange={event => {
+            onChange={(event) => {
               const isChecked = event.target.checked;
               setShowOther(isChecked);
               if (isChecked) {
                 // if checkbox is checked and textfield has value, update global form state with current textfield value
                 if (textFieldValue) {
-                  updateCurrentValues({ [path]: [...withoutOtherValue, addOtherMarker(textFieldValue)] });
+                  updateCurrentValues({
+                    [path]: [
+                      ...withoutOtherValue,
+                      addOtherMarker(textFieldValue),
+                    ],
+                  });
                 }
               } else {
                 // if checkbox is unchecked, also clear out field value from global form state
                 updateCurrentValues({ [path]: withoutOtherValue });
               }
             }}
-            value={'other'}
+            value={"other"}
           />
         }
-        label={'Other'}
+        label={"Other"}
       />
       {showOther && (
         <Components.FormComponentText
@@ -136,57 +145,65 @@ const FormCheckboxGroup = createReactClass({
   propTypes: {
     classes: PropTypes.object.isRequired,
     inputProperties: PropTypes.shape({
-      variant: PropTypes.oneOf(['checkbox', 'switch']),
+      variant: PropTypes.oneOf(["checkbox", "switch"]),
       name: PropTypes.string,
       options: PropTypes.array.isRequired,
-      columnClass: PropTypes.oneOf(['twoColumn', 'threeColumn']),
+      columnClass: PropTypes.oneOf(["twoColumn", "threeColumn"]),
     }).isRequired,
   },
 
-  componentDidMount: function() {
+  componentDidMount: function () {
     if (this.props.refFunction) {
       this.props.refFunction(this);
     }
   },
 
-  getDefaultProps: function() {
+  getDefaultProps: function () {
     return {
-      label: '',
+      label: "",
       help: null,
     };
   },
 
-  validate: function() {
+  validate: function () {
     if (this.props.onBlur) {
       this.props.onBlur();
     }
     return true;
   },
 
-  renderElement: function() {
+  renderElement: function () {
     const { name, options, disabled: _disabled } = this.props.inputProperties;
     let { value: _values } = this.props.inputProperties;
     const { itemProperties, updateCurrentValues, value, path } = this.props;
 
     // get rid of duplicate values; or any values that are not included in the options provided
     // (unless they have the "other" marker)
-    _values = _values ? uniq(value.filter(v => isOtherValue(v) || options.map(o => o.value).includes(v))) : [];
+    _values = _values
+      ? uniq(
+          value.filter(
+            (v) => isOtherValue(v) || options.map((o) => o.value).includes(v)
+          )
+        )
+      : [];
     const controls = options.map((checkbox, key) => {
       let checkboxValue = checkbox.value;
       let checked = _values.indexOf(checkboxValue) !== -1;
       let disabled = checkbox.disabled || _disabled;
-      const Component = this.props.variant === 'switch' ? Switch : Checkbox;
+      const Component = this.props.variant === "switch" ? Switch : Checkbox;
 
       return (
         <FormControlLabel
           key={key}
           control={
             <Component
-              inputRef={c => (this[name + '-' + checkboxValue] = c)}
+              inputRef={(c) => (this[name + "-" + checkboxValue] = c)}
               checked={checked}
-              onChange={event => {
+              onChange={(event) => {
                 const isChecked = event.target.checked;
-                const newValue = isChecked ? [..._values, checkbox.value] : without(_values, checkbox.value);
+                const newValue = isChecked
+                  ? [..._values, checkbox.value]
+                  : without(_values, checkbox.value);
                 updateCurrentValues({ [path]: newValue });
               }}
               value={checkboxValue}
@@ -198,20 +215,36 @@ const FormCheckboxGroup = createReactClass({
       );
     });
 
-    const maxLength = options.reduce((max, option) => (option.label.length > max ? option.label.length : max), 0);
+    const maxLength = options.reduce(
+      (max, option) => (option.label.length > max ? option.label.length : max),
+      0
+    );
 
-    const columnClass = this.props.inputProperties.columnClass || (maxLength < 20 ? 'threeColumn' : maxLength < 30 ? 'twoColumn' : '');
+    const columnClass =
+      this.props.inputProperties.columnClass ||
+      (maxLength < 20 ? "threeColumn" : maxLength < 30 ? "twoColumn" : "");
 
     return (
-      <FormGroup className={classNames(this.props.classes.group, this.props.classes[columnClass])}>
+      <FormGroup
+        className={classNames(
+          this.props.classes.group,
+          this.props.classes[columnClass]
+        )}
+      >
         {controls}
-        {itemProperties.showOther && <OtherComponent value={_values} path={path} updateCurrentValues={updateCurrentValues} />}
+        {itemProperties.showOther && (
+          <OtherComponent
+            value={_values}
+            path={path}
+            updateCurrentValues={updateCurrentValues}
+          />
+        )}
       </FormGroup>
     );
   },
 
-  render: function() {
-    if (this.props.layout === 'elementOnly') {
+  render: function () {
+    if (this.props.layout === "elementOnly") {
       return <div>{this.renderElement()}</div>;
     }
 

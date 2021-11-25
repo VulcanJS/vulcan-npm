@@ -3,7 +3,8 @@ import React from "react";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { useVulcanComponents } from "@vulcanjs/react-ui";
+//import { useVulcanComponents } from "@vulcanjs/react-ui";
+import RequiredIndicator from "./RequiredIndicator";
 
 export interface FormControlLayoutProps {
   label: any;
@@ -42,16 +43,7 @@ export const FormControlLayout = (props: FormControlLayoutProps) => {
     inputType: PropTypes.string,
   },*/
 
-  const Components = useVulcanComponents();
-  // TODO: previously was loaded from components, but it is not a default vulcan component
-  // => we need a way to add more component to the type + register them correctly
-  const RequiredIndicator = ({
-    optional,
-    value,
-  }: {
-    optional?: boolean;
-    value: any;
-  }) => <>{optional ? null : "*"}</>;
+  // const Components = useVulcanComponents();
 
   const { htmlFor } = props;
 
@@ -79,7 +71,6 @@ export const FormControlLayout = (props: FormControlLayoutProps) => {
           data-required={isRequired}
         >
           {label}
-          {/** Components.RequiredIndicator */}
           <RequiredIndicator optional={!isRequired} value={value} />
         </FormLabel>
       );

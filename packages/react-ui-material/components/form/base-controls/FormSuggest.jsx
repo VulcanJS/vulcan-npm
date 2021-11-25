@@ -1,23 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-import ComponentMixin from './mixins/component';
-import { withStyles } from '../../../modules/makeStyles';
-import Input from '@mui/material/Input';
-import Autosuggest from 'react-autosuggest';
-import Paper from '@mui/material/Paper';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
-import { registerComponent } from 'meteor/vulcan:core';
-import StartAdornment, { hideStartAdornment } from './StartAdornment';
-import EndAdornment from './EndAdornment';
-import FormControlLayout from './FormControlLayout';
-import FormHelper from './FormHelper';
-import _isEqual from 'lodash/isEqual';
-import classNames from 'classnames';
-import IsolatedScroll from 'react-isolated-scroll';
+import React from "react";
+import PropTypes from "prop-types";
+import createReactClass from "create-react-class";
+import ComponentMixin from "./mixins/component";
+import { withStyles } from "../../../lib/makeStyles";
+import Input from "@mui/material/Input";
+import Autosuggest from "react-autosuggest";
+import Paper from "@mui/material/Paper";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import match from "autosuggest-highlight/match";
+import parse from "autosuggest-highlight/parse";
+import { registerComponent } from "meteor/vulcan:core";
+import StartAdornment, { hideStartAdornment } from "./StartAdornment";
+import EndAdornment from "./EndAdornment";
+import FormControlLayout from "./FormControlLayout";
+import FormHelper from "./FormHelper";
+import _isEqual from "lodash/isEqual";
+import classNames from "classnames";
+import IsolatedScroll from "react-isolated-scroll";
 
 const maxSuggestions = 100;
 
@@ -37,39 +37,44 @@ const maxSuggestions = 100;
   sectionContainerFirst:    'react-autosuggest__section-container--first',
   sectionTitle:             'react-autosuggest__section-title'
 }*/
-export const styles = theme => {
-  const light = theme.palette.mode === 'light';
-  const bottomLineColor = light ? 'rgba(0, 0, 0, 0.42)' : 'rgba(255, 255, 255, 0.7)';
+export const styles = (theme) => {
+  const light = theme.palette.mode === "light";
+  const bottomLineColor = light
+    ? "rgba(0, 0, 0, 0.42)"
+    : "rgba(255, 255, 255, 0.7)";
 
   return {
     root: {
       flexGrow: 1,
-      position: 'relative',
+      position: "relative",
     },
 
     textField: {
-      width: '100%',
-      'label + div > &': {
+      width: "100%",
+      "label + div > &": {
         marginTop: theme.spacing(2),
       },
     },
 
     input: {
       outline: 0,
-      font: 'inherit',
-      color: 'currentColor',
-      width: '100%',
-      border: '0',
-      margin: '0',
-      padding: '7px 0',
-      display: 'block',
-      boxSizing: 'content-box',
-      background: 'none',
-      verticalAlign: 'middle',
-      '&::-webkit-search-decoration, &::-webkit-search-cancel-button, &::after, &:after': {
-        display: 'none',
+      font: "inherit",
+      color: "currentColor",
+      width: "100%",
+      border: "0",
+      margin: "0",
+      padding: "7px 0",
+      display: "block",
+      boxSizing: "content-box",
+      background: "none",
+      verticalAlign: "middle",
+      "&::-webkit-search-decoration, &::-webkit-search-cancel-button, &::after, &:after":
+        {
+          display: "none",
+        },
+      "&::-webkit-search-results, &::-webkit-search-results-decoration": {
+        display: "none",
       },
-      '&::-webkit-search-results, &::-webkit-search-results-decoration': { display: 'none' },
     },
 
     inputPlaceholder: {
@@ -77,12 +82,12 @@ export const styles = theme => {
     },
 
     readOnly: {
-      cursor: 'pointer',
+      cursor: "pointer",
     },
 
     suggestionsContainer: {
-      display: 'none',
-      position: 'absolute',
+      display: "none",
+      position: "absolute",
       left: 0,
       right: 0,
       zIndex: theme.zIndex.modal,
@@ -91,16 +96,16 @@ export const styles = theme => {
     },
 
     suggestionsContainerOpen: {
-      display: 'flex',
+      display: "flex",
     },
 
     scroller: {
       flexGrow: 1,
-      overflowY: 'auto',
+      overflowY: "auto",
     },
 
     suggestion: {
-      display: 'block',
+      display: "block",
     },
 
     suggestionIcon: {
@@ -114,35 +119,41 @@ export const styles = theme => {
     suggestionsList: {
       margin: 0,
       padding: 0,
-      listStyleType: 'none',
+      listStyleType: "none",
     },
 
     inputRoot: {
-      '&:hover .clear-button.has-value': { opacity: 0.54, pointerEvents: 'initial' },
-      '&:focus .clear-button.has-value': { opacity: 0.54, pointerEvents: 'initial' },
-      '&:hover .menu-indicator.has-value': { opacity: 0 },
-      '&:focus .menu-indicator.has-value': { opacity: 0 },
+      "&:hover .clear-button.has-value": {
+        opacity: 0.54,
+        pointerEvents: "initial",
+      },
+      "&:focus .clear-button.has-value": {
+        opacity: 0.54,
+        pointerEvents: "initial",
+      },
+      "&:hover .menu-indicator.has-value": { opacity: 0 },
+      "&:focus .menu-indicator.has-value": { opacity: 0 },
     },
 
     inputFocused: {
-      '& .clear-button.has-value': { opacity: 0.54, pointerEvents: 'initial' },
-      '& .menu-indicator.has-value': { opacity: 0 },
+      "& .clear-button.has-value": { opacity: 0.54, pointerEvents: "initial" },
+      "& .menu-indicator.has-value": { opacity: 0 },
     },
 
     inputDisabled: {},
 
     formatted: {
-      display: 'flex',
-      alignItems: 'center',
+      display: "flex",
+      alignItems: "center",
       marginTop: 16,
       paddingTop: 4,
       paddingRight: 0,
       paddingBottom: 4,
       paddingLeft: 0,
       fontSize: 17.15,
-      cursor: 'pointer',
-      '&$disabled': {
-        pointerEvents: 'none',
+      cursor: "pointer",
+      "&$disabled": {
+        pointerEvents: "none",
       },
     },
 
@@ -153,53 +164,55 @@ export const styles = theme => {
     focused: {},
 
     underline: {
-      '&:after': {
-        borderBottom: `2px solid ${theme.palette.primary[light ? 'dark' : 'light']}`,
+      "&:after": {
+        borderBottom: `2px solid ${
+          theme.palette.primary[light ? "dark" : "light"]
+        }`,
         left: 0,
         bottom: 0,
         // Doing the other way around crash on IE 11 "''" https://github.com/cssinjs/jss/issues/242
         content: '""',
-        position: 'absolute',
+        position: "absolute",
         right: 0,
-        transform: 'scaleX(0)',
-        transition: theme.transitions.create('transform', {
+        transform: "scaleX(0)",
+        transition: theme.transitions.create("transform", {
           duration: theme.transitions.duration.shorter,
           easing: theme.transitions.easing.easeOut,
         }),
-        pointerEvents: 'none', // Transparent to the hover style.
+        pointerEvents: "none", // Transparent to the hover style.
       },
-      '&:focus:after': {
-        transform: 'scaleX(1)',
+      "&:focus:after": {
+        transform: "scaleX(1)",
       },
-      '&$error:after': {
+      "&$error:after": {
         borderBottomColor: theme.palette.error.main,
-        transform: 'scaleX(1)', // error is always underlined in red
+        transform: "scaleX(1)", // error is always underlined in red
       },
-      '&:before': {
+      "&:before": {
         borderBottom: `1px solid ${bottomLineColor}`,
         left: 0,
         bottom: 0,
         // Doing the other way around crash on IE 11 "''" https://github.com/cssinjs/jss/issues/242
         content: '"\\00a0"',
-        position: 'absolute',
+        position: "absolute",
         right: 0,
-        transition: theme.transitions.create('border-bottom-color', {
+        transition: theme.transitions.create("border-bottom-color", {
           duration: theme.transitions.duration.shorter,
         }),
-        pointerEvents: 'none', // Transparent to the hover style.
+        pointerEvents: "none", // Transparent to the hover style.
       },
-      '&:hover:not($disabled):not($focused):not($error):before': {
+      "&:hover:not($disabled):not($focused):not($error):before": {
         borderBottom: `2px solid ${theme.palette.text.primary}`,
         // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
+        "@media (hover: none)": {
           borderBottom: `1px solid ${bottomLineColor}`,
         },
       },
-      '&$disabled:before': {
-        borderBottomStyle: 'dotted',
-        '@media print': {
-          borderBottomStyle: 'solid',
-          borderBottomWidth: 'thin',
+      "&$disabled:before": {
+        borderBottomStyle: "dotted",
+        "@media print": {
+          borderBottomStyle: "solid",
+          borderBottomWidth: "thin",
         },
       },
     },
@@ -213,17 +226,20 @@ export const styles = theme => {
       paddingBottom: 4,
       paddingLeft: 9,
       fontFamily: theme.typography.fontFamily,
-      color: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.87)' : theme.palette.common.white,
+      color:
+        theme.palette.mode === "light"
+          ? "rgba(0, 0, 0, 0.87)"
+          : theme.palette.common.white,
       fontSize: theme.typography.pxToRem(16),
-      lineHeight: '1.1875em',
+      lineHeight: "1.1875em",
     },
 
     selectIcon: {
-      display: 'none',
+      display: "none",
     },
 
     inputAdornment: {
-      pointerEvents: 'none',
+      pointerEvents: "none",
     },
 
     menuItem: {},
@@ -260,25 +276,28 @@ const FormSuggest = createReactClass({
     showMenuIndicator: PropTypes.bool,
   },
 
-  getDefaultProps: function() {
+  getDefaultProps: function () {
     return {
-      autoComplete: 'off',
+      autoComplete: "off",
       autoFocus: false,
       showMenuIndicator: true,
     };
   },
 
-  getOptionFormatted: function(option, formattedProps) {
+  getOptionFormatted: function (option, formattedProps) {
     if (!option) return;
-    const formatted = option.formatted && typeof option.formatted === 'function' ? option.formatted(formattedProps) : option.formatted;
+    const formatted =
+      option.formatted && typeof option.formatted === "function"
+        ? option.formatted(formattedProps)
+        : option.formatted;
     return formatted;
   },
 
-  getOptionLabel: function(option) {
-    return (option && option.label) || (option && option.value) || '';
+  getOptionLabel: function (option) {
+    return (option && option.label) || (option && option.value) || "";
   },
 
-  getInitialState: function() {
+  getInitialState: function () {
     if (this.props.refFunction) {
       this.props.refFunction(this);
     }
@@ -290,8 +309,11 @@ const FormSuggest = createReactClass({
     };
   },
 
-  UNSAFE_componentWillReceiveProps: function(nextProps) {
-    if (nextProps.value !== this.props.value || nextProps.options !== this.props.options) {
+  UNSAFE_componentWillReceiveProps: function (nextProps) {
+    if (
+      nextProps.value !== this.props.value ||
+      nextProps.options !== this.props.options
+    ) {
       const inputValue = this.getInputValue(nextProps);
       this.setState({
         inputValue,
@@ -299,7 +321,7 @@ const FormSuggest = createReactClass({
     }
   },
 
-  shouldComponentUpdate: function(nextProps, nextState) {
+  shouldComponentUpdate: function (nextProps, nextState) {
     const shouldUpdate =
       !_isEqual(nextState, this.state) ||
       nextProps.disabled !== this.props.disabled ||
@@ -310,25 +332,30 @@ const FormSuggest = createReactClass({
     return shouldUpdate;
   },
 
-  getInputValue: function(props) {
+  getInputValue: function (props) {
     const selectedOption = this.getSelectedOption(props);
-    const inputValue = selectedOption ? this.getOptionLabel(selectedOption) : props.limitToList ? '' : props.value;
+    const inputValue = selectedOption
+      ? this.getOptionLabel(selectedOption)
+      : props.limitToList
+      ? ""
+      : props.value;
     return inputValue;
   },
 
-  getSelectedOption: function(props) {
+  getSelectedOption: function (props) {
     props = props || this.props;
-    const selectedOption = props.options && props.options.find(opt => opt.value === props.value);
+    const selectedOption =
+      props.options && props.options.find((opt) => opt.value === props.value);
     return selectedOption;
   },
 
-  handleFocus: function(event) {
+  handleFocus: function (event) {
     if (!this.inputElement) return;
 
     this.inputElement.select();
   },
 
-  handleBlur: function(event, { highlightedSuggestion: suggestion }) {
+  handleBlur: function (event, { highlightedSuggestion: suggestion }) {
     if (!this.props.disableSelectOnBlur) {
       const selectedOption = this.getSelectedOption();
       if (!selectedOption) return;
@@ -341,7 +368,7 @@ const FormSuggest = createReactClass({
     }
   },
 
-  highlightFirstSuggestion: function() {
+  highlightFirstSuggestion: function () {
     if (this.props.disableText) return false;
 
     const selectedOption = this.getSelectedOption();
@@ -349,16 +376,16 @@ const FormSuggest = createReactClass({
     return selectedOption.label !== this.state.inputValue;
   },
 
-  suggestionSelected: function(event, { suggestion }) {
+  suggestionSelected: function (event, { suggestion }) {
     event.preventDefault();
     this.changeValue(suggestion);
   },
 
-  changeValue: function(suggestion) {
+  changeValue: function (suggestion) {
     if (!suggestion) {
       suggestion =
         this.props.limitToList || suggestion === null
-          ? { label: '', value: null }
+          ? { label: "", value: null }
           : { label: this.state.inputValue, value: this.state.inputValue };
     }
     if (suggestion.onClick) {
@@ -370,30 +397,30 @@ const FormSuggest = createReactClass({
     this.props.handleChange(suggestion.value);
   },
 
-  handleInputChange: function(event) {
+  handleInputChange: function (event) {
     const value = event.target.value;
     this.setState({
       inputValue: value,
     });
   },
 
-  handleSuggestionsFetchRequested: function({ value, reason }) {
+  handleSuggestionsFetchRequested: function ({ value, reason }) {
     this.setState({
       suggestions: this.getSuggestions(value),
     });
   },
 
-  handleSuggestionsClearRequested: function() {
+  handleSuggestionsClearRequested: function () {
     this.setState({
       suggestions: [],
     });
   },
 
-  shouldRenderSuggestions: function(value) {
+  shouldRenderSuggestions: function (value) {
     return true;
   },
 
-  render: function() {
+  render: function () {
     const { value, disabled, classes } = this.props;
     const { inputValue } = this.state;
     const selectedOption = this.getSelectedOption();
@@ -402,14 +429,21 @@ const FormSuggest = createReactClass({
       disabled,
     });
 
-    const startAdornment = hideStartAdornment(this.props) ? null : <StartAdornment {...this.props} value={value} classes={null} />;
+    const startAdornment = hideStartAdornment(this.props) ? null : (
+      <StartAdornment {...this.props} value={value} classes={null} />
+    );
     const endAdornment = (
-      <EndAdornment {...this.props} value={value} classes={{ inputAdornment: classes.inputAdornment }} changeValue={this.changeValue} />
+      <EndAdornment
+        {...this.props}
+        value={value}
+        classes={{ inputAdornment: classes.inputAdornment }}
+        changeValue={this.changeValue}
+      />
     );
 
     const element = this.renderElement(startAdornment, endAdornment);
 
-    if (this.props.layout === 'elementOnly') {
+    if (this.props.layout === "elementOnly") {
       return element;
     }
 
@@ -417,15 +451,23 @@ const FormSuggest = createReactClass({
       <FormControlLayout
         {...this.getFormControlProperties()}
         shrinkLabel={inputFormatted && inputFormatted !== inputValue}
-        htmlFor={this.getId()}>
+        htmlFor={this.getId()}
+      >
         {element}
         <FormHelper {...this.getFormHelperProperties()} />
       </FormControlLayout>
     );
   },
 
-  renderElement: function(startAdornment, endAdornment) {
-    const { classes, autoFocus, disableText, placeholder, inputProperties, disabled } = this.props;
+  renderElement: function (startAdornment, endAdornment) {
+    const {
+      classes,
+      autoFocus,
+      disableText,
+      placeholder,
+      inputProperties,
+      disabled,
+    } = this.props;
     const { inputValue } = this.state;
     const selectedOption = this.getSelectedOption();
     const inputFormatted = this.getOptionFormatted(selectedOption, {
@@ -467,7 +509,7 @@ const FormSuggest = createReactClass({
           readOnly: disableText,
           disabled: this.props.disabled,
           name: this.props.name,
-          'aria-haspopup': 'true',
+          "aria-haspopup": "true",
           startAdornment,
           endAdornment,
         }}
@@ -475,8 +517,20 @@ const FormSuggest = createReactClass({
     );
   },
 
-  renderInputComponent: function(inputProps) {
-    const { classes, autoFocus, autoComplete, value, formatted, ref, startAdornment, endAdornment, disabled, errors, ...rest } = inputProps;
+  renderInputComponent: function (inputProps) {
+    const {
+      classes,
+      autoFocus,
+      autoComplete,
+      value,
+      formatted,
+      ref,
+      startAdornment,
+      endAdornment,
+      disabled,
+      errors,
+      ...rest
+    } = inputProps;
     const { hideLabel, inputRef } = this.props;
 
     if (formatted && formatted !== value) {
@@ -492,7 +546,8 @@ const FormSuggest = createReactClass({
             errors?.length && classes.error,
             classes.formatted,
             hideLabel && classes.formattedNoLabel
-          )}>
+          )}
+        >
           {startAdornment}
           {formatted}
           {endAdornment}
@@ -511,7 +566,7 @@ const FormSuggest = createReactClass({
           focused: classes.inputFocused,
         }}
         value={value}
-        inputRef={c => {
+        inputRef={(c) => {
           ref(c);
           if (inputRef) {
             inputRef(c);
@@ -529,7 +584,7 @@ const FormSuggest = createReactClass({
     );
   },
 
-  renderSuggestion: function(suggestion, { query, isHighlighted }) {
+  renderSuggestion: function (suggestion, { query, isHighlighted }) {
     const { classes } = this.props;
     const formatted = this.getOptionFormatted(suggestion, {
       disabled: this.props.disabled,
@@ -537,7 +592,7 @@ const FormSuggest = createReactClass({
     });
     if (formatted) return formatted;
 
-    const label = suggestion.label || suggestion.value || '';
+    const label = suggestion.label || suggestion.value || "";
     const matches = match(label, query);
     const parts = parse(label, matches);
     const primary = this.props.disableMatchParts
@@ -552,16 +607,29 @@ const FormSuggest = createReactClass({
           );
         });
     const isCurrent = suggestion.value === this.props.value;
-    const className = classNames(classes.menuItem, isCurrent && classes.current);
+    const className = classNames(
+      classes.menuItem,
+      isCurrent && classes.current
+    );
     return (
-      <MenuItem selected={isHighlighted} component="div" className={className} onClick={suggestion.onClick} data-value={suggestion.value}>
-        {suggestion.iconComponent && <ListItemIcon classes={{ root: classes.menuItemIcon }}>{suggestion.iconComponent}</ListItemIcon>}
+      <MenuItem
+        selected={isHighlighted}
+        component="div"
+        className={className}
+        onClick={suggestion.onClick}
+        data-value={suggestion.value}
+      >
+        {suggestion.iconComponent && (
+          <ListItemIcon classes={{ root: classes.menuItemIcon }}>
+            {suggestion.iconComponent}
+          </ListItemIcon>
+        )}
         <div>{primary}</div>
       </MenuItem>
     );
   },
 
-  renderSuggestionsContainer: function({ containerProps, children }) {
+  renderSuggestionsContainer: function ({ containerProps, children }) {
     const { classes } = this.props;
 
     return (
@@ -571,28 +639,31 @@ const FormSuggest = createReactClass({
     );
   },
 
-  getSuggestionValue: function(suggestion) {
+  getSuggestionValue: function (suggestion) {
     return suggestion.value;
   },
 
-  getSuggestions: function(value) {
+  getSuggestions: function (value) {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
     let count = 0;
-    const inputMatchesSelection = value === this.getOptionLabel(this.getSelectedOption());
+    const inputMatchesSelection =
+      value === this.getOptionLabel(this.getSelectedOption());
 
-    return (this.props.disableText || this.props.showAllOptions) && inputMatchesSelection
-      ? this.props.options.filter(suggestion => {
+    return (this.props.disableText || this.props.showAllOptions) &&
+      inputMatchesSelection
+      ? this.props.options.filter((suggestion) => {
           return true;
         })
       : inputLength === 0
-      ? this.props.options.filter(suggestion => {
+      ? this.props.options.filter((suggestion) => {
           count++;
           return count <= maxSuggestions;
         })
-      : this.props.options.filter(suggestion => {
+      : this.props.options.filter((suggestion) => {
           const label = this.getOptionLabel(suggestion);
-          const keep = count < maxSuggestions && label.toLowerCase().includes(inputValue);
+          const keep =
+            count < maxSuggestions && label.toLowerCase().includes(inputValue);
 
           if (keep) {
             count++;
@@ -604,4 +675,4 @@ const FormSuggest = createReactClass({
 });
 
 export default withStyles(styles)(FormSuggest);
-registerComponent('FormSuggest', FormSuggest, [withStyles, styles]);
+registerComponent("FormSuggest", FormSuggest, [withStyles, styles]);

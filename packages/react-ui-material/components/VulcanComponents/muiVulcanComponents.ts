@@ -1,7 +1,17 @@
-// TODO: in addition to overriding Vulcan component, we should also be able
-// to add new components
-// => create a "useMuiComponents" that returns Components with the right typings
-// based on useVulcanComponents
+/**
+ * NOTE: previously, this package would also register its own components
+ *
+ * However, we advise against generalizing Vulcan component replacement approach
+ * outside of core components (SmartForm, DataTable, Card).
+ *
+ * This approach induce a lot of complexity, and only make sense for extremely complex,
+ * reusable UI components, exactly like the SmartForm.
+ *
+ * Even then, you should probably investigate reusing hooks and logic, instead of the components
+ * themselves.
+ *
+ * In other scenarios, use good, old import/export.
+ */
 import { FormattedMessage } from "@vulcanjs/i18n";
 // import { FormError } from "../FormError";
 // // TODO: currently we need the default export because we pass components manually
@@ -50,6 +60,7 @@ import {
 } from "../form/base-controls"; //"../inputs/BasicInputs";
 import { Button } from "../core/Button";
 import { Loading } from "../core/Loading";
+
 import {
   PossibleCoreComponents,
   PossibleFormComponents,

@@ -1,32 +1,32 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-import { withStyles } from '../../../modules/makeStyles';
-import ComponentMixin from './mixins/component';
-import FormControlLayout from './FormControlLayout';
-import FormHelper from './FormHelper';
-import Input from '@mui/material/Input';
-import StartAdornment, { hideStartAdornment } from './StartAdornment';
-import EndAdornment from './EndAdornment';
-import _debounce from 'lodash/debounce';
-import classNames from 'classnames';
+import React from "react";
+import PropTypes from "prop-types";
+import createReactClass from "create-react-class";
+import { withStyles } from "../../../lib/makeStyles";
+import ComponentMixin from "./mixins/component";
+import FormControlLayout from "./FormControlLayout";
+import FormHelper from "./FormHelper";
+import Input from "@mui/material/Input";
+import StartAdornment, { hideStartAdornment } from "./StartAdornment";
+import EndAdornment from "./EndAdornment";
+import _debounce from "lodash/debounce";
+import classNames from "classnames";
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {},
 
   inputRoot: {
-    '& .clear-button.has-value': { opacity: 0 },
-    '&:hover .clear-button.has-value': { opacity: 0.54 },
+    "& .clear-button.has-value": { opacity: 0 },
+    "&:hover .clear-button.has-value": { opacity: 0.54 },
   },
 
   inputFocused: {
-    '& .clear-button.has-value': { opacity: 0.54 },
+    "& .clear-button.has-value": { opacity: 0.54 },
   },
 
   inputDisabled: {},
 
   inputNoLabel: {
-    marginTop: '0 !important',
+    marginTop: "0 !important",
   },
 
   inputInput: {},
@@ -42,27 +42,27 @@ const FormInput = createReactClass({
 
   mixins: [ComponentMixin],
 
-  displayName: 'FormInput',
+  displayName: "FormInput",
 
   propTypes: {
     type: PropTypes.oneOf([
-      'color',
-      'date',
-      'datetime',
-      'datetime-local',
-      'email',
-      'hidden',
-      'month',
-      'number',
-      'password',
-      'range',
-      'search',
-      'tel',
-      'text',
-      'time',
-      'url',
-      'social',
-      'week',
+      "color",
+      "date",
+      "datetime",
+      "datetime-local",
+      "email",
+      "hidden",
+      "month",
+      "number",
+      "password",
+      "range",
+      "search",
+      "tel",
+      "text",
+      "time",
+      "url",
+      "social",
+      "week",
     ]),
     errors: PropTypes.array,
     placeholder: PropTypes.string,
@@ -72,15 +72,15 @@ const FormInput = createReactClass({
     hideClear: PropTypes.bool,
   },
 
-  getDefaultProps: function() {
+  getDefaultProps: function () {
     return {
-      type: 'text',
+      type: "text",
     };
   },
 
-  getInitialState: function() {
+  getInitialState: function () {
     this.handleChangeDebounced = _debounce(
-      value => {
+      (value) => {
         if (!this.props.handleChange) return;
         if (value !== this.props.value) {
           this.props.handleChange(value);
@@ -106,12 +106,12 @@ const FormInput = createReactClass({
     }
   },
 
-  handleInputChange: function(event) {
+  handleInputChange: function (event) {
     let value = event.target.value;
     this.changeValue(value);
   },
 
-  changeValue: function(value) {
+  changeValue: function (value) {
     value = String(value);
     if (this.props.scrubValue) {
       value = this.props.scrubValue(value, this.props);
@@ -121,36 +121,63 @@ const FormInput = createReactClass({
     this.handleChangeDebounced(value);
   },
 
-  render: function() {
+  render: function () {
     const startAdornment = hideStartAdornment(this.props) ? null : (
-      <StartAdornment {...this.props} classes={null} value={this.state.value} changeValue={this.changeValue} />
+      <StartAdornment
+        {...this.props}
+        classes={null}
+        value={this.state.value}
+        changeValue={this.changeValue}
+      />
     );
-    const endAdornment = <EndAdornment {...this.props} classes={null} value={this.state.value} changeValue={this.changeValue} />;
+    const endAdornment = (
+      <EndAdornment
+        {...this.props}
+        classes={null}
+        value={this.state.value}
+        changeValue={this.changeValue}
+      />
+    );
 
     let element = this.renderElement(startAdornment, endAdornment);
 
-    if (this.props.layout === 'elementOnly' || this.props.type === 'hidden') {
+    if (this.props.layout === "elementOnly" || this.props.type === "hidden") {
       return element;
     }
 
     return (
-      <FormControlLayout {...this.getFormControlProperties()} htmlFor={this.getId()}>
+      <FormControlLayout
+        {...this.getFormControlProperties()}
+        htmlFor={this.getId()}
+      >
         {element}
         <FormHelper {...this.getFormHelperProperties()} />
       </FormControlLayout>
     );
   },
 
-  renderElement: function(startAdornment, endAdornment) {
-    const { classes, disabled, autoFocus, formatValue, label, multiline, rows, rowsMax, inputProps } = this.props;
-    const value = formatValue ? formatValue(this.state.value) : this.state.value;
+  renderElement: function (startAdornment, endAdornment) {
+    const {
+      classes,
+      disabled,
+      autoFocus,
+      formatValue,
+      label,
+      multiline,
+      rows,
+      rowsMax,
+      inputProps,
+    } = this.props;
+    const value = formatValue
+      ? formatValue(this.state.value)
+      : this.state.value;
     const options = this.props.options || {};
 
     return (
       <Input
-        ref={c => (this.element = c)}
+        ref={(c) => (this.element = c)}
         id={this.getId()}
-        value={value || ''}
+        value={value || ""}
         label={label}
         onChange={this.handleInputChange}
         disabled={disabled}
@@ -162,7 +189,10 @@ const FormInput = createReactClass({
         endAdornment={endAdornment}
         placeholder={this.props.placeholder}
         classes={{
-          root: classNames(classes.inputRoot, label === null && classes.inputNoLabel),
+          root: classNames(
+            classes.inputRoot,
+            label === null && classes.inputNoLabel
+          ),
           input: classes.inputInput,
           focused: classes.inputFocused,
           disabled: classes.inputDisabled,

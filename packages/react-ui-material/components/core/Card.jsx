@@ -1,25 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { intlShape } from 'meteor/vulcan:i18n';
-import { replaceComponent, Components } from 'meteor/vulcan:core';
-import moment from 'moment';
-import { withStyles } from '../../modules/makeStyles';
-import IconButton from '@mui/material/IconButton';
-import Checkbox from '@mui/material/Checkbox';
-import EditIcon from '@mui/icons-material/Create';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import classNames from 'classnames';
-import get from 'lodash/get';
-import Users from 'meteor/vulcan:users';
+import React from "react";
+import PropTypes from "prop-types";
+import { intlShape } from "meteor/vulcan:i18n";
+import { replaceComponent, Components } from "meteor/vulcan:core";
+import moment from "moment";
+import { withStyles } from "../../lib/makeStyles";
+import IconButton from "@mui/material/IconButton";
+import Checkbox from "@mui/material/Checkbox";
+import EditIcon from "@mui/icons-material/Create";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import classNames from "classnames";
+import get from "lodash/get";
+import Users from "meteor/vulcan:users";
 
 const getLabel = (field, fieldName, collection, intl) => {
   const schema = collection.simpleSchema()._schema;
   const fieldSchema = schema[fieldName];
   if (fieldSchema) {
-    return intl.formatMessage({ id: `${collection._name}.${fieldName}`, defaultMessage: fieldSchema.label });
+    return intl.formatMessage({
+      id: `${collection._name}.${fieldName}`,
+      defaultMessage: fieldSchema.label,
+    });
   } else {
     return fieldName;
   }
@@ -30,48 +33,64 @@ const getTypeName = (field, fieldName, collection) => {
   const fieldSchema = schema[fieldName];
   if (fieldSchema) {
     const type = fieldSchema.type.singleType;
-    const typeName = typeof type === 'function' ? type.name : type;
+    const typeName = typeof type === "function" ? type.name : type;
     return typeName;
   } else {
     return typeof field;
   }
 };
 
-const parseImageUrl = value => {
-  const isImage = ['.png', '.jpg', '.gif'].indexOf(value.substr(-4)) !== -1 || ['.webp', '.jpeg'].indexOf(value.substr(-5)) !== -1;
-  return isImage ? <img style={{ width: '100%', maxWidth: 200 }} src={value} alt={value} /> : <LimitedString string={value} />;
+const parseImageUrl = (value) => {
+  const isImage =
+    [".png", ".jpg", ".gif"].indexOf(value.substr(-4)) !== -1 ||
+    [".webp", ".jpeg"].indexOf(value.substr(-5)) !== -1;
+  return isImage ? (
+    <img style={{ width: "100%", maxWidth: 200 }} src={value} alt={value} />
+  ) : (
+    <LimitedString string={value} />
+  );
 };
 
 const LimitedString = ({ string }) => (
   <div>
-    {string.indexOf(' ') === -1 && string.length > 30 ? <span title={string}>{string.substr(0, 30)}…</span> : <span>{string}</span>}
+    {string.indexOf(" ") === -1 && string.length > 30 ? (
+      <span title={string}>{string.substr(0, 30)}…</span>
+    ) : (
+      <span>{string}</span>
+    )}
   </div>
 );
 
 export const getFieldValue = (value, typeName, classes = {}) => {
-  if (typeof value === 'undefined' || value === null) {
-    return '';
+  if (typeof value === "undefined" || value === null) {
+    return "";
   }
 
   if (Array.isArray(value)) {
-    typeName = 'Array';
+    typeName = "Array";
   }
 
-  if (typeof typeName === 'undefined') {
+  if (typeof typeName === "undefined") {
     typeName = typeof value;
   }
 
   switch (typeName) {
-    case 'Boolean':
-    case 'boolean':
-      return <Checkbox checked={value} disabled style={{ width: '32px', height: '32px' }} />;
+    case "Boolean":
+    case "boolean":
+      return (
+        <Checkbox
+          checked={value}
+          disabled
+          style={{ width: "32px", height: "32px" }}
+        />
+      );
 
-    case 'Number':
-    case 'number':
-    case 'SimpleSchema.Integer':
+    case "Number":
+    case "number":
+    case "SimpleSchema.Integer":
       return <code>{value.toString()}</code>;
 
-    case 'Array':
+    case "Array":
       return (
         <ol>
           {value.map((item, index) => (
@@ -80,17 +99,28 @@ export const getFieldValue = (value, typeName, classes = {}) => {
         </ol>
       );
 
-    case 'Object':
-    case 'object':
+    case "Object":
+    case "object":
       return (
         <Table className="table">
           <TableBody>
             {_.map(value, (value, key) => (
-              <TableRow className={classNames(classes.table, 'table')} key={key}>
-                <TableCell className={classNames(classes.tableHeadCell, 'datacard-label')} variant="head">
+              <TableRow
+                className={classNames(classes.table, "table")}
+                key={key}
+              >
+                <TableCell
+                  className={classNames(
+                    classes.tableHeadCell,
+                    "datacard-label"
+                  )}
+                  variant="head"
+                >
                   {key}
                 </TableCell>
-                <TableCell className={classNames(classes.tableCell, 'datacard-value')}>
+                <TableCell
+                  className={classNames(classes.tableCell, "datacard-value")}
+                >
                   {getFieldValue(value, typeof value, classes)}
                 </TableCell>
               </TableRow>
@@ -99,8 +129,8 @@ export const getFieldValue = (value, typeName, classes = {}) => {
         </Table>
       );
 
-    case 'Date':
-      return moment(new Date(value)).format('dddd, MMMM Do YYYY, h:mm:ss');
+    case "Date":
+      return moment(new Date(value)).format("dddd, MMMM Do YYYY, h:mm:ss");
 
     default:
       return parseImageUrl(value);
@@ -109,16 +139,21 @@ export const getFieldValue = (value, typeName, classes = {}) => {
 
 const CardItem = ({ label, value, typeName, classes }) => (
   <TableRow className={classes.tableRow}>
-    <TableCell className={classNames(classes.tableHeadCell, 'datacard-label')} variant="head">
+    <TableCell
+      className={classNames(classes.tableHeadCell, "datacard-label")}
+      variant="head"
+    >
       {label}
     </TableCell>
-    <TableCell className={classNames(classes.tableCell, 'datacard-value')}>{getFieldValue(value, typeName, classes)}</TableCell>
+    <TableCell className={classNames(classes.tableCell, "datacard-value")}>
+      {getFieldValue(value, typeName, classes)}
+    </TableCell>
   </TableRow>
 );
 
 const CardEdit = (props, context) => {
   const classes = props.classes;
-  const editTitle = context.intl.formatMessage({ id: 'cards.edit' });
+  const editTitle = context.intl.formatMessage({ id: "cards.edit" });
   return (
     <TableRow className={classes.tableRow}>
       <TableCell className={classes.tableCell} colSpan="2">
@@ -128,7 +163,8 @@ const CardEdit = (props, context) => {
             <IconButton aria-label={editTitle} size="large">
               <EditIcon />
             </IconButton>
-          }>
+          }
+        >
           <CardEditForm {...props} />
         </Components.ModalTrigger>
       </TableCell>
@@ -143,16 +179,16 @@ const CardEditForm = ({ collection, document, closeModal }) => (
     collection={collection}
     documentId={document._id}
     showRemove={true}
-    successCallback={document => {
+    successCallback={(document) => {
       closeModal();
     }}
   />
 );
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {},
   table: {
-    maxWidth: '100%',
+    maxWidth: "100%",
   },
   tableBody: {},
   tableRow: {},
@@ -160,14 +196,21 @@ const styles = theme => ({
   tableHeadCell: {},
 });
 
-const Card = ({ className, collection, document, currentUser, fields, classes }, { intl }) => {
-  const fieldNames = fields ? fields : _.without(_.keys(document), '__typename');
+const Card = (
+  { className, collection, document, currentUser, fields, classes },
+  { intl }
+) => {
+  const fieldNames = fields
+    ? fields
+    : _.without(_.keys(document), "__typename");
   let canUpdate = false;
 
   // new APIs
-  const permissionCheck = get(collection, 'options.permissions.canUpdate');
+  const permissionCheck = get(collection, "options.permissions.canUpdate");
   // openCRUD backwards compatibility
-  const check = get(collection, 'options.mutations.edit.check') || get(collection, 'options.mutations.update.check');
+  const check =
+    get(collection, "options.mutations.edit.check") ||
+    get(collection, "options.mutations.update.check");
 
   if (Users.isAdmin(currentUser)) {
     canUpdate = true;
@@ -176,17 +219,33 @@ const Card = ({ className, collection, document, currentUser, fields, classes },
       check: permissionCheck,
       user: currentUser,
       context: { Users },
-      operationName: 'update',
+      operationName: "update",
     });
   } else if (check) {
     canUpdate = check && check(currentUser, document, { Users });
   }
 
   return (
-    <div className={classNames(classes.root, 'datacard', `datacard-${collection._name}`, className)}>
-      <Table className={classNames(classes.table, 'table')} style={{ maxWidth: '100%' }}>
+    <div
+      className={classNames(
+        classes.root,
+        "datacard",
+        `datacard-${collection._name}`,
+        className
+      )}
+    >
+      <Table
+        className={classNames(classes.table, "table")}
+        style={{ maxWidth: "100%" }}
+      >
         <TableBody>
-          {canUpdate ? <CardEdit collection={collection} document={document} classes={classes} /> : null}
+          {canUpdate ? (
+            <CardEdit
+              collection={collection}
+              document={document}
+              classes={classes}
+            />
+          ) : null}
           {fieldNames.map((fieldName, index) => (
             <CardItem
               key={index}
@@ -202,7 +261,7 @@ const Card = ({ className, collection, document, currentUser, fields, classes },
   );
 };
 
-Card.displayName = 'Card';
+Card.displayName = "Card";
 
 Card.propTypes = {
   className: PropTypes.string,
@@ -217,4 +276,4 @@ Card.contextTypes = {
   intl: intlShape,
 };
 
-replaceComponent('Card', Card, [withStyles, styles]);
+replaceComponent("Card", Card, [withStyles, styles]);

@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { registerComponent, Components } from 'meteor/vulcan:core';
-import { withStyles } from '../../modules/makeStyles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import Close from '@mui/icons-material/Close';
-import classNames from 'classnames';
+import React from "react";
+import PropTypes from "prop-types";
+import { registerComponent, Components } from "meteor/vulcan:core";
+import { withStyles } from "../../lib/makeStyles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import Close from "@mui/icons-material/Close";
+import classNames from "classnames";
 
-const styles = theme => ({
+const styles = (theme) => ({
   dialog: {},
 
   dialogPaper: {},
@@ -18,19 +18,19 @@ const styles = theme => ({
   dialogTitleEmpty: {
     padding: 0,
     height: theme.spacing(3),
-    borderBottomStyle: 'none',
+    borderBottomStyle: "none",
   },
 
   dialogContent: {},
 
   dialogOverflow: {
-    overflowY: 'visible',
+    overflowY: "visible",
   },
 
   closeButton: theme.utils.closeButton,
 });
 
-const Modal = props => {
+const Modal = (props) => {
   const {
     children,
     className,
@@ -52,13 +52,16 @@ const Modal = props => {
       className={className}
       open={show}
       onClose={onHide}
-      onClick={event => {
+      onClick={(event) => {
         event.stopPropagation();
       }}
       fullWidth={true}
       classes={{ paper: classNames(classes.dialogPaper, overflowClass) }}
-      {...dialogProps}>
-      <DialogTitle className={title ? classes.dialogTitle : classes.dialogTitleEmpty}>
+      {...dialogProps}
+    >
+      <DialogTitle
+        className={title ? classes.dialogTitle : classes.dialogTitleEmpty}
+      >
         {title}
 
         {showCloseButton && (
@@ -75,7 +78,11 @@ const Modal = props => {
       {dontWrapDialogContent ? (
         children
       ) : (
-        <DialogContent className={classNames(classes.dialogContent, overflowClass)}>{children}</DialogContent>
+        <DialogContent
+          className={classNames(classes.dialogContent, overflowClass)}
+        >
+          {children}
+        </DialogContent>
       )}
     </Dialog>
   );
@@ -94,4 +101,4 @@ Modal.propTypes = {
   classes: PropTypes.object,
 };
 
-registerComponent('Modal', Modal, [withStyles, styles]);
+registerComponent("Modal", Modal, [withStyles, styles]);
