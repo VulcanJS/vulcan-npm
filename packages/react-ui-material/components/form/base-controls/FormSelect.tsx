@@ -1,8 +1,6 @@
 import { withStyles } from "../../../lib/makeStyles";
-import React from "react";
-import createReactClass from "create-react-class";
-import PropTypes from "prop-types";
-import ComponentMixin from "./mixins/component";
+import React, { useState } from "react";
+//import PropTypes from "prop-types";
 import FormControlLayout from "./FormControlLayout";
 import FormHelper from "./FormHelper";
 import Select from "@mui/material/Select";
@@ -15,12 +13,9 @@ import EndAdornment from "./EndAdornment";
 import _isArray from "lodash/isArray";
 import classNames from "classnames";
 import { styles } from "./FormSuggest";
+import { useComponentMixin } from "./mixins/useComponentMixin";
 
-const FormSelect = createReactClass({
-  element: null,
-
-  mixins: [ComponentMixin],
-
+/*
   propTypes: {
     options: PropTypes.arrayOf(
       PropTypes.shape({
@@ -31,37 +26,43 @@ const FormSelect = createReactClass({
     classes: PropTypes.object.isRequired,
     showMenuIndicator: PropTypes.bool,
   },
-
-  getDefaultProps: function () {
+  */
+const FormSelect = (props: any) => {
+  // TODO: be careful with the typings: they should be the same as the
+  // vulcan component it replaces
+  const {
+    getFormControlProperties,
+    getFormHelperProperties,
+    getId,
+    cleanProps,
+  } = useComponentMixin(props);
+  const {
+    showMenuIndicator = true,
+    disabled,
+    layout,
+    multiple,
+    native,
+  } = props;
+  /*const getDefaultProps = function () {
     return {
       showMenuIndicator: true,
     };
   },
-
   getInitialState: function () {
     return {
       isOpen: false,
     };
-  },
+  },*/
+  const [isOpen, setIsOpen] = useState(false);
 
-  handleOpen: function () {
-    // this doesn't work
-    this.setState({
-      isOpen: true,
-    });
-  },
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
 
-  handleClose: function () {
-    // this doesn't work
-    this.setState({
-      isOpen: false,
-    });
-  },
-
-  handleChange: function (event) {
+  const handleChange = function (event) {
     const target = event.target;
     let value;
-    if (this.props.multiple && this.props.native) {
+    const { multiple, native } = props;
+    if (multiple && native) {
       value = [];
       for (let i = 0; i < target.length; i++) {
         const option = target.options[i];
@@ -72,34 +73,31 @@ const FormSelect = createReactClass({
     } else {
       value = target.value;
     }
-    this.changeValue(value);
-  },
+    changeValue(value);
+  };
 
-  changeValue: function (value) {
-    this.props.handleChange(value);
-  },
+  const changeValue = function (value) {
+    props.handleChange(value);
+  };
 
-  render: function () {
-    if (this.props.layout === "elementOnly") {
-      return this.renderElement();
+  const render = function () {
+    if (layout === "elementOnly") {
+      return renderElement();
     }
 
     return (
-      <FormControlLayout
-        {...this.getFormControlProperties()}
-        htmlFor={this.getId()}
-      >
-        {this.renderElement()}
-        <FormHelper {...this.getFormHelperProperties()} />
+      <FormControlLayout {...getFormControlProperties()} htmlFor={getId()}>
+        {renderElement()}
+        <FormHelper {...getFormHelperProperties()} />
       </FormControlLayout>
     );
-  },
+  };
 
-  renderElement: function () {
+  const renderElement = function () {
     const renderOption = (item, key) => {
       //eslint-disable-next-line no-unused-vars
       const { group, label, ...rest } = item;
-      return this.props.native ? (
+      return native ? (
         <option key={key} {...rest}>
           {label}
         </option>
@@ -111,7 +109,7 @@ const FormSelect = createReactClass({
     };
 
     const renderGroup = (label, key, nodes) => {
-      return this.props.native ? (
+      return native ? (
         <optgroup label={label} key={key}>
           {nodes}
         </optgroup>
@@ -125,7 +123,7 @@ const FormSelect = createReactClass({
       );
     };
 
-    const { options = [], classes } = this.props;
+    const { options = [], classes } = props;
 
     let groups = options
       .filter(function (item) {
@@ -137,7 +135,7 @@ const FormSelect = createReactClass({
     // Get the unique items in group.
     groups = [...new Set(groups)];
 
-    let optionNodes = [];
+    let optionNodes: Array<React.ReactNode> = [];
 
     if (groups.length === 0) {
       optionNodes = options.map(function (item, index) {
@@ -166,41 +164,42 @@ const FormSelect = createReactClass({
       });
     }
 
-    let value = this.props.value;
-    if (!this.props.multiple && _isArray(value)) {
+    let value = props.value;
+    if (!multiple && _isArray(value)) {
       value = value.length ? value[0] : "";
     }
 
-    const startAdornment = hideStartAdornment(this.props) ? null : (
+    const startAdornment = hideStartAdornment(props) ? null : (
       <StartAdornment
-        {...this.props}
+        {...props}
         value={value}
         classes={null}
-        changeValue={this.changeValue}
+        changeValue={changeValue}
       />
     );
     const endAdornment = (
       <EndAdornment
-        {...this.props}
+        {...props}
         value={value}
         classes={{ inputAdornment: classes.inputAdornment }}
-        changeValue={this.changeValue}
+        changeValue={changeValue}
       />
     );
 
     return (
       <Select
         className="select"
-        ref={(c) => (this.element = c)}
-        {...this.cleanProps(this.props)}
+        // TODO: update ref
+        //ref={(c) => (this.element = c)}
+        {...cleanProps(props)}
         value={value}
-        onChange={this.handleChange}
-        onOpen={this.handleOpen}
-        onClose={this.handleClose}
-        disabled={this.props.disabled}
+        onChange={handleChange}
+        onOpen={handleOpen}
+        onClose={handleClose}
+        disabled={disabled}
         input={
           <Input
-            id={this.getId()}
+            id={getId()}
             startAdornment={startAdornment}
             endAdornment={endAdornment}
             classes={{
@@ -218,7 +217,8 @@ const FormSelect = createReactClass({
         {optionNodes}
       </Select>
     );
-  },
-});
+  };
+  return render();
+};
 
 export default withStyles(styles)(FormSelect);

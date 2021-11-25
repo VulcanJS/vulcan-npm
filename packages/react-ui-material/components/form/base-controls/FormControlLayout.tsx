@@ -12,9 +12,9 @@ export interface FormControlLayoutProps {
   className?: string;
   optional: boolean;
   hasErrors: boolean;
-  fakeLabel: boolean;
   hideLabel: boolean;
-  shrinkLabel: boolean;
+  fakeLabel?: boolean;
+  shrinkLabel?: boolean;
   layout: "horizontal" | "vertical" | "elementOnly" | "shrink";
   htmlFor: string;
   inputType: string;
