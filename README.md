@@ -1,5 +1,8 @@
 # Vulcan NPM
 
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
+
+
 ## Contribute
 
 For faster development, you may instead want to contribute to [Vulcan Next Starter](https://github.com/VulcanJS/vulcan-next-starter/issues/1). NPM packages will be published in this repo when they reach sufficient maturity.
@@ -40,3 +43,12 @@ See https://github.com/nodkz/mongodb-memory-server/issues/475
 ## Resources
 
 - [Babel monorepo](https://github.com/babel/babel), a great example of Lerna project
+
+
+## Deploy on Netlify
+
+We use Netlify for our deployments, and so should you!
+
+<a href="https://www.netlify.com">
+  <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
+</a>

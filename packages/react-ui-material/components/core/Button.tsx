@@ -1,0 +1,203 @@
+import React from "react";
+import PropTypes from "prop-types";
+import MuiFab from "@mui/material/Fab";
+import MuiButton from "@mui/material/Button";
+import MuiIconButton from "@mui/material/IconButton";
+import { makeStyles } from "../../lib/makeStyles";
+
+const useStyles = makeStyles((theme) => ({
+  success: {
+    "&:hover": {
+      backgroundColor: theme.palette.success.main,
+      color: theme.palette.success.contrastText,
+    },
+  },
+
+  outline_success: {
+    "&:hover": {
+      borderColor: theme.palette.success.main,
+      color: theme.palette.success.main,
+    },
+  },
+
+  warning: {
+    "&:hover": {
+      backgroundColor: theme.palette.warning.main,
+      color: theme.palette.warning.contrastText,
+    },
+  },
+
+  outline_warning: {
+    "&:hover": {
+      borderColor: theme.palette.warning.main,
+      color: theme.palette.warning.main,
+    },
+  },
+
+  danger: {
+    "&:hover": {
+      backgroundColor: theme.palette.error.main,
+      color: theme.palette.error.contrastText,
+    },
+  },
+
+  outline_danger: {
+    "&:hover": {
+      borderColor: theme.palette.error.main,
+      color: theme.palette.error.main,
+    },
+  },
+
+  info: {
+    "&:hover": {
+      backgroundColor: theme.palette.info.main,
+      color: theme.palette.info.contrastText,
+    },
+  },
+
+  outline_info: {
+    "&:hover": {
+      borderColor: theme.palette.info.main,
+      color: theme.palette.info.main,
+    },
+  },
+
+  light: {},
+
+  outline_light: {},
+
+  dark: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+
+  outline_dark: {
+    borderColor: theme.palette.common.black,
+    color: theme.palette.common.black,
+  },
+}));
+
+export const Button = ({ children, variant, size, iconButton, ...rest }) => {
+  const classes = useStyles();
+  const varParts = variant && variant.split("-");
+  const outline = varParts && varParts.length > 1 ? varParts[0] : null;
+  variant =
+    varParts && varParts.length > 1
+      ? varParts[1]
+      : varParts && varParts.length > 0
+      ? varParts[0]
+      : null;
+  let color;
+
+  switch (variant) {
+    case "primary":
+      color = "primary";
+      break;
+    case "secondary":
+      color = "secondary";
+      break;
+    case "inherit":
+      color = "inherit";
+      break;
+    default:
+      color = "default";
+      break;
+  }
+
+  // switch between Fab or Button
+  const ButtonComponent = ["fab", "extendedFab"].includes(variant)
+    ? MuiFab
+    : MuiButton;
+  variant = variant === "extendedFab" ? "extended" : variant;
+
+  const root = [
+    "success",
+    "warning",
+    "danger",
+    "info",
+    "light",
+    "dark",
+  ].includes(variant)
+    ? classes[outline ? outline + "_" + variant : variant]
+    : undefined;
+
+  variant =
+    outline === "outline"
+      ? "outlined"
+      : variant && variant !== "link"
+      ? "contained"
+      : "text";
+
+  switch (size) {
+    case "sm":
+      size = "small";
+      break;
+    case "md":
+      size = "medium";
+      break;
+    case "lg":
+      size = "large";
+      break;
+    default:
+      size = undefined;
+      break;
+  }
+
+  if (iconButton) {
+    return (
+      <MuiIconButton
+        color={color}
+        //variant={variant}
+        size={size}
+        classes={{ root }}
+        {...rest}
+      >
+        {children}
+      </MuiIconButton>
+    );
+  }
+
+  return (
+    // @ts-ignore
+    <ButtonComponent
+      color={color}
+      variant={variant}
+      size={size}
+      classes={{ root }}
+      {...rest}
+    >
+      {children}
+    </ButtonComponent>
+  );
+};
+
+Button.displayName = "Button";
+
+Button.propTypes = {
+  variant: PropTypes.oneOf([
+    "default",
+    "primary",
+    "secondary",
+    "success",
+    "warning",
+    "danger",
+    "info",
+    "light",
+    "dark",
+    "link",
+    "outline-primary",
+    "outline-secondary",
+    "outline-success",
+    "outline-warning",
+    "outline-danger",
+    "outline-info",
+    "outline-light",
+    "outline-dark",
+    "inherit",
+    "fab",
+    "extendedFab",
+  ]),
+  size: PropTypes.oneOf(["sm", "md", "lg"]),
+  iconButton: PropTypes.bool,
+  className: PropTypes.string,
+};

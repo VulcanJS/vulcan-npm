@@ -1,4 +1,5 @@
 module.exports = {
+  name: "Vulcan NPM",
   entryPoints: [
     // don't forget to list twice packages that have a server/client/common export
     "packages/graphql/index.ts",

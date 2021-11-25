@@ -9,7 +9,10 @@ import { defaultVulcanComponents } from "./defaultVulcanComponents";
 import { PossibleVulcanComponents } from "./typings";
 import { VulcanComponentsContext } from "./Context";
 
-// So that you can override only some components by adding an additional context while keeping the defaults
+/**
+ *
+ * @param options.value An object of Vulcan components to be overriden.
+ */
 export const VulcanComponentsProvider = ({
   value,
   ...props
