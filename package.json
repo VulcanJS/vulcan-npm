@@ -42,6 +42,7 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-import": "^1.13.3",
     "babel-plugin-transform-define": "^2.0.0",
+    "cross-fetch": "^3.1.4",
     "depcheck": "^1.4.1",
     "jest": "^26.4.2",
     "lerna": "^3.22.1",
