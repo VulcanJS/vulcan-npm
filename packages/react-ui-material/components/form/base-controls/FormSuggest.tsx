@@ -10,7 +10,6 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { registerComponent } from "meteor/vulcan:core";
 import StartAdornment, { hideStartAdornment } from "./StartAdornment";
 import EndAdornment from "./EndAdornment";
 import FormControlLayout from "./FormControlLayout";
@@ -675,4 +674,3 @@ const FormSuggest = createReactClass({
 });
 
 export default withStyles(styles)(FormSuggest);
-registerComponent("FormSuggest", FormSuggest, [withStyles, styles]);

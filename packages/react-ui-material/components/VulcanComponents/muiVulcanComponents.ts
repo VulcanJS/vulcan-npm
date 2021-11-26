@@ -48,7 +48,7 @@ import {
   // FormComponentCheckbox,
   // FormComponentCheckboxGroup,
   // FormComponentRadioGroup,
-  // FormComponentSelect,
+  FormComponentSelect,
   // FormComponentSelectMultiple,
   // FormComponentDateTime,
   // FormComponentDate,

@@ -1,5 +1,5 @@
 import urlObject from "url";
-// import getSlug from "speakingurl";
+import getSlug from "speakingurl";
 //////////////////////////
 // URL Helper Functions //
 //////////////////////////
@@ -40,7 +40,6 @@ export const getOutgoingUrl = function (url) {
 };
 */
 
-/*
 export const slugify = function (s) {
   let slug = getSlug(s, {
     truncate: 60,
@@ -53,7 +52,6 @@ export const slugify = function (s) {
 
   return slug;
 };
-*/
 /**
  * @summary Given a collection and a slug, returns the same or modified slug that's unique within the collection;
  * It's modified by appending a dash and an integer; eg: my-slug  =>  my-slug-1

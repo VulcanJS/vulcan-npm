@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { instantiateComponent } from "meteor/vulcan:core";
-import { intlShape } from "meteor/vulcan:i18n";
+import { instantiateComponent } from "@vulcanjs/react-ui";
+import { intlShape } from "@vulcanjs/i18n";
 import { withStyles } from "../../../lib/makeStyles";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";

@@ -1,4 +1,4 @@
-import { compose } from "recompose";
+// import { compose } from "recompose";
 import React from "react";
 import difference from "lodash/difference";
 
@@ -54,13 +54,19 @@ export const coreComponents = [
  * }
  *
  */
+/*
 export function registerComponent(name, rawComponent, ...hocs) {
   // support single-argument syntax
   if (typeof arguments[0] === "object") {
     // note: cannot use `const` because name, components, hocs are already defined
     // as arguments so destructuring cannot work
     // eslint-disable-next-line no-redeclare
-    var { name, component, hocs = [] } = arguments[0];
+    var {
+      name,
+      component,
+      // @ts-ignore
+      hocs = [],
+    } = arguments[0];
     rawComponent = component;
   }
   // store the component in the table
@@ -70,6 +76,7 @@ export function registerComponent(name, rawComponent, ...hocs) {
     hocs,
   };
 }
+*/
 
 /**
  * Returns true if a component with the given name has been registered with
@@ -89,6 +96,7 @@ export const componentExists = (name) => {
  * @param {String} name The name of the component to get.
  * @returns {Function|React Component} A (wrapped) React component
  */
+/*
 export const getComponent = (name) => {
   const component = ComponentsTable[name];
   if (!component) {
@@ -117,11 +125,13 @@ export const getComponent = (name) => {
     return component.rawComponent;
   }
 };
+*/
 
 /**
  * Populate the lookup table for components to be callable
  * ℹ️ Called once on app startup
  **/
+/*
 export const populateComponentsApp = () => {
   const registeredComponents = Object.keys(ComponentsTable);
 
@@ -145,7 +155,7 @@ export const populateComponentsApp = () => {
     );
   }
 };
-
+*/
 /**
  * Get the **raw** (original) component registered with registerComponent
  * without the possible HOCs wrapping it.
@@ -171,6 +181,7 @@ export const getRawComponent = (name) => {
  * an empty array, and it's ok!
  * See https://github.com/reactjs/redux/blob/master/src/compose.js#L13-L15
  */
+/*
 export function replaceComponent(name, newComponent, ...newHocs) {
   // support single argument syntax
   if (typeof arguments[0] === "object") {
@@ -196,10 +207,13 @@ export function replaceComponent(name, newComponent, ...newHocs) {
 
   return registerComponent(name, newComponent, ...newHocs, ...previousHocs);
 }
+*/
 
+/*
 export const copyHoCs = (sourceComponent, targetComponent) => {
   return compose(...sourceComponent.hocs)(targetComponent);
 };
+*/
 
 /**
  * Returns an instance of the given component name of function
@@ -209,7 +223,7 @@ export const copyHoCs = (sourceComponent, targetComponent) => {
 //eslint-disable-next-line react/display-name
 // legacy
 export const instantiateComponent = (
-  component?: React.ComponentType | Function,
+  component?: React.ComponentType | Function | any,
   props?: any
 ) => {
   if (!component) {
@@ -217,16 +231,14 @@ export const instantiateComponent = (
   } /*else if (typeof component === "string") {
     const Component = Components[component];
     return <Component {...props} />;
-  } */ else if (
-    React.isValidElement(component)
-  ) {
+  } */ else if (React.isValidElement(component)) {
     return React.cloneElement(component, props);
   } else if (
     typeof component === "function" &&
     component.prototype &&
     component.prototype.isReactComponent
   ) {
-    const Component = component;
+    const Component = component as React.ComponentType;
     return <Component {...props} />;
   } else if (typeof component === "function") {
     return component(props);
@@ -235,7 +247,7 @@ export const instantiateComponent = (
     component.$$typeof &&
     component.render
   ) {
-    const Component = component;
+    const Component = component as React.ComponentType;
     return <Component {...props} />;
   } else {
     return component;
