@@ -28,7 +28,6 @@
     "@vulcanjs/permissions": "^0.4.1",
     "@vulcanjs/schema": "^0.4.1",
     "@vulcanjs/utils": "^0.4.1",
-    "apollo-server": "^2.18.2",
     "debug": "^4.3.1",
     "deepmerge": "^4.2.2",
     "graphql-date": "^1.0.3",
@@ -37,6 +36,7 @@
     "moment-timezone": "^0.5.33"
   },
   "peerDependencies": {
+    "@apollo/client": "^3.5.5",
     "apollo-server": "^2.18.2",
     "graphql": "^15.5.0",
     "react": "^17.0.2"
@@ -57,5 +57,8 @@
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {
     "access": "public"
+  },
+  "optionalDependencies": {
+    "msw": "^0.35.0"
   }
 }
