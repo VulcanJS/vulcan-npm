@@ -2,10 +2,11 @@
  * Inspired by existing Vulcan Next graphql API route
  */
 import express, { Request } from "express";
-import cors from "cors";
+// import cors from "cors";
 import mongoose from "mongoose";
 import { ApolloServer, gql } from "apollo-server-express";
-import { makeExecutableSchema, mergeSchemas } from "graphql-tools";
+import { makeExecutableSchema } from "graphql-tools";
+// import { mergeSchemas } from "@graphql-tools/schema";
 import { buildApolloSchema } from "@vulcanjs/graphql/server";
 
 // import mongoConnection from "~/api/middlewares/mongoConnection";
@@ -39,7 +40,7 @@ afterAll(async () => {
 
 // Work in progress
 describe("crud operations", () => {
-  test("setup an apollo server", () => {
+  test("setup an apollo 3 server", async () => {
     const models = [
       createGraphqlModelServer({
         name: "Contributor",
@@ -68,6 +69,7 @@ describe("crud operations", () => {
       introspection: false,
       //playground: false,
     });
+    await server.start();
 
     const app = express();
     // app.set("trust proxy", true);
