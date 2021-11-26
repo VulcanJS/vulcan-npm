@@ -37,5 +37,6 @@
     "@types/lodash": "^4.14.168",
     "@types/underscore": "^1.11.1",
     "graphql": "^15.5.0"
-  }
+  },
+  "gitHead": "672e9ed494ded98361abe47132899d3f825d6d23"
 }
