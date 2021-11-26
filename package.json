@@ -59,6 +59,11 @@
     "yalc": "^1.0.0-pre.53"
   },
   "optionalDependencies": {
+    "apollo-server": "^3.5.0",
+    "apollo-server-express": "^3.5.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "graphql-tools": "^8.2.0",
     "msw": "^0.35.0",
     "msw-storybook-addon": "^1.4.1",
     "typedoc": "^0.21.4"

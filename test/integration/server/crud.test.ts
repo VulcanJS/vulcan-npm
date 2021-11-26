@@ -37,6 +37,7 @@ afterAll(async () => {
   await mongod.stop();
 });
 
+// Work in progress
 describe("crud operations", () => {
   test("setup an apollo server", () => {
     const models = [
@@ -65,7 +66,7 @@ describe("crud operations", () => {
       schema: vulcanSchema,
       context: ({ req }) => contextFromReq(models)(req as Request),
       introspection: false,
-      playground: false,
+      //playground: false,
     });
 
     const app = express();
