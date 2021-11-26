@@ -4,14 +4,14 @@
 // @see https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 
-import { mswServer } from "@vulcanjs/utils";
+import { getMswServer } from "@vulcanjs/utils";
 // MSW setup
 // TODO: storybook test might already initialize a worker (in preview.js),
 // not sure yet of the interaction between this worker and the server we create here
 // However, we still need a setup specific to Jest for non-storybook tests
 // Enable API mocking before tests.
-beforeAll(() => mswServer.listen());
+beforeAll(() => getMswServer().listen());
 // Reset any runtime request handlers we may add during the tests.
-afterEach(() => mswServer.resetHandlers());
+afterEach(() => getMswServer().resetHandlers());
 // Disable API mocking after the tests are done.
-afterAll(() => mswServer.close());
+afterAll(() => getMswServer().close());

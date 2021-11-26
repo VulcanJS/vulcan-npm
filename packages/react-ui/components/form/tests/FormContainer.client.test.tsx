@@ -25,11 +25,11 @@ import {
 } from "@vulcanjs/graphql";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 
-import { mswServer } from "@vulcanjs/utils";
+import { getMswServer } from "@vulcanjs/utils";
 
 beforeEach(() => {
   // add relevant mocks
-  mswServer.use(...graphqlMutationStubsToMsw([createMock]));
+  getMswServer().use(...graphqlMutationStubsToMsw([createMock]));
 });
 const createMock: GraphqlMutationStub<any> = {
   operationName: createOperationName(OneFieldGraphql),
