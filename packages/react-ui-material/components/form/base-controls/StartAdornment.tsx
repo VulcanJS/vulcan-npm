@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { instantiateComponent } from "@vulcanjs/react-ui";
-import { intlShape } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/i18n";
 import { withStyles } from "../../../lib/makeStyles";
 import InputAdornment from "@mui/material/InputAdornment";
 import WebIcon from "@mui/icons-material/Web";
@@ -9,6 +9,7 @@ import EmailIcon from "@mui/icons-material/MailOutline";
 import { styles } from "./EndAdornment";
 
 const linkTypes = ["url", "email", "social"];
+import TooltipButton from "../../bonus/TooltipButton";
 
 export const hideStartAdornment = (props) => {
   const { type, hideLink } = props;
@@ -66,10 +67,6 @@ StartAdornment.propTypes = {
   value: PropTypes.any,
   type: PropTypes.string,
   addonBefore: PropTypes.oneOfType([PropTypes.node, PropTypes.elementType]),
-};
-
-StartAdornment.contextTypes = {
-  intl: intlShape,
 };
 
 export default withStyles(styles)(StartAdornment);

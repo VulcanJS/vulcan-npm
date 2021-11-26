@@ -1,4 +1,5 @@
 import React from "react";
+import { GraphqlQueryStub, GraphqlMutationStub } from "@vulcanjs/graphql";
 import { Story, Meta } from "@storybook/react";
 import { SmartForm, SmartFormProps } from "../FormContainer";
 
@@ -11,43 +12,11 @@ import {
   createGraphqlModel,
   createOperationName,
   updateOperationName,
+  graphqlMutationStubsToMsw,
+  graphqlQueryStubsToMsw,
 } from "@vulcanjs/graphql";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
-import { graphql } from "msw";
 import { VulcanCurrentUserProvider } from "../../VulcanCurrentUser/Provider";
-
-// TODO: put this in a dedicated testing package
-// (we can't put in graphql package because its dependent on msw, which we don't ant to add
-// as @vulcanjs/graphql dependency)
-/**
- * The constraint on variables matching is lighter than official Apollo MockedProvider mocks
- *
- * See our custom mockGraphQL command for usage
- */
-interface GraphqlQueryStub<TData = any> {
-  operationName: string; // name of the query to intercept
-  response: { data: TData }; // the response
-}
-interface GraphqlMutationStub<TData = any> {
-  operationName: string; // name of the query to intercept
-  response: { data: TData }; // the response
-}
-const graphqlQueryStubsToMsw = (stubs: Array<GraphqlQueryStub>) => {
-  return stubs.map((stub) => {
-    const { operationName, response } = stub;
-    return graphql.query(operationName, (req, res, ctx) => {
-      return res(ctx.data(response.data));
-    });
-  });
-};
-const graphqlMutationStubsToMsw = (stubs: Array<GraphqlMutationStub>) => {
-  return stubs.map((stub) => {
-    const { operationName, response } = stub;
-    return graphql.mutation(operationName, (req, res, ctx) => {
-      return res(ctx.data(response.data));
-    });
-  });
-};
 
 // dummy simplified model
 const singleMock: GraphqlMutationStub<{

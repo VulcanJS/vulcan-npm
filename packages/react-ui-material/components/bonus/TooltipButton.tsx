@@ -128,10 +128,15 @@ const TooltipButton = (props, { intl }) => {
   });
   const popperClass = parent === "popover" && classes.popoverPopper;
   const tooltipClass = parent === "popover" && classes.popoverTooltip;
+  // TODO: check if theme is ok
   const tooltipEnterDelay =
-    typeof enterDelay === "number" ? enterDelay : theme.utils.tooltipEnterDelay;
+    typeof enterDelay === "number"
+      ? enterDelay
+      : (theme as any).utils.tooltipEnterDelay;
   const tooltipLeaveDelay =
-    typeof leaveDelay === "number" ? leaveDelay : theme.utils.tooltipLeaveDelay;
+    typeof leaveDelay === "number"
+      ? leaveDelay
+      : (theme as any).utils.tooltipLeaveDelay;
   let titleText =
     title || (titleId ? intl.formatMessage({ id: titleId }, titleValues) : "");
   let labelText =
