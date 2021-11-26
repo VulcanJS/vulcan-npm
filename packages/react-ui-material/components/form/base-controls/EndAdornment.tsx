@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { instantiateComponent } from "@vulcanjs/react-ui";
-import { intlShape } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/i18n";
 import { withStyles } from "../../../lib/makeStyles";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
@@ -65,7 +65,7 @@ export const styles = (theme) => ({
   },
 });
 
-const EndAdornment = (props, context) => {
+const EndAdornment = (props) => {
   const {
     classes,
     value,
@@ -75,7 +75,7 @@ const EndAdornment = (props, context) => {
     hideClear,
     disabled,
   } = props;
-  const { intl } = context;
+  const intl = useIntlContext();
 
   if (!addonAfter && (!changeValue || hideClear || disabled)) return null;
   const hasValue = !!value || value === 0;
@@ -131,10 +131,6 @@ EndAdornment.propTypes = {
   showMenuIndicator: PropTypes.bool,
   hideClear: PropTypes.bool,
   addonAfter: PropTypes.oneOfType([PropTypes.node, PropTypes.elementType]),
-};
-
-EndAdornment.contextTypes = {
-  intl: intlShape,
 };
 
 export default withStyles(styles)(EndAdornment);

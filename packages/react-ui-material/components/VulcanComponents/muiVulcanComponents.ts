@@ -78,6 +78,7 @@ const muiFormComponents: Partial<PossibleFormComponents> = {
   // To be defined by the UI framework
   // TODO: add defaults in React components
   FormComponentDefault,
+  FormComponentSelect,
   /*
   FormComponentPassword,
   FormComponentNumber,
@@ -87,7 +88,6 @@ const muiFormComponents: Partial<PossibleFormComponents> = {
   FormComponentCheckbox,
   FormComponentCheckboxGroup,
   FormComponentRadioGroup,
-  FormComponentSelect,
   FormComponentSelectMultiple,
   FormComponentDateTime,
   FormComponentDate,

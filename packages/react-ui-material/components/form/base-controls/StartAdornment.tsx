@@ -16,7 +16,7 @@ export const hideStartAdornment = (props) => {
 };
 
 const StartAdornment = (props, context) => {
-  const { intl } = context;
+  const intl = useIntlContext();
 
   if (hideStartAdornment(props)) return null;
 
@@ -38,7 +38,7 @@ const StartAdornment = (props, context) => {
     );
 
   const urlButton = linkTypes.includes(type) && (
-    <C.TooltipButton
+    <TooltipButton
       classes={{ button: classes.urlButton }}
       titleId={`forms.${type}_help`}
       type="icon"
