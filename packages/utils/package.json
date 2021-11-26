@@ -6,6 +6,18 @@
   "files": [
     "dist/"
   ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./testing": "./dist/testing.js"
+  },
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "testing": [
+        "./dist/testing/index.d.ts"
+      ]
+    }
+  },
   "author": "eric-burel <eb@lebrun-burel.com>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",

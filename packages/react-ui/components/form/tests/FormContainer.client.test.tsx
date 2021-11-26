@@ -25,7 +25,7 @@ import {
 } from "@vulcanjs/graphql";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 
-import { getMswServer } from "@vulcanjs/utils";
+import { getMswServer } from "@vulcanjs/utils/testing";
 
 beforeEach(() => {
   // add relevant mocks
