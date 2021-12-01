@@ -4,6 +4,7 @@ module.exports = {
     // don't forget to list twice packages that have a server/client/common export
     "packages/graphql/index.ts",
     "packages/graphql/server/index.ts",
+    "packages/graphql/testing.ts",
     "packages/i18n/index.ts",
     "packages/mdx/index.ts",
     "packages/meteor-legacy/index.ts",
@@ -15,6 +16,7 @@ module.exports = {
     "packages/react-ui/index.ts",
     "packages/schema/index.ts",
     "packages/utils/index.ts",
+    "packages/utils/testing.ts",
   ],
   out: "generated/docs",
 };
