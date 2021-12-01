@@ -4,7 +4,7 @@
  */
 
 import { createGraphqlModelServer } from "../../../extendModel.server";
-import { normalizeGraphQLSchema } from "../../../testUtils";
+import { normalizeGraphQLSchema } from "../../../testing";
 import { parseSchema } from "../../parseSchema";
 import { parseModel } from "../../parseModel";
 import { buildDefaultMutationResolvers } from "../../resolvers/defaultMutationResolvers";

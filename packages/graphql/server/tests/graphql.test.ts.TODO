@@ -3,7 +3,7 @@ import { createModel } from "@vulcanjs/model";
 import SimpleSchema from "simpl-schema";
 import extendModel from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
-import { normalizeGraphQLSchema } from "../../testUtils";
+import { normalizeGraphQLSchema } from "../../testing";
 import { getDefaultFragmentText } from "../defaultFragment";
 
 import { GraphQLSchema } from "../../lib/server/graphql";

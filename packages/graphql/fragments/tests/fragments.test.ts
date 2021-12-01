@@ -2,7 +2,7 @@ import { createModel } from "@vulcanjs/model";
 
 import { createGraphqlModel } from "../../extendModel";
 import { VulcanGraphqlModel } from "../../typings";
-import { normalizeGraphQLSchema } from "../../testUtils";
+import { normalizeGraphQLSchema } from "../../testing";
 import { getDefaultFragmentText } from "../defaultFragment";
 const test = it;
 

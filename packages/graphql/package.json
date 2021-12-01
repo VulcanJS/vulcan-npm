@@ -7,13 +7,17 @@
   ],
   "exports": {
     ".": "./dist/index.js",
-    "./server": "./dist/server/index.js"
+    "./server": "./dist/server/index.js",
+    "./testing": "./dist/testing.js"
   },
   "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
       "server": [
         "./dist/server/index.d.ts"
+      ],
+      "testing": [
+        "./dist/testing.d.ts"
       ]
     }
   },
