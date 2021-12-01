@@ -28,7 +28,7 @@
     "@apollo/client": ">= 3.2.0",
     "graphql": ">= 15.3.0"
   },
-  "gitHead": "672e9ed494ded98361abe47132899d3f825d6d23",
+  "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f",
   "publishConfig": {
     "access": "public"
   }

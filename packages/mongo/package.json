@@ -45,7 +45,7 @@
     "mongodb": ">= 3.6.2",
     "mongoose": ">= 5.10.15"
   },
-  "gitHead": "672e9ed494ded98361abe47132899d3f825d6d23",
+  "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f",
   "publishConfig": {
     "access": "public"
   },
