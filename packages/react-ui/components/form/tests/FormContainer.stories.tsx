@@ -1,5 +1,10 @@
 import React from "react";
-import { GraphqlQueryStub, GraphqlMutationStub } from "@vulcanjs/graphql";
+import {
+  GraphqlQueryStub,
+  GraphqlMutationStub,
+  graphqlMutationStubsToMsw,
+  graphqlQueryStubsToMsw,
+} from "@vulcanjs/graphql/testing";
 import { Story, Meta } from "@storybook/react";
 import { SmartForm, SmartFormProps } from "../FormContainer";
 
@@ -12,8 +17,6 @@ import {
   createGraphqlModel,
   createOperationName,
   updateOperationName,
-  graphqlMutationStubsToMsw,
-  graphqlQueryStubsToMsw,
 } from "@vulcanjs/graphql";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 import { VulcanCurrentUserProvider } from "../../VulcanCurrentUser/Provider";

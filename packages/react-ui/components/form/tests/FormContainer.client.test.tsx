@@ -22,7 +22,7 @@ import {
   GraphqlMutationStub,
   graphqlMutationStubsToMsw,
   graphqlQueryStubsToMsw,
-} from "@vulcanjs/graphql";
+} from "@vulcanjs/graphql/testing";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 
 import { getMswServer } from "@vulcanjs/utils/testing";
