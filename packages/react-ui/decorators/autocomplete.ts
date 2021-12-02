@@ -1,10 +1,7 @@
-/*
 import {
-  getCollectionByTypeName,
   fieldDynamicQueryTemplate,
   autocompleteQueryTemplate,
-} from "meteor/vulcan:core";
-*/
+} from "@vulcanjs/graphql";
 import { VulcanGraphqlFieldSchema } from "@vulcanjs/graphql";
 import get from "lodash/get";
 

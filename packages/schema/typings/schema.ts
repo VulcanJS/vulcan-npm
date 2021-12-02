@@ -102,8 +102,7 @@ interface VulcanField<TField = any> {
   afterComponent?: any; // after form component
   placeholder?: any; // form field placeholder value
   options?: any; // form options
-  query?: string; // field-specific data loading query
-  autocompleteQuery?: string; // query used to populate autocomplete
+
   selectable?: boolean; // field can be used as part of a selector when querying for data
   unique?: boolean; // field can be used as part of a selectorUnique when querying for data
   orderable?: boolean; // field can be used to order results when querying for data (backwards-compatibility)

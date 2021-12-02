@@ -53,6 +53,10 @@ export type RelationDefinition =
 export interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
   relation?: RelationDefinition; // define a relation to another model
   typeName?: string; // the GraphQL type to resolve the field with
+
+  // TODO: not sure about the arguments in function mode
+  query?: string | (() => string); // field-specific data loading query
+  autocompleteQuery?: string | (() => string); // query used to populate autocomplete
 }
 // @server-only
 export interface VulcanGraphqlFieldSchemaServer
