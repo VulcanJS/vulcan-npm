@@ -41,12 +41,13 @@ export interface RelationDefinition {
   kind: "hasOne" | "hasMany";
 }
 
-interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
+export interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
   relation?: RelationDefinition; // define a relation to another model
   typeName?: string; // the GraphQL type to resolve the field with
 }
 // @server-only
-interface VulcanGraphqlFieldSchemaServer extends VulcanGraphqlFieldSchema {
+export interface VulcanGraphqlFieldSchemaServer
+  extends VulcanGraphqlFieldSchema {
   // this is a custom function => it has to be defined only on the server
   resolveAs?: Array<ResolveAsDefinition> | ResolveAsDefinition;
 }
