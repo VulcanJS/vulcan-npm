@@ -10,7 +10,6 @@ import {
   VulcanFieldSchema,
   VulcanSchema,
 } from "@vulcanjs/schema";
-import { Merge } from "@vulcanjs/utils";
 import { ContextWithUser } from "./server/resolvers";
 
 // SCHEMA TYPINGS
@@ -35,11 +34,21 @@ export interface ResolveAsDefinition {
    */
   addOriginalField?: boolean;
 }
-export interface RelationDefinition {
+interface RelationDefinitionBase {
   fieldName: string;
-  typeName: string;
   kind: "hasOne" | "hasMany";
 }
+export type RelationDefinition =
+  | (RelationDefinitionBase & {
+      /**
+       * @deprecated Use model instaed
+       * Model can be recovered from the typeName in resolvers*/
+      typeName: string;
+    })
+  | (RelationDefinitionBase & {
+      /** Pass the model directly instead of just the graphql typename */
+      model: VulcanGraphqlModel;
+    });
 
 export interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
   relation?: RelationDefinition; // define a relation to another model

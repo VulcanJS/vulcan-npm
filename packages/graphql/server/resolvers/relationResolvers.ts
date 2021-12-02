@@ -30,7 +30,10 @@ export const hasOne =
     const documentId = document[fieldName];
     // get related collection
     // get related document
-    const relatedModel = getModel(context, relation.typeName);
+    const relatedModel =
+      "model" in relation
+        ? relation.model
+        : getModel(context, relation.typeName);
     const relatedDocument = await getModelConnector(
       context,
       relatedModel
@@ -54,7 +57,10 @@ export const hasMany =
     if (!documentIds.length) return [];
     // get related collection
     // get related documents
-    const relatedModel = getModel(context, relation.typeName);
+    const relatedModel =
+      "model" in relation
+        ? relation.model
+        : getModel(context, relation.typeName);
     const connector = getModelConnector(context, relatedModel);
     const input = { filter: { _id: { _in: documentIds } } };
     let { selector } = await connector._filter(input, context);

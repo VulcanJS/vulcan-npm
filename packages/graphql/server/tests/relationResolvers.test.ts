@@ -1,6 +1,7 @@
 import { createGraphqlModel } from "../../extendModel";
 import { hasMany, hasOne } from "../resolvers/relationResolvers";
 import merge from "lodash/merge";
+import { VulcanGraphqlFieldSchema } from "../../typings";
 
 const authorModel = createGraphqlModel({
   name: "Author",
@@ -39,14 +40,17 @@ const blogPostModel = createGraphqlModel({
     },
   },
 });
-const initHasManyParams = () => ({
-  fieldName: "blogPostIds",
-  relation: {
-    fieldName: "blogPosts",
-    kind: "hasMany" as const,
-    typeName: "BlogPost",
-  },
-});
+const initHasManyParams = () =>
+  ({
+    fieldName: "blogPostIds",
+    relation: {
+      fieldName: "blogPosts",
+      kind: "hasMany" as const,
+      model: blogPostModel,
+      // @deprecated
+      //typeName: "BlogPost",
+    },
+  } as Required<Pick<VulcanGraphqlFieldSchema, "fieldName" | "relation">>);
 const initContext = (passedContext = {}) =>
   merge(
     {},

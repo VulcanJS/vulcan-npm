@@ -1,15 +1,18 @@
+/*
 import {
   getCollectionByTypeName,
   fieldDynamicQueryTemplate,
   autocompleteQueryTemplate,
 } from "meteor/vulcan:core";
+*/
+import { VulcanGraphqlFieldSchema } from "@vulcanjs/graphql";
 import get from "lodash/get";
 
-const getQueryResolverName = (field) => {
-  const isRelation = field.relation || get(field, "resolveAs.relation");
+const getQueryResolverName = (field: VulcanGraphqlFieldSchema) => {
+  const isRelation = field.relation; // TODO: doesn't exist in our typings anymore|| field?.resolveAs?.relation;
   if (isRelation) {
-    const typeName =
-      get(field, "relation.typeName") || get(field, "resolveAs.typeName");
+    const typeName = field.relation?.typeName;
+    //get(field, "relation.typeName") || get(field, "resolveAs.typeName");
     const collection = getCollectionByTypeName(typeName);
     return get(collection, "options.multiResolverName");
   } else {
@@ -20,13 +23,24 @@ const getQueryResolverName = (field) => {
 };
 
 // note: the following decorator function is called both for autocomplete and autocompletemultiple
+// We already have set simpl schema typings yet we have a weird error message
+// @see https://github.com/microsoft/TypeScript/issues/5711
+// @see https://forums.meteor.com/t/how-to-combine-typescript-and-simpleschema/28475
+// @ts-ignore
 export const makeAutocomplete = (
-  field = {},
+  field: VulcanGraphqlFieldSchema,
   options: {
     autocompletePropertyName: string;
     fragmentName?: string;
+    /** Value of the select */
     valuePropertyName?: string;
+    /** Is an array of values to autocomplete */
     multi?: boolean;
+    /**
+     * Will use "multi" query for the model as a default,
+     * can be overriden using this option
+     */
+    queryResolverName?: string;
   }
 ) => {
   /*
@@ -71,9 +85,12 @@ export const makeAutocomplete = (
   };
 
   // to load all possible items
+  /*
+  TODO: did not seem to be used at all, this function was not imported
   const staticQuery = () => {
     return fieldStaticQueryTemplate(queryProps);
   };
+  */
 
   // query to load autocomplete suggestions
   const autocompleteQuery = () => {
@@ -97,8 +114,9 @@ export const makeAutocomplete = (
 
   const acField = {
     dynamicQuery,
-    staticQuery,
-    query: dynamicQuery, // backwards-compatibility
+    // TODO: was it used?
+    //staticQuery,
+    query: dynamicQuery, // backwards-compatibility TODO: is it needed?
     autocompleteQuery,
     queryWaitsForValue: true,
     options: optionsFunction,
