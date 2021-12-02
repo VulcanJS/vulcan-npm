@@ -8,25 +8,42 @@ import {
 import { VulcanGraphqlFieldSchema } from "@vulcanjs/graphql";
 import get from "lodash/get";
 
+/**
+ * Get multi resolver name for a relation field
+ * @param field
+ * @returns
+ */
 const getQueryResolverName = (field: VulcanGraphqlFieldSchema) => {
-  const isRelation = field.relation; // TODO: doesn't exist in our typings anymore|| field?.resolveAs?.relation;
-  if (isRelation) {
+  //const isRelation = !!field.relation; // TODO: doesn't exist in our typings anymore|| field?.resolveAs?.relation;
+  if (!field.relation)
+    throw new Error(
+      `Field is not defining any relation ${JSON.stringify(
+        field
+      )}. Please set a relation or specify the queryResolverName option for the makeAutocomplete decorator.`
+    );
+  if (!!field.relation) {
+    const model = "model" in field.relation ? field.relation.model : null;
+    if (!model)
+      throw new Error(
+        `Field relation expects "model" option to be set (instead of deprecated "typeName")`
+      );
+    return model.graphql.multiResolverName;
+    /*
     const typeName = field.relation?.typeName;
     //get(field, "relation.typeName") || get(field, "resolveAs.typeName");
     const collection = getCollectionByTypeName(typeName);
     return get(collection, "options.multiResolverName");
+    */
   } else {
     throw new Error(
       "Could not guess query resolver name, please specify a queryResolverName option for the makeAutocomplete decorator."
     );
   }
 };
-
 // note: the following decorator function is called both for autocomplete and autocompletemultiple
 // We already have set simpl schema typings yet we have a weird error message
 // @see https://github.com/microsoft/TypeScript/issues/5711
 // @see https://forums.meteor.com/t/how-to-combine-typescript-and-simpleschema/28475
-// @ts-ignore
 export const makeAutocomplete = (
   field: VulcanGraphqlFieldSchema,
   options: {
