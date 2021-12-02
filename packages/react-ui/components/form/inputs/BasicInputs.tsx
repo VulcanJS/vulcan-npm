@@ -25,6 +25,8 @@ const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
     </div>
   );
 }; // TODO: might need some sanitization
+// For consistency with Vulcan Meteor ui bootstrap and ui material
+export const FormItem = HTMLInputAdapter;
 
 const HTMLSelectAdapter = (props: FormInputProps) => {
   const { inputProperties, options = [] } = props;

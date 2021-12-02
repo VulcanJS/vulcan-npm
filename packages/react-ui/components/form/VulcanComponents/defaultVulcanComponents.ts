@@ -43,6 +43,8 @@ import {
   FormComponentLikert,
   FormComponentAutocomplete,
   FormComponentMultiAutocomplete,
+  // used by ui-bootstrap and ui-material
+  FormItem,
 } from "../inputs/BasicInputs";
 import { Button } from "../core/Button";
 import { Loading } from "../core/Loading";
@@ -110,6 +112,8 @@ const defaultFormComponents: PossibleFormComponents = {
   FormOptionLabel,
   //
   Form,
+  //
+  FormItem,
 };
 
 export const defaultVulcanComponents = {

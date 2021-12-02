@@ -61,6 +61,8 @@ export interface PossibleFormComponents {
   FormOptionLabel: any;
   // Form
   Form: any;
+  // Used by ui-boostrap and ui-material
+  FormItem;
 }
 export type PossibleVulcanComponents = PossibleCoreComponents &
   PossibleFormComponents;
