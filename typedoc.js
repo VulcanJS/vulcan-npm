@@ -6,6 +6,7 @@ module.exports = {
     "packages/graphql/server/index.ts",
     "packages/graphql/testing.ts",
     "packages/i18n/index.ts",
+    "packages/i18n/server/index.ts",
     "packages/mdx/index.ts",
     "packages/meteor-legacy/index.ts",
     "packages/model/index.ts",

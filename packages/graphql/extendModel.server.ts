@@ -6,18 +6,20 @@
  * End user is supposed to use only the "createGraphqlModel" function
  */
 import {
-  VulcanGraphqlModel,
+  //VulcanGraphqlModel,
   MutationCallbackDefinitions,
-  VulcanGraphqlSchema,
+  //VulcanGraphqlSchema,
   VulcanGraphqlModelServer,
   VulcanGraphqlSchemaServer,
 } from "./typings";
 import { VulcanModel, createModel, CreateModelOptions } from "@vulcanjs/model";
+/*
 import {
   getDefaultFragmentText,
   getDefaultFragmentName,
 } from "./fragments/defaultFragment";
 import { camelCaseify, Merge } from "@vulcanjs/utils";
+*/
 import {
   MutationResolverDefinitions,
   QueryResolverDefinitions,
@@ -25,10 +27,13 @@ import {
 import {
   buildDefaultMutationResolvers,
   buildDefaultQueryResolvers,
+  formattedDateResolver,
 } from "./server/resolvers";
 // don't forget to reexport common code
 export * from "./extendModel";
 import extendModel, { GraphqlModelOptions } from "./extendModel";
+import cloneDeep from "lodash/cloneDeep";
+import isEmpty from "lodash/isEmpty";
 /**
  * This type is meant to be exposed server side
  *  @server-only
@@ -40,6 +45,58 @@ export interface GraphqlModelOptionsServer extends GraphqlModelOptions {
   mutationResolvers?: Partial<MutationResolverDefinitions>;
   callbacks?: MutationCallbackDefinitions;
 }
+
+/**
+ * Add formattedDateResolver and other server specific fields
+ * @param schema
+ * @returns
+ */
+const extendSchemaServer = (
+  schema: VulcanGraphqlSchemaServer
+): VulcanGraphqlSchemaServer => {
+  // if this is a date field, and fieldFormatted doesn't already exist in the schema
+  // or as a resolveAs field, then add fieldFormatted to apiSchema
+  // This code previously lived in "createSchema" function
+  const extendedSchema = cloneDeep(schema);
+  const apiSchema: any = {};
+  Object.keys(schema).forEach((fieldName) => {
+    const field = schema[fieldName];
+    const { arrayItem, type, canRead } = field;
+    const formattedFieldName = `${fieldName}Formatted`;
+    if (Array.isArray(field.resolveAs)) return extendedSchema;
+    if (
+      type === Date &&
+      !schema[formattedFieldName] &&
+      // TODO: will work only if resolveAs is not an array
+      field?.resolveAs?.fieldName !== formattedFieldName
+    ) {
+      // TODO: apiSchema typing is slightly different from normal schema, we need to figure this out
+      apiSchema[formattedFieldName] = {
+        typeName: "String",
+        canRead,
+        arguments: 'format: String = "YYYY/MM/DD"',
+        resolver: formattedDateResolver(fieldName),
+      };
+    }
+  });
+  // if apiSchema contains fields, copy them over to main schema
+  // TODO: we could do it in one stap now
+  if (!isEmpty(apiSchema)) {
+    Object.keys(apiSchema).forEach((fieldName) => {
+      const field = apiSchema[fieldName];
+      const { canRead = ["guests"], description, ...resolveAs } = field;
+      extendedSchema[fieldName] = {
+        type: Object,
+        optional: true,
+        apiOnly: true,
+        canRead,
+        description,
+        resolveAs,
+      };
+    });
+  }
+  return extendedSchema;
+};
 
 /**
  * Adds server-only fields as well
@@ -79,6 +136,7 @@ export const extendModelServer =
       mutationResolvers: mutationResolvers ? mutationResolvers : undefined,
       queryResolvers: queryResolvers ? queryResolvers : undefined,
     };
+    finalModel.schema = extendSchemaServer(finalModel.schema);
     const name = model.name;
     return finalModel;
   };

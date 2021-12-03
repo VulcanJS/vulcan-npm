@@ -6,6 +6,7 @@
  */
 import { VulcanModel, ModelPermissionsOptions } from "./typings";
 import { VulcanSchema } from "@vulcanjs/schema";
+import cloneDeep from "lodash/cloneDeep";
 
 export type ExtendModelFunc<TExtended extends VulcanModel = VulcanModel> = (
   model: VulcanModel
@@ -16,6 +17,83 @@ export interface CreateModelOptions<TSchema = VulcanSchema> {
   permissions?: ModelPermissionsOptions;
   extensions?: Array<ExtendModelFunc>;
 }
+
+/**
+ * Convert a schema to a valid schema
+ * => in Vulcan Next we correctly split apiSchema and dbSchema so no
+ * need of such a function
+ * +
+ * we try to have a unified syntax for schema
+ *
+ * We convert to a valid Simple-Schema only has a last resort when
+ * we actually need Simple-Schema (eg for validation)
+ *
+ * @deprecated Use a server model instead of API schema ; use a custom
+ * connector instead of dbSchema ; for other fields we parse them directly in createModel
+ *
+ * @param schema
+ * @param apiSchema
+ * @param dbSchema
+ * @returns
+ */
+export const createSchema = (
+  schema: VulcanSchema,
+  apiSchema = {},
+  dbSchema = {}
+) => {
+  let modifiedSchema = cloneDeep(schema);
+
+  Object.keys(modifiedSchema).forEach((fieldName) => {
+    const field = schema[fieldName];
+    const { arrayItem, type, canRead } = field;
+
+    /*
+    // legacy
+    if (field.resolveAs) {
+      // backwards compatibility: copy resolveAs.type to resolveAs.typeName
+      if (!field.resolveAs.typeName) {
+        field.resolveAs.typeName = field.resolveAs.type;
+      }
+    }
+
+    // legacy
+    if (field.relation) {
+      // for now, "translate" new relation field syntax into resolveAs
+      const { typeName, fieldName, kind } = field.relation;
+      field.resolveAs = {
+        typeName,
+        fieldName,
+        relation: kind,
+      };
+    }
+    */
+
+    // find any field with an `arrayItem` property defined and add corresponding
+    // `foo.$` array item field to schema
+    // TODO: not sure if we still need this
+    if (arrayItem) {
+      modifiedSchema[`${fieldName}.$`] = arrayItem;
+    }
+
+    // for added security, remove any API-related permission checks from db fields
+    /*
+  const filteredDbSchema = {};
+  const blacklistedFields = ["canRead", "canCreate", "canUpdate"];
+  Object.keys(dbSchema).forEach((dbFieldName) => {
+    filteredDbSchema[dbFieldName] = _omit(
+      dbSchema[dbFieldName],
+      blacklistedFields
+    );
+  });
+  */
+    // add dbSchema *after* doing the apiSchema stuff so we are sure
+    // its fields are not exposed through the GraphQL API
+    //modifiedSchema = { ...modifiedSchema, ...filteredDbSchema };
+  });
+
+  return modifiedSchema; //new SimpleSchema(modifiedSchema);
+};
+
 // It can return a raw or an extended model type
 export const createModel = <TModelDefinition extends VulcanModel>(
   options: CreateModelOptions
@@ -23,7 +101,10 @@ export const createModel = <TModelDefinition extends VulcanModel>(
   const { schema, name, extensions = [], permissions = {} } = options;
 
   const model: VulcanModel = {
-    schema,
+    // TODO: ideally we shouldn't even need this parsing step
+    // however, this means correctly typing our schemas for arrays
+    // and improving the graphql pipeline
+    schema: createSchema(schema),
     name,
     permissions,
     options,
