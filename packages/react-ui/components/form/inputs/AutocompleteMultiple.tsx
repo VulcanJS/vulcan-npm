@@ -15,13 +15,14 @@ import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 import { FormInputProps } from "../FormComponentInner";
+import { useFormContext } from "../FormContext";
 
 export interface AutocompleteMultipleProps extends FormInputProps {}
 export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
   // TODO: some props are now comming from the context
   const {
     queryData,
-    updateCurrentValues,
+    //updateCurrentValues,
     refFunction,
     path,
     inputProperties = {},
@@ -29,6 +30,8 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
     autocompleteQuery,
     optionsFunction,
   } = props;
+
+  const { updateCurrentValues } = useFormContext();
 
   const Components = useVulcanComponents();
   // MergeWithComponents should be handled at the Form level

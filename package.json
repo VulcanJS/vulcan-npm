@@ -13,7 +13,7 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "coverage": "jest --coverage",
-    "storybook": "start-storybook -p 6006 -s ./.storybook/public",
+    "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'",
     "typedoc": "typedoc",

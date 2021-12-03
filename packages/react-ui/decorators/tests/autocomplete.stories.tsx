@@ -3,7 +3,11 @@ import { Story, Meta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { screen, userEvent } from "@storybook/testing-library";
 
-import { createGraphqlModel, fieldDynamicQueryName } from "@vulcanjs/graphql";
+import {
+  createGraphqlModel,
+  fieldDynamicQueryName,
+  autocompleteQueryName,
+} from "@vulcanjs/graphql";
 import { makeAutocomplete } from "../autocomplete";
 import {
   Form,
@@ -20,6 +24,14 @@ const people = createGraphqlModel({
   graphql: {
     typeName: "People",
     multiTypeName: "Peoples",
+  },
+  schema: {},
+});
+const project = createGraphqlModel({
+  name: "Project",
+  graphql: {
+    typeName: "Project",
+    multiTypeName: "Projects",
   },
   schema: {},
 });
@@ -49,7 +61,6 @@ const autocompleteModel = createGraphqlModel({
       // the decorator options
 
       {
-        // TODO: we will probably need to update those params
         autocompletePropertyName: "name",
         queryResolverName: "projects",
         fragmentName: "ProjectFragment",
@@ -146,13 +157,38 @@ const AutocompleteDemoTemplate: Story<AutocompleteDemoProps> = (args) => (
 export const DefaultAutocompleteDemo = AutocompleteDemoTemplate.bind({});
 
 const peopleAutocompleteQuery: GraphqlQueryStub = {
-  operationName: fieldDynamicQueryName({ queryResolverName: "Projects" }),
+  operationName: autocompleteQueryName({ queryResolverName: "Peoples" }),
+  response: {
+    data: {
+      peoples: {
+        results: [],
+      },
+    },
+  },
+};
+/*
+const peopleDynamicValueQuery: GraphqlQueryStub = {
+  operationName: fieldDynamicQueryName({ queryResolverName: "Peoples" }),
   response: {
     data: {},
   },
 };
-const peopleAutocompleteQueryMock = graphqlQueryStubsToMsw([
+*/
+
+// TODO: what's the type of this stub? It's the result of a multi query
+const projectAutocompleteQuery: GraphqlQueryStub = {
+  operationName: autocompleteQueryName({ queryResolverName: "Projects" }),
+  response: {
+    data: {
+      projects: {
+        results: [{ name: "Vulcan Next", _id: "42" }],
+      },
+    },
+  },
+};
+const queryMocks = graphqlQueryStubsToMsw([
   peopleAutocompleteQuery,
+  projectAutocompleteQuery,
 ]);
 export const PlayAutocompleteDemo = AutocompleteDemoTemplate.bind({});
 PlayAutocompleteDemo.play = async () => {
@@ -166,6 +202,6 @@ PlayAutocompleteDemo.play = async () => {
 };
 PlayAutocompleteDemo.parameters = {
   msw: {
-    handlers: [...peopleAutocompleteQueryMock],
+    handlers: [...queryMocks],
   },
 };

@@ -49,6 +49,12 @@ export const fieldStaticQueryTemplate = ({
 }
 `;
 
+export const autocompleteQueryName = ({
+  queryResolverName,
+}: {
+  queryResolverName: string;
+}) => `Autocomplete${capitalize(queryResolverName)}Query`;
+
 /*
 
 Query template for loading a list of autocomplete suggestions
@@ -58,9 +64,7 @@ export const autocompleteQueryTemplate = ({
   queryResolverName,
   autocompletePropertyName,
 }) => `
-  query Autocomplete${capitalize(
-    queryResolverName
-  )}Query($queryString: String) {
+  query ${autocompleteQueryName({ queryResolverName })}($queryString: String) {
     ${queryResolverName}(
       input: {
         filter: {

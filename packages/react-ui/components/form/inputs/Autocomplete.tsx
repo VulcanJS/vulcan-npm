@@ -8,46 +8,44 @@
  */
 import { AsyncTypeahead } from "react-bootstrap-typeahead"; // ES2015
 import React, { useState } from "react";
-import {
-  registerComponent,
-  expandQueryFragments,
-  mergeWithComponents,
-} from "meteor/vulcan:core";
 import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
+import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useFormContext } from "../FormContext";
 
-const Autocomplete = (props) => {
+export const Autocomplete = (props) => {
   const {
     queryData,
-    updateCurrentValues,
+    //updateCurrentValues,
     refFunction,
     path,
     inputProperties = {},
     itemProperties = {},
     autocompleteQuery,
     optionsFunction,
-    formComponents,
   } = props;
 
-  const Components = mergeWithComponents(formComponents);
+  const Components = useVulcanComponents();
+  const { updateCurrentValues } = useFormContext();
 
   const { value, label } = inputProperties;
 
   // store current autocomplete query string in local component state
-  const [queryString = "xohaskjdhaskdjalh", setQueryString] = useState();
+  const [queryString = "xohaskjdhaskdjalh", setQueryString] =
+    useState<string>();
 
   // get component's autocomplete query and use it to load autocomplete suggestions
   // note: we use useLazyQuery because
   // we don't want to trigger the query until the user has actually typed in something
   const [loadAutocompleteOptions, { loading, error, data }] = useLazyQuery(
-    gql(expandQueryFragments(autocompleteQuery())),
+    gql(autocompleteQuery()),
     {
       variables: { queryString },
     }
   );
 
   if (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
   // apply options function to data to get suggestions in { value, label } pairs
   const autocompleteOptions = data && optionsFunction({ data });
@@ -68,6 +66,7 @@ const Autocomplete = (props) => {
           if (selected.length === 0) {
             updateCurrentValues({ [path]: null });
           } else {
+            // @ts-ignore
             const selectedId = selected[0].value;
             updateCurrentValues({ [path]: selectedId });
           }
@@ -85,5 +84,3 @@ const Autocomplete = (props) => {
     </Components.FormItem>
   );
 };
-
-registerComponent("FormComponentAutocomplete", Autocomplete);

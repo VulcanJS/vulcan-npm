@@ -56,4 +56,5 @@ export const VulcanComponentsContext =
     IconAdd: Dummy,
     IconRemove: Dummy,
     Loading: Dummy,
+    FormItem: Dummy,
   });
