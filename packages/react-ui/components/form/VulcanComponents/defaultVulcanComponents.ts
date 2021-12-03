@@ -41,11 +41,11 @@ import {
   FormComponentTime,
   FormComponentStaticText,
   FormComponentLikert,
-  FormComponentAutocomplete,
-  FormComponentMultiAutocomplete,
   // used by ui-bootstrap and ui-material
   FormItem,
+  FormComponentAutocomplete,
 } from "../inputs/BasicInputs";
+import { AutocompleteMultiple } from "../inputs/AutocompleteMultiple";
 import { Button } from "../core/Button";
 import { Loading } from "../core/Loading";
 import { PossibleCoreComponents, PossibleFormComponents } from "./typings";
@@ -78,8 +78,8 @@ const defaultFormComponents: PossibleFormComponents = {
   FormComponentTime,
   FormComponentStaticText,
   FormComponentLikert,
-  FormComponentAutocomplete,
-  FormComponentMultiAutocomplete,
+  //FormComponentAutocomplete,
+  //FormComponentMultiAutocomplete,
   // Components defined in default vulcan/forms
   FormComponent,
   FormComponentInner,
@@ -114,6 +114,8 @@ const defaultFormComponents: PossibleFormComponents = {
   Form,
   //
   FormItem,
+  FormComponentAutocomplete,
+  FormComponentMultiAutocomplete: AutocompleteMultiple,
 };
 
 export const defaultVulcanComponents = {

@@ -8,13 +8,17 @@
  */
 import { AsyncTypeahead } from "react-bootstrap-typeahead"; // ES2015
 import React, { useState } from "react";
-// TODO: @see packages/vulcan-lib/lib/modules/fragments.js
-import { expandQueryFragments } from "meteor/vulcan:core";
+// We don't auto-expand queries in Vulcan NPM, since we don't use the registry pattern
+// anymore. Instead, provide the right fragments directly, using composition with string templates.
+//import { expandQueryFragments } from "meteor/vulcan:core";
 import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { FormInputProps } from "../FormComponentInner";
 
-export const MultiAutocomplete = (props) => {
+export interface AutocompleteMultipleProps extends FormInputProps {}
+export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
+  // TODO: some props are now comming from the context
   const {
     queryData,
     updateCurrentValues,
@@ -24,7 +28,6 @@ export const MultiAutocomplete = (props) => {
     itemProperties = {},
     autocompleteQuery,
     optionsFunction,
-    formComponents,
   } = props;
 
   const Components = useVulcanComponents();
@@ -36,13 +39,13 @@ export const MultiAutocomplete = (props) => {
   const { value, label } = inputProperties;
 
   // store current autocomplete query string in local component state
-  const [queryString, setQueryString] = useState();
+  const [queryString, setQueryString] = useState<string | undefined>();
 
   // get component's autocomplete query and use it to load autocomplete suggestions
   // note: we use useLazyQuery because
   // we don't want to trigger the query until the user has actually typed in something
   const [loadAutocompleteOptions, { loading, error, data }] = useLazyQuery(
-    gql(expandQueryFragments(autocompleteQuery())),
+    gql(/*expandQueryFragments(*/ autocompleteQuery() /*)*/),
     {
       variables: { queryString },
     }
@@ -59,7 +62,9 @@ export const MultiAutocomplete = (props) => {
   // extra unwanted items if field-level data loading loaded too many items
   const selectedItems =
     queryData &&
-    optionsFunction({ data: queryData }).filter((d) => value.includes(d.value));
+    optionsFunction({ data: queryData }).filter((d) =>
+      (value as Array<any>).includes(d.value)
+    );
 
   // console.log(queryData)
   // console.log(queryData && optionsFunction({ data: queryData }));
@@ -67,12 +72,18 @@ export const MultiAutocomplete = (props) => {
   // console.log(selectedItems)
 
   return (
-    <Components.FormItem path={path} label={label} {...itemProperties}>
+    <Components.FormItem
+      {...props} /*path={path} label={label} {...itemProperties}*/
+    >
+      {/** @ts-ignore */}
       <AsyncTypeahead
         {...inputProperties}
         multiple
         onChange={(selected) => {
-          const selectedIds = selected.map(({ value }) => value);
+          const selectedIds = selected.map(
+            // @ts-ignore Typing is wrong for some reason
+            ({ value }) => value
+          );
           updateCurrentValues({ [path]: selectedIds });
         }}
         options={autocompleteOptions}

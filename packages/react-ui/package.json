@@ -24,6 +24,7 @@
     "classnames": "^2.3.1",
     "debug": "^4.3.1",
     "lodash": "^4.17.21",
+    "react-bootstrap-typeahead": "^6.0.0-alpha.4",
     "simpl-schema": "^1.12.0"
   },
   "peerDependencies": {

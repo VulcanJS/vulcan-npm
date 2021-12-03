@@ -26,6 +26,7 @@ const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
   );
 }; // TODO: might need some sanitization
 // For consistency with Vulcan Meteor ui bootstrap and ui material
+// @see packages/vulcan-ui-bootstrap/lib/components/forms/FormItem.jsx
 export const FormItem = HTMLInputAdapter;
 
 const HTMLSelectAdapter = (props: FormInputProps) => {
@@ -100,5 +101,5 @@ export const FormComponentLikert = (props) =>
   "Likert component not yet implemented";
 export const FormComponentAutocomplete = (props) =>
   "Autocomplete component not yet implemented";
-export const FormComponentMultiAutocomplete = (props) =>
-  "MultiAutocomplete component not yet implemented";
+//export const FormComponentMultiAutocomplete = (props) =>
+//  "MultiAutocomplete component not yet implemented";
