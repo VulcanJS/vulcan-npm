@@ -1,13 +1,19 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import { createGraphqlModel } from "@vulcanjs/graphql";
+import { screen, userEvent } from "@storybook/testing-library";
+
+import { createGraphqlModel, fieldDynamicQueryName } from "@vulcanjs/graphql";
 import { makeAutocomplete } from "../autocomplete";
 import {
   Form,
   FormProps,
   VulcanComponentsProvider,
 } from "../../components/form";
+import {
+  GraphqlQueryStub,
+  graphqlQueryStubsToMsw,
+} from "@vulcanjs/graphql/testing";
 
 const people = createGraphqlModel({
   name: "People",
@@ -138,3 +144,28 @@ const AutocompleteDemoTemplate: Story<AutocompleteDemoProps> = (args) => (
   <AutocompleteDemo {...args} />
 );
 export const DefaultAutocompleteDemo = AutocompleteDemoTemplate.bind({});
+
+const peopleAutocompleteQuery: GraphqlQueryStub = {
+  operationName: fieldDynamicQueryName({ queryResolverName: "Projects" }),
+  response: {
+    data: {},
+  },
+};
+const peopleAutocompleteQueryMock = graphqlQueryStubsToMsw([
+  peopleAutocompleteQuery,
+]);
+export const PlayAutocompleteDemo = AutocompleteDemoTemplate.bind({});
+PlayAutocompleteDemo.play = async () => {
+  const projectInput = screen.getByLabelText("Project");
+  await userEvent.type(projectInput, "Vulcan Next");
+  /*
+  People is a tad trickier because it seems to depend on another Entity model in state of js
+  const peopleInput = screen.getByLabelText("People");
+  await userEvent.type(peopleInput, "Octocat");
+  */
+};
+PlayAutocompleteDemo.parameters = {
+  msw: {
+    handlers: [...peopleAutocompleteQueryMock],
+  },
+};

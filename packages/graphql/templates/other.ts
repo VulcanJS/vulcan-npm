@@ -1,5 +1,8 @@
 import { capitalize } from "@vulcanjs/utils";
 
+export const fieldDynamicQueryName = ({ queryResolverName }) =>
+  `FormComponentDynamic${capitalize(queryResolverName)}Query`;
+
 /*
 
 Field-specific data loading query template for a dynamic array of item IDs
@@ -11,7 +14,7 @@ export const fieldDynamicQueryTemplate = ({
   queryResolverName,
   autocompletePropertyName,
 }) =>
-  `query FormComponent${capitalize(queryResolverName)}Query($value: [String!]) {
+  `query ${fieldDynamicQueryName({ queryResolverName })}($value: [String!]) {
     ${queryResolverName}(input: { 
       filter: {  _id: { _in: $value } },
       sort: { ${autocompletePropertyName}: asc }
@@ -33,7 +36,7 @@ export const fieldStaticQueryTemplate = ({
   queryResolverName,
   autocompletePropertyName,
 }) =>
-  `query FormComponent${capitalize(queryResolverName)}Query {
+  `query FormComponentStatic${capitalize(queryResolverName)}Query {
   ${queryResolverName}(input: { 
     
     sort: { ${autocompletePropertyName}: asc }

@@ -74,6 +74,7 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
   return (
     <Components.FormItem
       {...props} /*path={path} label={label} {...itemProperties}*/
+      name={path}
     >
       {/** @ts-ignore */}
       <AsyncTypeahead
@@ -88,6 +89,8 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
         }}
         options={autocompleteOptions}
         id={path}
+        // passing id doesn't seem to work, we need input props
+        inputProps={{ id: path }}
         ref={refFunction}
         onSearch={(queryString) => {
           setQueryString(queryString);
