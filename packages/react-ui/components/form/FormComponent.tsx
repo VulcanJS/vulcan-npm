@@ -12,8 +12,8 @@ import { isEmptyValue, getNullValue } from "./modules/utils";
 import type {
   PossibleFormComponents,
   PossibleVulcanComponents,
-} from "./VulcanComponents/typings";
-import { useVulcanComponents } from "./VulcanComponents/Consumer";
+} from "../VulcanComponents/typings";
+import { useVulcanComponents } from "../VulcanComponents/Consumer";
 import { FormField } from "./typings";
 import {
   VulcanFieldSchema,

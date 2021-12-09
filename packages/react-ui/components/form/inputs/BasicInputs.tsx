@@ -1,6 +1,6 @@
 import React from "react";
 import { FormInputProps } from "../FormComponentInner";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
 /**
  * Converts props passed by Vulcan to an HTML Input

@@ -1,9 +1,14 @@
+import React from "react";
+
 export interface PossibleCoreComponents {
   Loading: any;
   FormattedMessage: any;
   Alert: any;
   Button: any;
   Icon: any;
+  // TODO: define props more precisely
+  MutationButton: React.ComponentType<any>;
+  LoadingButton: React.ComponentType<any>;
 }
 // TODO: differentiate components that are provided out of the box and those that require a UI frameworK?
 export interface PossibleFormComponents {

@@ -9,7 +9,7 @@ import { Story, Meta } from "@storybook/react";
 import { SmartForm, SmartFormProps } from "../FormContainer";
 
 // Mocking graphql
-import { VulcanComponentsProvider } from "../VulcanComponents/Provider";
+import { VulcanComponentsProvider } from "../../VulcanComponents/Provider";
 import { ExpectedErrorBoundary } from "../../../testing/ExpectedErrorBoundary";
 import {} from "@vulcanjs/graphql";
 import {

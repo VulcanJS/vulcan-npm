@@ -10,7 +10,7 @@ import { AsyncTypeahead } from "react-bootstrap-typeahead"; // ES2015
 import React, { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 import { useFormContext } from "../FormContext";
 
 export const Autocomplete = (props) => {

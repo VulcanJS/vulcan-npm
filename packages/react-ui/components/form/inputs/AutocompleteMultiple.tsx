@@ -13,7 +13,7 @@ import React, { useState } from "react";
 //import { expandQueryFragments } from "meteor/vulcan:core";
 import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 import { FormInputProps } from "../FormComponentInner";
 import { useFormContext } from "../FormContext";
 

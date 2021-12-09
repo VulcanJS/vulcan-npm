@@ -47,7 +47,7 @@ import { FormContext } from "../FormContext";
 import { getFieldGroups, getFieldNames, getLabel } from "./fields";
 import { isNotSameDocument } from "./utils";
 import { useWarnOnUnsaved } from "../useWarnOnUnsaved";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
 import type { FormType } from "../typings";
 import {

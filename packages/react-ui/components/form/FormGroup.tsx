@@ -3,7 +3,7 @@ import _some from "lodash/some";
 import { VulcanUser, isAdmin } from "@vulcanjs/permissions";
 import { FieldGroup } from "@vulcanjs/schema";
 import { FormField } from "./typings";
-import { useVulcanComponents } from "./VulcanComponents/Consumer";
+import { useVulcanComponents } from "../VulcanComponents/Consumer";
 import { useFormContext } from "./FormContext";
 
 export interface FormGroupProps {

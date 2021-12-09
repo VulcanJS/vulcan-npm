@@ -8,7 +8,7 @@ import React, { useEffect } from "react";
 // import { expandQueryFragments } from "meteor/vulcan:core";
 import { useLazyQuery, gql } from "@apollo/client";
 import isEmpty from "lodash/isEmpty";
-import { useVulcanComponents } from "./VulcanComponents/Consumer";
+import { useVulcanComponents } from "../VulcanComponents/Consumer";
 
 export interface FormComponentLoaderProps {
   query: string | (({ value: any }) => string);

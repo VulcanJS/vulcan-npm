@@ -6,7 +6,7 @@ import { FormProps } from "../typings";
 import { createModel } from "@vulcanjs/model";
 import SimpleSchema from "simpl-schema";
 import * as models from "../../tests/fixtures/models";
-import { VulcanComponentsProvider } from "../../VulcanComponents/Provider";
+import { VulcanComponentsProvider } from "../../../VulcanComponents/Provider";
 import { action } from "@storybook/addon-actions";
 
 export default {
