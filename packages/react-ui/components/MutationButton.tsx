@@ -42,8 +42,15 @@ export class MutationButton extends PureComponent {
 }*/
 
 export interface MutationButtonProps {
-  /** @deprected Pass the mutation directly instead */
-  mutationOptions: never;
+  /**
+   * NOTE: in Vulcan Meteor you had to write:
+   * mutationOptions: { name: "foobar", mutationOptions: {refetchQueries:["hello"]}}
+   *
+   * In Vulcan Next, you can only pass the "mutationOptions" object:
+   * mutationOptions: { refetchQueries:["hello"]}
+   * and the mutation is provided via the new "mutation" prop
+   */
+  mutationOptions: MutationHookOptions;
   /**
    * @example
     mutation: gql`
