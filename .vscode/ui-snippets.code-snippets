@@ -22,11 +22,13 @@
 			"import React from 'react'",
 			"import { Story, Meta } from '@storybook/react'",
 			"import { $1, $1Props } from '../$1'",
+			""
 			"export default {",
 			"  component: $1,",
 			"  title: '$1',",
 			"  decorators: [",
 			"    (Story) => (",
+			"      // Replace by VulcanComponents if you need them",
 			"      <div>",
 			"          <Story />",
 			"      </div>",

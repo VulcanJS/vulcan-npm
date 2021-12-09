@@ -1,17 +1,29 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { MutationButton, MutationButtonProps } from "../MutationButton";
+import { gql } from "@apollo/client";
+import { VulcanComponentsProvider } from "../VulcanComponents";
 export default {
   component: MutationButton,
   title: "MutationButton",
   decorators: [
     (Story) => (
-      <div>
+      <VulcanComponentsProvider>
         <Story />
-      </div>
+      </VulcanComponentsProvider>
     ),
   ],
-  args: {},
+  args: {
+    mutation: gql`
+      mutation sampleMutation($input: Input) {
+        hello
+      }
+    `,
+    mutationArguments: { input: { foo: "bar" } },
+    loadingButtonProps: {
+      label: "Click me",
+    },
+  },
   parameters: { actions: { argTypesRegex: "^.*Callback$" } },
 } as Meta<MutationButtonProps>;
 

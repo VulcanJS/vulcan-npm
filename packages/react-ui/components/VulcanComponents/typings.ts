@@ -9,6 +9,8 @@ export interface PossibleCoreComponents {
   // TODO: define props more precisely
   MutationButton: React.ComponentType<any>;
   LoadingButton: React.ComponentType<any>;
+  // Previously from Bootstrap and Mui
+  TooltipTrigger: React.ComponentType<any>;
 }
 // TODO: differentiate components that are provided out of the box and those that require a UI frameworK?
 export interface PossibleFormComponents {

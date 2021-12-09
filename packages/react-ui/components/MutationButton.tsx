@@ -41,7 +41,7 @@ export class MutationButton extends PureComponent {
   }
 }*/
 
-interface MutationButtonProps {
+export interface MutationButtonProps {
   /** @deprected Pass the mutation directly instead */
   mutationOptions: never;
   mutation: string | DocumentNode;

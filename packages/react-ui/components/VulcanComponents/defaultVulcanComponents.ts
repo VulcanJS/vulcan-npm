@@ -54,6 +54,9 @@ import { Loading } from "../form/core/Loading";
 
 import { LoadingButton } from "../LoadingButton";
 import { MutationButton } from "../MutationButton";
+
+import { TooltipTrigger } from "../bootstrap/TooltipTrigger";
+
 import { PossibleCoreComponents, PossibleFormComponents } from "./typings";
 
 const defaultCoreComponents: PossibleCoreComponents = {
@@ -67,6 +70,7 @@ const defaultCoreComponents: PossibleCoreComponents = {
   // core
   LoadingButton,
   MutationButton,
+  TooltipTrigger,
 };
 const defaultFormComponents: PossibleFormComponents = {
   FormError, // used by: FieldErrors
