@@ -66,7 +66,7 @@ import {
   PossibleFormComponents,
 } from "@vulcanjs/react-ui";
 
-const muiCoreComponents: PossibleCoreComponents = {
+const muiCoreComponents: Partial<PossibleCoreComponents> = {
   Loading,
   FormattedMessage,
   Alert: () => null,

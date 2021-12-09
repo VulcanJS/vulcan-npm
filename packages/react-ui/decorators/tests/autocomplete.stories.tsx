@@ -9,15 +9,12 @@ import {
   autocompleteQueryName,
 } from "@vulcanjs/graphql";
 import { makeAutocomplete } from "../autocomplete";
-import {
-  Form,
-  FormProps,
-  VulcanComponentsProvider,
-} from "../../components/form";
+import { Form, FormProps } from "../../components/form";
 import {
   GraphqlQueryStub,
   graphqlQueryStubsToMsw,
 } from "@vulcanjs/graphql/testing";
+import { VulcanComponentsProvider } from "../../components/VulcanComponents";
 
 const people = createGraphqlModel({
   name: "People",

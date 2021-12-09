@@ -1,5 +1,6 @@
 import { VulcanGraphqlModel } from "../typings";
 import { Fragment } from "./typings";
+import { DocumentNode, FragmentDefinitionNode } from "graphql";
 
 /**
  * Get model fragment in safe manner. Priority:
@@ -34,4 +35,12 @@ export const getModelFragment = ({
     finalFragment,
     finalFragmentName,
   };
+};
+
+export const getFragmentName = (f: DocumentNode) => {
+  const name = (f?.definitions?.[0] as FragmentDefinitionNode)?.name?.value;
+  if (!name)
+    throw new Error(`Provided fragment has no name. Check that your fragment is wrapped
+  with "gql" and that it's actually a fragment. AST: ${JSON.stringify(f)}`);
+  return name;
 };
