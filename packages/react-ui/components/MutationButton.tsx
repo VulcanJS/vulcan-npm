@@ -18,7 +18,7 @@ Example Usage
 */
 import React, { useState } from "react";
 import { DocumentNode } from "graphql";
-import { gql, useMutation } from "@apollo/client";
+import { gql, MutationHookOptions, useMutation } from "@apollo/client";
 import { useVulcanComponents } from "./VulcanComponents";
 // import withMutation from '../containers/registeredMutation';
 
@@ -44,9 +44,17 @@ export class MutationButton extends PureComponent {
 export interface MutationButtonProps {
   /** @deprected Pass the mutation directly instead */
   mutationOptions: never;
+  /**
+   * @example
+    mutation: gql`
+      mutation sampleMutation($input: Input) {
+        hello
+      }
+    `,
+   */
   mutation: string | DocumentNode;
-  /** Variables passed to the mutation */
-  mutationArguments: any;
+  /** Variables passed to the mutation (NOTE: we can't pass other options at the moment) */
+  mutationArguments: MutationHookOptions<any>["variables"];
   submitCallback: () => void | Promise<void>;
   successCallback: (res: any) => void | Promise<void>;
   errorCallback: (err: any) => void | Promise<void>;
