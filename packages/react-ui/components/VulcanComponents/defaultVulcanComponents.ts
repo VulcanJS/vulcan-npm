@@ -54,6 +54,7 @@ import { Loading } from "../form/core/Loading";
 
 import { LoadingButton } from "../LoadingButton";
 import { MutationButton } from "../MutationButton";
+import { HeadTags } from "../HeadTags";
 
 import { TooltipTrigger } from "../bootstrap/TooltipTrigger";
 
@@ -70,6 +71,8 @@ const defaultCoreComponents: PossibleCoreComponents = {
   // core
   LoadingButton,
   MutationButton,
+  HeadTags,
+  //
   TooltipTrigger,
 };
 const defaultFormComponents: PossibleFormComponents = {
