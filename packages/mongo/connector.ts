@@ -44,11 +44,15 @@ function convertIdAndTransformToJSON<TModel>(
 }
 
 export const createMongooseConnector = <TModel = any>(
-  model: VulcanModel
+  model: VulcanModel,
+  options?: {
+    /** Force a mongoose model. Use if you need to customize the schema or options */
+    mongooseModel?: mongoose.Model<any>;
+  }
 ): MongooseConnector<TModel> => {
-  // 1. retrieve or create the mongoose model
+  // 1. use, retrieve or create the mongoose model
   // TODO: get a better key than "model.name" eg "model.mongo.collectionName"
-  let MongooseModel = mongoose.models?.[model.name];
+  let MongooseModel = options?.mongooseModel || mongoose.models?.[model.name];
   if (!MongooseModel) {
     // TODO: compute a Mongoose schema from a VulcanSchema automatically
     // TODO: remove the strict: false option! It bypassed Mongoose schema system until we are able to autocompute the Mongoose schema
