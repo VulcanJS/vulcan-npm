@@ -22,13 +22,13 @@ import { isIntlField, isIntlDataField } from "@vulcanjs/i18n";
 import { capitalize } from "@vulcanjs/utils";
 import {
   AnyResolverMap,
-  QueryResolver,
   QueryResolverDefinitions,
   ResolverMap,
 } from "./typings";
 // import { buildResolveAsResolver } from "./resolvers/resolveAsResolver";
 import * as relations from "./resolvers/relationResolvers";
 import { withFieldPermissionCheckResolver } from "./resolvers/fieldResolver";
+import { ResolveAsDefinition } from "../typings";
 
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (
@@ -54,29 +54,23 @@ const hasLegacyPermissions = (field) => {
   return hasLegacyPermissions;
 };
 
-interface ResolveAsCommon {
-  fieldName?: string;
-  typeName?: string;
-  type?: string;
-  description: string;
-  arguments: any;
-  resolver?: QueryResolver;
-}
-interface ResolveAsRelation extends ResolveAsCommon {}
-interface ResolveAsCustom extends ResolveAsCommon {}
+interface ResolveAsRelation extends ResolveAsDefinition {}
+interface ResolveAsCustom extends ResolveAsDefinition {}
 type ResolveAs = ResolveAsCustom | ResolveAsRelation;
 
 interface ResolveAsField extends VulcanFieldSchema {
   resolveAs: Array<ResolveAs> | ResolveAs;
 }
+
+/** Parsed ResolveAs definition? */
 interface GetResolveAsFieldsInput {
   typeName: string;
   field: ResolveAsField;
   fieldName: string;
   fieldType?: string;
   fieldDescription?: string;
-  fieldDirective: any;
-  fieldArguments: any;
+  fieldDirective?: string;
+  fieldArguments?: Array<{ name: string; type: string }>;
 }
 interface MainTypeDefinition {
   description?: string;
@@ -472,18 +466,16 @@ export const parseSchema = (
 
       // if field has a resolveAs or relation, push it to schema
       if (field.resolveAs || field.relation) {
-        const {
-          fields: resolveAsFields,
-          resolvers: resolveAsResolvers,
-        } = parseFieldResolvers({
-          typeName,
-          field: field as ResolveAsField,
-          fieldName,
-          fieldType,
-          fieldDescription,
-          fieldDirective,
-          fieldArguments,
-        });
+        const { fields: resolveAsFields, resolvers: resolveAsResolvers } =
+          parseFieldResolvers({
+            typeName,
+            field: field as ResolveAsField,
+            fieldName,
+            fieldType,
+            fieldDescription,
+            fieldDirective,
+            fieldArguments,
+          });
         resolvers.push(...resolveAsResolvers);
         fields.mainType.push(...resolveAsFields.mainType);
       } else {

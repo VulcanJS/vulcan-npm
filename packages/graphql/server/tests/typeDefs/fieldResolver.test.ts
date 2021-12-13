@@ -3,7 +3,7 @@ import { normalizeGraphQLSchema } from "../../../testing";
 import { parseModel } from "../../parseModel";
 import { VulcanGraphqlSchemaServer } from "../../../typings";
 
-const FooModel = (schema: VulcanGraphqlSchemaServer) =>
+const makeFooModel = (schema: VulcanGraphqlSchemaServer) =>
   createGraphqlModelServer({
     schema,
     name: "Foo",
@@ -11,7 +11,7 @@ const FooModel = (schema: VulcanGraphqlSchemaServer) =>
   });
 
 test("generate a type for a field with resolveAs and custom resolver", () => {
-  const model = FooModel({
+  const model = makeFooModel({
     field: {
       type: String,
       canRead: ["admins"],
@@ -32,7 +32,7 @@ test("generate a type for a field with resolveAs and custom resolver", () => {
   expect(normalizedSchema).toMatch("type Foo { field: Bar }");
 });
 test("generate a type for a resolved field with addOriginalField=true", () => {
-  const model = FooModel({
+  const model = makeFooModel({
     field: {
       type: String,
       optional: true,
@@ -55,7 +55,7 @@ test("generate a type for a resolved field with addOriginalField=true", () => {
   );
 });
 test("generate a type for a field with addOriginalField=true for at least one resolver of an array of resolveAs", () => {
-  const model = FooModel({
+  const model = makeFooModel({
     field: {
       type: String,
       optional: true,
@@ -83,7 +83,7 @@ test("generate a type for a field with addOriginalField=true for at least one re
   );
 });
 test("generate a field resolve type with arguments, directives and description", () => {
-  const model = FooModel({
+  const model = makeFooModel({
     field: {
       type: String,
       optional: true,

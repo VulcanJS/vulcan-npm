@@ -49,6 +49,8 @@ export interface ResolverMap {
 export interface ModelResolverMap {
   Query?: QueryResolverMap;
   Mutation?: MutationResolverMap;
+  // need to make ts happy, as Apollo is using an indexed type for resolvers
+  [other: string]: any;
 }
 export interface AnyResolverMap {
   [typeName: string]: Resolver | any;

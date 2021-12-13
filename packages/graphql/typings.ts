@@ -15,18 +15,27 @@ import { ContextWithUser } from "./server/resolvers";
 // SCHEMA TYPINGS
 // Custom resolver
 export interface ResolveAsDefinition {
-  /** Resolved field name
+  /**
+   *
+   * Resolved field name
    *
    * @example if field is "userId", resolved fieldName should be "user"
    **/
   fieldName: string;
+  /**
+   * Return type of the resolver
+   * TODO: not sure...
+   */
   typeName?: string;
-  /** Graphql typeName */
+  /** Graphql typeName
+   * TODO: what difference with typeName?
+   */
   type: string;
   /** Graphql description */
   description?: string;
   /**
    * Graphql arguments of the resolver, if it takes some params
+   * TODO: not sure if this, or an array of "name, type"?
    * @example arguments="foobar: string, $hello: string"
    */
   arguments?: string;
