@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/utils",
-  "version": "0.4.4",
+  "version": "0.4.6",
   "description": "Vulcan helpers",
   "main": "./dist/index.js",
   "files": [
@@ -37,7 +37,7 @@
   },
   "gitHead": "672e9ed494ded98361abe47132899d3f825d6d23",
   "dependencies": {
-    "@vulcanjs/model": "^0.4.1",
+    "@vulcanjs/model": "^0.4.6",
     "debug": "^4.3.1",
     "lodash": "^4.17.21",
     "speakingurl": "^14.0.1"
