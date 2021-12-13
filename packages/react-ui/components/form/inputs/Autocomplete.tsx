@@ -2,6 +2,7 @@
  *
  * // Copied for bootstrap package
  * // TODO: find a more generic implementation
+ * eg using "data-list" property of inputs
  *
  * Ideally for such a rich component we should also expose
  * hooks and internal logic so users can build their own
