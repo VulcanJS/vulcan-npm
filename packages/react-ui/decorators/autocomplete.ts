@@ -42,7 +42,8 @@ const getQueryResolverName = (field: VulcanGraphqlFieldSchema) => {
 // @see https://github.com/microsoft/TypeScript/issues/5711
 // @see https://forums.meteor.com/t/how-to-combine-typescript-and-simpleschema/28475
 export const makeAutocomplete = (
-  field: VulcanGraphqlFieldSchema,
+  // TODO: for some reason this type messes up everything
+  field: any, //VulcanGraphqlFieldSchema,
   options: {
     autocompletePropertyName: string;
     fragmentName?: string;
