@@ -8,6 +8,9 @@ const makeFooModel = (schema: VulcanGraphqlSchemaServer) =>
     schema,
     name: "Foo",
     graphql: { multiTypeName: "Foos", typeName: "Foo" },
+    permissions: {
+      canRead: ["admins", "members"],
+    },
   });
 describe("permissions", () => {
   test("field resolver returns null for unauthorized user, and value for authorized", async () => {
@@ -25,8 +28,9 @@ describe("permissions", () => {
         resolveAs: {
           fieldName: "resolvedField",
           type: "Bar",
-          resolver: async (root, { variable }) =>
-            `Variable value is ${variable}`,
+          resolver: async (root, args, context) => {
+            return `Variable value is ${args?.variable}`;
+          },
           arguments: "variable: String",
           description: "Some field",
           typeName: "String",
@@ -50,17 +54,35 @@ describe("permissions", () => {
         },
       }),
     });
-    const result = await server.executeOperation({
-      query: `query getFoo {
+    const GET_FOO = `query getFoo($variable: String) {
           foo(input:{}) {
-            field
-            resolvedField
+            result {
+              field
+              resolvedField(variable: $variable)
+            }
           } 
-        }`,
+        }`;
+    const result = await server.executeOperation({
+      query: GET_FOO,
       variables: { variable: "world" },
     });
     expect(result.errors).toBeUndefined();
-    expect(result.data?.result).toBe("Ida");
+    expect(result.data?.foo?.result).toEqual({
+      // TODO: not sure if it should be null or undefined
+      field: null,
+      resolvedField: null,
+    });
+
+    currentUser.isAdmin = true;
+    const resultAdmin = await server.executeOperation({
+      query: GET_FOO,
+      variables: { variable: "world" },
+    });
+    expect(resultAdmin.errors).toBeUndefined();
+    expect(resultAdmin.data?.foo?.result).toEqual({
+      field: "fieldValue",
+      resolvedField: "Variable value is world",
+    });
     /*
     const resolvedNotAdmin = await res?.resolvers?.Query?.["foo"](
       { field: "fieldValue" },
