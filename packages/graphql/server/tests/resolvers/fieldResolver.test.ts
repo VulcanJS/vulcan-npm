@@ -14,12 +14,13 @@ const makeFooModel = (schema: VulcanGraphqlSchemaServer) =>
   });
 describe("permissions", () => {
   test("field resolver returns null for unauthorized user, and value for authorized", async () => {
-    const connector = {
-      _filter: jest.fn(() => ({ selector: null, filteredFields: [] })),
-      findOne: jest.fn(() => ({
-        field: "fieldValue",
-      })),
-    };
+    // NOTE: this test is kinda complex,
+    // it could be easier to test the resolver function directly,
+    // however this is closer to the real usage
+
+    // we keep currentUser as a mutable variable,
+    // so we can test multiple requests with a different user
+    let currentUser = { isAdmin: false, groups: [] };
     const model = makeFooModel({
       field: {
         type: String,
@@ -38,14 +39,18 @@ describe("permissions", () => {
         },
       },
     });
-    let currentUser = { isAdmin: false, groups: [] };
+    const connector = {
+      _filter: jest.fn(() => ({ selector: null, filteredFields: [] })),
+      findOne: jest.fn(() => ({
+        field: "fieldValue",
+      })),
+    };
+    // spawn a Vulcan Apollo server
     const res = buildApolloSchema([model]);
-    // TODO: that's a lot of boilerplate, but running the resolver directly doesn't seem to handle resolved fields
     const server = new ApolloServer({
       typeDefs: res.typeDefs,
       resolvers: res.resolvers,
       context: () => ({
-        // we keep currentUser as a mutable variable, so we can change it and test again easily
         currentUser: currentUser,
         userId: "1234",
         Foo: {
@@ -54,6 +59,7 @@ describe("permissions", () => {
         },
       }),
     });
+    // Testing our field resolver
     const GET_FOO = `query getFoo($variable: String) {
           foo(input:{}) {
             result {
@@ -83,37 +89,5 @@ describe("permissions", () => {
       field: "fieldValue",
       resolvedField: "Variable value is world",
     });
-    /*
-    const resolvedNotAdmin = await res?.resolvers?.Query?.["foo"](
-      { field: "fieldValue" },
-      { variable: "world" },
-      {
-        currentUser: { isAdmin: false, groups: [] },
-        userId: "1234",
-        Foo: {
-          model,
-          connector,
-        },
-      },
-      {}
-    );
-    expect(resolvedNotAdmin).toEqual({ result: {} });
-    const resolvedAdmin = await res?.resolvers?.Query?.["foo"](
-      { field: "fieldValue" },
-      { variable: "world" },
-      {
-        currentUser: { isAdmin: true, groups: [] },
-        userId: "1234",
-        Foo: {
-          model,
-          connector,
-        },
-      },
-      {}
-    );
-
-    expect(resolvedAdmin).toEqual({
-      result: { field: "fieldValue", resolvedField: "" },
-    });*/
   });
 });

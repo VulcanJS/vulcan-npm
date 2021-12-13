@@ -14,6 +14,25 @@ import { ContextWithUser } from "./server/resolvers";
 
 // SCHEMA TYPINGS
 // Custom resolver
+
+/**
+ * @example       field: {
+        type: String,
+        optional: true,
+        canRead: ["admins"],
+        resolveAs: {
+          fieldName: "resolvedField",
+          type: "Bar",
+          resolver: async (root, args, context) => {
+            return `Variable value is ${args?.variable}`;
+          },
+          arguments: "variable: String",
+          description: "Some field",
+          typeName: "String",
+          addOriginalField: true,
+        },
+      }
+ */
 export interface ResolveAsDefinition {
   /**
    *
@@ -24,23 +43,33 @@ export interface ResolveAsDefinition {
   fieldName: string;
   /**
    * Return type of the resolver
-   * TODO: not sure...
+   *
+   * NOTE: it's an alias for "type"
    */
   typeName?: string;
-  /** Graphql typeName
-   * TODO: what difference with typeName?
+  /**
+   * Alias for typeName
+   *
+   * @deprecated
    */
-  type: string;
-  /** Graphql description */
+  type?: string;
+  /** Graphql description (helper text in your graphql schema) */
   description?: string;
   /**
-   * Graphql arguments of the resolver, if it takes some params
+   * Graphql arguments of the resolver, as comma separated string,
+   * if it takes some params
    * TODO: not sure if this, or an array of "name, type"?
-   * @example arguments="foobar: string, $hello: string"
+   * @example arguments: "foobar: string,hello: string"
+   * resolver: async (document, {foobar, hello}, context, info) => {...}
    */
   arguments?: string;
   /**
    * The resolver function
+   *
+   * NOTE: your function will be wrapped with a permission checker,
+   * based on the field "canRead" permissions
+   *
+   *
    */
   resolver?: QueryResolver;
   /**
