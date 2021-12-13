@@ -15,6 +15,7 @@ module.exports = {
     "packages/permissions/index.ts",
     "packages/react-hooks/index.ts",
     "packages/react-ui/index.ts",
+    "packages/react-ui-material/index.ts",
     "packages/schema/index.ts",
     "packages/utils/index.ts",
     "packages/utils/testing.ts",
