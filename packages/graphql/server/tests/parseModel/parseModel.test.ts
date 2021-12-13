@@ -10,8 +10,9 @@ import { parseModel } from "../../parseModel";
 import { buildDefaultMutationResolvers } from "../../resolvers/defaultMutationResolvers";
 import { buildDefaultQueryResolvers } from "../../resolvers/defaultQueryResolvers";
 import { getGraphQLType } from "../../../utils";
+import { VulcanGraphqlSchemaServer } from "../../../typings";
 
-const FooModel = (schema) =>
+const FooModel = (schema: VulcanGraphqlSchemaServer) =>
   createGraphqlModelServer({
     schema,
     name: "Foo",
@@ -540,105 +541,6 @@ describe("graphql/typeDefs", () => {
     });
   });
 */
-  describe("resolveAs", () => {
-    test("generate a type for a field with resolveAs and custom resolver", () => {
-      const model = FooModel({
-        field: {
-          type: String,
-          canRead: ["admins"],
-          resolveAs: {
-            fieldName: "field",
-            type: "Bar",
-            resolver: async (document, args, { Users }) => {
-              return "bar";
-            },
-          },
-        },
-      });
-      const res = parseModel(model);
-      expect(res.typeDefs).toBeDefined();
-      // debug
-      //console.log(res.typeDefs);
-      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
-      expect(normalizedSchema).toMatch("type Foo { field: Bar }");
-    });
-    test("generate a type for a resolved field with addOriginalField=true", () => {
-      const model = FooModel({
-        field: {
-          type: String,
-          optional: true,
-          canRead: ["admins"],
-          resolveAs: {
-            fieldName: "resolvedField",
-            type: "Bar",
-            resolver: (document, args, context) => {
-              return "bar";
-            },
-            addOriginalField: true,
-          },
-        },
-      });
-      const res = parseModel(model);
-      expect(res.typeDefs).toBeDefined();
-      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
-      expect(normalizedSchema).toMatch(
-        "type Foo { field: String resolvedField: Bar }"
-      );
-    });
-    test("generate a type for a field with addOriginalField=true for at least one resolver of an array of resolveAs", () => {
-      const model = FooModel({
-        field: {
-          type: String,
-          optional: true,
-          canRead: ["admins"],
-          resolveAs: [
-            {
-              fieldName: "resolvedField",
-              type: "Bar",
-              resolver: () => "bar",
-              addOriginalField: true,
-            },
-            {
-              fieldName: "anotherResolvedField",
-              type: "Bar",
-              resolver: () => "bar",
-            },
-          ],
-        },
-      });
-      const res = parseModel(model);
-      expect(res.typeDefs).toBeDefined();
-      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
-      expect(normalizedSchema).toMatch(
-        "type Foo { field: String resolvedField: Bar anotherResolvedField: Bar }"
-      );
-    });
-  });
-  describe("resolveAs - relation", () => {
-    describe("hasOne", () => {
-      test("generate a type for a field with an hasOne relation", () => {
-        const model = FooModel({
-          fieldId: {
-            type: String,
-            canRead: ["admins"],
-            relation: {
-              fieldName: "field",
-              typeName: "Bar",
-              kind: "hasOne",
-            },
-          },
-        });
-        const res = parseModel(model);
-        expect(res.typeDefs).toBeDefined();
-        // debug
-        //console.log(res.typeDefs);
-        const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
-        expect(normalizedSchema).toMatch(
-          "type Foo { fieldId: String field: Bar }"
-        );
-      });
-    });
-  });
   /*
 
   /*

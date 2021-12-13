@@ -25,8 +25,14 @@ export interface ResolveAsDefinition {
   type: string;
   /** Graphql description */
   description?: string;
-  /** Graphql arguments of the resolver, if it takes some params */
+  /**
+   * Graphql arguments of the resolver, if it takes some params
+   * @example arguments="foobar: string, $hello: string"
+   */
   arguments?: string;
+  /**
+   * The resolver function
+   */
   resolver?: QueryResolver;
   /**
    * Whether keeping the field or not

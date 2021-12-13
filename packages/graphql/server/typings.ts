@@ -1,9 +1,33 @@
 import { CreateVariables, UpdateVariables } from "../typings";
 
+/**
+ * @see https://graphql.org/learn/execution/#root-fields-resolvers
+ */
 export type QueryResolver = (
+  /**
+   * The full document for your field resolver (unused for full document resolver)
+   */
   root: any,
+  /** The variables of your resolverThe arguments provided to the field in the GraphQL query.
+   * @example foo(var: string) FooResult
+   * will give
+   * (document, {var}) => { <your resolver code> }
+   */
   args: any,
+  /**
+   * GraphQL context.
+   * In Vulcan the usual structure is:
+   * {
+   *  ModelName: { model, connector} # model and connector for each model, based on their name
+   *  currentUser, userId, # the user info
+   *  req # the http request
+   * }
+   */
   context: any,
+  /**
+   * A value which holds field-specific information relevant to the current query as well
+   * as the schema details, also refer to type GraphQLResolveInfo for more details.
+   */
   info?: any
 ) => Promise<any>;
 export type MutationResolver<TVariables = any, TResult = any> = (
