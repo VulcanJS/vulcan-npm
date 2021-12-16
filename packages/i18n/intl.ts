@@ -12,6 +12,7 @@ export const defaultLocale = "en"; //getSetting('locale', 'en');
 
 export interface LocaleType {
   id: string;
+  label?: string;
   required?: boolean;
   /** Locale must be fetched from the server (see LocaleContext) */
   dynamic?: boolean;
