@@ -11,8 +11,18 @@ import {
 export const defaultLocale = "en"; //getSetting('locale', 'en');
 
 export interface LocaleType {
-  id?: string;
+  id: string;
   required?: boolean;
+  /** Locale must be fetched from the server (see LocaleContext) */
+  dynamic?: boolean;
+  /** Right-to-left (arabic, persian...) */
+  rtl?: boolean;
+  strings?: any;
+  method?: any;
+  /** If the id doesn't exist, we can try to fetch another local.
+   * OriginalId is the initial requested id
+   */
+  originalId?: string;
 }
 export const Locales: Array<LocaleType> = [];
 
@@ -29,6 +39,122 @@ export const registerLocale = (locale) => {
  */
 export const getLocale = (localeId: string) => {
   return Locales.find((locale) => locale.id === localeId);
+};
+
+//
+/*
+
+Helper to detect current browser locale
+
+*/
+export const detectLocale = () => {
+  let lang;
+
+  if (typeof navigator === "undefined") {
+    return null;
+  }
+
+  if (navigator.languages && navigator.languages.length) {
+    // latest versions of Chrome and Firefox set this correctly
+    lang = navigator.languages[0];
+  } else if ((navigator as any).userLanguage) {
+    // IE only
+    lang = (navigator as any).userLanguage;
+  } else {
+    // latest versions of Chrome, Firefox, and Safari set this correctly
+    lang = navigator.language;
+  }
+
+  return lang;
+};
+
+/*
+
+Find best matching locale
+
+en-US -> en-US
+en-us -> en-US
+en-gb -> en-US
+etc.
+
+*/
+export const truncateKey = (key) => key.split("-")[0];
+
+export const getValidLocale = (localeId: string) => {
+  const validLocale = Locales.find((locale: LocaleType) => {
+    const { id } = locale;
+    return (
+      id.toLowerCase() === localeId.toLowerCase() ||
+      truncateKey(id) === truncateKey(localeId)
+    );
+  });
+  return validLocale;
+};
+
+/*
+
+Figure out the correct locale to use based on the current user, cookies,
+and browser settings
+
+*/
+export const initLocale = ({
+  currentUser = {},
+  cookies = {},
+  locale,
+}: {
+  currentUser?: any;
+  cookies?: { locale?: string };
+  locale?: any;
+}): LocaleType => {
+  let userLocaleId = "";
+  let localeMethod = "";
+  const detectedLocale = detectLocale();
+
+  if (locale) {
+    // 1. locale is passed from AppGenerator through SSR process
+    userLocaleId = locale;
+    localeMethod = "SSR";
+  } else if (cookies.locale) {
+    // 2. look for a cookie
+    userLocaleId = cookies.locale;
+    localeMethod = "cookie";
+  } else if (currentUser && currentUser.locale) {
+    // 3. if user is logged in, check for their preferred locale
+    userLocaleId = currentUser.locale;
+    localeMethod = "user";
+  } else if (detectedLocale) {
+    // 4. else, check for browser settings
+    userLocaleId = detectedLocale;
+    localeMethod = "browser";
+  }
+
+  /*
+
+  NOTE: locale fallback doesn't work anymore because we can now load locales dynamically
+  and Strings[userLocale] will then be empty
+
+  */
+  // if user locale is available, use it; else compare first two chars
+  // of user locale with first two chars of available locales
+  // const availableLocales = Object.keys(Strings);
+  // const availableLocale = Strings[userLocale] ? userLocale : availableLocales.find(locale => locale.slice(0, 2) === userLocale.slice(0, 2));
+
+  const validLocale = getValidLocale(userLocaleId);
+
+  // 4. if user-defined locale is available, use it; else default to setting or `en-US`
+  if (validLocale) {
+    return {
+      id: validLocale.id,
+      originalId: userLocaleId,
+      method: localeMethod,
+    };
+  } else {
+    return {
+      id: "en-US", //getSetting("locale", "en-US"),
+      originalId: userLocaleId,
+      method: "setting",
+    };
+  }
 };
 
 // Strings

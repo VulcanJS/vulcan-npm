@@ -30,6 +30,7 @@
     "@vulcanjs/schema": "^0.4.6",
     "@vulcanjs/utils": "^0.4.6",
     "prop-types": "^15.7.2",
+    "react-cookie": "^4.1.1",
     "simpl-schema": "^1.12.0"
   },
   "publishConfig": {

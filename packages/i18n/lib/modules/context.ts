@@ -1,6 +1,6 @@
 import React from "react";
 
-interface IntlContextType {
+export interface IntlContextType {
   locale: string;
   key: string;
   messages: Array<any>;
