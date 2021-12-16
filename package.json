@@ -5,7 +5,7 @@
     "postinstall": "lerna bootstrap --force-local",
     "prebuild": "yarn run clean:build",
     "build": "turbo run build",
-    "publish:local": "lerna exec yalc publish # then, use 'yalc link <package-name>' in your project",
+    "publish:local": "lerna exec yalc push # then, use 'yalc link <package-name>' in your project",
     "link-yarn-legacy": "lerna exec yarn link && ./scripts/link-duplicates.sh # deprecated, symlink creates issue with React, Webpack...",
     "unlink-yarn-legacy": "lerna exec yarn unlink",
     "clean": "rm -Rf ./node_modules ./packages/*/node_modules && yarn run clean:build",
