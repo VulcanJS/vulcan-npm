@@ -13,6 +13,8 @@ export const VulcanComponentsContext =
     LoadingButton: Dummy,
     MutationButton: Dummy,
     TooltipTrigger: Dummy,
+    Dropdown: Dummy,
+    // form
     Form: Dummy,
     FormComponent: Dummy,
     FormComponentAutocomplete: Dummy,

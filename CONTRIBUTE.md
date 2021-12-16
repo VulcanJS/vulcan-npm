@@ -4,6 +4,8 @@
 
 Start by reading the Readme for basic install information.
 
+Then, the package.json list the typical commands you'd expect from an NPM library: build, test...
+
 ## Lerna Tips
 
 ### Yarn workspaces

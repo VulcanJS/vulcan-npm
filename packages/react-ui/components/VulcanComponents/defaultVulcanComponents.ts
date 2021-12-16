@@ -56,7 +56,9 @@ import { LoadingButton } from "../LoadingButton";
 import { MutationButton } from "../MutationButton";
 import { HeadTags } from "../HeadTags";
 
+// TODO: rewrite to remove dep to react-bootstrap
 import { TooltipTrigger } from "../bootstrap/TooltipTrigger";
+import Dropdown from "../bootstrap/Dropdown";
 
 import { PossibleCoreComponents, PossibleFormComponents } from "./typings";
 
@@ -74,6 +76,7 @@ const defaultCoreComponents: PossibleCoreComponents = {
   HeadTags,
   //
   TooltipTrigger,
+  Dropdown,
 };
 const defaultFormComponents: PossibleFormComponents = {
   FormError, // used by: FieldErrors

@@ -12,6 +12,7 @@ export interface PossibleCoreComponents {
   HeadTags: React.ComponentType<any>;
   // Previously from Bootstrap and Mui
   TooltipTrigger: React.ComponentType<any>;
+  Dropdown: React.ComponentType<any>;
 }
 // TODO: differentiate components that are provided out of the box and those that require a UI frameworK?
 export interface PossibleFormComponents {

@@ -4,7 +4,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap --force-local",
     "prebuild": "yarn run clean:build",
-    "build": "lerna run build",
+    "build": "turbo run build",
     "publish:local": "lerna exec yalc publish # then, use 'yalc link <package-name>' in your project",
     "link-yarn-legacy": "lerna exec yarn link && ./scripts/link-duplicates.sh # deprecated, symlink creates issue with React, Webpack...",
     "unlink-yarn-legacy": "lerna exec yarn unlink",
@@ -52,6 +52,7 @@
     "operation-name-mock-link": "^0.0.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "turbo": "^1.0.13",
     "typescript": "4.2.2",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
@@ -88,5 +89,18 @@
   "dependencies": {},
   "msw": {
     "workerDirectory": "./storybook/public"
+  },
+  "turbo": {
+    "baseBranch": "origin/main",
+    "pipeline": {
+      "build": {
+        "dependsOn": [
+          "^build"
+        ],
+        "outputs": [
+          "dist/**"
+        ]
+      }
+    }
   }
 }
