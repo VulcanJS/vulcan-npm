@@ -2,7 +2,7 @@
  * In the future we might want to standardize those exports
  * @see https://github.com/VulcanJS/vulcan-next/issues/9
  */
-import { getLocale, getStrings } from "./locales";
+import { getLocale, getStrings } from "../intl";
 
 //addGraphQLSchema(localeType);
 

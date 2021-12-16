@@ -7,12 +7,32 @@ import {
   VulcanSchema,
 } from "@vulcanjs/schema";
 
+// Locales
 export const defaultLocale = "en"; //getSetting('locale', 'en');
 
+export interface LocaleType {
+  id?: string;
+  required?: boolean;
+}
+export const Locales: Array<LocaleType> = [];
+
+/**
+ *  @deprecated Instead we should expose a Locale graphql model
+ * @param locale
+ */
+export const registerLocale = (locale) => {
+  Locales.push(locale);
+};
+
+/**
+ * @deprecated
+ */
+export const getLocale = (localeId: string) => {
+  return Locales.find((locale) => locale.id === localeId);
+};
+
+// Strings
 export const Strings = {};
-
-export const Domains = {};
-
 export const addStrings = (language, strings) => {
   if (typeof Strings[language] === "undefined") {
     Strings[language] = {};
@@ -45,16 +65,17 @@ export const getString = ({ id, values, defaultMessage, locale }) => {
   return message;
 };
 
+export const getStrings = (localeId) => {
+  return Strings[localeId];
+};
+
+// domains
+export const Domains = {};
 export const registerDomain = (locale, domain) => {
   Domains[domain] = locale;
 };
 
-export const Locales: Array<{ id?: string; required: boolean }> = [];
-
-export const registerLocale = (locale) => {
-  Locales.push(locale);
-};
-
+// Helpers
 /*
 
 Look for type name in a few different places
