@@ -55,6 +55,24 @@ import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
 import { restrictViewableFields } from "@vulcanjs/permissions";
 
+interface CreateMutatorProperties {
+  /**
+   * @deprecated This use data instead
+   */
+  document?: any;
+  /**
+   * For create mutation
+   */
+  data?: any;
+  /**
+   * For update mutation
+   */
+  originalData?: any;
+  currentUser?: any;
+  model?: VulcanGraphqlModel;
+  context?: any;
+  schema?: any;
+}
 /**
  * Throws if some data are invalid
  */
@@ -69,7 +87,7 @@ const validateMutationData = async ({
   model: VulcanGraphqlModelServer; // data model
   mutatorName: DefaultMutatorName;
   context: Object; // Graphql context
-  properties: Object; // arguments of the callback, can vary depending on the mutator
+  properties: CreateMutatorProperties; // TODO: add update/delete if they are different
   data?: any; // data to validate
   originalDocument?: VulcanDocument;
   validationFunction?: Function;
@@ -222,7 +240,8 @@ export const createMutator = async <TModel extends VulcanDocument>({
     currentUser = context.currentUser;
   }
 
-  const properties = {
+  const properties: CreateMutatorProperties = {
+    document: data,
     data,
     originalData,
     currentUser,

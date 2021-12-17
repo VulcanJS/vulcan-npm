@@ -178,22 +178,30 @@ type CreateAsyncCb = (
   data: any, // TODO: not sure what happens when no iterator is provided in runCallbacks
   properties: CreateProperties
 ) => MaybeAsync<void>;
+type ValidationError = any;
+type ValidateCb = (
+  validationErrors: Array<ValidationError>,
+  properties: any
+) => MaybeAsync<Array<ValidationError>>;
 // type CreateCallback = (document: VulcanDocument) => VulcanDocument | Promise<VulcanDocument>
 export interface MutationCallbackDefinitions {
   create?: {
-    validate?: Array<Function>;
+    /**
+     * @example packages/graphql/server/resolvers/mutators.ts
+     */
+    validate?: Array<ValidateCb>;
     before?: Array<CreateBeforeCb>;
     after?: Array<CreateAfterCb>;
     async?: Array<Function>;
   };
   update?: {
-    validate?: Array<Function>;
+    validate?: Array<ValidateCb>;
     before?: Array<Function>;
     after?: Array<Function>;
     async?: Array<Function>;
   };
   delete?: {
-    validate?: Array<Function>;
+    validate?: Array<ValidateCb>;
     before?: Array<Function>;
     after?: Array<Function>;
     async?: Array<Function>;
