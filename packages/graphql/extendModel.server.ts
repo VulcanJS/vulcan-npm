@@ -31,18 +31,23 @@ import {
 } from "./server/resolvers";
 // don't forget to reexport common code
 export * from "./extendModel";
-import extendModel, { GraphqlModelOptions } from "./extendModel";
+import extendModel, {
+  GraphqlModelDefinition,
+  GraphqlModelOptions,
+} from "./extendModel";
 import cloneDeep from "lodash/cloneDeep";
 import isEmpty from "lodash/isEmpty";
+
+import merge from "lodash/merge";
 /**
  * This type is meant to be exposed server side
  *  @server-only
  */
 export interface GraphqlModelOptionsServer extends GraphqlModelOptions {
   /** Custom query resolvers (single, multi). Set to "null" if you don't want Vulcan to set any resolvers. Leave undefined if you want to use default resolvers. */
-  queryResolvers?: Partial<QueryResolverDefinitions>;
+  queryResolvers?: Partial<QueryResolverDefinitions> | null;
   /** Custom mutation resolvers (create, update, delete). Set to "null" if you don't want Vulcan to set any resolvers. Leave undefined if you want to use default resolvers. */
-  mutationResolvers?: Partial<MutationResolverDefinitions>;
+  mutationResolvers?: Partial<MutationResolverDefinitions> | null;
   callbacks?: MutationCallbackDefinitions;
 }
 
@@ -99,9 +104,10 @@ const extendSchemaServer = (
 };
 
 /**
- * Adds server-only fields as well
- * @param options
- * @returns
+ * Plugin function that adds graphql options to a generic model,
+ * including server-side fields
+ *
+ * NOTE: should not be used directly, prefer calling "createGraphqlModelServer"
  */
 export const extendModelServer =
   (
@@ -145,8 +151,13 @@ export interface CreateGraphqlModelOptionsServer
   extends CreateModelOptions<VulcanGraphqlSchemaServer> {
   graphql: GraphqlModelOptionsServer;
 }
+/**
+ * Server-side definition of a model
+ */
+export type GraphqlModelDefinitionServer = CreateGraphqlModelOptionsServer;
 
 /**
+ * Create a graphql model, accepting server-options
  * @server-only
  */
 export const createGraphqlModelServer = (
@@ -160,6 +171,27 @@ export const createGraphqlModelServer = (
   }) as VulcanGraphqlModelServer;
   return model;
 };
+
+/**
+ * Adds server only options to a model
+ * @param fullModelDef
+ * @param extensionModelDef
+ * @returns
+ */
+export const mergeModelDefinitionServer = (
+  fullModelDef: GraphqlModelDefinition,
+  /**
+   * Partial model definition, adding some server-only options to an existing model
+   */
+  extensionModelDef: Omit<Partial<GraphqlModelDefinitionServer>, "graphql"> & {
+    graphql?: Partial<GraphqlModelDefinitionServer["graphql"]>;
+  }
+) => {
+  return merge({}, fullModelDef, extensionModelDef);
+};
+
+/**
+ */
 
 //// CODE FROM CREATE COLLECTION
 //import { Mongo } from "meteor/mongo";

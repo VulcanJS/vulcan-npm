@@ -25,7 +25,7 @@ export const FormattedMessage = ({
   const cssClass = `i18n-message ${className}`;
 
   // if message is empty (no message found AND no default message), use [id]
-  if (message === "") {
+  if (!message /* === ""*/) {
     message = `[${id}]`;
   }
 

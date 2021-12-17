@@ -41,7 +41,11 @@ export interface GraphqlModelOptionsShared extends GraphqlModelOptions {
   callbacks?: never;
 }
 
-// Reusable model extension function
+/**
+ * Plugin function that adds graphql options to a generic model
+ *
+ * NOTE: should not be used directly, prefer calling "createGraphqlModel"
+ */
 const extendModel =
   (options: GraphqlModelOptions) /*: ExtendModelFunc<VulcanGraphqlModel>*/ =>
   (model: VulcanModel): VulcanGraphqlModel => {
@@ -93,6 +97,11 @@ export interface CreateGraphqlModelOptionsShared
   // => it will display nicer messages when you try to mistakenly use a server-only field
   graphql: GraphqlModelOptionsShared;
 }
+/**
+ * Definition of a model, to be passed to "createGraphqlModel"
+ */
+export type GraphqlModelDefinition = CreateGraphqlModelOptionsShared;
+
 /**
  * Let's you create a full-fledged graphql model
  *

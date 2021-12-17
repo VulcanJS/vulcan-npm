@@ -113,6 +113,7 @@ export const MutationButton = (props: MutationButtonProps) => {
         await successCallback(result);
       }
     } catch (error) {
+      // TODO: may not work because the mutationFunc may not throw in case of error
       setError(error);
       if (errorCallback) {
         await errorCallback(error);
