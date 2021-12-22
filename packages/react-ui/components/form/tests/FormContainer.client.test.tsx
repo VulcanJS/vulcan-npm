@@ -39,7 +39,7 @@ const createMock: GraphqlMutationStub<any> = {
     data: {
       createOneField: {
         // always return the same object whatever the user created
-        data: { text: "Hello" },
+        data: { text: "hello" },
       },
     },
   },

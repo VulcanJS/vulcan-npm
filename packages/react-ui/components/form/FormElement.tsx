@@ -9,7 +9,12 @@ export const FormElement = React.forwardRef<HTMLFormElement>(
   ({ children, ...otherProps }: PropsWithChildren<FormElementProps>, ref) => {
     const { submitForm } = useFormContext();
     return (
-      <form {...otherProps} onSubmit={submitForm} ref={ref}>
+      <form
+        {...otherProps}
+        // @ts-ignore
+        onSubmit={submitForm}
+        ref={ref}
+      >
         {children}
       </form>
     );
