@@ -6,6 +6,7 @@ import type {
 import { VulcanModel } from "@vulcanjs/model";
 import { VulcanUser } from "@vulcanjs/permissions";
 import { VulcanSchema } from "@vulcanjs/schema";
+import { DocumentNode } from "graphql";
 
 export interface FormState {
   schema: any;
@@ -19,7 +20,65 @@ export interface FormState {
   flatSchema: any;
   originalSchema: any;
 }
-export interface FormProps<TModel = { [key in string]: any }> {
+
+/**
+ * Props that can be passed to the FormContainer (= SmartForm)
+ * and will be passed down to the Form
+ */
+export interface PassedDownFormProps {
+  /**
+   * Disable the form
+   */
+  disabled?: boolean;
+  /**
+   * Will prevent leaving the page/unmounting the form on unsaved changes
+   */
+  warnUnsavedChanges?: boolean;
+  /*A callback called on form submission on the form data. Can return the submitted data object as well.*/
+  submitCallback?: (data) => any;
+  /*A callback called on mutation success.*/
+  successCallback?: (document, meta: { form: any }) => void;
+  /*A callback called on mutation failure.*/
+  errorCallback?: (document, error, meta: { form: any }) => void;
+
+  // Fragments
+  /**
+   *  A GraphQL fragment used to specify the data to fetch to populate edit forms.
+   *  If no fragment is passed, SmartForm will do its best to figure out what data to load based on the fields included in the form.
+   *
+   * Can be either a string or a DocumentNode (using "gql" tag)
+   */
+  queryFragment?: DocumentNode | string;
+  /**
+   * A GraphQL fragment used to specify the data to return once a mutation is complete.
+
+If no fragment is passed, SmartForm will only return fields used in the form, but note that this might sometimes lead to discrepancies when compared with documents already loaded on the client.
+
+An example would be a createdAt date added automatically on creation even though it’s not part of the actual form. If you’d like that field to be returned after the mutation, you can define a custom mutationFragment that includes it explicitly.
+
+   * Can be either a string or a DocumentNode (using "gql" tag)
+*/
+  mutationFragment?: DocumentNode | string;
+  /** Force a query fragment name
+   *
+   * NOTE: needed only for string fragments
+   * If you use a DocumentNode (with "gql" tag), it will be computed automatically
+   *
+   * @deprecated Prefer using DocumentNode fragment, using the gql tag
+   */
+  queryFragmentName?: string;
+  /** Force a mutation fragment name
+   *
+   *NOTE: needed only for string fragments
+   *If you use a DocumentNode (with "gql" tag), it will be computed automatically
+   *
+   * @deprecated Prefer using DocumentNode fragment, using the gql tag
+   */
+  mutationFragmentName?: string;
+}
+
+export interface FormProps<TModel = { [key in string]: any }>
+  extends PassedDownFormProps {
   /**
    * Function that retriggers data fetching in edit mode
    * Usually provided by the useSingle but could be any function
@@ -38,10 +97,6 @@ export interface FormProps<TModel = { [key in string]: any }> {
    */
   document?: any;
   /**
-   * Disable the form
-   */
-  disabled?: boolean;
-  /**
    * currentUser to check authorizations to update/create some fields
    */
   currentUser?: VulcanUser;
@@ -49,10 +104,6 @@ export interface FormProps<TModel = { [key in string]: any }> {
   removeFields?: Array<string>;
   // deprecated
   //hideFields?: any;
-  /**
-   * Will prevent leaving the page/unmounting the form on unsaved changes
-   */
-  warnUnsavedChanges?: boolean;
   /**
    * Label so that graphql queries are contextualized
    */
@@ -85,12 +136,6 @@ export interface FormProps<TModel = { [key in string]: any }> {
   //Callbacks
   /** Callback ran on first render */
   initCallback?: Function;
-  /*A callback called on form submission on the form data. Can return the submitted data object as well.*/
-  submitCallback?: (data) => any;
-  /*A callback called on mutation success.*/
-  successCallback?: (document, meta: { form: any }) => void;
-  /*A callback called on mutation failure.*/
-  errorCallback?: (document, error, meta: { form: any }) => void;
   /*If a cancelCallback function is provided, a “cancel” link will be shown next to the form’s submit button and the callback will be called on click.*/
   cancelCallback?: (document) => void;
   /*A callback to call when a document is successfully removed (deleted).*/
@@ -98,17 +143,6 @@ export interface FormProps<TModel = { [key in string]: any }> {
 
   /*A callback called a every change or blur event inside the form.*/
   changeCallback: (currentDocument) => void;
-  // Fragments
-  /*A GraphQL fragment used to specify the data to fetch to populate edit forms.
-If no fragment is passed, SmartForm will do its best to figure out what data to load based on the fields included in the form.
-*/
-  queryFragment?: string;
-  /*A GraphQL fragment used to specify the data to return once a mutation is complete.
-
-If no fragment is passed, SmartForm will only return fields used in the form, but note that this might sometimes lead to discrepancies when compared with documents already loaded on the client.
-
-An example would be a createdAt date added automatically on creation even though it’s not part of the actual form. If you’d like that field to be returned after the mutation, you can define a custom mutationFragment that includes it explicitly.*/
-  mutationFragment?: string;
 
   // mutations from container
   // => replace the "onSubmit" of a normal form

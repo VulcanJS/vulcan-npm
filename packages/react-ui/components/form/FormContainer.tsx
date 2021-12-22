@@ -66,6 +66,7 @@ import { FetchResult } from "@apollo/client";
 import { debugVulcan } from "@vulcanjs/utils";
 import { useVulcanCurrentUser } from "../VulcanCurrentUser/Consumer";
 import { VulcanUser } from "@vulcanjs/permissions";
+import { PassedDownFormProps } from "./Form/typings";
 const debugForm = debugVulcan("form");
 
 // Mutation that yield a success result
@@ -81,7 +82,7 @@ const isSuccessful = function <T = any>(
   return !!result?.data;
 };
 
-export interface FormContainerProps {
+export interface FormContainerProps extends PassedDownFormProps {
   model: VulcanGraphqlModel;
   /** Document id for edition mode, will automatically fetch the document */
   documentId?: string;
@@ -95,14 +96,6 @@ export interface FormContainerProps {
    * List default fields + those additional fields as well
    */
   addFields?: Array<string>;
-  /** Force a query fragment */
-  queryFragment?: string;
-  /** Force a mutation fragment */
-  mutationFragment?: string;
-  /** Force a query fragment */
-  queryFragmentName?: string;
-  /** Force a mutation fragment */
-  mutationFragmentName?: string;
   /**
    * Force a currentUser, overriding the currentUser obtained
    * via Context
