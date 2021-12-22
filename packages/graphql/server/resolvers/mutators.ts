@@ -73,6 +73,25 @@ interface CreateMutatorProperties {
   context?: any;
   schema?: any;
 }
+interface UpdateMutatorProperties {
+  /**
+   * @deprecated This use data instead
+   */
+  document?: any;
+  /**
+   * For create mutation
+   */
+  data?: any;
+  /**
+   * For update mutation
+   */
+  originalData?: any;
+  originalDocument?: any;
+  currentUser?: any;
+  model?: VulcanGraphqlModel;
+  context?: any;
+  schema?: any;
+}
 /**
  * Throws if some data are invalid
  */
@@ -485,8 +504,10 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   Properties
 
   */
-  const properties = {
+  const properties: UpdateMutatorProperties = {
     data,
+    // legacy
+    document: data,
     originalData: cloneDeep(data),
     originalDocument: currentDocument,
     currentUser,
