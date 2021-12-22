@@ -506,10 +506,9 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   */
   const properties: UpdateMutatorProperties = {
     data,
-    // legacy
-    document: data,
     originalData: cloneDeep(data),
     originalDocument: currentDocument,
+    document: currentDocument,
     currentUser,
     model,
     context,
