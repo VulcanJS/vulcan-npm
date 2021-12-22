@@ -4,7 +4,7 @@ import { DocumentNode, FragmentDefinitionNode } from "graphql";
 
 /**
  * Get model fragment in safe manner. Priority:
- * 1) Passed fragment and fragment name
+ * 1) Passed fragment, will autocompute fragment name if passing a DocumentNode (otherwise, pass an explicit fragment name)
  * 2) Model's defaults
  * 3) Throw an error if model has no default fragment (it can be empty or have fields that we don't yet support like nested)
  *
@@ -22,14 +22,20 @@ export const getModelFragment = ({
 }) => {
   const { defaultFragment, defaultFragmentName } = model.graphql;
   const finalFragment = fragment || defaultFragment;
-  const finalFragmentName = fragmentName || defaultFragmentName;
   if (!finalFragment) {
     throw new Error(`Model ${model.name} has no default fragment, maybe it is empty or have only nested fields?
     Please pass a fragment explicitely.`);
   }
+  let finalFragmentName: string | undefined;
+  // if fragment is a documentNode, we automatically get the fragmentName
+  if (typeof finalFragment !== "string") {
+    finalFragmentName = getFragmentName(finalFragment);
+  } else {
+    finalFragmentName = fragmentName || defaultFragmentName;
+  }
   if (!finalFragmentName) {
     throw new Error(`Model ${model.name} has no default fragment name, maybe it is empty or have only nested fields?
-    Please pass a fragmentName explicitely.`);
+    Please pass a fragmentName explicitely, or a DocumentNode fragment (using gql tag).`);
   }
   return {
     finalFragment,

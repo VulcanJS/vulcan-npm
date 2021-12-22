@@ -89,6 +89,9 @@ export const buildCreateQuery = ({
   fragment,
 }: {
   model: VulcanGraphqlModel;
+  /**
+   * @deprecated Prefer passing a fragment using gql tag, name will be computed automatically
+   */
   fragmentName?: string;
   fragment?: Fragment;
 }) => {
