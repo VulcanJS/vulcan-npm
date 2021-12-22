@@ -3,7 +3,7 @@
  *
  */
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { composeStories } from "@storybook/testing-react";
 
 import * as stories from "./FormContainer.stories";
@@ -26,6 +26,7 @@ import {
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 
 import { getMswServer } from "@vulcanjs/utils/testing";
+import { gql } from "@apollo/client";
 
 beforeEach(() => {
   // add relevant mocks
@@ -45,8 +46,50 @@ const createMock: GraphqlMutationStub<any> = {
 };
 // NOTE: you could also instead import a story with the MSW decorators for the create mock
 // But we leave this as an example of using MSW in tests
-test("create an empty document", () => {
-  render(<DefaultSmartForm />);
+test("create an empty document and call the successCallback", async () => {
+  const errorCallback = jest.fn();
+  const successCallback = jest.fn();
+  render(
+    <DefaultSmartForm
+      errorCallback={errorCallback}
+      successCallback={successCallback}
+    />
+  );
   const submitButton = screen.getByRole("button", { name: /submit/i });
   submitButton.click();
+  await waitFor(() => {
+    expect(errorCallback).not.toHaveBeenCalled();
+    expect(successCallback).toHaveBeenCalled();
+  });
+  expect(successCallback).toHaveBeenCalledWith(
+    { text: "hello" },
+    { form: undefined }
+  );
+});
+
+test("use DocumentNode fragments", async () => {
+  const errorCallback = jest.fn();
+  const successCallback = jest.fn();
+  render(
+    <DefaultSmartForm
+      queryFragment={gql`
+        fragment MyQueryFragment on MyModel {
+          text
+        }
+      `}
+      mutationFragment={gql`
+        fragment MyMutationFragment on MyModel {
+          text
+        }
+      `}
+      errorCallback={errorCallback}
+      successCallback={successCallback}
+    />
+  );
+  const submitButton = screen.getByRole("button", { name: /submit/i });
+  submitButton.click();
+  await waitFor(() => {
+    expect(errorCallback).not.toHaveBeenCalled();
+    expect(successCallback).toHaveBeenCalled();
+  });
 });

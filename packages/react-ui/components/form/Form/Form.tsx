@@ -398,7 +398,7 @@ export const Form = (props: FormProps) => {
   const addToSubmitForm = (callback) => {
     setCallbacks((cbs) => ({
       ...cbs,
-      submitFormCallbacks: [...cbs.submitFormCallbacks, callback],
+      // submitFormCallbacks: [...cbs.submitFormCallbacks, callback],
     }));
   };
 

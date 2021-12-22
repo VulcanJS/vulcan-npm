@@ -1,4 +1,7 @@
 import React from "react";
+// Load only the type, to define the API for each component
+// TODO: maybe do the reverse, define the props here and an unstyled version of the component?
+import type { FormSubmitProps } from "../form/FormSubmit";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -51,7 +54,7 @@ export interface PossibleFormComponents {
   FormIntl: any;
   // Layout
   FormErrors: any;
-  FormSubmit: any;
+  FormSubmit: React.ComponentType<FormSubmitProps>;
   FormLayout: any;
 
   // arrays and objects

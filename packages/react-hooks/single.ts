@@ -34,11 +34,13 @@ const defaultInput = {
 export const buildSingleQuery = ({
   model,
   fragmentName,
+
   fragment,
   extraQueries,
 }: {
   model: VulcanGraphqlModel;
   //typeName: string;
+  /** @deprecated Prefer passing a fragment using gql tag, name will be computed automatically */
   fragmentName?: string;
   fragment?: Fragment;
   extraQueries?: string;

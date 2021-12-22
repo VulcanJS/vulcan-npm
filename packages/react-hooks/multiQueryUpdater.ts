@@ -47,7 +47,9 @@ export const multiQueryUpdater =
       }
       if (!data[resolverName]) {
         throw new Error(
-          `data[${resolverName}] not defined in multiQuery updater for resolver ${resolverName} and model ${model.name}`
+          `data[${resolverName}] not defined in multiQuery updater for resolver ${resolverName} and model ${
+            model.name
+          }. Data: ${data && JSON.stringify(data)}`
         );
       }
       const mutatedDocument = data[resolverName].data;
