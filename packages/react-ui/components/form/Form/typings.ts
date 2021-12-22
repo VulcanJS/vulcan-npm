@@ -24,8 +24,13 @@ export interface FormState {
 /**
  * Props that can be passed to the FormContainer (= SmartForm)
  * and will be passed down to the Form
+ *
+ * TODO: this might not be complete yet. We need to move relevant props from "FormProps" to this type,
+ * based on current usage of the SmartForm in existing apps
  */
 export interface PassedDownFormProps {
+  itemProperties?: Object;
+  showDelete?: boolean;
   /**
    * Disable the form
    */
@@ -108,8 +113,6 @@ export interface FormProps<TModel = { [key in string]: any }>
    * Label so that graphql queries are contextualized
    */
   contextName?: string;
-  itemProperties?: Object;
-  showDelete?: boolean;
   // labels
   cancelLabel?: string;
   revertLabel?: string;

@@ -46,7 +46,7 @@ const createMock: GraphqlMutationStub<any> = {
 };
 // NOTE: you could also instead import a story with the MSW decorators for the create mock
 // But we leave this as an example of using MSW in tests
-test("create an empty document", async () => {
+test("create an empty document and call the successCallback", async () => {
   const errorCallback = jest.fn();
   const successCallback = jest.fn();
   render(
@@ -61,6 +61,10 @@ test("create an empty document", async () => {
     expect(errorCallback).not.toHaveBeenCalled();
     expect(successCallback).toHaveBeenCalled();
   });
+  expect(successCallback).toHaveBeenCalledWith(
+    { text: "hello" },
+    { form: undefined }
+  );
 });
 
 test("use DocumentNode fragments", async () => {
