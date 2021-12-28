@@ -38,6 +38,18 @@ function convertIdAndTransformToJSON<TModel>(
     return { ...docOrDocs.toJSON(), _id: docOrDocs._id.toString() };
   } else {
     return docOrDocs.map((document) => {
+      if (!document)
+        throw new Error(
+          "Document is not defined during id transformation. You may have malformed documents in your database."
+        );
+      if (!document._id) {
+        throw new Error(
+          `Document has no valid _id ${JSON.stringify(
+            document
+          )} during id transformation. You may use malformed document _id
+          in your database (coming from Meteor?)`
+        );
+      }
       return { ...document.toJSON(), _id: document._id.toString() };
     });
   }
