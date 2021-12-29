@@ -10,7 +10,7 @@ import {
   VulcanFieldSchema,
   VulcanSchema,
 } from "@vulcanjs/schema";
-import { ContextWithUser } from "./server/resolvers";
+import { Connector, ContextWithUser } from "./server/resolvers";
 
 // SCHEMA TYPINGS
 // Custom resolver
@@ -136,6 +136,18 @@ export interface GraphqlModelServer extends GraphqlModel {
   queryResolvers?: QueryResolverDefinitions;
   mutationResolvers?: MutationResolverDefinitions;
   callbacks?: MutationCallbackDefinitions;
+  /**
+   * Connector tied to a model
+   *
+   * NOTE: since the connector itself depends on the model, you need
+   * to define this value AFTER creating the model
+   *
+   * @example
+   * const connector = ...
+   * const model = ...
+   * model.graphql.connector = connector
+   */
+  connector?: Connector;
 }
 
 // TODO: not used yet. A schema for graphql might contain those additional fields.
