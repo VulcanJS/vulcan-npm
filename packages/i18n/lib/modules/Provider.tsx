@@ -8,14 +8,26 @@ import { Message } from "./typings";
 type Formatter<T = any> = (val: T, ...args: any) => string;
 
 interface IntlProps {
+  // name of the locale
   locale: string;
+  // strings
+  messages: any;
 }
 
-const makeFormatMessage =
-  ({ locale }: IntlProps) =>
-  ({ id, defaultMessage }, values = null) => {
-    return getString({ id, defaultMessage, values, /* messages,*/ locale });
+/**
+ * Generate the format functions for a locale, that can be provided dynamically
+ * @param
+ * @returns
+ */
+const makeFormatMessage = ({ locale, messages }: IntlProps) => {
+  console.log("Making formatter for locale", locale, messages);
+  return function formatMessageForLocale(
+    { id, defaultMessage },
+    values = null
+  ) {
+    return getString({ id, defaultMessage, values, messages, locale });
   };
+};
 
 const formatAny = (something: any): string => {
   return "" + something;
@@ -33,13 +45,16 @@ export interface IntlProviderContextValue {
   locale: string;
 }
 
-const makeDefaultValue = ({ locale }: IntlProps): IntlProviderContextValue => ({
+const makeDefaultValue = ({
+  locale,
+  messages,
+}: IntlProps): IntlProviderContextValue => ({
   formatDate: formatAny,
   formatTime: formatAny,
   formatRelative: formatAny,
   formatNumber: formatAny,
   formatPlural: formatAny,
-  formatMessage: makeFormatMessage({ locale: locale }),
+  formatMessage: makeFormatMessage({ locale, messages }),
   formatHTMLMessage: formatAny,
   now: null, // ?
   locale: locale,
@@ -47,17 +62,21 @@ const makeDefaultValue = ({ locale }: IntlProps): IntlProviderContextValue => ({
 
 export const IntlProviderContext =
   React.createContext<IntlProviderContextValue>(
-    makeDefaultValue({ locale: "" })
+    makeDefaultValue({ locale: "", messages: [] })
   );
 
 export interface IntlProviderProps extends IntlProps {
   children: React.ReactNode;
-  // messages: any;
+  messages: any;
 }
-export const IntlProvider = ({ locale, ...props }: IntlProviderProps) => {
+export const IntlProvider = ({
+  locale,
+  messages,
+  ...props
+}: IntlProviderProps) => {
   return (
     <IntlProviderContext.Provider
-      value={makeDefaultValue({ locale })}
+      value={makeDefaultValue({ locale, messages })}
       {...props}
     />
   );
@@ -79,8 +98,8 @@ export class LegacyIntlProvider extends Component<IntlProviderProps> {
     intl: intlShape,
   };
   formatMessage = ({ id, defaultMessage }, values = null) => {
-    const { /*messages,*/ locale } = this.props;
-    return getString({ id, defaultMessage, values, /* messages,*/ locale });
+    const { messages, locale } = this.props;
+    return getString({ id, defaultMessage, values, messages, locale });
   };
 
   formatStuff = (something) => {

@@ -170,10 +170,20 @@ export const addStrings = (language, strings) => {
   };
 };
 
-export const getString = ({ id, values, defaultMessage, locale }) => {
+export const getString = ({
+  id,
+  values,
+  defaultMessage,
+  messages,
+  locale,
+}: any) => {
   let message = "";
 
-  if (Strings[locale] && Strings[locale][id]) {
+  if (messages && messages[id]) {
+    // first, look in messages object passed through arguments
+    // note: if defined, messages should also contain Strings[locale]
+    message = messages[id];
+  } else if (Strings[locale] && Strings[locale][id]) {
     message = Strings[locale][id];
   } else if (Strings[defaultLocale] && Strings[defaultLocale][id]) {
     // debug(`\x1b[32m>> INTL: No string found for id "${id}" in locale "${locale}", using defaultLocale "${defaultLocale}".\x1b[0m`);
