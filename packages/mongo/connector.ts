@@ -69,6 +69,7 @@ export const createMongooseConnector = <TModel = any>(
   options?: {
     /** Force a mongoose model. Use if you need to customize the schema or options */
     mongooseModel?: mongoose.Model<any>;
+    mongooseSchema?: mongoose.Schema;
   }
 ): MongooseConnector<TModel> => {
   // 1. use, retrieve or create the mongoose model
@@ -77,7 +78,8 @@ export const createMongooseConnector = <TModel = any>(
   if (!MongooseModel) {
     // TODO: compute a Mongoose schema from a VulcanSchema automatically
     // TODO: remove the strict: false option! It bypassed Mongoose schema system until we are able to autocompute the Mongoose schema
-    const schema = new mongoose.Schema({}, { strict: false });
+    const schema =
+      options?.mongooseSchema || new mongoose.Schema({}, { strict: false });
     // TODO: get name from a custom "model.mongo" option, using the model extension system like for graphql
     MongooseModel = mongoose.model(model.name, schema);
   }
