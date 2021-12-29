@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/i18n",
-  "version": "0.4.7",
+  "version": "0.4.10",
   "description": "Vulcan i18n helpers",
   "main": "./dist/index.js",
   "files": [
