@@ -108,6 +108,12 @@ describe("CRUD", () => {
     const count = await connector.count();
     expect(count).toEqual(2);
   });
+  test("count - filter", async () => {
+    const docsToCreate = [{ text: "hello" }, { text: "world" }];
+    const createdDocs = await Promise.all(docsToCreate.map(connector.create));
+    const count = await connector.count({ text: "hello" });
+    expect(count).toEqual(1);
+  });
   test("find - return empty array when db is empty", async () => {
     const foundDocs = await connector.find({}, {});
     expect(foundDocs).toEqual([]);
