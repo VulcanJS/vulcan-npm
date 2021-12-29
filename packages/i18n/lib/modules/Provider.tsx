@@ -20,7 +20,6 @@ interface IntlProps {
  * @returns
  */
 const makeFormatMessage = ({ locale, messages }: IntlProps) => {
-  console.log("Making formatter for locale", locale, messages);
   return function formatMessageForLocale(
     { id, defaultMessage },
     values = null
