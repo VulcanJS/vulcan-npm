@@ -293,6 +293,13 @@ export const checkFields = (
   const ambiguousFields = getDocumentBasedPermissionFieldNames(model); // these fields need to wait for the document to be present before being checked
   const fieldsToTest = difference(fields, ambiguousFields); // we only check non-ambiguous fields (canRead: ["guests", "admins"] for instance)
   const diff = difference(fieldsToTest, viewableFields);
+  
+  //allow GraphQL operators: _and, _or, or _not as the filter:
+  const allowedOperators: string[] = ['$and','$or', '$not'];
+  //diff is valid it is one of the allowed operators
+  if((diff.length==1 && typeof diff[0] == 'string') && allowedOperators.indexOf(diff[0])>-1){
+    return true
+  }
 
   if (diff.length) {
     throw new Error(
