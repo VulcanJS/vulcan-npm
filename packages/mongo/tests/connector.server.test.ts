@@ -160,12 +160,25 @@ describe("CRUD", () => {
     const foundDoc = await connector.findOne({ _id: createdDocs[1]._id });
     expect(foundDoc).toEqual(createdDocs[1]);
   });
-  test("filter", async () => {
+  test("filter - empty", async () => {
     const result = await connector._filter({}, {});
     expect(result).toEqual({
       filteredFields: [],
       options: { limit: 1000, sort: { createdAt: -1 } },
       selector: {},
+    });
+  });
+  test("filter - with operators", async () => {
+    const docsToCreate = [{ text: "hello" }, { text: "world" }];
+    const createdDocs = await Promise.all(docsToCreate.map(connector.create));
+    const result = await connector._filter(
+      { filter: { _and: [{ text: { _eq: "hello" } }] } },
+      {}
+    );
+    expect(result).toEqual({
+      filteredFields: ["text"],
+      options: { limit: 1000, sort: { createdAt: -1 } },
+      selector: { $and: [{ text: { $eq: "hello" } }] },
     });
   });
   test("update", async () => {
