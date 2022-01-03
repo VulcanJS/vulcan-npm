@@ -5,7 +5,7 @@ import express, { Request } from "express";
 // import cors from "cors";
 import mongoose from "mongoose";
 import { ApolloServer, gql } from "apollo-server-express";
-import { makeExecutableSchema } from "graphql-tools";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 // import { mergeSchemas } from "@graphql-tools/schema";
 import { buildApolloSchema } from "@vulcanjs/graphql/server";
 
@@ -38,27 +38,32 @@ afterAll(async () => {
   await mongod.stop();
 });
 
+const Contributor = createGraphqlModelServer({
+  name: "Contributor",
+  schema: {
+    _id: {
+      type: String,
+      canRead: ["guests"],
+      canCreate: ["guests"],
+      canUpdate: ["guests"],
+      canDelete: ["guests"],
+    },
+  },
+  graphql: {
+    typeName: "Contributor",
+    multiTypeName: "Contributors",
+    queryResolvers: buildDefaultQueryResolvers({
+      typeName: "Contributor",
+    }),
+  },
+  permissions: {
+    canRead: ["guests"],
+  },
+});
 // Work in progress
 describe("crud operations", () => {
   test("setup an apollo 3 server", async () => {
-    const models = [
-      createGraphqlModelServer({
-        name: "Contributor",
-        schema: {
-          _id: {
-            type: String,
-            canRead: ["guests"],
-          },
-        },
-        graphql: {
-          typeName: "Contributor",
-          multiTypeName: "Contributors",
-          queryResolvers: buildDefaultQueryResolvers({
-            typeName: "Contributor",
-          }),
-        },
-      }),
-    ];
+    const models = [Contributor];
     const vulcanRawSchema = buildApolloSchema(models);
     const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
 
@@ -76,30 +81,7 @@ describe("crud operations", () => {
     server.applyMiddleware({ app, path: "/api/graphql" });
   });
   test("run multi query with filter", async () => {
-    const models = [
-      createGraphqlModelServer({
-        name: "Contributor",
-        schema: {
-          _id: {
-            type: String,
-            canRead: ["guests"],
-            canCrate: ["guests"],
-            canUpdate: ["guests"],
-            canDelete: ["guests"],
-          },
-        },
-        graphql: {
-          typeName: "Contributor",
-          multiTypeName: "Contributors",
-          queryResolvers: buildDefaultQueryResolvers({
-            typeName: "Contributor",
-          }),
-        },
-        permissions: {
-          canRead: ["guests"],
-        },
-      }),
-    ];
+    const models = [Contributor];
     const vulcanRawSchema = buildApolloSchema(models);
     const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
 
@@ -133,7 +115,7 @@ describe("crud operations", () => {
         }
       `,
     });
-    expect(res.data).toEqual({ contributors: { results: [] } });
     expect(res.errors).toBeUndefined();
+    expect(res.data).toEqual({ contributors: { results: [] } });
   });
 });

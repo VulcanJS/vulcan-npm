@@ -13,13 +13,6 @@ export const getValidFields = (schema) => {
   );
 };
 
-export const getReadableFields = (schema) => {
-  // OpenCRUD backwards compatibility
-  return getValidFields(schema).filter(
-    (fieldName) => schema[fieldName].canRead || schema[fieldName].viewableBy
-  );
-};
-
 /*
 
 Convert a nested SimpleSchema schema into a JSON object

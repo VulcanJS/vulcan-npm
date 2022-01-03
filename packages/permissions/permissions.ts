@@ -225,7 +225,16 @@ export const canReadField = function (
   return false;
 };
 
-export const getReadableFields = function (
+/**
+ * Get fields that the user can read in this model
+ *
+ * NOTE: to get all readable fields of the schema, without filtering depending on permissions, see @vulcanjs/schema "getReadableField"
+ * @param user
+ * @param model
+ * @param document
+ * @returns
+ */
+export const getUserReadableFields = function (
   user: VulcanUser | null,
   model: VulcanModel,
   document?: VulcanDocument
@@ -288,7 +297,7 @@ export const checkFields = (
   model: VulcanModel,
   fields: Array<any>
 ) => {
-  const viewableFields = getReadableFields(user, model);
+  const viewableFields = getUserReadableFields(user, model);
   // Initial case without document => we ignore fields that need the document to be checked
   const ambiguousFields = getDocumentBasedPermissionFieldNames(model); // these fields need to wait for the document to be present before being checked
   const fieldsToTest = difference(fields, ambiguousFields); // we only check non-ambiguous fields (canRead: ["guests", "admins"] for instance)
@@ -319,7 +328,7 @@ export const canFilterDocument = (
   fields: Array<string>,
   document: VulcanDocument
 ) => {
-  const viewableFields = getReadableFields(user, model, document);
+  const viewableFields = getUserReadableFields(user, model, document);
   const diff = difference(fields, viewableFields);
   return !diff.length; // if length is > 0, it means that this document wasn't filterable by user in the first place, based on provided filter, we must remove it
 };

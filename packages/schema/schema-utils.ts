@@ -20,8 +20,14 @@ export const getValidFields = (schema) => {
   );
 };
 
-// NOTE: this include fields that should'n't go into the default fragment (pure virtual fields and resolved fields)
-// use getFragmentFieldNames for fragments
+/**
+ * Get all readable fields of a schema
+ *
+ * // NOTE: this include fields that should'n't go into the default fragment (pure virtual fields and resolved fields)
+ * // use getFragmentFieldNames for fragments
+ * @param schema
+ * @returns
+ */
 export const getReadableFields = (schema) => {
   // OpenCRUD backwards compatibility
   return getValidFields(schema).filter(
