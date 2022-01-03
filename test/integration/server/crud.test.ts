@@ -75,4 +75,61 @@ describe("crud operations", () => {
     // app.set("trust proxy", true);
     server.applyMiddleware({ app, path: "/api/graphql" });
   });
+  test("run multi query with filter", async () => {
+    const models = [
+      createGraphqlModelServer({
+        name: "Contributor",
+        schema: {
+          _id: {
+            type: String,
+            canRead: ["guests"],
+            canCrate: ["guests"],
+            canUpdate: ["guests"],
+            canDelete: ["guests"],
+          },
+        },
+        graphql: {
+          typeName: "Contributor",
+          multiTypeName: "Contributors",
+          queryResolvers: buildDefaultQueryResolvers({
+            typeName: "Contributor",
+          }),
+        },
+      }),
+    ];
+    const vulcanRawSchema = buildApolloSchema(models);
+    const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
+
+    // Define the server (using Express for easier middleware usage)
+    const server = new ApolloServer({
+      schema: vulcanSchema,
+      context: async ({ req }) => {
+        const ctx = await contextFromReq(models)(req as Request);
+        console.log("CTX", ctx);
+        return ctx;
+      },
+      introspection: false,
+      //playground: false,
+    });
+    await server.start();
+
+    const app = express();
+    // app.set("trust proxy", true);
+    server.applyMiddleware({ app, path: "/api/graphql" });
+
+    //
+
+    const res = await server.executeOperation({
+      query: gql`
+        query {
+          contributors(input: { filter: { _and: [{ _id: { _eq: "42" } }] } }) {
+            results {
+              _id
+            }
+          }
+        }
+      `,
+    });
+    expect(res).toEqual("foo");
+  });
 });

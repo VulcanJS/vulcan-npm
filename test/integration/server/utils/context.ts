@@ -73,10 +73,17 @@ const userContextFromReq = async (
   return {};
 };
 */
+
+/**
+ * Not yet used in Vulcan Next, because user might want to keep control on this
+ * Used in integration tests
+ * @param models
+ * @returns
+ */
 export const contextFromReq = (models) => async (req: Request) => {
   //const userContext = await userContextFromReq(req);
   const context = {
-    ...contextBase,
+    ...contextBase(models),
     //  ...userContext,
   };
   debugGraphqlContext("Graphql context for current request:", context);
