@@ -95,6 +95,9 @@ describe("crud operations", () => {
             typeName: "Contributor",
           }),
         },
+        permissions: {
+          canRead: ["guests"],
+        },
       }),
     ];
     const vulcanRawSchema = buildApolloSchema(models);
@@ -103,11 +106,7 @@ describe("crud operations", () => {
     // Define the server (using Express for easier middleware usage)
     const server = new ApolloServer({
       schema: vulcanSchema,
-      context: async ({ req }) => {
-        const ctx = await contextFromReq(models)(req as Request);
-        console.log("CTX", ctx);
-        return ctx;
-      },
+      context: ({ req }) => contextFromReq(models)(req as Request),
       introspection: false,
       //playground: false,
     });
@@ -122,7 +121,11 @@ describe("crud operations", () => {
     const res = await server.executeOperation({
       query: gql`
         query {
-          contributors(input: { filter: { _and: [{ _id: { _eq: "42" } }] } }) {
+          contributors(
+            input: {
+              filter: { _and: [{ _id: { _eq: "61ccb24e536dde646bdb3080" } }] }
+            }
+          ) {
             results {
               _id
             }
@@ -130,6 +133,7 @@ describe("crud operations", () => {
         }
       `,
     });
-    expect(res).toEqual("foo");
+    expect(res.data).toEqual({ contributors: { results: [] } });
+    expect(res.errors).toBeUndefined();
   });
 });

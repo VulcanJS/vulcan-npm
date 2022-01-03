@@ -81,8 +81,10 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       const { currentUser } = context;
       // get selector and options from terms and perform Mongo query
 
-      let { selector, options } = await connector._filter(input, context);
-      const filteredFields = Object.keys(selector);
+      let { selector, options, filteredFields } = await connector._filter(
+        input,
+        context
+      );
 
       // make sure all filtered fields are allowed, before fetching the document
       // (ignore ambiguous field that will need the document to be checked)
