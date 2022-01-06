@@ -1,0 +1,51 @@
+{
+  "name": "@vulcanjs/crud",
+  "version": "0.4.11",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./server": "./dist/server/index.js"
+  },
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "server": [
+        "./dist/server/index.d.ts"
+      ]
+    }
+  },
+  "description": "Vulcan graphQL schema generator",
+  "author": "eric-burel <eb@lebrun-burel.com>",
+  "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
+  "license": "MIT",
+  "dependencies": {
+    "@vulcanjs/schema": "^0.4.6",
+    "debug": "^4.3.1",
+    "lodash": "^4.17.21"
+  },
+  "peerDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VulcanJS/vulcan-npm.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "build:common": "webpack --config ./webpack.config.js",
+    "build:server": "webpack --config ./webpack.config.server.js",
+    "build": "yarn run build:common && yarn run build:server",
+    "build:types": "tsc --declaration --emitDeclarationOnly --project ./tsconfig.build.json"
+  },
+  "bugs": {
+    "url": "https://github.com/VulcanJS/vulcan-npm/issues"
+  },
+  "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f",
+  "publishConfig": {
+    "access": "public"
+  },
+  "optionalDependencies": {
+    "msw": "^0.35.0"
+  }
+}

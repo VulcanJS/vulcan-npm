@@ -33,6 +33,8 @@
     "@storybook/addon-links": "^6.4.5",
     "@storybook/react": "^6.4.5",
     "@storybook/testing-react": "^1.0.0",
+    "@swc/cli": "^0.1.55",
+    "@swc/core": "^1.2.126",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@types/jest": "^26.0.14",
