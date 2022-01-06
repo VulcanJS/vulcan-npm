@@ -1,4 +1,4 @@
-import { VulcanSelector } from "@vulcanjs/graphql";
+import { VulcanSelector } from "@vulcanjs/crud";
 import { createModel } from "@vulcanjs/model";
 import { filterFunction } from "../mongoParams";
 

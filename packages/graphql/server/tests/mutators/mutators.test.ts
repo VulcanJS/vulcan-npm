@@ -7,9 +7,9 @@ import {
 import merge from "lodash/merge";
 
 import { VulcanGraphqlModel } from "../../../typings";
-import { Connector } from "../../resolvers";
 import { modifierToData } from "../../resolvers/validation";
 import { createGraphqlModel } from "../../../extendModel";
+import { Connector } from "@vulcanjs/crud/server";
 
 const guestsPermissions = {
   type: String,

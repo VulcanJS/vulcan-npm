@@ -10,8 +10,9 @@ import {
   VulcanFieldSchema,
   VulcanSchema,
 } from "@vulcanjs/schema";
-import { Connector, ContextWithUser } from "./server/resolvers";
+import { ContextWithUser } from "./server/resolvers";
 import { FilterableInput } from "@vulcanjs/crud";
+import { Connector } from "@vulcanjs/crud/server";
 
 // SCHEMA TYPINGS
 // Custom resolver

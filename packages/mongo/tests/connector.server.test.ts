@@ -5,7 +5,7 @@ import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://githu
 // @see https://mongoosejs.com/docs/jest.html
 import mongoose from "mongoose";
 import { createModel } from "@vulcanjs/model";
-import { Connector } from "@vulcanjs/graphql/server";
+import { Connector } from "@vulcanjs/crud/server";
 
 let mongod;
 beforeAll(async () => {
@@ -124,7 +124,7 @@ describe("CRUD", () => {
     const foundDocs = await connector.find({}, {});
     // order is not guaranteed
     expect(foundDocs.map((d) => d.text).sort()).toEqual(
-      createdDocs.map((d) => d.text).sort()
+      createdDocs.map((d: any) => d.text).sort()
     );
   });
   test("find - sorted", async () => {

@@ -4,8 +4,8 @@ import {
 } from "../../../extendModel.server";
 import { VulcanGraphqlModel } from "../../../typings";
 import { createMutator } from "../../resolvers/mutators";
-import { Connector } from "../../resolvers";
 import merge from "lodash/merge";
+import { Connector } from "@vulcanjs/crud/server";
 
 const schema = {
   _id: {

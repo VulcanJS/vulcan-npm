@@ -8,7 +8,7 @@ import merge from "lodash/merge";
 import { isEmptyOrUndefined } from "@vulcanjs/utils";
 import { VulcanModel } from "@vulcanjs/model";
 import { FilterQuery, QueryFindOptions } from "mongoose";
-import { FilterableInput } from "@vulcanjs/graphql";
+import { FilterableInput } from "@vulcanjs/crud";
 
 // import { getSetting } from "./settings.js";
 // convert GraphQL selector into Mongo-compatible selector
@@ -149,6 +149,7 @@ export const filterFunction = async (
             getExpressionFieldNames(filter._and)
           );
           // Bypass TypeScript check (_and is present if we reach this line)
+          //
           // @ts-expect-error: Object is possibly 'undefined'.
           selector["$and"] = filter._and.map(convertExpression);
           break;

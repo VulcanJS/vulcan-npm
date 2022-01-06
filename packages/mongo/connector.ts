@@ -1,9 +1,9 @@
-import { Connector } from "@vulcanjs/graphql/server";
 import { VulcanModel } from "@vulcanjs/model";
 // Compute a Mongo selector
 import { filterFunction } from "./mongoParams";
 
 import mongoose, { QueryFindOptions, FilterQuery } from "mongoose";
+import { Connector } from "@vulcanjs/crud/server";
 
 export type MongooseConnector<TModel = any> = Connector<
   TModel,

@@ -16,7 +16,6 @@ import {
   restrictViewableFields,
 } from "@vulcanjs/permissions";
 import { QueryResolverDefinitions } from "../typings";
-import { Connector } from "./connector";
 import { ContextWithUser } from "./typings";
 import { getModelConnector } from "./context";
 import debug from "debug";
@@ -24,6 +23,7 @@ import { VulcanDocument } from "@vulcanjs/schema";
 import { getModel } from "./context";
 import { throwError } from "./errors";
 import { MultiVariables, SingleVariables } from "../../typings";
+import { Connector } from "@vulcanjs/crud/server";
 const debugGraphql = debug("vulcan:graphql");
 
 const defaultOptions = {

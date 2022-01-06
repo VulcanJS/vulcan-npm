@@ -35,7 +35,7 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/graphql": "^0.4.11",
+    "@vulcanjs/crud": "^0.4.11",
     "@vulcanjs/model": "^0.4.6",
     "@vulcanjs/utils": "^0.4.6",
     "escape-string-regexp": "4.0.0",
