@@ -52,3 +52,27 @@ describe("vulcan:lib/mongoParams", () => {
     });
   });
 });
+
+const Foo = createModel({
+  name: "Foo",
+  schema: {
+    _id: {
+      type: String,
+      canRead: ["guests"],
+    },
+    name: {
+      type: String,
+      canRead: ["guests"],
+    },
+    length: {
+      type: Number,
+      canRead: ["guests"],
+    },
+  },
+});
+test("sort", async () => {
+  const mongoParams = await filterFunction(Foo, { sort: { name: "asc" } });
+  expect(mongoParams.options.sort).toEqual({ name: 1 });
+  const mongoParamsDesc = await filterFunction(Foo, { sort: { name: "desc" } });
+  expect(mongoParamsDesc.options.sort).toEqual({ name: -1 });
+});

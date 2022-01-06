@@ -205,7 +205,7 @@ export const filterFunction = async (
     options.sort = merge(
       {},
       options.sort,
-      Object.keys(sort).map((sortKey) => {
+      Object.keys(sort).reduce((sortRes, sortKey) => {
         const order = sort[sortKey];
         if (!order) {
           throw new Error(
@@ -213,8 +213,8 @@ export const filterFunction = async (
           );
         }
         const mongoOrder = conversionTable[order];
-        return mongoOrder;
-      })
+        return { ...sortRes, [sortKey]: mongoOrder };
+      }, {})
     );
   } else {
     options.sort = { createdAt: -1 }; // reliable default order

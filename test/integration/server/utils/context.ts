@@ -6,6 +6,7 @@ import { Connector, VulcanGraphqlModel } from "@vulcanjs/graphql/server";
 import { createMongooseConnector } from "@vulcanjs/mongo";
 import { Request } from "express";
 import debug from "debug";
+import { VulcanGraphqlModelServer } from "@vulcanjs/graphql";
 const debugGraphqlContext = debug("vn:graphql:context");
 
 /**
@@ -26,14 +27,14 @@ interface ModelContext {
  * @param models
  */
 const createContextForModels = (
-  models: Array<VulcanGraphqlModel>
+  models: Array<VulcanGraphqlModelServer>
 ): ModelContext => {
   return models.reduce(
-    (context, model: VulcanGraphqlModel) => ({
+    (context, model: VulcanGraphqlModelServer) => ({
       ...context,
       [model.name]: {
         model,
-        connector: createMongooseConnector(model),
+        connector: model.graphql.connector || createMongooseConnector(model),
       },
     }),
     {}

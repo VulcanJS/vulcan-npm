@@ -139,6 +139,15 @@ describe("CRUD", () => {
       }
     );
     expect(foundDocs.map((d) => d.number)).toEqual([1, 2, 3]);
+    const foundDocsReverse = await connector.find(
+      {},
+      {
+        sort: {
+          number: -1,
+        },
+      }
+    );
+    expect(foundDocsReverse.map((d) => d.number)).toEqual([3, 2, 1]);
   });
   test("find - limit", async () => {
     const docsToCreate = [{ number: 1 }, { number: 3 }, { number: 2 }];
