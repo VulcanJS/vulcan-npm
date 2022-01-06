@@ -11,4 +11,11 @@ module.exports = merge(baseConfig, {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].js",
   },
+  resolve: {
+    alias: {
+      // @see https://github.com/lerna/lerna/issues/3006
+      // hack to fix package leaks
+      "@vulcanjs/crud": "not_found",
+    },
+  },
 });
