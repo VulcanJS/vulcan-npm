@@ -47,6 +47,7 @@
     "babel-plugin-transform-define": "^2.0.0",
     "cross-fetch": "^3.1.4",
     "depcheck": "^1.4.1",
+    "esbuild": "^0.14.10",
     "jest": "^26.4.2",
     "lerna": "^3.22.1",
     "mock-apollo-client": "^1.1.0",
