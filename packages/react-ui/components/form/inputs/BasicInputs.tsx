@@ -9,11 +9,12 @@ import { useVulcanComponents } from "../../VulcanComponents/Consumer";
  * @returns
  */
 const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
+  const Components = useVulcanComponents();
   const { inputProperties } = props;
   const { label, name, ...otherInputProperties } = inputProperties;
 
   return (
-    <div>
+    <Components.FormItem>
       <label htmlFor={name}>{label}</label>
       <input
         {...otherInputProperties}
@@ -22,7 +23,7 @@ const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
         name={name}
         type={props.type}
       />
-    </div>
+    </Components.FormItem>
   );
 }; // TODO: might need some sanitization
 // For consistency with Vulcan Meteor ui bootstrap and ui material
