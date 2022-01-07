@@ -1,11 +1,13 @@
 import { deprecate } from "@vulcanjs/utils";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { VulcanComponentsContext } from "./Context";
-import { PossibleVulcanComponents } from "./typings";
 
 export const VulcanComponentsConsumer = VulcanComponentsContext.Consumer;
 
-export const useVulcanComponents = () => useContext(VulcanComponentsContext);
+export const useVulcanComponents = () => {
+  const val = useContext(VulcanComponentsContext);
+  return val;
+};
 
 export const withVulcanComponents = (C) => (props) => {
   const vulcanComponents = useVulcanComponents();

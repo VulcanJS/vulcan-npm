@@ -14,8 +14,11 @@ const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
   const { label, name, ...otherInputProperties } = inputProperties;
 
   return (
-    <Components.FormItem>
-      <label htmlFor={name}>{label}</label>
+    <Components.FormItem
+      name={name}
+      label={label}
+      inputProperties={inputProperties}
+    >
       <input
         {...otherInputProperties}
         id={name} // needed for accessibility. NOTE: we might need to use "context" as a prefix when having
@@ -34,7 +37,7 @@ export const FormItem = (
 ) => {
   const { inputProperties, label, name } = props;
   return (
-    <div>
+    <div className={`form-item ${name}`}>
       <label htmlFor={name}>{label}</label>
       {props.children}
     </div>
@@ -46,9 +49,14 @@ const HTMLSelectAdapter = (props: FormInputProps) => {
   const { label, name } = inputProperties;
   if (!Array.isArray(options))
     throw new Error("HTMLSelectAdapater not yet supporting functional options");
+
+  const Components = useVulcanComponents();
   return (
-    <div>
-      <label htmlFor={name}>{label}</label>
+    <Components.FormItem
+      name={name}
+      label={label}
+      inputProperties={inputProperties}
+    >
       {/** TODO: whitelisting feature should be smarter to differentiate select and input */}
       <select
         {...(inputProperties as unknown as React.HTMLProps<HTMLSelectElement>)}
@@ -57,7 +65,7 @@ const HTMLSelectAdapter = (props: FormInputProps) => {
           <option key={value} label={label} value={value}></option>
         ))}
       </select>
-    </div>
+    </Components.FormItem>
   );
 };
 export const FormComponentDefault = (props) => (

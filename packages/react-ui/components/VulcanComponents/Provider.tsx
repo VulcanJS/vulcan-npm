@@ -8,6 +8,7 @@ import React from "react";
 import { defaultVulcanComponents } from "./defaultVulcanComponents";
 import { PossibleVulcanComponents } from "./typings";
 import { VulcanComponentsContext } from "./Context";
+import { useVulcanComponents } from "./Consumer";
 
 /**
  *
@@ -19,9 +20,17 @@ export const VulcanComponentsProvider = ({
 }: {
   value?: Partial<PossibleVulcanComponents>;
   children: React.ReactNode;
-}) => (
-  <VulcanComponentsContext.Provider
-    value={{ ...defaultVulcanComponents, ...(value || {}) }} // merge provided components so the user can provide only a partial replacement
-    {...props}
-  />
-);
+}) => {
+  const currentComponents = useVulcanComponents();
+  const mergedComponents = {
+    ...defaultVulcanComponents,
+    ...(currentComponents || {}),
+    ...(value || {}),
+  };
+  return (
+    <VulcanComponentsContext.Provider
+      value={mergedComponents} // merge provided components so the user can provide only a partial replacement
+      {...props}
+    />
+  );
+};
