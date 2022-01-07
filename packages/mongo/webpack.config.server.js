@@ -12,7 +12,7 @@ module.exports = merge(baseConfig, {
     alias: {
       // @see https://github.com/lerna/lerna/issues/3006
       // hack to fix package leaks
-      "@vulcanjs/graphql/server": "not_found",
+      "@vulcanjs/crud/server": "not_found",
     },
   },
 });

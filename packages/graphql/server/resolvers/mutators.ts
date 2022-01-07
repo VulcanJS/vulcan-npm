@@ -44,7 +44,6 @@ import { getModelConnector } from "./context";
 import {
   UpdateInput,
   DeleteInput,
-  FilterableInput,
   VulcanGraphqlModelServer,
 } from "../../typings";
 import { deprecate } from "@vulcanjs/utils";
@@ -54,6 +53,7 @@ import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
 import { restrictViewableFields } from "@vulcanjs/permissions";
+import { FilterableInput } from "@vulcanjs/crud";
 
 interface CreateMutatorProperties {
   /**

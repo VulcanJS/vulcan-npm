@@ -5,17 +5,9 @@ const baseConfig = require("../../webpack/webpack.config.base.common.prod");
 module.exports = merge(baseConfig, {
   entry: {
     index: path.resolve(__dirname, "./index.ts"),
-    testing: path.resolve(__dirname, "./testing.ts"),
   },
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].js",
-  },
-  resolve: {
-    alias: {
-      // @see https://github.com/lerna/lerna/issues/3006
-      // hack to fix package leaks
-      "@vulcanjs/crud": "not_found",
-    },
   },
 });

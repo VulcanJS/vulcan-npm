@@ -7,12 +7,4 @@ module.exports = merge(baseConfig, {
   output: {
     path: path.resolve(__dirname, "dist/server"),
   },
-
-  resolve: {
-    alias: {
-      // @see https://github.com/lerna/lerna/issues/3006
-      // hack to fix package leaks
-      "@vulcanjs/crud/server": "not_found",
-    },
-  },
 });

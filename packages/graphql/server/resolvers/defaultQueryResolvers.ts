@@ -16,7 +16,6 @@ import {
   restrictViewableFields,
 } from "@vulcanjs/permissions";
 import { QueryResolverDefinitions } from "../typings";
-import { Connector } from "./connector";
 import { ContextWithUser } from "./typings";
 import { getModelConnector } from "./context";
 import debug from "debug";
@@ -24,6 +23,7 @@ import { VulcanDocument } from "@vulcanjs/schema";
 import { getModel } from "./context";
 import { throwError } from "./errors";
 import { MultiVariables, SingleVariables } from "../../typings";
+import { Connector } from "@vulcanjs/crud/server";
 const debugGraphql = debug("vulcan:graphql");
 
 const defaultOptions = {
@@ -81,8 +81,10 @@ export function buildDefaultQueryResolvers<TModel extends VulcanDocument>({
       const { currentUser } = context;
       // get selector and options from terms and perform Mongo query
 
-      let { selector, options } = await connector._filter(input, context);
-      const filteredFields = Object.keys(selector);
+      let { selector, options, filteredFields } = await connector._filter(
+        input,
+        context
+      );
 
       // make sure all filtered fields are allowed, before fetching the document
       // (ignore ambiguous field that will need the document to be checked)

@@ -1,11 +1,13 @@
 /**
  * Context creation, for graphql but also REST endpoints
  */
-import { Connector, VulcanGraphqlModel } from "@vulcanjs/graphql/server";
+import { Connector } from "@vulcanjs/crud/server";
+import { VulcanGraphqlModel } from "@vulcanjs/graphql/server";
 
 import { createMongooseConnector } from "@vulcanjs/mongo";
 import { Request } from "express";
 import debug from "debug";
+import { VulcanGraphqlModelServer } from "@vulcanjs/graphql";
 const debugGraphqlContext = debug("vn:graphql:context");
 
 /**
@@ -26,14 +28,14 @@ interface ModelContext {
  * @param models
  */
 const createContextForModels = (
-  models: Array<VulcanGraphqlModel>
+  models: Array<VulcanGraphqlModelServer>
 ): ModelContext => {
   return models.reduce(
-    (context, model: VulcanGraphqlModel) => ({
+    (context, model: VulcanGraphqlModelServer) => ({
       ...context,
       [model.name]: {
         model,
-        connector: createMongooseConnector(model),
+        connector: model.graphql.connector || createMongooseConnector(model),
       },
     }),
     {}
@@ -73,10 +75,17 @@ const userContextFromReq = async (
   return {};
 };
 */
+
+/**
+ * Not yet used in Vulcan Next, because user might want to keep control on this
+ * Used in integration tests
+ * @param models
+ * @returns
+ */
 export const contextFromReq = (models) => async (req: Request) => {
   //const userContext = await userContextFromReq(req);
   const context = {
-    ...contextBase,
+    ...contextBase(models),
     //  ...userContext,
   };
   debugGraphqlContext("Graphql context for current request:", context);

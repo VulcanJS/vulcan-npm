@@ -1,5 +1,5 @@
 import { VulcanDocument } from "@vulcanjs/schema";
-import { FilterableInput } from "../../typings";
+import { FilterableInput } from "../typings";
 
 /**
  * A database abstraction compatible with Vulcan

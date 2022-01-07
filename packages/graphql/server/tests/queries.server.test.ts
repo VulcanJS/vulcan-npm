@@ -1,7 +1,7 @@
 import { buildDefaultQueryResolvers } from "../resolvers/defaultQueryResolvers";
 import { createGraphqlModel } from "../../extendModel";
-import { Connector } from "../resolvers";
 import merge from "lodash/merge";
+import { Connector } from "@vulcanjs/crud/server";
 
 describe("graphql/query resolvers", function () {
   const createDummyModel = (schema, options = {}) =>

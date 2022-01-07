@@ -5,6 +5,8 @@ module.exports = {
     "packages/graphql/index.ts",
     "packages/graphql/server/index.ts",
     "packages/graphql/testing.ts",
+    "packages/crud/index.ts",
+    "packages/crud/server/index.ts",
     "packages/i18n/index.ts",
     "packages/i18n/server/index.ts",
     "packages/mdx/index.ts",

@@ -1,5 +1,5 @@
 {
-  "name": "@vulcanjs/graphql",
+  "name": "@vulcanjs/crud",
   "version": "0.5.0",
   "main": "./dist/index.js",
   "files": [
@@ -7,17 +7,13 @@
   ],
   "exports": {
     ".": "./dist/index.js",
-    "./server": "./dist/server/index.js",
-    "./testing": "./dist/testing.js"
+    "./server": "./dist/server/index.js"
   },
   "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
       "server": [
         "./dist/server/index.d.ts"
-      ],
-      "testing": [
-        "./dist/testing.d.ts"
       ]
     }
   },
@@ -26,24 +22,9 @@
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/core": "^0.5.0",
-    "@vulcanjs/i18n": "^0.5.0",
-    "@vulcanjs/model": "^0.5.0",
-    "@vulcanjs/permissions": "^0.5.0",
     "@vulcanjs/schema": "^0.5.0",
-    "@vulcanjs/utils": "^0.5.0",
     "debug": "^4.3.1",
-    "deepmerge": "^4.2.2",
-    "graphql-date": "^1.0.3",
-    "graphql-type-json": "^0.3.2",
-    "lodash": "^4.17.21",
-    "moment-timezone": "^0.5.33"
-  },
-  "peerDependencies": {
-    "@apollo/client": "^3.5.5",
-    "apollo-server": "^2.18.2",
-    "graphql": "^15.5.0",
-    "react": "^17.0.2"
+    "lodash": "^4.17.21"
   },
   "repository": {
     "type": "git",
@@ -51,9 +32,12 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build:common": "webpack --config ./webpack.config.js",
-    "build:server": "webpack --config ./webpack.config.server.js",
-    "build": "yarn run build:common && yarn run build:server"
+    "build:common": "esbuild index.ts --outdir=dist --sourcemap --bundle --minify",
+    "build:server": "esbuild server/index.ts --outdir=dist/server --sourcemap --bundle --platform=node --target=node12.13",
+    "build": "yarn run build:common && yarn run build:server && yarn run build:types",
+    "build:types": "tsc --declaration --emitDeclarationOnly --project ./tsconfig.build.json",
+    "build:webpack": "webpack --config ./webpack.config.js && webpack --config ./webpack.config.server.js # Old build => 3x slower!",
+    "build:swc": "spack # TODO: doesn't generate the same structure as webpack or tsc, not yet ok"
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"

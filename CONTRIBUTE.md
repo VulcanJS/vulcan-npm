@@ -6,6 +6,31 @@ Start by reading the Readme for basic install information.
 
 Then, the package.json list the typical commands you'd expect from an NPM library: build, test...
 
+## Recommended: use Jest and Storybook to test your code
+
+When adding feature to Vulcan Next or fixing bug, you'll want to run your code to test it.
+
+- For components, you can run Storybook: `yarn run storybook`. Stories let you render components in a certain state, and even automate some operations on them using the "play" function. Documentation: https://storybook.js.org/
+- For code, you can run unit tests with Jest: `yarn run test` or `yarn run test <your-test-file-name>`.
+- For graphql operations, check `test/integration` folder: you can run a full Vulcan backend, similar to the backend running in Vulcan Next.
+You can even use an in-memory Mongo database.
+
+## Advanced: plug to another application
+
+Using your local Vulcan NPM install within another local application, usually based on Vulcan Next, requires "linking".
+Linking means that instead of using the package from NPM, you'll tell your application to use the local version of the package.
+Linking is quite complex (see https://github.com/VulcanJS/vulcan-next/issues/104) so we use [Yalc](https://github.com/wclr/yalc) to simplify
+it as much as possible.
+
+To sum it up:
+
+- In Vulcan NPM, `yarn run build && yarn run publish:local` will publish all packages in the local Yalc registry
+- In your application, `yalc link @vulcanjs/graphql` will get the package from this local registry. 
+The command `yarn run link:vulcan` will do this for all @vulcanjs packages
+- When you update code in Vulcan NPM, rerun `yarn run build && yarn run publish:local`. Your app will automatically reload with the new version.
+
+A similar documentation exists in Vulcan Next project.
+
 ## Lerna Tips
 
 ### Yarn workspaces

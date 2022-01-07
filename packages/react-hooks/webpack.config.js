@@ -13,6 +13,9 @@ module.exports = merge(baseConfig, {
       // @see https://github.com/lerna/lerna/issues/3006
       // hack to fix package leaks
       "@vulcanjs/mongo/client": "not_found",
+      // @see https://github.com/lerna/lerna/issues/3006
+      // hack to fix package leaks
+      "@vulcanjs/crud": "not_found",
     },
   },
 });

@@ -2,7 +2,7 @@ import { createModel } from "@vulcanjs/model";
 import {
   checkFields,
   getDocumentBasedPermissionFieldNames,
-  getReadableFields,
+  getUserReadableFields,
   restrictViewableFields,
   owns,
 } from "../permissions/permissions";
@@ -29,13 +29,13 @@ describe("vulcan:users/permissions", () => {
       },
     },
   });
-  describe("getReadableFields", () => {
+  describe("getUserReadableFields", () => {
     test("getReadableFields", () => {
-      const fields = getReadableFields(null, Dummies);
+      const fields = getUserReadableFields(null, Dummies);
       expect(fields).toEqual(["guestField"]);
     });
     test("getReadableFields with document-based permissions excludes ambiguous fields", () => {
-      const fields = getReadableFields(null, Dummies);
+      const fields = getUserReadableFields(null, Dummies);
       expect(fields).not.toContain("ownerField");
       expect(fields).not.toContain("customField");
     });

@@ -20,7 +20,7 @@ export default {
     (Story) => (
       // TODO: improve this
       <VulcanComponentsProvider>
-        <IntlProvider locale="fr">
+        <IntlProvider locale="fr" messages={[]}>
           {/** NOTE: if you want to force a "currentValues", you need to wrap the component
            * with a new FormContext directly at the story level */}
           <FormContext.Provider

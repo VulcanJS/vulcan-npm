@@ -5,7 +5,7 @@ import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://githu
 // @see https://mongoosejs.com/docs/jest.html
 import mongoose from "mongoose";
 import { createModel } from "@vulcanjs/model";
-import { Connector } from "@vulcanjs/graphql/server";
+import { Connector } from "@vulcanjs/crud/server";
 
 let mongod;
 beforeAll(async () => {
@@ -124,7 +124,7 @@ describe("CRUD", () => {
     const foundDocs = await connector.find({}, {});
     // order is not guaranteed
     expect(foundDocs.map((d) => d.text).sort()).toEqual(
-      createdDocs.map((d) => d.text).sort()
+      createdDocs.map((d: any) => d.text).sort()
     );
   });
   test("find - sorted", async () => {
@@ -139,6 +139,15 @@ describe("CRUD", () => {
       }
     );
     expect(foundDocs.map((d) => d.number)).toEqual([1, 2, 3]);
+    const foundDocsReverse = await connector.find(
+      {},
+      {
+        sort: {
+          number: -1,
+        },
+      }
+    );
+    expect(foundDocsReverse.map((d) => d.number)).toEqual([3, 2, 1]);
   });
   test("find - limit", async () => {
     const docsToCreate = [{ number: 1 }, { number: 3 }, { number: 2 }];
@@ -160,12 +169,25 @@ describe("CRUD", () => {
     const foundDoc = await connector.findOne({ _id: createdDocs[1]._id });
     expect(foundDoc).toEqual(createdDocs[1]);
   });
-  test("filter", async () => {
+  test("filter - empty", async () => {
     const result = await connector._filter({}, {});
     expect(result).toEqual({
       filteredFields: [],
       options: { limit: 1000, sort: { createdAt: -1 } },
       selector: {},
+    });
+  });
+  test("filter - with operators", async () => {
+    const docsToCreate = [{ text: "hello" }, { text: "world" }];
+    const createdDocs = await Promise.all(docsToCreate.map(connector.create));
+    const result = await connector._filter(
+      { filter: { _and: [{ text: { _eq: "hello" } }] } },
+      {}
+    );
+    expect(result).toEqual({
+      filteredFields: ["text"],
+      options: { limit: 1000, sort: { createdAt: -1 } },
+      selector: { $and: [{ text: { $eq: "hello" } }] },
     });
   });
   test("update", async () => {
