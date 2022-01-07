@@ -75,6 +75,8 @@ export interface PossibleFormComponents {
   Form: any;
   // Used by ui-boostrap and ui-material
   FormItem;
+  // flag to detect parent state
+  __not_intialized?: boolean;
 }
 export type PossibleVulcanComponents = PossibleCoreComponents &
   PossibleFormComponents;

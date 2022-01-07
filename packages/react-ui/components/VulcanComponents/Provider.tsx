@@ -24,7 +24,8 @@ export const VulcanComponentsProvider = ({
   const currentComponents = useVulcanComponents();
   const mergedComponents = {
     ...defaultVulcanComponents,
-    ...(currentComponents || {}),
+    // merge with a parent Provider if needed
+    ...(currentComponents?.__not_intialized ? {} : currentComponents || {}),
     ...(value || {}),
   };
   return (

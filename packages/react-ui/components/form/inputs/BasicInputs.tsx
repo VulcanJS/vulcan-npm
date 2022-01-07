@@ -84,16 +84,17 @@ export const FormComponentEmail = (props) => (
   <HTMLInputAdapter type="email" {...props} />
 );
 export const FormComponentTextarea = (props) => <textarea {...props} />;
+// TODO: at the moment we use a select instead
 export const FormComponentCheckbox = (props) => (
-  <HTMLInputAdapter type="checkbox" {...props} />
+  <HTMLSelectAdapter type="checkbox" {...props} />
 );
-// TODO
+// TODO: atm we use a select multiple instead of checkboxes
 export const FormComponentCheckboxGroup = (props) => (
-  <HTMLInputAdapter {...props} />
+  <FormComponentSelectMultiple {...props} />
 );
-// TODO
+// TODO: atm we use a select instead of radio
 export const FormComponentRadioGroup = (props) => (
-  <HTMLInputAdapter {...props} />
+  <HTMLSelectAdapter {...props} />
 );
 export const FormComponentSelect = (props: FormInputProps) => (
   <HTMLSelectAdapter {...props} />

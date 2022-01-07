@@ -2,17 +2,16 @@
   "name": "@vulcanjs/react-ui",
   "version": "0.5.0",
   "description": "Vulcan UI components for React",
-  "main": "./dist/server/index.js",
-  "browser": "./dist/client/index.js",
+  "main": "./dist/index.js",
   "files": [
     "dist/"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "yarn run build:client && yarn run build:server && yarn run build:types",
+    "build": "yarn run build:webpack",
     "build:common": "# Doesn't work yet as it produces ESM only module. Don't forget to add type: module in package.json. # esbuild index.ts --outdir=dist --sourcemap --bundle --minify --platform=neutral --main-fields=module,main,browser --external:tty",
-    "build:client": "esbuild index.ts --outdir=dist/client --sourcemap --bundle --minify --platform=browser",
-    "build:server": "esbuild index.ts --outdir=dist/server --sourcemap --bundle --minify --platform=node --external:graphql --external:react --external:react-dom",
+    "build:client": "# Doesn't work yet # esbuild index.ts --outdir=dist/client --sourcemap --bundle --minify --platform=browser",
+    "build:server": "# Doesn't work yet # esbuild index.ts --outdir=dist/server --sourcemap --bundle --minify --platform=node --external:graphql --external:react --external:react-dom",
     "build:webpack": "webpack --config ./webpack.config.js",
     "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json"
   },

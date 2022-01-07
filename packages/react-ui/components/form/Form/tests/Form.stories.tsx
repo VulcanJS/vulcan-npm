@@ -166,10 +166,19 @@ const selectFieldsSchema = withDefaultFieldSchema({
     input: "select",
     options: [{ label: "now", value: new Date() }],
   },
+  // using select at the moment
+  "string-radiogroup": {
+    type: String,
+    input: "radiogroup",
+    options: [
+      { label: "a", value: "a" },
+      { label: "b", value: "b" },
+      { label: "c", value: "c" },
+    ],
+  },
   /* 
   // TODO:
   checkboxgroup: {},
-  radiogroup: {},
   select,
   selectmultiple,
   autocomplete,

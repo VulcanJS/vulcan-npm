@@ -6,6 +6,7 @@ import { Dummy } from "./Dummy";
 // You should use the Provider to get the right default values
 export const VulcanComponentsContext =
   React.createContext<PossibleVulcanComponents>({
+    __not_intialized: true,
     Alert: Dummy,
     Button: Dummy,
     FieldErrors: Dummy,
