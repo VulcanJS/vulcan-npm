@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "yarn run build:common && yarn run build:types",
+    "build": "yarn run build:client && yarn run build:server && yarn run build:types",
     "build:common": "# Doesn't work as it produces ESM only module # esbuild index.ts --outdir=dist --sourcemap --bundle --minify --platform=neutral --main-fields=module,main,browser --external:tty",
     "build:client": "esbuild index.ts --outdir=dist/client --sourcemap --bundle --minify --platform=browser",
     "build:server": "esbuild index.ts --outdir=dist/server --sourcemap --bundle --minify --platform=node --external:graphql --external:react --external:react-dom",
