@@ -93,9 +93,35 @@ export const FormComponentCheckboxGroup = (props) => (
   <FormComponentSelectMultiple {...props} />
 );
 // TODO: atm we use a select instead of radio
-export const FormComponentRadioGroup = (props) => (
-  <HTMLSelectAdapter {...props} />
-);
+export const FormComponentRadioGroup = (props) => {
+  const { inputProperties, options = [] } = props;
+  const { label, name } = inputProperties;
+  if (!Array.isArray(options))
+    throw new Error("RadioGroup not yet supporting functional options");
+
+  const Components = useVulcanComponents();
+  return (
+    <Components.FormItem
+      name={name}
+      label={label}
+      inputProperties={inputProperties}
+    >
+      {/** TODO: whitelisting feature should be smarter to differentiate select and input */}
+      {options.map(({ label, value }) => (
+        <div key={value}>
+          <label htmlFor={value}>{label}</label>
+          <input
+            type="radio"
+            id={value}
+            name={name}
+            key={value}
+            value={value}
+          />
+        </div>
+      ))}
+    </Components.FormItem>
+  );
+};
 export const FormComponentSelect = (props: FormInputProps) => (
   <HTMLSelectAdapter {...props} />
 );

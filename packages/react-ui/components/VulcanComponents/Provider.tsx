@@ -28,6 +28,10 @@ export const VulcanComponentsProvider = ({
     ...(currentComponents?.__not_intialized ? {} : currentComponents || {}),
     ...(value || {}),
   };
+  // For preserving displayName, that is lost after build somehow
+  Object.keys(mergedComponents).forEach((componentName) => {
+    mergedComponents[componentName].displayName = componentName;
+  });
   return (
     <VulcanComponentsContext.Provider
       value={mergedComponents} // merge provided components so the user can provide only a partial replacement
