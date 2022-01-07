@@ -223,3 +223,15 @@ export const WarnOnUnsavedChanges = () => (
     />
   </div>
 );
+
+export const OverrideFormItemContext = () => (
+  <VulcanComponentsProvider value={{ FormItem: () => "FORM ITEM REPLACED" }}>
+    <Form
+      {...(FormTemplate.args as FormProps)}
+      model={createModel({
+        name: "Biography",
+        schema: { someText: { ...defaultFieldSchema, type: String } },
+      })}
+    />
+  </VulcanComponentsProvider>
+);
