@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/model",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Vulcan domain models built from schema",
   "main": "./dist/index.js",
   "files": [
@@ -21,7 +21,7 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/schema": "^0.5.0"
+    "@vulcanjs/schema": "^0.5.1"
   },
   "devDependencies": {
     "ts-loader": "^8.0.3"
