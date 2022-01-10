@@ -30,7 +30,7 @@ export const VulcanComponentsProvider = ({
   };
   // For preserving displayName, that is lost after build somehow
   Object.keys(mergedComponents).forEach((componentName) => {
-    mergedComponents[componentName].displayName = componentName;
+    mergedComponents[componentName].displayName = "Vulcan." + componentName;
   });
   return (
     <VulcanComponentsContext.Provider

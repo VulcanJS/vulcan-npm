@@ -107,18 +107,22 @@ export const FormComponentRadioGroup = (props) => {
       inputProperties={inputProperties}
     >
       {/** TODO: whitelisting feature should be smarter to differentiate select and input */}
-      {options.map(({ label, value }) => (
-        <div key={value}>
-          <label htmlFor={value}>{label}</label>
-          <input
-            type="radio"
-            id={value}
-            name={name}
-            key={value}
-            value={value}
-          />
-        </div>
-      ))}
+      {options.map((option) => {
+        // NOTE: option can also have custom values, used by the FormOptionLabel component
+        const { value, label } = option;
+        return (
+          <div key={value} className="form-radio-group-radio-item">
+            <Components.FormOptionLabel option={option} />
+            <input
+              type="radio"
+              id={value}
+              name={name}
+              key={value}
+              value={value}
+            />
+          </div>
+        );
+      })}
     </Components.FormItem>
   );
 };
