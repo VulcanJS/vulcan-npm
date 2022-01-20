@@ -32,6 +32,9 @@ export interface HeadTagsProps {
  */
 export class HeadTags extends PureComponent<HeadTagsProps> {
   render() {
+    console.warn(
+      "HeadTags won't work in Next.js, because Head doesn't support nesting. Define meta directly in your app instead."
+    );
     const { url, title, description, siteUrl, faviconUrl } = this.props;
     let image = this.props.image;
     /*

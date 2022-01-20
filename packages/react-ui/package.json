@@ -6,12 +6,18 @@
   "files": [
     "dist/"
   ],
+  "exports": {
+    ".": {
+      "node": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "yarn run build:webpack",
-    "build:common": "# Doesn't work yet as it produces ESM only module. Don't forget to add type: module in package.json. # esbuild index.ts --outdir=dist --sourcemap --bundle --minify --platform=neutral --main-fields=module,main,browser --external:tty",
-    "build:client": "# Doesn't work yet # esbuild index.ts --outdir=dist/client --sourcemap --bundle --minify --platform=browser",
-    "build:server": "# Doesn't work yet # esbuild index.ts --outdir=dist/server --sourcemap --bundle --minify --platform=node --external:graphql --external:react --external:react-dom",
+    "build": "yarn run build:esm && yarn run build:cjs && yarn run build:types",
+    "build:esm": "esbuild index.ts --outdir=dist --sourcemap --bundle --minify --platform=neutral --out-extension:.js=.mjs --main-fields=module,main,browser --external:tty --external:graphql --external:react --external:react-dom",
+    "build:cjs": "esbuild index.ts --outdir=dist --sourcemap --bundle --minify --platform=node --out-extension:.js=.cjs --main-fields=module,main,browser --external:tty --external:graphql --external:react --external:react-dom",
     "build:webpack": "webpack --config ./webpack.config.js",
     "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json"
   },
