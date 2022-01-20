@@ -2,16 +2,21 @@
  * In the future we might want to standardize those exports
  * @see https://github.com/VulcanJS/vulcan-next/issues/9
  */
-import { getLocale, getStrings } from "../intl";
+import { LocalesRegistry, StringsRegistry } from "../intl";
 
 //addGraphQLSchema(localeType);
 
-const locale = async (root, { localeId }, context) => {
-  const locale = getLocale(localeId);
-  const strings = getStrings(localeId);
-  const localeObject = { ...locale, strings };
-  return localeObject;
-};
+const locale =
+  (registries: {
+    LocalesRegistry: LocalesRegistry;
+    StringsRegistry: StringsRegistry;
+  }) =>
+  async (root, { localeId }, context) => {
+    const locale = registries.LocalesRegistry.getLocale(localeId);
+    const strings = registries.StringsRegistry.getStrings(localeId);
+    const localeObject = { ...locale, strings };
+    return localeObject;
+  };
 
 const typeDefs = `type Locale {
   id: String,
@@ -24,9 +29,11 @@ type Query {
   locale(localeId: String): Locale
 }
 `;
-const resolvers = {
-  Query: { locale },
-};
+const resolvers = (registries) => ({
+  Query: {
+    locale: locale(registries),
+  },
+});
 
 //addGraphQLQuery("locale(localeId: String): Locale");
 //addGraphQLResolvers({ Query: { locale } });
@@ -36,5 +43,8 @@ const resolvers = {
  */
 export const graphql = {
   typeDefs,
-  resolvers,
+  makeResolvers: (registries: {
+    LocalesRegistry: LocalesRegistry;
+    StringsRegistry: StringsRegistry;
+  }) => resolvers(registries),
 };

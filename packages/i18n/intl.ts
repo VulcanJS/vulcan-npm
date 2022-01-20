@@ -25,22 +25,27 @@ export interface LocaleType {
    */
   originalId?: string;
 }
-export const Locales: Array<LocaleType> = [];
+
+// Mutable global object are deprecated => they don't work
+// if you have multiple occurrences of the package and should be avoided
 
 /**
- *  @deprecated Instead we should expose a Locale graphql model
- * @param locale
+ * Create and manage a stateful registry of locales
+ * @returns
  */
-export const registerLocale = (locale) => {
-  Locales.push(locale);
-};
+export const makeLocalesRegistry = () => {
+  const Locales: Array<LocaleType> = [];
 
-/**
- * @deprecated
- */
-export const getLocale = (localeId: string) => {
-  return Locales.find((locale) => locale.id === localeId);
+  const registerLocale = (locale) => {
+    Locales.push(locale);
+  };
+
+  const getLocale = (localeId: string) => {
+    return Locales.find((locale) => locale.id === localeId);
+  };
+  return { registerLocale, getLocale, Locales };
 };
+export type LocalesRegistry = ReturnType<typeof makeLocalesRegistry>;
 
 //
 /*
@@ -81,16 +86,23 @@ etc.
 */
 export const truncateKey = (key) => key.split("-")[0];
 
-export const getValidLocale = (localeId: string) => {
-  const validLocale = Locales.find((locale: LocaleType) => {
-    const { id } = locale;
-    return (
-      id.toLowerCase() === localeId.toLowerCase() ||
-      truncateKey(id) === truncateKey(localeId)
-    );
-  });
-  return validLocale;
-};
+/**
+ * Difference with Meteor: it's now a closure, to avoid having
+ * a global "Locales" object, instead pass it from the app
+ * @param Locales
+ * @returns
+ */
+export const getValidLocale =
+  (Locales: Array<LocaleType>) => (localeId: string) => {
+    const validLocale = Locales.find((locale: LocaleType) => {
+      const { id } = locale;
+      return (
+        id.toLowerCase() === localeId.toLowerCase() ||
+        truncateKey(id) === truncateKey(localeId)
+      );
+    });
+    return validLocale;
+  };
 
 /*
 
@@ -98,118 +110,124 @@ Figure out the correct locale to use based on the current user, cookies,
 and browser settings
 
 */
-export const initLocale = ({
-  currentUser = {},
-  cookies = {},
-  locale,
-}: {
-  currentUser?: any;
-  cookies?: { locale?: string };
-  locale?: any;
-}): LocaleType => {
-  let userLocaleId = "";
-  let localeMethod = "";
-  const detectedLocale = detectLocale();
+export const initLocale =
+  (Locales: Array<LocaleType>) =>
+  ({
+    currentUser = {},
+    cookies = {},
+    locale,
+  }: {
+    currentUser?: any;
+    cookies?: { locale?: string };
+    locale?: any;
+  }): LocaleType => {
+    let userLocaleId = "";
+    let localeMethod = "";
+    const detectedLocale = detectLocale();
 
-  if (locale) {
-    // 1. locale is passed from AppGenerator through SSR process
-    userLocaleId = locale;
-    localeMethod = "SSR";
-  } else if (cookies.locale) {
-    // 2. look for a cookie
-    userLocaleId = cookies.locale;
-    localeMethod = "cookie";
-  } else if (currentUser && currentUser.locale) {
-    // 3. if user is logged in, check for their preferred locale
-    userLocaleId = currentUser.locale;
-    localeMethod = "user";
-  } else if (detectedLocale) {
-    // 4. else, check for browser settings
-    userLocaleId = detectedLocale;
-    localeMethod = "browser";
-  }
+    if (locale) {
+      // 1. locale is passed from AppGenerator through SSR process
+      userLocaleId = locale;
+      localeMethod = "SSR";
+    } else if (cookies.locale) {
+      // 2. look for a cookie
+      userLocaleId = cookies.locale;
+      localeMethod = "cookie";
+    } else if (currentUser && currentUser.locale) {
+      // 3. if user is logged in, check for their preferred locale
+      userLocaleId = currentUser.locale;
+      localeMethod = "user";
+    } else if (detectedLocale) {
+      // 4. else, check for browser settings
+      userLocaleId = detectedLocale;
+      localeMethod = "browser";
+    }
 
-  /*
+    /*
 
   NOTE: locale fallback doesn't work anymore because we can now load locales dynamically
   and Strings[userLocale] will then be empty
 
   */
-  // if user locale is available, use it; else compare first two chars
-  // of user locale with first two chars of available locales
-  // const availableLocales = Object.keys(Strings);
-  // const availableLocale = Strings[userLocale] ? userLocale : availableLocales.find(locale => locale.slice(0, 2) === userLocale.slice(0, 2));
+    // if user locale is available, use it; else compare first two chars
+    // of user locale with first two chars of available locales
+    // const availableLocales = Object.keys(Strings);
+    // const availableLocale = Strings[userLocale] ? userLocale : availableLocales.find(locale => locale.slice(0, 2) === userLocale.slice(0, 2));
 
-  const validLocale = getValidLocale(userLocaleId);
+    const validLocale = getValidLocale(Locales)(userLocaleId);
 
-  // 4. if user-defined locale is available, use it; else default to setting or `en-US`
-  if (validLocale) {
-    return {
-      id: validLocale.id,
-      originalId: userLocaleId,
-      method: localeMethod,
-    };
-  } else {
-    return {
-      id: "en-US", //getSetting("locale", "en-US"),
-      originalId: userLocaleId,
-      method: "setting",
-    };
-  }
-};
-
-// Strings
-export const Strings = {};
-export const addStrings = (language, strings) => {
-  if (typeof Strings[language] === "undefined") {
-    Strings[language] = {};
-  }
-  Strings[language] = {
-    ...Strings[language],
-    ...strings,
+    // 4. if user-defined locale is available, use it; else default to setting or `en-US`
+    if (validLocale) {
+      return {
+        id: validLocale.id,
+        originalId: userLocaleId,
+        method: localeMethod,
+      };
+    } else {
+      return {
+        id: "en-US", //getSetting("locale", "en-US"),
+        originalId: userLocaleId,
+        method: "setting",
+      };
+    }
   };
+
+/**
+ * Registry of strings for all locales
+ * @returns
+ */
+export const makeStringsRegistry = () => {
+  const Strings = {};
+  const addStrings = (language, strings) => {
+    if (typeof Strings[language] === "undefined") {
+      Strings[language] = {};
+    }
+    Strings[language] = {
+      ...Strings[language],
+      ...strings,
+    };
+  };
+
+  const getString = ({ id, values, defaultMessage, messages, locale }: any) => {
+    let message = "";
+
+    if (messages && messages[id]) {
+      // first, look in messages object passed through arguments
+      // note: if defined, messages should also contain Strings[locale]
+      message = messages[id];
+    } else if (Strings[locale] && Strings[locale][id]) {
+      message = Strings[locale][id];
+    } else if (Strings[defaultLocale] && Strings[defaultLocale][id]) {
+      // debug(`\x1b[32m>> INTL: No string found for id "${id}" in locale "${locale}", using defaultLocale "${defaultLocale}".\x1b[0m`);
+      message = Strings[defaultLocale] && Strings[defaultLocale][id];
+    } else if (defaultMessage) {
+      // debug(`\x1b[32m>> INTL: No string found for id "${id}" in locale "${locale}", using default message "${defaultMessage}".\x1b[0m`);
+      message = defaultMessage;
+    }
+
+    if (values && typeof values === "object") {
+      Object.keys(values).forEach((key) => {
+        // note: see replaceAll definition in vulcan:lib/utils
+        message = (message as any).replaceAll(`{${key}}`, values[key]); // TODO: false positive on replaceAll not existing in TS
+      });
+    }
+    return message;
+  };
+
+  const getStrings = (localeId) => {
+    return Strings[localeId];
+  };
+  return { Strings, addStrings, getString, getStrings };
 };
-
-export const getString = ({
-  id,
-  values,
-  defaultMessage,
-  messages,
-  locale,
-}: any) => {
-  let message = "";
-
-  if (messages && messages[id]) {
-    // first, look in messages object passed through arguments
-    // note: if defined, messages should also contain Strings[locale]
-    message = messages[id];
-  } else if (Strings[locale] && Strings[locale][id]) {
-    message = Strings[locale][id];
-  } else if (Strings[defaultLocale] && Strings[defaultLocale][id]) {
-    // debug(`\x1b[32m>> INTL: No string found for id "${id}" in locale "${locale}", using defaultLocale "${defaultLocale}".\x1b[0m`);
-    message = Strings[defaultLocale] && Strings[defaultLocale][id];
-  } else if (defaultMessage) {
-    // debug(`\x1b[32m>> INTL: No string found for id "${id}" in locale "${locale}", using default message "${defaultMessage}".\x1b[0m`);
-    message = defaultMessage;
-  }
-
-  if (values && typeof values === "object") {
-    Object.keys(values).forEach((key) => {
-      // note: see replaceAll definition in vulcan:lib/utils
-      message = (message as any).replaceAll(`{${key}}`, values[key]); // TODO: false positive on replaceAll not existing in TS
-    });
-  }
-  return message;
-};
-
-export const getStrings = (localeId) => {
-  return Strings[localeId];
-};
+export type StringsRegistry = ReturnType<typeof makeStringsRegistry>;
 
 // domains
-export const Domains = {};
-export const registerDomain = (locale, domain) => {
-  Domains[domain] = locale;
+export const DomainsRegistry = () => {
+  const Domains = {};
+  const registerDomain = (locale, domain) => {
+    Domains[domain] = locale;
+  };
+  return { Domains, registerDomain };
 };
 
 // Helpers
@@ -267,40 +285,42 @@ Check if a schema has at least one intl field
 export const schemaHasIntlFields = (schema) =>
   Object.keys(schema).some((fieldName) => isIntlField(schema[fieldName]));
 
-/*
+/** 
 
 Custom validation function to check for required locales
 
 See https://github.com/aldeed/simple-schema-js#custom-field-validation
 
+Difference with Vulcan: it is now a closure
 */
-export const validateIntlField = function () {
-  let errors: Array<ValidationError> = [];
+export const validateIntlField = (Locales: Array<LocaleType>) =>
+  function () {
+    let errors: Array<ValidationError> = [];
 
-  // go through locales to check which one are required
-  const requiredLocales = Locales.filter((locale) => locale.required);
+    // go through locales to check which one are required
+    const requiredLocales = Locales.filter((locale) => locale.required);
 
-  requiredLocales.forEach((locale, index) => {
-    const strings = this.value;
-    const hasString =
-      strings &&
-      Array.isArray(strings) &&
-      strings.some((s) => s && s.locale === locale.id && s.value);
-    if (!hasString) {
-      const originalFieldName = this.key.replace("_intl", "");
-      errors.push({
-        id: "errors.required",
-        path: `${this.key}.${index}`,
-        properties: { name: originalFieldName, locale: locale.id },
-      });
+    requiredLocales.forEach((locale, index) => {
+      const strings = this.value;
+      const hasString =
+        strings &&
+        Array.isArray(strings) &&
+        strings.some((s) => s && s.locale === locale.id && s.value);
+      if (!hasString) {
+        const originalFieldName = this.key.replace("_intl", "");
+        errors.push({
+          id: "errors.required",
+          path: `${this.key}.${index}`,
+          properties: { name: originalFieldName, locale: locale.id },
+        });
+      }
+    });
+
+    if (errors.length > 0) {
+      // hack to work around the fact that custom validation function can only return a single string
+      return `intlError|${JSON.stringify(errors)}`;
     }
-  });
-
-  if (errors.length > 0) {
-    // hack to work around the fact that custom validation function can only return a single string
-    return `intlError|${JSON.stringify(errors)}`;
-  }
-};
+  };
 
 /*
 

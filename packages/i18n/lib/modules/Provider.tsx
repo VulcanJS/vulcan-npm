@@ -1,6 +1,6 @@
 import { deprecate } from "@vulcanjs/utils";
 import React, { Component, useContext } from "react";
-import { getString } from "../../intl"; // previously was in meteor/vulcan:lib
+import type { StringsRegistry } from "../../intl";
 // TODO: do we still need the shape?
 import { intlShape } from "./shape";
 import { Message } from "./typings";
@@ -12,6 +12,7 @@ interface IntlProps {
   locale: string;
   // strings
   messages: any;
+  stringsRegistry: StringsRegistry;
 }
 
 /**
@@ -19,12 +20,22 @@ interface IntlProps {
  * @param
  * @returns
  */
-const makeFormatMessage = ({ locale, messages }: IntlProps) => {
+const makeFormatMessage = ({
+  stringsRegistry,
+  locale,
+  messages,
+}: IntlProps) => {
   return function formatMessageForLocale(
     { id, defaultMessage },
     values = null
   ) {
-    return getString({ id, defaultMessage, values, messages, locale });
+    return stringsRegistry.getString({
+      id,
+      defaultMessage,
+      values,
+      messages,
+      locale,
+    });
   };
 };
 
@@ -47,13 +58,14 @@ export interface IntlProviderContextValue {
 const makeDefaultValue = ({
   locale,
   messages,
+  stringsRegistry,
 }: IntlProps): IntlProviderContextValue => ({
   formatDate: formatAny,
   formatTime: formatAny,
   formatRelative: formatAny,
   formatNumber: formatAny,
   formatPlural: formatAny,
-  formatMessage: makeFormatMessage({ locale, messages }),
+  formatMessage: makeFormatMessage({ locale, messages, stringsRegistry }),
   formatHTMLMessage: formatAny,
   now: null, // ?
   locale: locale,
@@ -61,7 +73,17 @@ const makeDefaultValue = ({
 
 export const IntlProviderContext =
   React.createContext<IntlProviderContextValue>(
-    makeDefaultValue({ locale: "", messages: [] })
+    makeDefaultValue({
+      locale: "",
+      messages: [],
+      stringsRegistry: {
+        Strings: [],
+        getStrings: () => {},
+        getString: () =>
+          "intl-provider-context not setup with a string registry",
+        addStrings: () => {},
+      },
+    })
   );
 
 export interface IntlProviderProps extends IntlProps {
@@ -71,11 +93,12 @@ export interface IntlProviderProps extends IntlProps {
 export const IntlProvider = ({
   locale,
   messages,
+  stringsRegistry,
   ...props
 }: IntlProviderProps) => {
   return (
     <IntlProviderContext.Provider
-      value={makeDefaultValue({ locale, messages })}
+      value={makeDefaultValue({ locale, messages, stringsRegistry })}
       {...props}
     />
   );
@@ -97,8 +120,14 @@ export class LegacyIntlProvider extends Component<IntlProviderProps> {
     intl: intlShape,
   };
   formatMessage = ({ id, defaultMessage }, values = null) => {
-    const { messages, locale } = this.props;
-    return getString({ id, defaultMessage, values, messages, locale });
+    const { messages, locale, stringsRegistry } = this.props;
+    return stringsRegistry.getString({
+      id,
+      defaultMessage,
+      values,
+      messages,
+      locale,
+    });
   };
 
   formatStuff = (something) => {

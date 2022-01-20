@@ -1,5 +1,7 @@
 /**
  * In Vulcan Meteor, this is setup in packages/vulcan-core/lib/modules/components/App.jsx
+ *
+ * TODO: doesn't work, in state of js we copied it directly
  */
 /*
 import {
@@ -7,11 +9,7 @@ import {
   Routes,
 } from "meteor/vulcan:lib";
 */
-import {
-  Strings,
-  getLocale as getRegisteredLocale,
-  getStrings /*, hasIntlFields*/,
-} from "./intl";
+import { StringsRegistry } from "./intl";
 import React, { PureComponent, useContext, useState } from "react";
 import { IntlProvider, IntlContext } from "./lib/modules";
 // TODO: some of those HOC might be useful eg withLocaleData and withCookies
@@ -61,13 +59,14 @@ export const LocaleContextProvider = (props: {
   updateUser?: any;
   client?: any;
   children: React.ReactNode;
+  stringsRegistry: StringsRegistry;
 }) => {
-  const { currentUser, locale: localeFromProps } = props;
+  const { currentUser, locale: localeFromProps, stringsRegistry } = props;
   const locale = useLocaleData({ currentUser, locale: localeFromProps });
   // get translation strings loaded dynamically
   const loadedStrings = locale?.data?.locale?.strings;
   // get translation strings bundled statically
-  const bundledStrings = Strings[locale.id];
+  const bundledStrings = stringsRegistry.Strings[locale.id];
   const [state, setState] = useState<{
     locale: LocaleState;
     localeStrings?: any;

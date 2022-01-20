@@ -6,4 +6,4 @@ export * from "./intl";
 export * from "./lib/modules/Provider";
 export * from "./lib/modules/FormattedMessage";
 
-export * from "./LocaleContext";
+//export * from "./LocaleContext.tsx.old";

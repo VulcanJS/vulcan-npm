@@ -2,8 +2,9 @@ import React from "react";
 import omit from "lodash/omit";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 import { useFormContext } from "./FormContext";
+//import type { LocaleType } from "@vulcanjs/i18n";
 
-const Locales: Array<{ id: string }> = []; // ?? might need to get this from context
+// const Locales: Array<{ id: string }> = []; // ?? might need to get this from context
 export const FormIntlLayout = ({ children }) => (
   <div className="form-intl">{children}</div>
 );
@@ -14,11 +15,17 @@ export const FormIntlItemLayout = ({ locale, children }) => (
 interface FormIntlProps {
   path: string;
   name: string;
+  // TODO: this should probably be provided by i18n context instead
+  //Locales: Array<LocaleType>;
 }
 
 export const FormIntl = (props: FormIntlProps) => {
   const FormComponents = useVulcanComponents();
   const { getLabel } = useFormContext();
+  // TODO: we don't have a globale "Locales" object anymore
+  // so we need to get this from context somehow
+  //const { Locales } = props;
+  const Locales: Array<any> = []; // TODO: get it from i18n context instead that exposes the LocalesRegistry
   /*
   Note: ideally we'd try to make sure to return the right path no matter
   the order translations are stored in, but in practice we can't guarantee it
