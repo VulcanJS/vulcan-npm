@@ -6,12 +6,18 @@
   "files": [
     "dist/"
   ],
+  "exports": {
+    ".": {
+      "node": "./dist/index.js",
+      "import": "./dist/index.js"
+    }
+  },
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "yarn run build:webpack # yarn run build:esm && yarn run build:cjs && yarn run build:types",
-    "build:esm": "esbuild index.ts --outdir=dist --sourcemap --bundle --minify --platform=neutral --out-extension:.js=.mjs --main-fields=module,main,browser --external:tty --external:graphql --external:react --external:react-dom",
-    "build:cjs": "esbuild index.ts --outdir=dist --sourcemap --bundle --minify --platform=node --out-extension:.js=.cjs --external:tty --external:graphql --external:react --external:react-dom",
+    "build": " yarn run build:webpack # yarn run build:esm && yarn run build:types # && yarn run build:cjs",
+    "build:esm": "# TODO: not working, as it replaces import by 'require' in jsx # esbuild index.ts --outdir=dist --sourcemap --bundle --minify --platform=neutral --out-extension:.js=.mjs --main-fields=module,main,browser --external:tty --external:graphql --external:react --external:react-dom",
+    "build:cjs": "# TODO: not working as expected # esbuild index.ts --outdir=dist --sourcemap --bundle --minify --platform=node --out-extension:.js=.cjs --external:tty --external:graphql --external:react --external:react-dom",
     "build:webpack": "webpack --config ./webpack.config.js",
     "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json"
   },
