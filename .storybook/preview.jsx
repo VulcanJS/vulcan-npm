@@ -1,5 +1,5 @@
 import React from "react";
-import { IntlProvider } from "../packages/i18n";
+import { IntlProvider, makeStringsRegistry } from "../packages/i18n";
 // @see https://storybook.js.org/addons/msw-storybook-addon
 import { initializeWorker, mswDecorator } from "msw-storybook-addon";
 initializeWorker();
@@ -48,7 +48,7 @@ export const decorators = [
   mswDecorator,
   apolloClientDecorator,
   (Story) => (
-    <IntlProvider locale="fr">
+    <IntlProvider locale="fr" stringsRegistry={makeStringsRegistry()}>
       <Story />
     </IntlProvider>
   ),
