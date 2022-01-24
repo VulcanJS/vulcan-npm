@@ -25,7 +25,6 @@
     "@vulcanjs/model": "^0.5.1",
     "@vulcanjs/permissions": "^0.5.1",
     "@vulcanjs/react-hooks": "^0.5.1",
-    "@vulcanjs/react-ui": "^0.5.1",
     "@vulcanjs/schema": "^0.5.1",
     "@vulcanjs/utils": "^0.5.1",
     "autosuggest-highlight": "^3.2.0",
@@ -41,7 +40,8 @@
   "peerDependencies": {
     "@apollo/client": "^3.5.5",
     "react": ">= 16.13.1",
-    "react-dom": ">= 16.13.1"
+    "react-dom": ">= 16.13.1",
+    "@vulcanjs/react-ui": "^0.5.1"
   },
   "publishConfig": {
     "access": "public"
