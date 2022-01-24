@@ -43,12 +43,3 @@ See https://github.com/nodkz/mongodb-memory-server/issues/475
 ## Resources
 
 - [Babel monorepo](https://github.com/babel/babel), a great example of Lerna project
-
-
-## Deploy on Netlify
-
-We use Netlify for our deployments, and so should you!
-
-<a href="https://www.netlify.com">
-  <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
-</a>
