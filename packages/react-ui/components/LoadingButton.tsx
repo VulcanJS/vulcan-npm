@@ -1,6 +1,13 @@
 import React, { CSSProperties } from "react";
 import { useVulcanComponents } from "./VulcanComponents";
 
+export interface LoadingButtonProps /*extends ButtonProps*/ {
+  loading?: boolean;
+  label?: string;
+  onClick?: any;
+  children?: React.ReactNode;
+  className?: string;
+}
 export const LoadingButton = ({
   loading,
   label,
@@ -8,7 +15,7 @@ export const LoadingButton = ({
   children,
   className = "",
   ...rest
-}) => {
+}: LoadingButtonProps & any) => {
   const Components = useVulcanComponents();
 
   const wrapperStyle: CSSProperties = {

@@ -31,3 +31,11 @@ const MutationButtonTemplate: Story<MutationButtonProps> = (args) => (
   <MutationButton {...args} />
 );
 export const DefaultMutationButton = MutationButtonTemplate.bind({});
+
+export const WithClassName = MutationButtonTemplate.bind({});
+WithClassName.args = {
+  loadingButtonProps: {
+    label: "Click me",
+    className: "btn btn-primary",
+  },
+};
