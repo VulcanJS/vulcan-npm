@@ -10,7 +10,7 @@ const config = {
   tagline: "The fullstack JavaScript framework",
   url: "https://vulcan-docs.vercel.app",
   baseUrl: "/",
-  onBrokenLinks: "throw",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   favicon: "theme/images/favicon.ico",
   organizationName: "VulcanJS", // Usually your GitHub org/user name.
