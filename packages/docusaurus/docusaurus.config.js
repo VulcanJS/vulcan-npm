@@ -54,12 +54,22 @@ const config = {
             type: "doc",
             docId: "intro",
             position: "left",
-            label: "Docs",
+            label: "Guides",
+          },
+          {
+            href: "https://vulcan-next.vercel.app/learn",
+            position: "left",
+            label: "Learn",
+          },
+          {
+            href: "https://vulcan-npm.vercel.app",
+            position: "left",
+            label: "API",
           },
           {
             /*to: "/blog",*/ href: "https://blog.vulcanjs.org/",
             label: "Blog",
-            position: "left",
+            position: "right",
           },
           {
             href: "https://github.com/VulcanJS/vulcan-next",
@@ -80,11 +90,15 @@ const config = {
               },
               {
                 label: "Vulcan Next",
-                to: "/docs/vulcan-npm",
+                to: "/docs/vulcan-next",
               },
               {
                 label: "Vulcan Meteor (legacy)",
                 to: "/docs/vulcan-meteor-legacy",
+              },
+              {
+                label: "API",
+                href: "https://vulcan-npm.vercel.app",
               },
             ],
           },

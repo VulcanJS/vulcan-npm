@@ -2,6 +2,16 @@
 title: Read Me
 ---
 
+## BEFORE YOU CONTINUE
+
+Vulcan Meteor is considered a legacy. While it still being used in a few companies and projects,
+we do not advise starting a new project with it.
+
+Instead, discover our new, shiny framework: [Vulcan Next!](/docs/vulcan-next)
+
+Vulcan Next is a port of Vulcan, using a more modern framework: Next.js. It includes similar features,
+but with a modern and scalable architecture.
+
 ## What's Vulcan?
 
 Vulcan is a framework that gives you a set of tools for quickly building React & GraphQL-based web applications. It can handle data loading, e-mail notifications, automatic form generation, and much more, out of the box. 
