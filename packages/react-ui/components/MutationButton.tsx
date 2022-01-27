@@ -20,6 +20,7 @@ import React, { useState } from "react";
 import { DocumentNode } from "graphql";
 import { gql, MutationHookOptions, useMutation } from "@apollo/client";
 import { useVulcanComponents } from "./VulcanComponents";
+import { LoadingButtonProps } from "./LoadingButton";
 // import withMutation from '../containers/registeredMutation';
 
 // TODO:
@@ -66,9 +67,7 @@ export interface MutationButtonProps {
   successCallback: (res: any) => void | Promise<void>;
   errorCallback: (err: any) => void | Promise<void>;
   // Now isolated into their own object to avoid needed to explicitely pick/omit
-  loadingButtonProps: {
-    label: string;
-  };
+  loadingButtonProps: LoadingButtonProps;
 }
 export const MutationButton = (props: MutationButtonProps) => {
   const Components = useVulcanComponents();

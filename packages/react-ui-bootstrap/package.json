@@ -1,0 +1,36 @@
+{
+  "name": "@vulcanjs/react-ui-bootstrap",
+  "version": "0.5.1",
+  "description": "Vulcan UI components for React - Written with React Bootstrap",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "classnames": "^2.3.1",
+    "debug": "^4.3.1",
+    "lodash": "^4.17.21",
+    "react-bootstrap": "^2.1.1"
+  },
+  "peerDependencies": {
+    "@apollo/client": "^3.5.5",
+    "react": ">= 16.13.1",
+    "react-dom": ">= 16.13.1",
+    "@vulcanjs/react-ui": "^0.5.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.168",
+    "@types/underscore": "^1.11.1",
+    "graphql": "^15.5.0"
+  },
+  "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f"
+}

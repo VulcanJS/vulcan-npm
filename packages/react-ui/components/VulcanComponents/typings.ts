@@ -2,12 +2,13 @@ import React from "react";
 // Load only the type, to define the API for each component
 // TODO: maybe do the reverse, define the props here and an unstyled version of the component?
 import type { FormSubmitProps } from "../form/FormSubmit";
+import type { ButtonProps } from "../form/core/Button";
 
 export interface PossibleCoreComponents {
   Loading: any;
   FormattedMessage: any;
   Alert: any;
-  Button: any;
+  Button: React.ComponentType<ButtonProps>;
   Icon: any;
   // TODO: define props more precisely
   MutationButton: React.ComponentType<any>;
