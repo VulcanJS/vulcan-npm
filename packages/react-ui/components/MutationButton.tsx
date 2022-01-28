@@ -62,12 +62,15 @@ export interface MutationButtonProps {
    */
   mutation: string | DocumentNode;
   /** Variables passed to the mutation (NOTE: we can't pass other options at the moment) */
-  mutationArguments: MutationHookOptions<any>["variables"];
-  submitCallback: () => void | Promise<void>;
-  successCallback: (res: any) => void | Promise<void>;
-  errorCallback: (err: any) => void | Promise<void>;
-  // Now isolated into their own object to avoid needed to explicitely pick/omit
-  loadingButtonProps: LoadingButtonProps;
+  mutationArguments?: MutationHookOptions<any>["variables"];
+  /** Callback run before submitting */
+  submitCallback?: () => any | Promise<any>;
+  successCallback?: (res: any) => void | Promise<void>;
+  errorCallback?: (err: any) => void | Promise<void>;
+  /** Now isolated into their own object to avoid needed to explicitely pick/omit */
+  loadingButtonProps?: LoadingButtonProps;
+  /** Shortcut for loadingButtonProps.label */
+  label?: string | React.ReactNode;
 }
 export const MutationButton = (props: MutationButtonProps) => {
   const Components = useVulcanComponents();
@@ -78,7 +81,8 @@ export const MutationButton = (props: MutationButtonProps) => {
     //mutationOptions,
     mutation,
     mutationArguments,
-    loadingButtonProps,
+    loadingButtonProps = {},
+    label,
   } = props;
   const mutationAsNode =
     typeof mutation === "string"
@@ -142,6 +146,7 @@ export const MutationButton = (props: MutationButtonProps) => {
     <Components.LoadingButton
       loading={loading}
       onClick={handleClick}
+      label={label}
       {...loadingButtonProps}
     />
   );

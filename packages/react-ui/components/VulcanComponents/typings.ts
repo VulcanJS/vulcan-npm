@@ -3,6 +3,7 @@ import React from "react";
 // TODO: maybe do the reverse, define the props here and an unstyled version of the component?
 import type { FormSubmitProps } from "../form/FormSubmit";
 import type { ButtonProps } from "../form/core/Button";
+import type { MutationButtonProps } from "../MutationButton";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -11,7 +12,7 @@ export interface PossibleCoreComponents {
   Button: React.ComponentType<ButtonProps>;
   Icon: any;
   // TODO: define props more precisely
-  MutationButton: React.ComponentType<any>;
+  MutationButton: React.ComponentType<MutationButtonProps>;
   LoadingButton: React.ComponentType<any>;
   HeadTags: React.ComponentType<any>;
   // Previously from Bootstrap and Mui

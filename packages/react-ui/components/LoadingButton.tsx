@@ -3,7 +3,7 @@ import { useVulcanComponents } from "./VulcanComponents";
 
 export interface LoadingButtonProps /*extends ButtonProps*/ {
   loading?: boolean;
-  label?: string;
+  label?: string | React.ReactNode;
   onClick?: any;
   children?: React.ReactNode;
   className?: string;
