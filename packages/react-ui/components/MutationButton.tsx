@@ -51,7 +51,7 @@ export interface MutationButtonProps {
    * mutationOptions: { refetchQueries:["hello"]}
    * and the mutation is provided via the new "mutation" prop
    */
-  mutationOptions: MutationHookOptions;
+  mutationOptions?: MutationHookOptions;
   /**
    * @example
     mutation: gql`
@@ -63,8 +63,15 @@ export interface MutationButtonProps {
   mutation: string | DocumentNode;
   /** Variables passed to the mutation (NOTE: we can't pass other options at the moment) */
   mutationArguments?: MutationHookOptions<any>["variables"];
-  /** Callback run before submitting */
-  submitCallback?: () => any | Promise<any>;
+  /** Callback run before submitting. Can optionnaly return mutationArguments that will override current ones. */
+  submitCallback?: (
+    mutationArgumentsFromProps: MutationHookOptions<any>["variables"]
+  ) =>
+    | void
+    | { mutationArguments: MutationHookOptions<any>["variables"] }
+    | Promise<void | {
+        mutationArguments: MutationHookOptions<any>["variables"];
+      }>;
   successCallback?: (res: any) => void | Promise<void>;
   errorCallback?: (err: any) => void | Promise<void>;
   /** Now isolated into their own object to avoid needed to explicitely pick/omit */
@@ -80,19 +87,17 @@ export const MutationButton = (props: MutationButtonProps) => {
   const {
     //mutationOptions,
     mutation,
-    mutationArguments,
     loadingButtonProps = {},
     label,
   } = props;
+  let { mutationArguments } = props;
   const mutationAsNode =
     typeof mutation === "string"
       ? gql`
           ${mutation}
         `
       : mutation;
-  const [mutationFunc] = useMutation(mutationAsNode, {
-    variables: mutationArguments,
-  });
+  const [mutationFunc] = useMutation(mutationAsNode);
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -109,9 +114,12 @@ export const MutationButton = (props: MutationButtonProps) => {
 
     try {
       if (submitCallback) {
-        await submitCallback();
+        const callbackReturn = await submitCallback(mutationArguments);
+        if (callbackReturn && callbackReturn.mutationArguments) {
+          mutationArguments = callbackReturn.mutationArguments;
+        }
       }
-      const result = await mutationFunc();
+      const result = await mutationFunc({ variables: mutationArguments });
       if (successCallback) {
         await successCallback(result);
       }
