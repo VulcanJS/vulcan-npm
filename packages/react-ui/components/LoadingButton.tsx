@@ -1,7 +1,8 @@
 import React, { CSSProperties } from "react";
+import type { ButtonProps } from "./form/core/Button";
 import { useVulcanComponents } from "./VulcanComponents";
 
-export interface LoadingButtonProps /*extends ButtonProps*/ {
+export interface LoadingButtonProps extends ButtonProps {
   loading?: boolean;
   label?: string | React.ReactNode;
   onClick?: any;
