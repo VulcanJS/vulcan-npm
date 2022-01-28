@@ -10,7 +10,10 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react",
-    "lib": ["es6", "dom"],
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -26,12 +29,17 @@
     "sourceMap": true,
     "strict": false,
     "target": "es6",
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ]
   },
   "exclude": [
     "node_modules",
     "**/*.d.ts",
     "**/dist/*",
-    "**/webpack.config.js"
+    "**/webpack.config.js",
+    // @see https://github.com/facebook/docusaurus/issues/3424
+    "packages/docusaurus"
   ]
 }

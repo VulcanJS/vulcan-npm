@@ -3,7 +3,9 @@ import path from "path";
 
 const packagesRoot = "../../../../packages";
 const packagesPath = path.resolve(__dirname, packagesRoot);
-const packageNames = fs.readdirSync(packagesPath);
+const packageNames = fs
+  .readdirSync(packagesPath)
+  .filter((p) => !p.match(/docusaurus/));
 test("build packages are not leaking other packages", () => {
   // Please run this test only after a build "yarn run build"
   /**
