@@ -34,6 +34,8 @@ yarn typecheck
 yarn test
 # Update typedoc
 yarn typedoc && npx serve generated/docs
+# Test built docusaurus
+yarn serve:doc
 # Deploy (Lerna will prompt questions for versionning)
 # NOTE: "yarn publish" already has a meaning so we can't override it, we need to call "yarn lerna publish"
  # NOTE: directly calling learn publish might publish only changed package, but change detection is not always reliable

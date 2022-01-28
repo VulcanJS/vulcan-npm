@@ -19,7 +19,8 @@
     "typedoc": "typedoc",
     "publish": "lerna publish",
     "start:doc": "yarn --cwd ./packages/docusaurus start",
-    "build:doc": "yarn --cwd ./packages/docusaurus build"
+    "build:doc": "yarn --cwd ./packages/docusaurus build",
+    "serve:doc": "yarn --cwd ./packages/docusaurus serve"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.19",
