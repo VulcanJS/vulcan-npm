@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/docusaurus",
-  "version": "0.0.0",
+  "version": "0.5.3",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
