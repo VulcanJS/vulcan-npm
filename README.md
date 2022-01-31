@@ -24,7 +24,7 @@ Now you can either run Storybook `yarn run storybook` or unit tests `yarn run te
 
 ## Plug to another local application
 
-If you want to connect your local Vulcan NPM install to an existing application, please check [Vulcan Next documentation](https://github.com/VulcanJS/vulcan-next/blob/devel/src/content/docs/contributing.md).
+If you want to connect your local Vulcan NPM install to an existing application, please check [Vulcan Next documentation](https://vulcan-docs/docs/vulcan-next/contribute).
 
 It's a 2 step process:
 
