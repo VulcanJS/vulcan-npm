@@ -4,7 +4,7 @@ import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import styles from "./index.module.css";
-import HomepageFeatures from "../components/HomepageFeatures";
+// import HomepageFeatures from "../components/HomepageFeatures";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -16,7 +16,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro"
+            to="/docs/guides/intro"
           >
             Get started with Vulcan
           </Link>
@@ -34,6 +34,9 @@ export default function Home(): JSX.Element {
       description="Description will go into a meta tag in <head />"
     >
       <HomepageHeader />
+      <main className={styles.logoWrapper}>
+        <img src="/img/vn-logo-full-padded-720.png" alt="Vulcan Next logo" />
+      </main>
       {/*<main>
         <HomepageFeatures />
       </main>*/}

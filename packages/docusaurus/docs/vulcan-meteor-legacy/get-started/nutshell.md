@@ -1,5 +1,6 @@
 ---
 title: Vulcan in a Nutshell
+sidebar_position: 1
 ---
 
 The best way to understand how Vulcan works is to consider its three main aspects: the role of the schema, how Vulcan reads data, and how Vulcan writes data.
