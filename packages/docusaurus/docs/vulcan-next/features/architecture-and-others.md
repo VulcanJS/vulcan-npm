@@ -1,4 +1,4 @@
-# Features
+# Architecture and others
 
 ## TypeScript
 

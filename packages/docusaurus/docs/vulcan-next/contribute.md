@@ -1,4 +1,8 @@
-# Contributing
+---
+title: "Contribute"
+---
+
+# Contribute
 
 ## Dev environment
 

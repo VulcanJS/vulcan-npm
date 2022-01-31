@@ -1,4 +1,4 @@
-# Graphql + Mongo backend
+# GraphQL Server + Mongo
 
 ## Authentication
 

@@ -1,4 +1,7 @@
-# NOT YET IMPLEMENTED:
+---
+sidebar_label: "Not yet implemented"
+---
+# Not yet implemented
 
 ## Storybook
 

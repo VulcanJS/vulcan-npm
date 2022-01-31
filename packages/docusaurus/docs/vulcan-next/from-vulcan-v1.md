@@ -1,3 +1,6 @@
+---
+title: "Migrate from Meteor"
+---
 # Prepare the migration from Vulcan 1 (Meteor) to Vulcan 2 (Next+NPM)
 
 ## Connect to an existing Vulcan Meteor backend

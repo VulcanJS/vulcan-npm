@@ -16,7 +16,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/guides/intro"
+            to="/docs/guides"
           >
             Get started with Vulcan
           </Link>
@@ -30,8 +30,8 @@ export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />"
+      title={`${siteConfig.title} Docs`}
+      description="Documentation of VulcanJS - The fullstack JavaScript framework"
     >
       <HomepageHeader />
       <main className={styles.logoWrapper}>

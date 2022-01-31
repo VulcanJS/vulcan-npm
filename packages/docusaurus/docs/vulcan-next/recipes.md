@@ -1,6 +1,12 @@
 ---
-title: "Recipes"
+title: "Advanced recipes"
 ---
+
+# Advanced recipes
+
+Various recipes regarding GraphQL, building etc. for advanced use cases.
+Vulcan is also about learning some magic!
+
 ## Magic imports
 
 - Use the `paths` property of tsconfig.common.json.

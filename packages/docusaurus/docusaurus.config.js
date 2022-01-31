@@ -6,7 +6,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Vulcan Docs",
+  title: "Vulcan",
   tagline: "The fullstack JavaScript framework",
   url: "https://vulcan-docs.vercel.app",
   baseUrl: "/",
@@ -25,13 +25,13 @@ const config = {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl:
-            "https://github.com/VulcanJS/vulcan-npm/packages/docusaurus/tree/main/docs",
+            "https://github.com/VulcanJS/vulcan-npm/tree/main/packages/docusaurus/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            "https://github.com/VulcanJS/vulcan-npm/packages/docusaurus/tree/main/blog",
+            "https://github.com/VulcanJS/vulcan-npm/tree/main/packages/docusaurus/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
