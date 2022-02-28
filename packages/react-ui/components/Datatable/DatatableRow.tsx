@@ -1,19 +1,32 @@
-import { Components, registerComponent } from 'meteor/vulcan:lib';
-import React, { memo } from 'react';
-import _isFunction from 'lodash/isFunction';
-import PropTypes from 'prop-types';
-import { intlShape } from 'meteor/vulcan:i18n';
-import Users from 'meteor/vulcan:users';
-import get from 'lodash/get';
+import React, { memo } from "react";
+import _isFunction from "lodash/isFunction";
+import { useVulcanComponents } from "../VulcanComponents";
+import { VulcanGraphqlModel } from "@vulcanjs/graphql";
+import { isAdmin } from "@vulcanjs/permissions";
 
 /*
 
 DatatableRow Component
 
 */
-const DatatableRow = (props, { intl }) => {
+export const DatatableRow = (props: {
+  model: VulcanGraphqlModel;
+  columns;
+  document;
+  showEdit;
+  showDelete;
+  currentUser;
+  options;
+  editFormOptions;
+  editFormProps;
+  rowClass;
+  showSelect;
+  toggleItem;
+  selectedItems;
+  modalProps?: any;
+}) => {
   const {
-    collection,
+    model,
     columns,
     document,
     showEdit,
@@ -23,34 +36,40 @@ const DatatableRow = (props, { intl }) => {
     editFormOptions,
     editFormProps,
     rowClass,
-    Components,
     showSelect,
     toggleItem,
     selectedItems,
   } = props;
+  const Components = useVulcanComponents();
 
   let canUpdate = false;
 
   // new APIs
-  const permissionCheck = get(collection, 'options.permissions.canUpdate');
+  const permissionCheck = model.permissions.canUpdate;
+  //get(collection, "options.permissions.canUpdate");
   // openCRUD backwards compatibility
-  const check = get(collection, 'options.mutations.edit.check') || get(collection, 'options.mutations.update.check');
+  //const check =
+  //  get(collection, "options.mutations.edit.check") ||
+  //  get(collection, "options.mutations.update.check");
 
-  if (Users.isAdmin(currentUser)) {
+  if (isAdmin(currentUser)) {
     canUpdate = true;
   } else if (permissionCheck) {
-    canUpdate = Users.permissionCheck({
+    canUpdate = permissionCheck({
       check: permissionCheck,
       user: currentUser,
       document,
       context: { Users },
-      operationName: 'update',
+      operationName: "update",
     });
-  } else if (check) {
+  } /*
+  legacy
+  else if (check) {
     canUpdate = check && check(currentUser, document, { Users });
-  }
+  }*/
 
-  const row = typeof rowClass === 'function' ? rowClass(document) : rowClass || '';
+  const row =
+    typeof rowClass === "function" ? rowClass(document) : rowClass || "";
   const { modalProps = {} } = props;
   const defaultModalProps = { title: <code>{document._id}</code> };
   const customModalProps = {
@@ -61,7 +80,11 @@ const DatatableRow = (props, { intl }) => {
   const isSelected = selectedItems && selectedItems.includes(document._id);
 
   return (
-    <Components.DatatableRowLayout className={`datatable-item ${row} ${isSelected ? 'datatable-item-selected' : ''}`}>
+    <Components.DatatableRowLayout
+      className={`datatable-item ${row} ${
+        isSelected ? "datatable-item-selected" : ""
+      }`}
+    >
       {showSelect && (
         <Components.DatatableSelect
           Components={Components}
@@ -108,13 +131,6 @@ const DatatableRow = (props, { intl }) => {
     </Components.DatatableRowLayout>
   );
 };
-DatatableRow.propTypes = {
-  Components: PropTypes.object.isRequired,
-};
-registerComponent({ name: 'DatatableRow', component: DatatableRow, hocs: [memo] });
-
-DatatableRow.contextTypes = {
-  intl: intlShape,
-};
-const DatatableRowLayout = ({ children, ...otherProps }) => <tr {...otherProps}>{children}</tr>;
-registerComponent({ name: 'DatatableRowLayout', component: DatatableRowLayout, hocs: [memo] });
+export const DatatableRowLayout = ({ children, ...otherProps }) => (
+  <tr {...otherProps}>{children}</tr>
+);

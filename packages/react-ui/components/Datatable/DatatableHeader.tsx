@@ -1,14 +1,22 @@
-import { registerComponent, formatLabel } from 'meteor/vulcan:lib';
-import React, { memo } from 'react';
-import { intlShape } from 'meteor/vulcan:i18n';
-import PropTypes from 'prop-types';
+import React, { memo } from "react";
+import PropTypes from "prop-types";
+import { formatLabel, useIntlContext } from "@vulcanjs/i18n";
 
 /*
 
 DatatableHeader Component
 
 */
-const DatatableHeader = ({ collection, column, toggleSort, currentSort, submitFilters, currentFilters, Components }, { intl }) => {
+export const DatatableHeader = ({
+  collection,
+  column,
+  toggleSort,
+  currentSort,
+  submitFilters,
+  currentFilters,
+  Components,
+}) => {
+  const intl = useIntlContext();
   // column label
   let formattedLabel;
 
@@ -43,7 +51,9 @@ const DatatableHeader = ({ collection, column, toggleSort, currentSort, submitFi
     const filterQuery = field && field.staticQuery;
 
     return (
-      <Components.DatatableHeaderCellLayout className={`datatable-header-${column.name}`}>
+      <Components.DatatableHeaderCellLayout
+        className={`datatable-header-${column.name}`}
+      >
         <span className="datatable-header-cell-label">{formattedLabel}</span>
         {column.sortable && (
           <Components.DatatableSorter
@@ -74,25 +84,23 @@ const DatatableHeader = ({ collection, column, toggleSort, currentSort, submitFi
       </Components.DatatableHeaderCellLayout>
     );
   } else {
-    const formattedLabel = column.label || intl.formatMessage({ id: column.name, defaultMessage: column.name });
+    const formattedLabel =
+      column.label ||
+      intl.formatMessage({ id: column.name, defaultMessage: column.name });
     return (
-      <Components.DatatableHeaderCellLayout className={`datatable-th-${formattedLabel.toLowerCase().replace(/\s/g, '-')}`}>
+      <Components.DatatableHeaderCellLayout
+        className={`datatable-th-${formattedLabel
+          .toLowerCase()
+          .replace(/\s/g, "-")}`}
+      >
         {formattedLabel}
       </Components.DatatableHeaderCellLayout>
     );
   }
 };
-DatatableHeader.contextTypes = {
-  intl: intlShape,
-};
-DatatableHeader.propTypes = {
-  Components: PropTypes.object.isRequired,
-};
-registerComponent({ name: 'DatatableHeader', component: DatatableHeader, hocs: [memo] });
 
-const DatatableHeaderCellLayout = ({ children, ...otherProps }) => (
+export const DatatableHeaderCellLayout = ({ children, ...otherProps }) => (
   <th {...otherProps}>
     <div className="datatable-header-cell-inner">{children}</div>
   </th>
 );
-registerComponent({ name: 'DatatableHeaderCellLayout', component: DatatableHeaderCellLayout, hocs: [memo] });

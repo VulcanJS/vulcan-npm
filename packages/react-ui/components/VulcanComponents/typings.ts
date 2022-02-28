@@ -13,6 +13,30 @@ import type {
   DatatableAboveSearchInput,
   DatatableLayout,
 } from "../Datatable/Datatable";
+import type {
+  DatatableContents,
+  DatatableContentsBodyLayout,
+  DatatableContentsHeadLayout,
+  DatatableContentsInnerLayout,
+  DatatableContentsLayout,
+  DatatableContentsMoreLayout,
+  DatatableEmpty,
+  DatatableLoadMoreButton,
+  DatatableTitle,
+} from "../Datatable/DatatableContents";
+import type {
+  DatatableHeader,
+  DatatableHeaderCellLayout,
+} from "../Datatable/DatatableHeader";
+import type {
+  DatatableRow,
+  DatatableRowLayout,
+} from "../Datatable/DatatableRow";
+import type {
+  DatatableCell,
+  DatatableCellLayout,
+  DatatableDefaultCell,
+} from "../Datatable/DatatableCell";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -99,6 +123,26 @@ export interface DatatableComponents {
   DatatableAboveRight: typeof DatatableAboveRight;
   DatatableAboveSearchInput: typeof DatatableAboveSearchInput;
   DatatableLayout: typeof DatatableLayout;
+  // Contents
+  DatatableContents: typeof DatatableContents;
+  DatatableContentsBodyLayout: typeof DatatableContentsBodyLayout;
+  DatatableContentsHeadLayout: typeof DatatableContentsHeadLayout;
+  DatatableContentsInnerLayout: typeof DatatableContentsInnerLayout;
+  DatatableContentsLayout: typeof DatatableContentsLayout;
+  DatatableContentsMoreLayout: typeof DatatableContentsMoreLayout;
+  DatatableEmpty: typeof DatatableEmpty;
+  DatatableLoadMoreButton: typeof DatatableLoadMoreButton;
+  DatatableTitle: typeof DatatableTitle;
+  // Header
+  DatatableHeader: typeof DatatableHeader;
+  DatatableHeaderCellLayout: typeof DatatableHeaderCellLayout;
+  // Row
+  DatatableRow: typeof DatatableRow;
+  DatatableRowLayout: typeof DatatableRowLayout;
+  // Cell
+  DatatableCell: typeof DatatableCell;
+  DatatableCellLayout: typeof DatatableCellLayout;
+  DatatableDefaultCell: typeof DatatableDefaultCell;
 }
 
 export type PossibleVulcanComponents = PossibleCoreComponents &
