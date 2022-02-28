@@ -4,6 +4,15 @@ import React from "react";
 import type { FormSubmitProps } from "../form/FormSubmit";
 import type { ButtonProps } from "../form/core/Button";
 import type { MutationButtonProps } from "../MutationButton";
+import type {
+  Datatable,
+  DatatableAbove,
+  DatatableAboveLayout,
+  DatatableAboveLeft,
+  DatatableAboveRight,
+  DatatableAboveSearchInput,
+  DatatableLayout,
+} from "../Datatable/Datatable";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -80,5 +89,18 @@ export interface PossibleFormComponents {
   // flag to detect parent state
   __not_intialized?: boolean;
 }
+
+export interface DatatableComponents {
+  Datatable: typeof Datatable;
+  // DatatableContents: typeof DatatableContents
+  DatatableAbove: typeof DatatableAbove;
+  DatatableAboveLayout: typeof DatatableAboveLayout;
+  DatatableAboveLeft: typeof DatatableAboveLeft;
+  DatatableAboveRight: typeof DatatableAboveRight;
+  DatatableAboveSearchInput: typeof DatatableAboveSearchInput;
+  DatatableLayout: typeof DatatableLayout;
+}
+
 export type PossibleVulcanComponents = PossibleCoreComponents &
-  PossibleFormComponents;
+  PossibleFormComponents &
+  DatatableComponents;
