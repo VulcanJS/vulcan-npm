@@ -1,14 +1,10 @@
-import {
-  Components,
-  registerComponent,
-  Utils,
-  expandQueryFragments,
-} from "meteor/vulcan:lib";
 import React, { useState } from "react";
-import { gql } from "@apollo/client";
+import { DocumentNode, gql } from "@apollo/client";
 import { useQuery } from "@apollo/client";
 import moment from "moment";
 import isEmpty from "lodash/isEmpty";
+import { useVulcanComponents } from "../VulcanComponents";
+import { getFieldType } from "../form/modules/utils";
 
 const getCount = (columnFilters) => {
   if (!columnFilters) {
@@ -59,7 +55,7 @@ const Filter = ({ count }) => (
   </svg>
 );
 
-const DatatableFilter = (props) => {
+export const DatatableFilter = (props) => {
   const { columnFilters, label, query, Components } = props;
   return (
     <span className="datatable-filter">
@@ -84,21 +80,24 @@ const DatatableFilter = (props) => {
   );
 };
 
-registerComponent("DatatableFilter", DatatableFilter);
-
 /*
 
 DatatableFilterContents Components
 
 */
 
-const DatatableFilterContentsWithData = (props) => {
+export const DatatableFilterContentsWithData = (props: {
+  /** NOTE: previously we were expecting text, now we want a gql document directly */
+  query: DocumentNode | ((options: { mode: "static" }) => DocumentNode);
+  options?: any;
+}) => {
+  const Components = useVulcanComponents();
   const { query, options } = props;
 
   // if query is a function, execute it
-  const queryText =
+  const queryGql =
     typeof query === "function" ? query({ mode: "static" }) : query;
-  const filterQuery = gql(expandQueryFragments(queryText));
+  const filterQuery = queryGql;
 
   const { loading, error, data } = useQuery(filterQuery);
 
@@ -115,14 +114,8 @@ const DatatableFilterContentsWithData = (props) => {
   }
 };
 
-registerComponent(
-  "DatatableFilterContentsWithData",
-  DatatableFilterContentsWithData
-);
-
-const DatatableFilterContents = (props) => {
+export const DatatableFilterContents = (props) => {
   const {
-    Components,
     name,
     field,
     options,
@@ -130,7 +123,8 @@ const DatatableFilterContents = (props) => {
     submitFilters,
     filterComponent,
   } = props;
-  const fieldType = Utils.getFieldType(field);
+  const Components = useVulcanComponents();
+  const fieldType = getFieldType(field);
 
   const [filters, setFilters] = useState(columnFilters);
 
@@ -201,8 +195,6 @@ const DatatableFilterContents = (props) => {
   );
 };
 
-registerComponent("DatatableFilterContents", DatatableFilterContents);
-
 /*
 
 Filter Types Components
@@ -220,28 +212,28 @@ Operator: _in
 
 */
 const checkboxOperator = "_in";
-const DatatableFilterCheckboxes = ({
-  Components,
+export const DatatableFilterCheckboxes = ({
   options,
   filters = { [checkboxOperator]: [] },
   setFilters,
-}) => (
-  <Components.FormComponentCheckboxGroup
-    path="filter"
-    itemProperties={{ layout: "inputOnly" }}
-    inputProperties={{ options }}
-    value={filters[checkboxOperator]}
-    updateCurrentValues={({ filter: newValues }) => {
-      if (isEmpty(newValues)) {
-        setFilters(undefined);
-      } else {
-        setFilters({ [checkboxOperator]: newValues });
-      }
-    }}
-  />
-);
-
-registerComponent("DatatableFilterCheckboxes", DatatableFilterCheckboxes);
+}) => {
+  const Components = useVulcanComponents();
+  return (
+    <Components.FormComponentCheckboxGroup
+      path="filter"
+      itemProperties={{ layout: "inputOnly" }}
+      inputProperties={{ options }}
+      value={filters[checkboxOperator]}
+      updateCurrentValues={({ filter: newValues }) => {
+        if (isEmpty(newValues)) {
+          setFilters(undefined);
+        } else {
+          setFilters({ [checkboxOperator]: newValues });
+        }
+      }}
+    />
+  );
+};
 
 /*
 
@@ -252,22 +244,26 @@ const booleanOptions = [
   { label: "True", value: true },
   { label: "False", value: false },
 ];
-const DatatableFilterBooleans = ({ filters = { _eq: [] }, setFilters }) => (
-  <Components.FormComponentRadioGroup
-    path="filter"
-    itemProperties={{ layout: "inputOnly" }}
-    inputProperties={{
-      options: booleanOptions,
-      value: filters["_eq"],
-      onChange: (e) => {
-        const value = e.target.value; // note: this will be a string
-        setFilters({ _eq: value === "true" ? true : false });
-      },
-    }}
-  />
-);
-
-registerComponent("DatatableFilterBooleans", DatatableFilterBooleans);
+export const DatatableFilterBooleans = ({
+  filters = { _eq: [] },
+  setFilters,
+}) => {
+  const Components = useVulcanComponents();
+  return (
+    <Components.FormComponentRadioGroup
+      path="filter"
+      itemProperties={{ layout: "inputOnly" }}
+      inputProperties={{
+        options: booleanOptions,
+        value: filters["_eq"],
+        onChange: (e) => {
+          const value = e.target.value; // note: this will be a string
+          setFilters({ _eq: value === "true" ? true : false });
+        },
+      }}
+    />
+  );
+};
 
 /*
 
@@ -276,58 +272,65 @@ Dates
 Operators: _gte and _lte
 
 */
-const DatatableFilterDates = ({ filters, setFilters }) => (
-  <div>
-    <Components.FormComponentDate
-      path="_gte"
-      itemProperties={{
-        label: (
-          <Components.FormattedMessage
-            id="datatable.after"
-            defaultMessage="After"
-          />
-        ),
-        layout: "horizontal",
-      }}
-      inputProperties={{}}
-      value={filters && moment(filters._gte, "YYYY-MM-DD")}
-      updateCurrentValues={(newValues) => {
-        if (!newValues._gte || newValues._gte === "") {
-          const newFilters = Object.assign({}, filters);
-          delete newFilters._gte;
-          setFilters(newFilters);
-        } else {
-          setFilters({ ...filters, _gte: newValues._gte.format("YYYY-MM-DD") });
-        }
-      }}
-    />
-    <Components.FormComponentDate
-      path="_lte"
-      itemProperties={{
-        label: (
-          <Components.FormattedMessage
-            id="datatable.before"
-            defaultMessage="Before"
-          />
-        ),
-        layout: "horizontal",
-      }}
-      inputProperties={{}}
-      value={filters && moment(filters._lte, "YYYY-MM-DD")}
-      updateCurrentValues={(newValues) => {
-        if (!newValues._lte || newValues._lte === "") {
-          const newFilters = Object.assign({}, filters);
-          delete newFilters._lte;
-          setFilters(newFilters);
-        } else {
-          setFilters({ ...filters, _lte: newValues._lte.format("YYYY-MM-DD") });
-        }
-      }}
-    />
-  </div>
-);
-
-registerComponent("DatatableFilterDates", DatatableFilterDates);
+export const DatatableFilterDates = ({ filters, setFilters }) => {
+  const Components = useVulcanComponents();
+  return (
+    <div>
+      <Components.FormComponentDate
+        path="_gte"
+        itemProperties={{
+          label: (
+            <Components.FormattedMessage
+              id="datatable.after"
+              defaultMessage="After"
+            />
+          ),
+          layout: "horizontal",
+        }}
+        inputProperties={{}}
+        value={filters && moment(filters._gte, "YYYY-MM-DD")}
+        updateCurrentValues={(newValues) => {
+          if (!newValues._gte || newValues._gte === "") {
+            const newFilters = Object.assign({}, filters);
+            delete newFilters._gte;
+            setFilters(newFilters);
+          } else {
+            setFilters({
+              ...filters,
+              _gte: newValues._gte.format("YYYY-MM-DD"),
+            });
+          }
+        }}
+      />
+      <Components.FormComponentDate
+        path="_lte"
+        itemProperties={{
+          label: (
+            <Components.FormattedMessage
+              id="datatable.before"
+              defaultMessage="Before"
+            />
+          ),
+          layout: "horizontal",
+        }}
+        inputProperties={{}}
+        value={filters && moment(filters._lte, "YYYY-MM-DD")}
+        updateCurrentValues={(newValues) => {
+          if (!newValues._lte || newValues._lte === "") {
+            const newFilters = Object.assign({}, filters);
+            delete newFilters._lte;
+            setFilters(newFilters);
+          } else {
+            setFilters({
+              ...filters,
+              _lte: newValues._lte.format("YYYY-MM-DD"),
+            });
+          }
+        }}
+      />
+    </div>
+  );
+};
 
 /*
 
@@ -336,59 +339,60 @@ Numbers
 Operators: _gte and _lte
 
 */
-const DatatableFilterNumbers = ({ filters, setFilters }) => (
-  <div>
-    <Components.FormComponentNumber
-      path="_gte"
-      itemProperties={{
-        label: (
-          <Components.FormattedMessage
-            id="datatable.greater_than"
-            defaultMessage="Greater than"
-          />
-        ),
-        layout: "horizontal",
-      }}
-      inputProperties={{
-        onChange: (event) => {
-          const value = event.target.value;
-          if (!value || value === "") {
-            const newFilters = Object.assign({}, filters);
-            delete newFilters._gte;
-            setFilters(newFilters);
-          } else {
-            setFilters({ ...filters, _gte: value });
-          }
-        },
-        value: filters && parseFloat(filters._gte),
-      }}
-    />
-    <Components.FormComponentNumber
-      path="_lte"
-      itemProperties={{
-        label: (
-          <Components.FormattedMessage
-            id="datatable.lower_than"
-            defaultMessage="Lower than"
-          />
-        ),
-        layout: "horizontal",
-      }}
-      inputProperties={{
-        onChange: (event) => {
-          const value = event.target.value;
-          if (!value) {
-            const newFilters = Object.assign({}, filters);
-            delete newFilters._lte;
-            setFilters(newFilters);
-          } else {
-            setFilters({ ...filters, _lte: value });
-          }
-        },
-        value: filters && parseFloat(filters._lte),
-      }}
-    />
-  </div>
-);
-
-registerComponent("DatatableFilterNumbers", DatatableFilterNumbers);
+export const DatatableFilterNumbers = ({ filters, setFilters }) => {
+  const Components = useVulcanComponents();
+  return (
+    <div>
+      <Components.FormComponentNumber
+        path="_gte"
+        itemProperties={{
+          label: (
+            <Components.FormattedMessage
+              id="datatable.greater_than"
+              defaultMessage="Greater than"
+            />
+          ),
+          layout: "horizontal",
+        }}
+        inputProperties={{
+          onChange: (event) => {
+            const value = event.target.value;
+            if (!value || value === "") {
+              const newFilters = Object.assign({}, filters);
+              delete newFilters._gte;
+              setFilters(newFilters);
+            } else {
+              setFilters({ ...filters, _gte: value });
+            }
+          },
+          value: filters && parseFloat(filters._gte),
+        }}
+      />
+      <Components.FormComponentNumber
+        path="_lte"
+        itemProperties={{
+          label: (
+            <Components.FormattedMessage
+              id="datatable.lower_than"
+              defaultMessage="Lower than"
+            />
+          ),
+          layout: "horizontal",
+        }}
+        inputProperties={{
+          onChange: (event) => {
+            const value = event.target.value;
+            if (!value) {
+              const newFilters = Object.assign({}, filters);
+              delete newFilters._lte;
+              setFilters(newFilters);
+            } else {
+              setFilters({ ...filters, _lte: value });
+            }
+          },
+          value: filters && parseFloat(filters._lte),
+        }}
+      />
+    </div>
+  );
+};

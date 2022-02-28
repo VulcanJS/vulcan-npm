@@ -374,6 +374,7 @@ export const getIntlLabel = (
   {
     intl,
     fieldName,
+    modelName,
     collectionName,
     schema,
     isDescription,
@@ -381,6 +382,8 @@ export const getIntlLabel = (
     intl?: any;
     fieldName: string;
     schema: VulcanSchema;
+    modelName?: string;
+    /** @deprecated use modelName instead */
     collectionName?: string;
     isDescription?: boolean;
   },
@@ -403,8 +406,14 @@ export const getIntlLabel = (
   if (intlId) {
     intlKeys.push(intlId);
   }
-  if (collectionName) {
-    intlKeys.push(`${collectionName.toLowerCase()}.${fieldName}`);
+  if (collectionName || modelName) {
+    intlKeys.push(
+      `${(
+        collectionName ||
+        modelName ||
+        "unknown-model-name"
+      ).toLowerCase()}.${fieldName}`
+    );
   }
   intlKeys.push(`global.${fieldName}`);
   intlKeys.push(fieldName);
@@ -432,6 +441,8 @@ export const formatLabel = (
     intl?: any;
     fieldName: string;
     schema: VulcanSchema;
+    modelName?: string;
+    /** @deprecated use modelName instead */
     collectionName?: string;
   },
   values?: any

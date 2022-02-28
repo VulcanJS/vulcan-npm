@@ -110,7 +110,6 @@ export const DatatableContents = (props: DatatableContentsProps) => {
           {showSelect && <th />}
           {sortedColumns.map((column, index) => (
             <Components.DatatableHeader
-              Components={Components}
               key={index}
               model={model}
               column={column}

@@ -1,27 +1,44 @@
-import React, { memo } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import { formatLabel, useIntlContext } from "@vulcanjs/i18n";
+import { VulcanModel } from "@vulcanjs/model";
+import { useVulcanComponents } from "../VulcanComponents";
 
+interface DatatableColumnDefinition {
+  name: string;
+  label?: string;
+  options?: any;
+  filterComponent?: any;
+  sortable?: boolean;
+  filterable?: boolean;
+}
 /*
 
 DatatableHeader Component
 
 */
 export const DatatableHeader = ({
-  collection,
+  model,
   column,
   toggleSort,
   currentSort,
   submitFilters,
   currentFilters,
-  Components,
+}: {
+  model: VulcanModel;
+  column: DatatableColumnDefinition;
+  // TODO: reuse this type
+  toggleSort?: any;
+  currentSort?: any;
+  submitFilters?: any;
+  currentFilters?: any;
 }) => {
+  const Components = useVulcanComponents();
   const intl = useIntlContext();
   // column label
   let formattedLabel;
 
-  if (collection) {
-    const schema = collection.simpleSchema()._schema;
+  if (model) {
+    const schema = model.schema;
     const field = schema[column.name];
 
     if (column.label) {
@@ -39,7 +56,7 @@ export const DatatableHeader = ({
       formattedLabel = formatLabel({
         intl,
         fieldName: column.name,
-        collectionName: collection._name,
+        collectionName: model.name,
         schema: schema,
       });
     }
@@ -57,19 +74,18 @@ export const DatatableHeader = ({
         <span className="datatable-header-cell-label">{formattedLabel}</span>
         {column.sortable && (
           <Components.DatatableSorter
-            collection={collection}
+            model={model}
             field={field}
             name={column.name}
             label={formattedLabel}
             toggleSort={toggleSort}
             currentSort={currentSort}
             sortable={column.sortable}
-            Components={Components}
           />
         )}
         {column.filterable && (
           <Components.DatatableFilter
-            collection={collection}
+            model={model}
             field={field}
             name={column.name}
             label={formattedLabel}
@@ -78,7 +94,6 @@ export const DatatableHeader = ({
             submitFilters={submitFilters}
             columnFilters={currentFilters[column.name]}
             filterComponent={column.filterComponent}
-            Components={Components}
           />
         )}
       </Components.DatatableHeaderCellLayout>

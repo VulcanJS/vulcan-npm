@@ -37,6 +37,18 @@ import type {
   DatatableCellLayout,
   DatatableDefaultCell,
 } from "../Datatable/DatatableCell";
+import type {
+  DatatableFilter,
+  DatatableFilterBooleans,
+  DatatableFilterCheckboxes,
+  DatatableFilterContents,
+  DatatableFilterContentsWithData,
+  DatatableFilterDates,
+  DatatableFilterNumbers,
+} from "../Datatable/DatatableFilter";
+import type { DatatableSorter } from "../Datatable/DatatableSorter";
+import type { DatatableSelect } from "../Datatable/DatatableSelect";
+import type { DatatableSubmitSelected } from "../Datatable/DatatableSubmitSelected";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -143,6 +155,20 @@ export interface DatatableComponents {
   DatatableCell: typeof DatatableCell;
   DatatableCellLayout: typeof DatatableCellLayout;
   DatatableDefaultCell: typeof DatatableDefaultCell;
+  //  Filter
+  DatatableFilter: typeof DatatableFilter;
+  DatatableFilterBooleans: typeof DatatableFilterBooleans;
+  DatatableFilterCheckboxes: typeof DatatableFilterCheckboxes;
+  DatatableFilterContents: typeof DatatableFilterContents;
+  DatatableFilterContentsWithData: typeof DatatableFilterContentsWithData;
+  DatatableFilterDates: typeof DatatableFilterDates;
+  DatatableFilterNumbers: typeof DatatableFilterNumbers;
+  // Sort
+  DatatableSorter: typeof DatatableSorter;
+  // Select
+  DatatableSelect: typeof DatatableSelect;
+  // SubmitSelect
+  DatatableSubmitSelected: typeof DatatableSubmitSelected;
 }
 
 export type PossibleVulcanComponents = PossibleCoreComponents &
