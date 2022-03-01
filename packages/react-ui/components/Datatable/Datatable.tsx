@@ -306,19 +306,18 @@ export const Datatable = (props: DatatableProps) => {
 
     let canCreate = false;
     // new APIs
-    const permissionCheck = model.permissions.canCreate;
+    const check = model.permissions.canCreate;
 
     // openCRUD backwards compatibility
-    // TODO: reneable this option
-    const check = model.graphql.mutations.create.check;
+    //const check = model.graphql.mutations.create.check;
     //_get(collection, "options.mutations.new.check") ||
     //_get(collection, "options.mutations.create.check");
 
     if (isAdmin(currentUser)) {
       canCreate = true;
-    } else if (permissionCheck) {
+    } else if (check) {
       canCreate = permissionCheck({
-        check: permissionCheck,
+        check,
         user: currentUser,
         context: { Users },
         operationName: "create",

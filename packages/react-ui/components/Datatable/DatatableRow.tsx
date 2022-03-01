@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import _isFunction from "lodash/isFunction";
 import { useVulcanComponents } from "../VulcanComponents";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
-import { isAdmin } from "@vulcanjs/permissions";
+import { isAdmin, permissionCheck } from "@vulcanjs/permissions";
 
 /*
 
@@ -45,7 +45,7 @@ export const DatatableRow = (props: {
   let canUpdate = false;
 
   // new APIs
-  const permissionCheck = model.permissions.canUpdate;
+  const check = model.permissions.canUpdate;
   //get(collection, "options.permissions.canUpdate");
   // openCRUD backwards compatibility
   //const check =
@@ -54,9 +54,9 @@ export const DatatableRow = (props: {
 
   if (isAdmin(currentUser)) {
     canUpdate = true;
-  } else if (permissionCheck) {
+  } else if (check) {
     canUpdate = permissionCheck({
-      check: permissionCheck,
+      check,
       user: currentUser,
       document,
       context: { Users },
