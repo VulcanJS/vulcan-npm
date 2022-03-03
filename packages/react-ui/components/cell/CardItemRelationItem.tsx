@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useVulcanComponents } from "../VulcanComponents";
 
 /*
 
@@ -14,8 +15,8 @@ The naming convention is Type+Token, e.g. UserToken, PostToken, CategoryToken…
 export const CardItemRelationItem = ({
   relatedDocument,
   relatedCollection,
-  Components,
 }) => {
+  const Components = useVulcanComponents();
   const label = relatedCollection.options.getLabel
     ? relatedCollection.options.getLabel(relatedDocument)
     : relatedDocument._id;
@@ -24,11 +25,7 @@ export const CardItemRelationItem = ({
   return Cell ? (
     <Cell document={relatedDocument} label={label} Components={Components} />
   ) : (
-    <Components.DefaultCell
-      document={relatedDocument}
-      label={label}
-      Components={Components}
-    />
+    <Components.DefaultCell document={relatedDocument} label={label} />
   );
 };
 
@@ -44,15 +41,18 @@ export const DefaultCell = ({ document, label }) => (
 );
 
 // User Token
-export const UserCell = ({ document, Components }) => (
-  <div className="contents-user user-item">
-    <Components.Avatar size="small" user={document} />
-    {document.pagePath ? (
-      <Link className="user-item-name" to={document.pagePath}>
-        {document.displayName}
-      </Link>
-    ) : (
-      <span className="user-item-name">{document.displayName}</span>
-    )}
-  </div>
-);
+export const UserCell = ({ document }) => {
+  const Components = useVulcanComponents();
+  return (
+    <div className="contents-user user-item">
+      {/*<Components.Avatar size="small" user={document} />*/}
+      {document.pagePath ? (
+        <Link className="user-item-name" to={document.pagePath}>
+          {document.displayName}
+        </Link>
+      ) : (
+        <span className="user-item-name">{document.displayName}</span>
+      )}
+    </div>
+  );
+};

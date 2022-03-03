@@ -360,18 +360,17 @@ export const Datatable = (props: DatatableProps) => {
           onSubmitSelected={onSubmitSelected}
         />
         <Components.DatatableContents
-          Components={Components}
           {...props}
           model={model}
           // TODO: check where this prop is used
-          //input={input}
           currentUser={currentUser}
           toggleSort={toggleSort}
           currentSort={state.currentSort}
           submitFilters={submitFilters}
           currentFilters={state.currentFilters}
-          toggleItem={toggleItem}
           selectedItems={state.selectedItems}
+          //input={input}
+          toggleItem={toggleItem}
         />
       </Components.DatatableLayout>
     );
@@ -407,12 +406,10 @@ export const DatatableAbove = (props: any) => {
     </Components.DatatableAboveLayout>
   );
 };
-DatatableAbove.propTypes = {
-  Components: PropTypes.object.isRequired,
-};
 
 export const DatatableAboveLeft = (props) => {
-  const { showSearch, searchValue, updateSearch, Components } = props;
+  const { showSearch, searchValue, updateSearch } = props;
+  const Components = useVulcanComponents();
   const intl = useIntlContext();
   return (
     <div className="datatable-above-left">

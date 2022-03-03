@@ -56,7 +56,8 @@ const Filter = ({ count }) => (
 );
 
 export const DatatableFilter = (props) => {
-  const { columnFilters, label, query, Components } = props;
+  const Components = useVulcanComponents();
+  const { columnFilters, label, query } = props;
   return (
     <span className="datatable-filter">
       <Components.ModalTrigger

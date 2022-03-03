@@ -13,7 +13,8 @@ export const CardItemObject = (props) => {
 
     return (
       <div className="dashboard-user" style={{ whiteSpace: "nowrap" }}>
-        <Components.Avatar size="small" user={user} link />
+        {/* TODO: we should allow to pass a custom cell for each model instead of providing our own cell for users */}
+        {/*<Components.Avatar size="small" user={user} link />*/}
         {user.pagePath ? (
           <Link to={user.pagePath}>{user.displayName}</Link>
         ) : (
@@ -37,28 +38,26 @@ export const CardItemObject = (props) => {
   }
 };
 
-const CardItemObjectContents = ({
-  nestingLevel,
-  value: object,
-  Components,
-}) => (
-  <table className="table table-bordered">
-    <tbody>
-      {without(Object.keys(object), "__typename").map((key) => (
-        <tr key={key}>
-          <td>
-            <strong>{key}</strong>
-          </td>
-          <td>
-            <Components.CardItemSwitcher
-              nestingLevel={nestingLevel}
-              value={object[key]}
-              typeName={typeof object[key]}
-              Components={Components}
-            />
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
+const CardItemObjectContents = ({ nestingLevel, value: object }) => {
+  const Components = useVulcanComponents();
+  return (
+    <table className="table table-bordered">
+      <tbody>
+        {without(Object.keys(object), "__typename").map((key) => (
+          <tr key={key}>
+            <td>
+              <strong>{key}</strong>
+            </td>
+            <td>
+              <Components.CardItemSwitcher
+                nestingLevel={nestingLevel}
+                value={object[key]}
+                typeName={typeof object[key]}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};

@@ -1,9 +1,8 @@
 import React, { memo } from "react";
-import PropTypes from "prop-types";
 import _sortBy from "lodash/sortBy";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
-import { VulcanModel } from "@vulcanjs/model";
 import { useVulcanComponents } from "../VulcanComponents";
+import { DatatableSelectControlledProps } from "./DatatableSelect";
 
 const wrapColumns = (c) => ({ name: c });
 
@@ -34,10 +33,11 @@ DatatableContents Component
 
 */
 
-export interface DatatableContentsProps {
+export interface DatatableContentsProps
+  extends Partial<DatatableSelectControlledProps> {
   title?: string;
   model: VulcanGraphqlModel;
-  datatableData: any;
+  datatableData?: Array<any>;
   results?: Array<any>; // = [],
   columns?: Array<any>;
   loading?: boolean;

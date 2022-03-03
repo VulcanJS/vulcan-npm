@@ -69,6 +69,7 @@ import type { CardItemRelationHasOne } from "../cell/CardItemRelationHasOne";
 import type { CardItemString } from "../cell/CardItemString";
 import type { CardItemURL } from "../cell/CardItemURL";
 import { DeleteButton } from "../Datatable/others/DeleteButton";
+import { BootstrapModal as Modal } from "../bootstrap/Modal";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -83,6 +84,7 @@ export interface PossibleCoreComponents {
   // Previously from Bootstrap and Mui
   TooltipTrigger: React.ComponentType<any>;
   Dropdown: React.ComponentType<any>;
+  Modal: typeof Modal;
 }
 // TODO: differentiate components that are provided out of the box and those that require a UI frameworK?
 export interface PossibleFormComponents {
