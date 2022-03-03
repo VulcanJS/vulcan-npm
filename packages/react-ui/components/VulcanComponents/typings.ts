@@ -49,6 +49,8 @@ import type {
 import type { DatatableSorter } from "../Datatable/DatatableSorter";
 import type { DatatableSelect } from "../Datatable/DatatableSelect";
 import type { DatatableSubmitSelected } from "../Datatable/DatatableSubmitSelected";
+import type { EditButton, EditForm } from "../Datatable/others/EditButton";
+import type { NewButton, NewForm } from "../Datatable/others/NewButton";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -169,6 +171,11 @@ export interface DatatableComponents {
   DatatableSelect: typeof DatatableSelect;
   // SubmitSelect
   DatatableSubmitSelected: typeof DatatableSubmitSelected;
+  // Core
+  EditButton: typeof EditButton;
+  EditForm: typeof EditForm;
+  NewButton: typeof NewButton;
+  NewForm: typeof NewForm;
 }
 
 export type PossibleVulcanComponents = PossibleCoreComponents &

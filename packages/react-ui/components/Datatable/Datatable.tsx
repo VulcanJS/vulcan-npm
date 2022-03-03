@@ -1,5 +1,5 @@
 //import { Utils, registerComponent, getCollection } from "meteor/vulcan:lib";
-import React, { PureComponent, memo, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 // import { intlShape } from "meteor/vulcan:i18n";
 import qs from "qs";
@@ -20,6 +20,7 @@ import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { isAdmin } from "@vulcanjs/permissions";
 import { useVulcanComponents } from "../VulcanComponents";
 import { useIntlContext } from "@vulcanjs/i18n";
+import { permissionCheck } from "@vulcanjs/permissions";
 
 const ascSortOperator = "asc";
 const descSortOperator = "desc";
@@ -277,14 +278,18 @@ export const Datatable = (props: DatatableProps) => {
     props;
 
   // Skip query when data are already provided via props
-  const {} = useMulti({ ...options, model, queryOptions: { skip: !!data } });
+  const multiRes = useMulti({
+    ...options,
+    model,
+    queryOptions: { skip: !!data },
+  });
   if (data) {
     // static JSON datatable
     return (
       <Components.DatatableContents
-        Components={Components}
         {...props}
-        datatableData={data}
+        datatableData={data || multiRes.documents}
+        totalCount={multiRes?.totalCount}
         results={data}
         showEdit={false}
         showDelete={false}
@@ -319,12 +324,13 @@ export const Datatable = (props: DatatableProps) => {
       canCreate = permissionCheck({
         check,
         user: currentUser,
-        context: { Users },
+        //context: { Users },
         operationName: "create",
       });
-    } else if (check) {
+    } /* legacy 
+    else if (check) {
       canCreate = check && check(currentUser, {}, { Users });
-    }
+    }*/
 
     const input: { search?: string; sort?: any; filter?: any } = {};
     if (!_isEmpty(state.search)) {
@@ -390,7 +396,7 @@ export const DatatableLayout = ({
 DatatableAbove Component
 
 */
-export const DatatableAbove = (props) => {
+export const DatatableAbove = (props: any) => {
   const Components = useVulcanComponents();
 
   return (
@@ -446,6 +452,7 @@ export const DatatableAboveRight = (props) => {
     showSelect,
     selectedItems,
     onSubmitSelected,
+    model,
   } = props;
   const Components = useVulcanComponents();
   return (

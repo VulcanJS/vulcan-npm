@@ -61,6 +61,7 @@ import { TooltipTrigger } from "../bootstrap/TooltipTrigger";
 import Dropdown from "../bootstrap/Dropdown";
 
 import { PossibleCoreComponents, PossibleFormComponents } from "./typings";
+import { DatatableComponents } from ".";
 
 const defaultCoreComponents: PossibleCoreComponents = {
   // core components taht were used in forms
@@ -138,6 +139,9 @@ const defaultFormComponents: PossibleFormComponents = {
   FormComponentAutocomplete,
   FormComponentMultiAutocomplete: AutocompleteMultiple,
 };
+
+// TODO: fill up
+const defaultDataTableComponents: DatatableComponents = {};
 
 export const defaultVulcanComponents = {
   ...defaultCoreComponents,

@@ -35,8 +35,8 @@ DatatableContents Component
 */
 
 export interface DatatableContentsProps {
-  title: string;
-  model: VulcanModel;
+  title?: string;
+  model: VulcanGraphqlModel;
   datatableData: any;
   results?: Array<any>; // = [],
   columns?: Array<any>;
@@ -47,9 +47,10 @@ export interface DatatableContentsProps {
   networkStatus?: any;
   //
   count?: number;
-  totalCount: number;
+  totalCount?: number;
   showEdit?: boolean;
   showDelete?: boolean;
+  showNew?: boolean;
   currentUser?: any;
   toggleSort?: any;
   currentSort?: any;
@@ -62,14 +63,14 @@ export interface DatatableContentsProps {
 
 export const DatatableContents = (props: DatatableContentsProps) => {
   let {
-    title,
+    title = "",
     datatableData,
     results = [],
     columns,
     loading,
     loadMore,
-    count,
-    totalCount,
+    count = 0,
+    totalCount = 0,
     networkStatus,
     showEdit,
     showDelete,
@@ -162,7 +163,8 @@ export const DatatableContents = (props: DatatableContentsProps) => {
             <Components.Loading />
           ) : (
             <Components.DatatableLoadMoreButton
-              Components={Components}
+              count={count}
+              totalCount={totalCount}
               onClick={(e) => {
                 e.preventDefault();
                 loadMore();
@@ -201,14 +203,16 @@ export const DatatableContentsMoreLayout = ({ children }) => (
 export const DatatableLoadMoreButton = ({
   count,
   totalCount,
-  Components,
   children,
   ...otherProps
-}) => (
-  <Components.Button variant="primary" {...otherProps}>
-    {children}
-  </Components.Button>
-);
+}) => {
+  const Components = useVulcanComponents();
+  return (
+    <Components.Button variant="primary" {...otherProps}>
+      {children}
+    </Components.Button>
+  );
+};
 /*
 
 DatatableTitle Component
