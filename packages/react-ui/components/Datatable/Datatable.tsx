@@ -1,7 +1,7 @@
 //import { Utils, registerComponent, getCollection } from "meteor/vulcan:lib";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { intlShape } from "meteor/vulcan:i18n";
-import qs from "qs";
+// import qs from "qs";
 // import { withRouter } from "react-router";
 //import compose from "recompose/compose";
 import _isEmpty from "lodash/isEmpty";
@@ -12,19 +12,20 @@ import _cloneDeep from "lodash/cloneDeep";
 //import withMulti from "../../containers/multi2.js";
 //import Users from "meteor/vulcan:users";
 import _get from "lodash/get";
-import { getFieldType } from "../form/modules/utils";
+//import { getFieldType } from "../form/modules/utils";
 import { useMulti } from "@vulcanjs/react-hooks";
 import { VulcanModel } from "@vulcanjs/model";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { isAdmin } from "@vulcanjs/permissions";
-import { useVulcanComponents } from "../VulcanComponents";
+// NOTE: import from "CONSUMER" to avoid infinite loop
+import { useVulcanComponents } from "../VulcanComponents/Consumer";
 import { useIntlContext } from "@vulcanjs/i18n";
 import { permissionCheck } from "@vulcanjs/permissions";
 
 const ascSortOperator = "asc";
 const descSortOperator = "desc";
 
-const convertToBoolean = (s) => (s === "true" ? true : false);
+//const convertToBoolean = (s) => (s === "true" ? true : false);
 
 /*
 
@@ -42,15 +43,6 @@ const delay = (function () {
     timer = setTimeout(callback, ms);
   };
 })();
-
-/*
-Datatable.defaultProps = {
-  showNew: true,
-  showEdit: true,
-  showDelete: false,
-  showSearch: true,
-  useUrlState: true,
-};*/
 
 export interface DatatableProps<TData = any> {
   model: VulcanGraphqlModel;
@@ -89,7 +81,7 @@ export interface DatatableProps<TData = any> {
  */
 export const Datatable = (props: DatatableProps) => {
   const [state, setState] = useState<any>({});
-  const { initialState, useUrlState, push } = props;
+  const { initialState /*useUrlState, push*/ } = props;
   let initState: any = {
     searchValue: "",
     search: "",
@@ -97,12 +89,30 @@ export const Datatable = (props: DatatableProps) => {
     currentFilters: {},
     selectedItems: [],
   };
+  useEffect(() => {
+    // initial state can be defined via props
+    // note: this prop-originating initial state will *not* be reflected in the URL
+    if (initialState) {
+      if (initialState.search) {
+        initState.searchValue = initialState.search;
+        initState.search = initialState.search;
+      }
+      if (initialState.sort) {
+        initState.currentSort = initialState.sort;
+      }
+      if (initialState.filter) {
+        initState.currentFilters = initialState.filter;
+      }
+    }
+    setState(initState);
+  }, []);
 
   /** TODO: should be passed by the parent, we could expose helpers */
+  /*
   const getUrlState = () => {
     const { location } = props;
     return qs.parse(location.search, { ignoreQueryPrefix: true });
-  };
+  };*/
 
   /**
    * Convert url filter to number
@@ -111,6 +121,7 @@ export const Datatable = (props: DatatableProps) => {
    * @param urlStateFilters
    * @returns
    */
+  /*
   const convertToNumbers = (urlStateFilters) => {
     const convertedFilters = _cloneDeep(urlStateFilters);
     const { model } = props;
@@ -143,24 +154,10 @@ export const Datatable = (props: DatatableProps) => {
       });
     }
     return convertedFilters;
-  };
-
-  // initial state can be defined via props
-  // note: this prop-originating initial state will *not* be reflected in the URL
-  if (initialState) {
-    if (initialState.search) {
-      initState.searchValue = initialState.search;
-      initState.search = initialState.search;
-    }
-    if (initialState.sort) {
-      initState.currentSort = initialState.sort;
-    }
-    if (initialState.filter) {
-      initState.currentFilters = initialState.filter;
-    }
-  }
+  };*/
 
   // only load urlState if useUrlState is enabled
+  /*
   if (useUrlState) {
     const urlState = getUrlState();
     if (urlState.search) {
@@ -175,14 +172,14 @@ export const Datatable = (props: DatatableProps) => {
       // all URL values are stored as strings, so convert them back to numbers if needed
       initState.currentFilters = convertToNumbers(urlState.filter);
     }
-  }
-  setState(initState);
+  }*/
 
   /*
 
   If useUrlState is not enabled, do nothing
 
   */
+  /*
   const updateQueryParameter = (key, value) => {
     if (useUrlState) {
       const urlState = getUrlState();
@@ -201,10 +198,10 @@ export const Datatable = (props: DatatableProps) => {
       history.push({
         search: `?${queryString}`,
       });
-      */
+      */ /*
     }
   };
-
+*/
   /*
 
   Note: when state is asc, toggling goes to desc;
@@ -225,7 +222,7 @@ export const Datatable = (props: DatatableProps) => {
       urlValue = null;
     }
     setState((currentState) => ({ ...currentState, currentSort }));
-    updateQueryParameter("sort", urlValue);
+    // updateQueryParameter("sort", urlValue);
   };
 
   const submitFilters = ({ name, filters }) => {
@@ -242,7 +239,7 @@ export const Datatable = (props: DatatableProps) => {
       ...currentState,
       currentFilters: newFilters,
     }));
-    updateQueryParameter("filter", _isEmpty(newFilters) ? null : newFilters);
+    // updateQueryParameter("filter", _isEmpty(newFilters) ? null : newFilters);
   };
 
   const updateSearch = (e) => {
@@ -257,7 +254,7 @@ export const Datatable = (props: DatatableProps) => {
         ...currentState,
         search: searchValue,
       }));
-      updateQueryParameter("search", searchValue);
+      // updateQueryParameter("search", searchValue);
     }, 700);
   };
 
@@ -422,7 +419,6 @@ export const DatatableAboveLeft = (props) => {
             value: searchValue,
             onChange: updateSearch,
           }}
-          Components={Components}
         />
       )}
     </div>

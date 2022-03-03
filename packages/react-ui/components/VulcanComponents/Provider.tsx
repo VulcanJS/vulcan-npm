@@ -33,7 +33,10 @@ export const VulcanComponentsProvider = ({
     if (mergedComponents[componentName]) {
       mergedComponents[componentName].displayName = "Vulcan." + componentName;
     } else {
-      console.warn(`Encountered an undefined component: ${componentName}`);
+      console.warn(`Encountered an undefined component: ${componentName}.
+      The component may not be registered, or import failed.
+      For instance due to an infinite import loop when importing
+      "useVulcanComponents" from index instead of Consumer.`);
     }
   });
   return (
