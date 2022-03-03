@@ -2,7 +2,8 @@ import React, { memo } from "react";
 import _isFunction from "lodash/isFunction";
 import { useVulcanComponents } from "../VulcanComponents";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
-import { isAdmin, permissionCheck } from "@vulcanjs/permissions";
+import { isAdmin, permissionCheck, VulcanUser } from "@vulcanjs/permissions";
+import { VulcanDocument } from "@vulcanjs/schema";
 
 /*
 
@@ -11,18 +12,18 @@ DatatableRow Component
 */
 export const DatatableRow = (props: {
   model: VulcanGraphqlModel;
-  columns;
-  document;
-  showEdit;
-  showDelete;
-  currentUser;
-  options;
-  editFormOptions;
-  editFormProps;
-  rowClass;
-  showSelect;
-  toggleItem;
-  selectedItems;
+  columns: Array<any>;
+  document: VulcanDocument;
+  showEdit?: boolean;
+  showDelete?: boolean;
+  currentUser?: VulcanUser;
+  options?: any;
+  editFormOptions?: any;
+  editFormProps?: any;
+  rowClass?: any;
+  showSelect?: any;
+  toggleItem?: any;
+  selectedItems?: any;
   modalProps?: any;
 }) => {
   const {
@@ -104,7 +105,7 @@ export const DatatableRow = (props: {
       {showEdit && canUpdate ? ( // openCRUD backwards compatibility
         <Components.DatatableCellLayout className="datatable-edit">
           <Components.EditButton
-            collection={collection}
+            model={model}
             documentId={document._id}
             currentUser={currentUser}
             mutationFragmentName={options && options.fragmentName}
@@ -117,10 +118,10 @@ export const DatatableRow = (props: {
       {showDelete && canUpdate ? ( // openCRUD backwards compatibility
         <Components.DatatableCellLayout className="datatable-delete">
           <Components.DeleteButton
-            collection={collection}
+            model={model}
             documentId={document._id}
             currentUser={currentUser}
-            mutationFragmentName={options && options.fragmentName}
+            //mutationFragmentName={options && options.fragmentName}
           />
         </Components.DatatableCellLayout>
       ) : null}

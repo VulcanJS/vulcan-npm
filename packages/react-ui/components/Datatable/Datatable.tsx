@@ -363,7 +363,8 @@ export const Datatable = (props: DatatableProps) => {
           Components={Components}
           {...props}
           model={model}
-          input={input}
+          // TODO: check where this prop is used
+          //input={input}
           currentUser={currentUser}
           toggleSort={toggleSort}
           currentSort={state.currentSort}

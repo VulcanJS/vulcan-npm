@@ -68,6 +68,7 @@ import type { CardItemRelationHasMany } from "../cell/CardItemRelationHasMany";
 import type { CardItemRelationHasOne } from "../cell/CardItemRelationHasOne";
 import type { CardItemString } from "../cell/CardItemString";
 import type { CardItemURL } from "../cell/CardItemURL";
+import { DeleteButton } from "../Datatable/others/DeleteButton";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -193,6 +194,7 @@ export interface DatatableComponents {
   EditForm: typeof EditForm;
   NewButton: typeof NewButton;
   NewForm: typeof NewForm;
+  DeleteButton: typeof DeleteButton;
 }
 
 export interface CellComponents {
