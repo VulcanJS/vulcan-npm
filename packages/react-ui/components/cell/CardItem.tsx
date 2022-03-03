@@ -66,10 +66,15 @@ export const CardItemSwitcher = (props: CellProps) => {
     }
   }
 
+  // no value; we return an empty string
+  if (typeof value === "undefined" || value === null) {
+    return <>""</>;
+  }
+
   const itemProps: Pick<
     CellProps,
-    "nestingLevel" | "value" | "document" | "fieldName" | "model"
-  > & {
+    "nestingLevel" | "document" | "fieldName" | "model"
+  > & { value: any } & {
     fieldSchema?: VulcanFieldSchema;
     relatedFieldName?: string;
     relatedDocument?: any;
@@ -83,14 +88,9 @@ export const CardItemSwitcher = (props: CellProps) => {
     fieldSchema,
   };
 
-  // no value; we return an empty string
-  if (typeof value === "undefined" || value === null) {
-    return <>""</>;
-  }
-
   // JSX element
-  if (React.isValidElement(value)) {
-    return value;
+  if (React.isValidElement(itemProps.value)) {
+    return itemProps.value;
   }
 
   // Relation

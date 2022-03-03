@@ -2,7 +2,13 @@ import React from "react";
 import { useVulcanComponents } from "../VulcanComponents";
 
 // Array
-export const CardItemArray = ({ nestingLevel, value }) => {
+export const CardItemArray = ({
+  nestingLevel,
+  value,
+}: {
+  nestingLevel?: number;
+  value: any;
+}) => {
   const Components = useVulcanComponents();
   return (
     <ol className="contents-array">

@@ -2,7 +2,13 @@ import React from "react";
 import { useVulcanComponents } from "../VulcanComponents";
 
 // URL
-export const CardItemURL = ({ value, force }) => {
+export const CardItemURL = ({
+  value,
+  force,
+}: {
+  value?: any;
+  force?: boolean;
+}) => {
   const Components = useVulcanComponents();
   return force || value.slice(0, 4) === "http" ? (
     <a

@@ -1,6 +1,6 @@
 import { useIntlContext } from "@vulcanjs/i18n";
 import React from "react";
-import { useVulcanComponents } from "../VulcanComponents";
+import { useVulcanComponents } from "../../VulcanComponents";
 
 export const EditButton = ({
   style = "primary",

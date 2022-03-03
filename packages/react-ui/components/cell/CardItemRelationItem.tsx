@@ -1,3 +1,5 @@
+import { VulcanGraphqlModel } from "@vulcanjs/graphql";
+import { VulcanDocument } from "@vulcanjs/schema";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useVulcanComponents } from "../VulcanComponents";
@@ -14,12 +16,17 @@ The naming convention is Type+Token, e.g. UserToken, PostToken, CategoryToken…
 // Relation Item
 export const CardItemRelationItem = ({
   relatedDocument,
-  relatedCollection,
+  relatedModel,
+}: {
+  relatedDocument: VulcanDocument;
+  relatedModel: VulcanGraphqlModel;
 }) => {
   const Components = useVulcanComponents();
-  const label = relatedCollection.options.getLabel
-    ? relatedCollection.options.getLabel(relatedDocument)
-    : relatedDocument._id;
+  const label =
+    // TODO: we could reenable this getLabel option to label documents of a model
+    /*relatedModel.options.getLabel
+    ? relatedModel.options.getLabel(relatedDocument)
+    :*/ relatedDocument._id;
   const typeName = relatedDocument.__typename;
   const Cell = Components[`${typeName}Cell`];
   return Cell ? (

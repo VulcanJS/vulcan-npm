@@ -5,7 +5,7 @@ import { useVulcanComponents } from "../VulcanComponents";
 export const CardItemRelationHasMany = ({
   relatedDocument: relatedDocuments,
   ...rest
-}) => {
+}: any) => {
   const Components = useVulcanComponents();
   return (
     <div className="contents-hasmany">
@@ -13,7 +13,6 @@ export const CardItemRelationHasMany = ({
         <Components.CardItemRelationItem
           key={relatedDocument._id}
           relatedDocument={relatedDocument}
-          Components={Components}
           {...rest}
         />
       ))}

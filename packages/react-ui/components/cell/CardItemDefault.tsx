@@ -1,4 +1,6 @@
 import React from "react";
 
 // Default
-export const CardItemDefault = ({ value }) => <span>{value.toString()}</span>;
+export const CardItemDefault = ({ value }: { value?: any }) => (
+  <span>{value && value.toString()}</span>
+);

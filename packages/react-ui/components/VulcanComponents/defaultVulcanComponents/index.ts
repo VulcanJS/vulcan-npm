@@ -5,8 +5,16 @@ import FormComponent from "../../form/FormComponent";
 import { FormComponentInner } from "../../form/FormComponentInner";
 import { FormComponentLoader } from "../../form/FormComponentLoader";
 import { FormElement } from "../../form/FormElement";
-import { FormGroup, FormGroupLayout, FormGroupHeader } from "../../form/FormGroup";
-import { FormIntl, FormIntlItemLayout, FormIntlLayout } from "../../form/FormIntl";
+import {
+  FormGroup,
+  FormGroupLayout,
+  FormGroupHeader,
+} from "../../form/FormGroup";
+import {
+  FormIntl,
+  FormIntlItemLayout,
+  FormIntlLayout,
+} from "../../form/FormIntl";
 import { FormErrors } from "../../form/FormErrors";
 import { FormSubmit } from "../../form/FormSubmit";
 import { FormLayout } from "../../form/FormLayout";
@@ -17,7 +25,10 @@ import {
   IconRemove,
 } from "../../form/FormNestedArray";
 import { FormNestedArrayLayout } from "../../form/FormNestedArrayLayout";
-import { FormNestedItem, FormNestedItemLayout } from "../../form/FormNestedItem";
+import {
+  FormNestedItem,
+  FormNestedItemLayout,
+} from "../../form/FormNestedItem";
 import { FormNestedDivider } from "../../form/FormNestedDivider";
 import { FieldErrors } from "../../form/FieldErrors";
 import {
@@ -83,7 +94,7 @@ const defaultCoreComponents: PossibleCoreComponents = {
   TooltipTrigger,
   Dropdown,
   Modal: BootstrapModal,
-  ModalTrigger
+  ModalTrigger,
 };
 const defaultFormComponents: PossibleFormComponents = {
   FormError, // used by: FieldErrors
@@ -149,7 +160,7 @@ const defaultFormComponents: PossibleFormComponents = {
 };
 
 export const defaultVulcanComponents = {
-  ...defaultDatatableComponents
+  ...defaultDatatableComponents,
   ...defaultCellComponents,
   ...defaultCoreComponents,
   ...defaultFormComponents,
