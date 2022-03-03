@@ -1,6 +1,5 @@
 //import { Utils, registerComponent, getCollection } from "meteor/vulcan:lib";
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 // import { intlShape } from "meteor/vulcan:i18n";
 import qs from "qs";
 // import { withRouter } from "react-router";
@@ -377,8 +376,6 @@ export const Datatable = (props: DatatableProps) => {
   }
 };
 
-export default Datatable;
-
 export const DatatableLayout = ({
   model,
   children,
@@ -432,13 +429,6 @@ export const DatatableAboveLeft = (props) => {
   );
 };
 
-/*
-registerComponent({
-  name: "DatatableAboveLeft",
-  component: DatatableAboveLeft,
-  hocs: [memo],
-});
-*/
 export const DatatableAboveRight = (props) => {
   const {
     currentUser,

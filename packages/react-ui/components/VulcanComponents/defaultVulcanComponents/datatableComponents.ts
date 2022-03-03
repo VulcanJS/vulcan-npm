@@ -1,4 +1,4 @@
-import { DatatableComponents } from "..";
+import { DatatableComponents } from "../typings";
 
 import {
   Datatable,
@@ -9,6 +9,7 @@ import {
   DatatableAboveSearchInput,
   DatatableLayout,
 } from "../../Datatable/Datatable";
+console.log("DATATABLE", Datatable);
 import {
   DatatableContents,
   DatatableContentsBodyLayout,
@@ -46,6 +47,7 @@ import { EditButton, EditForm } from "../../Datatable/others/EditButton";
 import { NewButton, NewForm } from "../../Datatable/others/NewButton";
 import { DeleteButton } from "../../Datatable/others/DeleteButton";
 
+console.log("DT", Datatable);
 export const defaultDatatableComponents: DatatableComponents = {
   Datatable: Datatable,
   // DatatableContents:   DatatableContents

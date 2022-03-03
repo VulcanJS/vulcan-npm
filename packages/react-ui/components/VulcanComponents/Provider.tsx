@@ -30,7 +30,11 @@ export const VulcanComponentsProvider = ({
   };
   // For preserving displayName, that is lost after build somehow
   Object.keys(mergedComponents).forEach((componentName) => {
-    mergedComponents[componentName].displayName = "Vulcan." + componentName;
+    if (mergedComponents[componentName]) {
+      mergedComponents[componentName].displayName = "Vulcan." + componentName;
+    } else {
+      console.warn(`Encountered an undefined component: ${componentName}`);
+    }
   });
   return (
     <VulcanComponentsContext.Provider
