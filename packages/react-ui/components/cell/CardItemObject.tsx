@@ -1,19 +1,24 @@
-import { registerComponent } from 'meteor/vulcan:lib';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import without from 'lodash/without';
+import React from "react";
+import { Link } from "react-router-dom";
+import without from "lodash/without";
+import { useVulcanComponents } from "../VulcanComponents";
 
 // Object
-const CardItemObject = props => {
-  const { nestingLevel, value, Components, showExpand } = props;
+export const CardItemObject = (props) => {
+  const { nestingLevel, value, showExpand } = props;
+  const Components = useVulcanComponents();
   const showExpandControl = showExpand || nestingLevel > 1;
-  if (value.__typename === 'User') {
+  if (value.__typename === "User") {
     const user = value;
 
     return (
-      <div className="dashboard-user" style={{ whiteSpace: 'nowrap' }}>
+      <div className="dashboard-user" style={{ whiteSpace: "nowrap" }}>
         <Components.Avatar size="small" user={user} link />
-        {user.pagePath ? <Link to={user.pagePath}>{user.displayName}</Link> : <span>{user.displayName}</span>}
+        {user.pagePath ? (
+          <Link to={user.pagePath}>{user.displayName}</Link>
+        ) : (
+          <span>{user.displayName}</span>
+        )}
       </div>
     );
   } else {
@@ -32,10 +37,14 @@ const CardItemObject = props => {
   }
 };
 
-const CardItemObjectContents = ({ nestingLevel, value: object, Components }) => (
+const CardItemObjectContents = ({
+  nestingLevel,
+  value: object,
+  Components,
+}) => (
   <table className="table table-bordered">
     <tbody>
-      {without(Object.keys(object), '__typename').map(key => (
+      {without(Object.keys(object), "__typename").map((key) => (
         <tr key={key}>
           <td>
             <strong>{key}</strong>
@@ -53,5 +62,3 @@ const CardItemObjectContents = ({ nestingLevel, value: object, Components }) => 
     </tbody>
   </table>
 );
-
-registerComponent({ name: 'CardItemObject', component: CardItemObject });

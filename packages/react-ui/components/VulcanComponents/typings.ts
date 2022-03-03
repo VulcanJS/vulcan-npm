@@ -51,6 +51,23 @@ import type { DatatableSelect } from "../Datatable/DatatableSelect";
 import type { DatatableSubmitSelected } from "../Datatable/DatatableSubmitSelected";
 import type { EditButton, EditForm } from "../Datatable/others/EditButton";
 import type { NewButton, NewForm } from "../Datatable/others/NewButton";
+import type { CardItemSwitcher } from "../cell/CardItem";
+import type {
+  CardItemRelationItem,
+  DefaultCell,
+  UserCell,
+} from "../cell/CardItemRelationItem";
+import type { CardItemArray } from "../cell/CardItemArray";
+import type { CardItemDate } from "../cell/CardItemDate";
+import type { CardItemDefault } from "../cell/CardItemDefault";
+import type { CardItemHTML } from "../cell/CardItemHTML";
+import type { CardItemImage } from "../cell/CardItemImage";
+import type { CardItemNumber } from "../cell/CardItemNumber";
+import type { CardItemObject } from "../cell/CardItemObject";
+import type { CardItemRelationHasMany } from "../cell/CardItemRelationHasMany";
+import type { CardItemRelationHasOne } from "../cell/CardItemRelationHasOne";
+import type { CardItemString } from "../cell/CardItemString";
+import type { CardItemURL } from "../cell/CardItemURL";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -178,6 +195,26 @@ export interface DatatableComponents {
   NewForm: typeof NewForm;
 }
 
+export interface CellComponents {
+  CardItemSwitcher: typeof CardItemSwitcher;
+  CardItem: typeof CardItemSwitcher;
+  DefaultCell: typeof DefaultCell;
+  UserCell: typeof UserCell;
+  CardItemArray: typeof CardItemArray;
+  CardItemDate: typeof CardItemDate;
+  CardItemDefault: typeof CardItemDefault;
+  CardItemHTML: typeof CardItemHTML;
+  CardItemImage: typeof CardItemImage;
+  CardItemNumber: typeof CardItemNumber;
+  CardItemObject: typeof CardItemObject;
+  CardItemRelationHasMany: typeof CardItemRelationHasMany;
+  CardItemRelationHasOne: typeof CardItemRelationHasOne;
+  CardItemRelationItem: typeof CardItemRelationItem;
+  CardItemString: typeof CardItemString;
+  CardItemURL: typeof CardItemURL;
+}
+
 export type PossibleVulcanComponents = PossibleCoreComponents &
   PossibleFormComponents &
-  DatatableComponents;
+  DatatableComponents &
+  CellComponents;
