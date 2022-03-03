@@ -1,4 +1,5 @@
 import { useIntlContext } from "@vulcanjs/i18n";
+import { VulcanDocument } from "@vulcanjs/schema";
 import React from "react";
 import { useVulcanComponents } from "../../VulcanComponents";
 
@@ -37,7 +38,13 @@ export const EditButton = ({
       }
       modalProps={modalProps}
     >
-      <Components.EditForm {...props} formProps={formProps} />
+      <Components.EditForm
+        closeModal={() => {
+          console.warn("closeModal not defined");
+        }}
+        {...props}
+        formProps={formProps}
+      />
     </Components.ModalTrigger>
   );
 };
@@ -53,6 +60,11 @@ export const EditForm = ({
   removeSuccessCallback,
   formProps,
   ...props
+}: {
+  successCallback?: (document: VulcanDocument) => void;
+  closeModal: () => void;
+  removeSuccessCallback?: (document: VulcanDocument) => void;
+  formProps?: any;
 }) => {
   const Components = useVulcanComponents();
   const success = successCallback
