@@ -59,7 +59,7 @@ export const DatatableRow = (props: {
       check,
       user: currentUser,
       document,
-      context: { Users },
+      //context: { Users },
       operationName: "update",
     });
   } /*
@@ -87,10 +87,7 @@ export const DatatableRow = (props: {
     >
       {showSelect && (
         <Components.DatatableSelect
-          Components={Components}
           document={document}
-          currentUser={currentUser}
-          collection={collection}
           toggleItem={toggleItem}
           selectedItems={selectedItems}
         />
@@ -98,11 +95,10 @@ export const DatatableRow = (props: {
       {columns.map((column, index) => (
         <Components.DatatableCell
           key={index}
-          Components={Components}
           column={column}
           document={document}
           currentUser={currentUser}
-          collection={collection}
+          model={model}
         />
       ))}
       {showEdit && canUpdate ? ( // openCRUD backwards compatibility

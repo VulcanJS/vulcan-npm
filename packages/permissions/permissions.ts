@@ -16,7 +16,7 @@ import cloneDeep from "lodash/cloneDeep";
 //   forEachDocumentField,
 //   deprecate,
 // } from "meteor/vulcan:lib";
-import { VulcanModel } from "@vulcanjs/model";
+import { PermissionChecker, VulcanModel } from "@vulcanjs/model";
 import {
   VulcanFieldSchema,
   VulcanSchema,
@@ -477,24 +477,33 @@ export const canUpdateField = function (
 };
 
 /** @function
- * Check if a user passes a permission check (new API)
+ * Check if a user passes a permission check
+ *
+ * Breaking change compared to Vulcan Meteor: now if the permission
+ * check is a function, it also applies to the admin (previously, admins would bypass all checks)
+ *
+ *
  * @param {Object} check - The permission check being tested
  * @param {Object} user - The user performing the action
  * @param {Object} document - The document being edited or inserted
  */
-export const permissionCheck = (options: {
-  check: Function | Array<GroupName>;
-  user: VulcanUser;
-  document?: VulcanDocument;
-}) => {
+export const permissionCheck = (
+  options: {
+    check: PermissionChecker | Array<GroupName> | GroupName;
+  } & Parameters<PermissionChecker>[0]
+) => {
   const { check, user, document } = options;
-  if (isAdmin(user)) {
+  if (typeof check === "function") {
+    return check({ user, document });
+  } else if (isAdmin(user)) {
     // admins always pass all permission checks
     return true;
-  } else if (typeof check === "function") {
-    return check(options);
   } else if (Array.isArray(check)) {
     return isMemberOf(user, check, document);
+  } else if (typeof check === "string") {
+    return isMemberOf(user, [check], document);
+  } else {
+    return false;
   }
 };
 

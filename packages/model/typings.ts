@@ -1,4 +1,4 @@
-import { VulcanSchema } from "@vulcanjs/schema";
+import { VulcanDocument, VulcanSchema } from "@vulcanjs/schema";
 
 type FilterFunction = (args: {
   input: any;
@@ -19,10 +19,25 @@ type ArrayOrSingle<T> = Array<T> | T;
 // to avoid a circular dependency)
 type GroupName = string;
 
+export type PermissionChecker = (options: {
+  document?: VulcanDocument;
+  /**
+   * NOTE: vulcan/permissions depends on VulcanModel so the type
+   * cannot be VulcanUser. We should either expose VulcanUser from vulcan/model directly
+   * or keep it as is
+   *
+   * Or maybe "permissions" should extend vulcan/model with the permissions field
+   */
+  user?: VulcanDocument & { groups: Array<GroupName> };
+  /** Request context, will only exist server-side */
+  context?: any;
+  /** Request context, will only exist server-side */
+  operationName?: string;
+}) => boolean;
 export interface ModelMutationPermissionsOptions {
-  canCreate?: Function | ArrayOrSingle<GroupName>;
-  canUpdate?: Function | ArrayOrSingle<GroupName>;
-  canDelete?: Function | ArrayOrSingle<GroupName>;
+  canCreate?: PermissionChecker | ArrayOrSingle<GroupName>;
+  canUpdate?: PermissionChecker | ArrayOrSingle<GroupName>;
+  canDelete?: PermissionChecker | ArrayOrSingle<GroupName>;
 }
 export interface ModelQueryPermissionsOptions {
   canRead?: CanReadFunction | ArrayOrSingle<GroupName>;
