@@ -149,7 +149,7 @@ const operationChecks: {
 };
 
 interface MutationCheckOptions {
-  user?: any;
+  user?: any | null;
   document?: VulcanDocument | null;
   model: VulcanGraphqlModel;
   operationName: OperationName;

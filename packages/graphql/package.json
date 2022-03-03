@@ -5,10 +5,17 @@
   "files": [
     "dist/"
   ],
+  "type": "module",
   "exports": {
-    ".": "./dist/index.js",
-    "./server": "./dist/server/index.js",
-    "./testing": "./dist/testing.js"
+    ".": {
+      "node": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    },
+    "./testing": {
+      "node": "./dist/testing.cjs",
+      "import": "./dist/testing.js"
+    },
+    "./server": "./dist/server/index.cjs"
   },
   "types": "./dist/index.d.ts",
   "typesVersions": {
@@ -51,9 +58,11 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
+    "build:tsup": "tsup",
     "build:common": "webpack --config ./webpack.config.js",
     "build:server": "webpack --config ./webpack.config.server.js",
-    "build": "yarn run build:common && yarn run build:server"
+    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
+    "build": "yarn run build:tsup && yarn run build:types # yarn run build:common && yarn run build:server"
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"

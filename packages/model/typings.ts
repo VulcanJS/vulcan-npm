@@ -20,7 +20,7 @@ type ArrayOrSingle<T> = Array<T> | T;
 type GroupName = string;
 
 export type PermissionChecker = (options: {
-  document?: VulcanDocument;
+  document?: VulcanDocument | null;
   /**
    * NOTE: vulcan/permissions depends on VulcanModel so the type
    * cannot be VulcanUser. We should either expose VulcanUser from vulcan/model directly
@@ -28,7 +28,7 @@ export type PermissionChecker = (options: {
    *
    * Or maybe "permissions" should extend vulcan/model with the permissions field
    */
-  user?: VulcanDocument & { groups: Array<GroupName> };
+  user?: (VulcanDocument & { groups: Array<GroupName> }) | null;
   /** Request context, will only exist server-side */
   context?: any;
   /** Request context, will only exist server-side */
