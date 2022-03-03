@@ -24,6 +24,7 @@ export const VulcanComponentsContext =
     FormComponentDate: Dummy,
     FormComponentDateTime: Dummy,
     FormComponentDefault: Dummy,
+    FormComponentText: Dummy,
     FormComponentEmail: Dummy,
     FormComponentInner: Dummy,
     FormComponentLikert: Dummy,

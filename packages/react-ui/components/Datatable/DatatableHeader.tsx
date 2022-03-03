@@ -3,7 +3,7 @@ import { formatLabel, useIntlContext } from "@vulcanjs/i18n";
 import { VulcanModel } from "@vulcanjs/model";
 import { useVulcanComponents } from "../VulcanComponents";
 
-interface DatatableColumnDefinition {
+export interface DatatableColumnDefinition {
   name: string;
   label?: string;
   options?: any;
@@ -74,13 +74,15 @@ export const DatatableHeader = ({
         <span className="datatable-header-cell-label">{formattedLabel}</span>
         {column.sortable && (
           <Components.DatatableSorter
-            model={model}
-            field={field}
             name={column.name}
             label={formattedLabel}
             toggleSort={toggleSort}
             currentSort={currentSort}
-            sortable={column.sortable}
+            // TODO: those props were maybe needed when extending this component?
+            // They are not used by the default version though
+            //model={model}
+            //field={field}
+            //sortable={column.sortable}
           />
         )}
         {column.filterable && (

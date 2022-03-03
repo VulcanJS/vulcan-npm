@@ -36,7 +36,7 @@ export const NewButton = ({
   );
 };
 
-interface NewFormProps {
+export interface NewFormProps {
   model: VulcanModel;
   successCallback?: (document: VulcanDocument) => void;
   closeModal: () => void;

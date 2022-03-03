@@ -22,7 +22,7 @@ const getFieldSchema = (fieldName: string, model: VulcanGraphqlModel) => {
   return fieldSchema;
 };
 
-interface CellProps {
+export interface CellProps {
   nestingLevel?: number;
   value?: any;
   typeName?: string;

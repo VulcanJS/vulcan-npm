@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useVulcanComponents } from "../VulcanComponents";
 
 export const ModalTrigger = (props: {
-  openCallback: () => void;
-  closeCallback: () => void;
-  onClick: () => void;
+  openCallback?: () => void;
+  closeCallback?: () => void;
+  onClick?: () => void;
   trigger?: any;
   component?: any;
   children?: any;

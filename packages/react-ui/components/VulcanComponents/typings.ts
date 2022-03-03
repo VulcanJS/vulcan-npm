@@ -4,6 +4,8 @@ import React from "react";
 import type { FormSubmitProps } from "../form/FormSubmit";
 import type { ButtonProps } from "../form/core/Button";
 import type { MutationButtonProps } from "../MutationButton";
+
+// datatable
 import type {
   Datatable,
   DatatableAbove,
@@ -51,6 +53,9 @@ import type { DatatableSelect } from "../Datatable/DatatableSelect";
 import type { DatatableSubmitSelected } from "../Datatable/DatatableSubmitSelected";
 import type { EditButton, EditForm } from "../Datatable/others/EditButton";
 import type { NewButton, NewForm } from "../Datatable/others/NewButton";
+import { DeleteButton } from "../Datatable/others/DeleteButton";
+import { BootstrapModal as Modal } from "../bootstrap/Modal";
+// Cell
 import type { CardItemSwitcher } from "../cell/CardItem";
 import type {
   CardItemRelationItem,
@@ -68,8 +73,7 @@ import type { CardItemRelationHasMany } from "../cell/CardItemRelationHasMany";
 import type { CardItemRelationHasOne } from "../cell/CardItemRelationHasOne";
 import type { CardItemString } from "../cell/CardItemString";
 import type { CardItemURL } from "../cell/CardItemURL";
-import { DeleteButton } from "../Datatable/others/DeleteButton";
-import { BootstrapModal as Modal } from "../bootstrap/Modal";
+import type { ModalTrigger } from "../bootstrap/ModalTrigger";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -85,12 +89,15 @@ export interface PossibleCoreComponents {
   TooltipTrigger: React.ComponentType<any>;
   Dropdown: React.ComponentType<any>;
   Modal: typeof Modal;
+  ModalTrigger: typeof ModalTrigger;
 }
 // TODO: differentiate components that are provided out of the box and those that require a UI frameworK?
 export interface PossibleFormComponents {
   FormError: any; // FieldErrors
   // From FormComponent
   FormComponentDefault: any;
+  /** Alias of the default FormComponent */
+  FormComponentText: any;
   FormComponentPassword: any;
   FormComponentNumber: any;
   FormComponentUrl: any;
@@ -142,6 +149,7 @@ export interface PossibleFormComponents {
   FormOptionLabel: any;
   // Form
   Form: any;
+  SmartForm: any;
   // Used by ui-boostrap and ui-material
   FormItem;
   // flag to detect parent state

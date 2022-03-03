@@ -73,7 +73,7 @@ class Group {
  * @param {Object} user
  */
 export const getGroups = (
-  user: VulcanUser | null,
+  user: VulcanUser | null | undefined,
   document?: VulcanDocument | null
 ): Array<GroupName> => {
   let userGroups = [
@@ -129,7 +129,7 @@ const getActions = (user: Users) => {
  * @param {String} group or array of groups
  */
 export const isMemberOf = (
-  user: VulcanUser | null,
+  user: VulcanUser | null | undefined,
   groupOrGroups: Array<GroupName> | GroupName,
   document?: VulcanDocument | null
 ) => {

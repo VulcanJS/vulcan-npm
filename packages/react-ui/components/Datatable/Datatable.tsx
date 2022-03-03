@@ -53,7 +53,7 @@ Datatable.defaultProps = {
   useUrlState: true,
 };*/
 
-interface DatatableProps<TData = any> {
+export interface DatatableProps<TData = any> {
   model: VulcanGraphqlModel;
   initialState?: any;
   /** Datatable will automatically alter the URL. Set to false when using more than 1 datatable on a page. */

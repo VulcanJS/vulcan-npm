@@ -212,11 +212,16 @@ Checkboxes
 Operator: _in
 
 */
-const checkboxOperator = "_in";
+export type CheckboxOperator = "_in";
+const checkboxOperator: CheckboxOperator = "_in";
 export const DatatableFilterCheckboxes = ({
   options,
-  filters = { [checkboxOperator]: [] },
+  filters = { _in: [] },
   setFilters,
+}: {
+  options?: any;
+  filters?: { [operator in CheckboxOperator]: Array<any> };
+  setFilters?: any;
 }) => {
   const Components = useVulcanComponents();
   return (
