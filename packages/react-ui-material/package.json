@@ -6,9 +6,20 @@
   "files": [
     "dist/"
   ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "node": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config ./webpack.config.js"
+    "build:tsup": "tsup",
+    "build:webpack": "webpack --config ./webpack.config.js",
+    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
+    "build": "yarn run build:tsup && yarn run build:types # yarn run build:webpack # yarn run build:esm && yarn run build:types # && yarn run build:cjs"
   },
   "author": "",
   "license": "MIT",
