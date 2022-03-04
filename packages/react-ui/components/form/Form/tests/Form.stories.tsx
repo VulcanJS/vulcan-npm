@@ -4,8 +4,12 @@ import { Story, Meta } from "@storybook/react";
 import { Form } from "../Form";
 import { FormProps } from "../typings";
 import { createModel } from "@vulcanjs/model";
-import SimpleSchema from "simpl-schema";
 import * as models from "../../tests/fixtures/models";
+import {
+  defaultFieldSchema,
+  basicFieldsSchema,
+  withDefaultFieldSchema,
+} from "../../tests/fixtures/schemas";
 import { VulcanComponentsProvider } from "../../../VulcanComponents/Provider";
 import { action } from "@storybook/addon-actions";
 
@@ -71,51 +75,6 @@ export const EmptyForm = FormTemplate.bind({
     }),
   },
 });
-
-const defaultFieldSchema = {
-  type: String,
-  canRead: ["guests"],
-  canCreate: ["guests"],
-  canUpdate: ["guests"],
-};
-import fromPairs from "lodash/fromPairs";
-import mapValues from "lodash/mapValues";
-const withDefaultFieldSchema = (partialSchema) =>
-  mapValues(partialSchema, (fieldSchema) => ({
-    ...defaultFieldSchema,
-    ...fieldSchema,
-  }));
-
-const basicTypes = [
-  ["String", String],
-  ["Date", Date],
-  ["Boolean", Boolean],
-  ["Number", Number],
-  ["SimpleSchema.Integer", SimpleSchema.Integer],
-];
-const basicFieldsSchema = withDefaultFieldSchema(
-  fromPairs([
-    // native inputs
-    ...basicTypes.map(([name, type]) => [name, { type }]),
-    ...["password", "url", "email", "textarea", "statictext"].map((input) => {
-      const fieldName = `string-${input}`;
-      return [
-        fieldName,
-        {
-          type: String,
-          input,
-        },
-      ];
-    }),
-    ["date-datetime", { type: Date, input: "datetime" }],
-    ["date-date", { type: Date, input: "date" }],
-    ["date-time", { type: Date, input: "time" }],
-    /*
-  TODO:
-  likert: {},
-  */
-  ])
-);
 
 export const OneTextInput = FormTemplate.bind({});
 OneTextInput.args = {

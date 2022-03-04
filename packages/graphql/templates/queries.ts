@@ -52,6 +52,12 @@ export const multiQueryTemplate = ({ typeName, multiTypeName }) =>
     false
   )}): ${multiOutputType(typeName)}`;
 
+/**
+ * Get the "multi" query operation name for a given model
+ */
+export const multiOperationName = (model: VulcanGraphqlModel) =>
+  multiQueryType(model.graphql.multiTypeName);
+
 /* ------------------------------------- Query Input Types ------------------------------------- */
 
 /*

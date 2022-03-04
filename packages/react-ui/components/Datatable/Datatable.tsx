@@ -284,8 +284,8 @@ export const Datatable = (props: DatatableProps) => {
     return (
       <Components.DatatableContents
         {...props}
-        datatableData={data || multiRes.documents}
-        totalCount={multiRes?.totalCount}
+        datatableData={data}
+        totalCount={data.length}
         results={data}
         showEdit={false}
         showDelete={false}
@@ -293,9 +293,9 @@ export const Datatable = (props: DatatableProps) => {
         modalProps={modalProps}
       />
     );
-  } else {
-    // dynamic datatable with data loading
-    /*
+  }
+  // dynamic datatable with data loading
+  /*
       const options = {
         collection
         ...options,
@@ -305,72 +305,73 @@ export const Datatable = (props: DatatableProps) => {
         Components.DatatableContents
       );*/
 
-    let canCreate = false;
-    // new APIs
-    const check = model.permissions.canCreate;
+  let canCreate = false;
+  // new APIs
+  const check = model.permissions.canCreate;
 
-    // openCRUD backwards compatibility
-    //const check = model.graphql.mutations.create.check;
-    //_get(collection, "options.mutations.new.check") ||
-    //_get(collection, "options.mutations.create.check");
+  // openCRUD backwards compatibility
+  //const check = model.graphql.mutations.create.check;
+  //_get(collection, "options.mutations.new.check") ||
+  //_get(collection, "options.mutations.create.check");
 
-    if (isAdmin(currentUser)) {
-      canCreate = true;
-    } else if (check) {
-      canCreate = permissionCheck({
-        check,
-        user: currentUser,
-        //context: { Users },
-        operationName: "create",
-      });
-    } /* legacy 
+  if (isAdmin(currentUser)) {
+    canCreate = true;
+  } else if (check) {
+    canCreate = permissionCheck({
+      check,
+      user: currentUser,
+      //context: { Users },
+      operationName: "create",
+    });
+  } /* legacy 
     else if (check) {
       canCreate = check && check(currentUser, {}, { Users });
     }*/
 
-    const input: { search?: string; sort?: any; filter?: any } = {};
-    if (!_isEmpty(state.search)) {
-      input.search = state.search;
-    }
-    if (!_isEmpty(state.currentSort)) {
-      input.sort = state.currentSort;
-    }
-    if (!_isEmpty(state.currentFilters)) {
-      input.filter = state.currentFilters;
-    }
-
-    return (
-      <Components.DatatableLayout
-        model={model}
-        //collectionName={collection.options.collectionName}
-      >
-        <Components.DatatableAbove
-          Components={Components}
-          {...props}
-          model={model}
-          canInsert={canCreate}
-          canCreate={canCreate}
-          searchValue={state.searchValue}
-          updateSearch={updateSearch}
-          selectedItems={state.selectedItems}
-          onSubmitSelected={onSubmitSelected}
-        />
-        <Components.DatatableContents
-          {...props}
-          model={model}
-          // TODO: check where this prop is used
-          currentUser={currentUser}
-          toggleSort={toggleSort}
-          currentSort={state.currentSort}
-          submitFilters={submitFilters}
-          currentFilters={state.currentFilters}
-          selectedItems={state.selectedItems}
-          //input={input}
-          toggleItem={toggleItem}
-        />
-      </Components.DatatableLayout>
-    );
+  const input: { search?: string; sort?: any; filter?: any } = {};
+  if (!_isEmpty(state.search)) {
+    input.search = state.search;
   }
+  if (!_isEmpty(state.currentSort)) {
+    input.sort = state.currentSort;
+  }
+  if (!_isEmpty(state.currentFilters)) {
+    input.filter = state.currentFilters;
+  }
+
+  return (
+    <Components.DatatableLayout
+      model={model}
+      //collectionName={collection.options.collectionName}
+    >
+      <Components.DatatableAbove
+        {...props}
+        model={model}
+        canInsert={canCreate}
+        canCreate={canCreate}
+        searchValue={state.searchValue}
+        updateSearch={updateSearch}
+        selectedItems={state.selectedItems}
+        onSubmitSelected={onSubmitSelected}
+      />
+      <Components.DatatableContents
+        {...props}
+        datatableData={multiRes.documents}
+        totalCount={multiRes.totalCount}
+        count={multiRes.count}
+        model={model}
+        // TODO: check where this prop is used
+        currentUser={currentUser}
+        toggleSort={toggleSort}
+        currentSort={state.currentSort}
+        submitFilters={submitFilters}
+        currentFilters={state.currentFilters}
+        selectedItems={state.selectedItems}
+        //input={input}
+        toggleItem={toggleItem}
+      />
+    </Components.DatatableLayout>
+  );
 };
 
 export const DatatableLayout = ({
