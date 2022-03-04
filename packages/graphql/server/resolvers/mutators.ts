@@ -39,7 +39,6 @@ import { runCallbacks } from "@vulcanjs/core";
 
 import { throwError } from "./errors";
 import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
-import { isMemberOf } from "@vulcanjs/permissions";
 import { getModelConnector } from "./context";
 import {
   UpdateInput,
@@ -52,7 +51,7 @@ import isEmpty from "lodash/isEmpty";
 import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
-import { restrictViewableFields } from "@vulcanjs/permissions";
+import { isMemberOf, restrictViewableFields } from "@vulcanjs/permissions";
 import { FilterableInput } from "@vulcanjs/crud";
 
 interface CreateMutatorProperties {
