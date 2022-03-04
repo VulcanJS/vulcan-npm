@@ -6,7 +6,15 @@
   "files": [
     "dist/"
   ],
-  "author": "eric-burel <eb@lebrun-burel.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "node": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "author": "eric-burel <eb@lbke.fr>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "repository": {
@@ -15,7 +23,10 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "webpack --config ./webpack.config.js"
+    "build:tsup": "tsup",
+    "build:webpack": "webpack --config ./webpack.config.js",
+    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
+    "build":"yarn run build:tsup && yarn run build:types"
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
