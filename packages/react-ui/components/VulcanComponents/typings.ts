@@ -153,7 +153,7 @@ export interface PossibleFormComponents {
   // Used by ui-boostrap and ui-material
   FormItem;
   // flag to detect parent state
-  __not_intialized?: boolean;
+  __not_initialized?: boolean;
 }
 
 export interface DatatableComponents {

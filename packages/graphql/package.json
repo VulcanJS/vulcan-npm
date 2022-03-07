@@ -62,7 +62,7 @@
     "build:common": "webpack --config ./webpack.config.js",
     "build:server": "webpack --config ./webpack.config.server.js",
     "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
-    "build": "yarn run build:tsup && yarn run build:types # yarn run build:common && yarn run build:server"
+    "build": "yarn run build:tsup"
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"

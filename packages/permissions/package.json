@@ -16,9 +16,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:tsup": "tsup",
-    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
     "build:webpack": "webpack --config ./webpack.config.js",
-    "build": "yarn run build:tsup && yarn run build:types # yarn run build:common && yarn run build:server"
+    "build": "yarn run build:tsup",
+    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map"
   },
   "author": "",
   "license": "MIT",

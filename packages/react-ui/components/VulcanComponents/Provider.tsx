@@ -9,6 +9,8 @@ import { defaultVulcanComponents } from "./defaultVulcanComponents";
 import { PossibleVulcanComponents } from "./typings";
 import { VulcanComponentsContext } from "./Context";
 import { useVulcanComponents } from "./Consumer";
+import { debugVulcan } from "@vulcanjs/utils";
+const debugComponents = debugVulcan("components"); //console.log;
 
 /**
  *
@@ -22,12 +24,17 @@ export const VulcanComponentsProvider = ({
   children: React.ReactNode;
 }) => {
   const currentComponents = useVulcanComponents();
+  debugComponents(
+    "Current components __not_initialized?",
+    currentComponents.__not_initialized
+  );
   const mergedComponents = {
     ...defaultVulcanComponents,
     // merge with a parent Provider if needed
-    ...(currentComponents?.__not_intialized ? {} : currentComponents || {}),
+    ...(currentComponents?.__not_initialized ? {} : currentComponents || {}),
     ...(value || {}),
   };
+  debugComponents("Merged components", mergedComponents);
   // For preserving displayName, that is lost after build somehow
   Object.keys(mergedComponents).forEach((componentName) => {
     if (mergedComponents[componentName]) {
@@ -46,3 +53,5 @@ export const VulcanComponentsProvider = ({
     />
   );
 };
+// Needed to guarantee that the exports stays named
+VulcanComponentsProvider.displayName = "VulcanComponentsProvider";

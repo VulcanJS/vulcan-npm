@@ -8,6 +8,9 @@ const dummyHandler = {
     if (property in target) {
       return target[property];
     }
+    console.log(
+      `Property ${property} not in possible Vulcan components, returning Dummy`
+    );
     return Dummy;
   },
 };
@@ -18,7 +21,7 @@ export const VulcanComponentsContext =
     // @ts-ignore
     new Proxy(
       {
-        __not_intialized: true,
+        __not_initialized: true,
       },
       dummyHandler
     )

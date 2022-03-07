@@ -19,7 +19,7 @@ Example Usage
 import React, { useState } from "react";
 import { DocumentNode } from "graphql";
 import { gql, MutationHookOptions, useMutation } from "@apollo/client";
-import { useVulcanComponents } from "./VulcanComponents";
+import { useVulcanComponents } from "./VulcanComponents/Consumer";
 import { LoadingButtonProps } from "./LoadingButton";
 // import withMutation from '../containers/registeredMutation';
 

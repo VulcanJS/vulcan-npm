@@ -19,7 +19,7 @@
     "build:tsup": "tsup",
     "build:webpack": "webpack --config ./webpack.config.js",
     "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
-    "build": "yarn run build:tsup && yarn run build:types # yarn run build:webpack # yarn run build:esm && yarn run build:types # && yarn run build:cjs"
+    "build": "yarn run build:tsup"
   },
   "author": "",
   "license": "MIT",
