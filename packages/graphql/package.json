@@ -39,6 +39,7 @@
     "@vulcanjs/permissions": "^0.5.3",
     "@vulcanjs/schema": "^0.5.3",
     "@vulcanjs/utils": "^0.5.3",
+    "@vulcanjs/crud": "^0.5.3",
     "debug": "^4.3.1",
     "deepmerge": "^4.2.2",
     "graphql-date": "^1.0.3",

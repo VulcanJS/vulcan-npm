@@ -43,7 +43,8 @@
   },
   "peerDependencies": {
     "react": ">= 16.13.1",
-    "react-dom": ">= 16.13.1"
+    "react-dom": ">= 16.13.1",
+    "@apollo/client": "^3.5.5"
   },
   "publishConfig": {
     "access": "public"
