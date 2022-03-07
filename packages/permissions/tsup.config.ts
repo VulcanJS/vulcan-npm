@@ -14,7 +14,8 @@ export default defineConfig([
     entry: ["index.ts"],
     ...commonConfig,
     // IMPORTANT: keep iife around so that CommonJS ends with .cjs
-    format: ["cjs", "esm", "iife"],
+    // FIMXE: @see https://github.com/vercel/next.js/issues/35112 doesn't work when imported from server entrypoint
+    format: ["cjs", "esm" /*, "iife"*/],
     outDir: "dist",
   },
 ]);

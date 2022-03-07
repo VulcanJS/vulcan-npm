@@ -6,11 +6,10 @@
   "files": [
     "dist/"
   ],
-  "type": "module",
   "exports": {
     ".": {
-      "node": "./dist/index.cjs",
-      "import": "./dist/index.js"
+      "node": "./dist/index.js",
+      "import": "./dist/index.mjs"
     }
   },
   "scripts": {
