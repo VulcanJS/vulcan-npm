@@ -4,11 +4,16 @@ import { VulcanDocument } from "@vulcanjs/schema";
 import React from "react";
 import { useVulcanComponents } from "../VulcanComponents";
 
-const getTypeName = (value, fieldName, collection) => {
-  const schema = collection && collection.simpleSchema()._schema;
+const getTypeName = (
+  value: any,
+  fieldName: string,
+  model: VulcanGraphqlModel
+) => {
+  const schema = model.schema;
   const fieldSchema = schema && schema[fieldName];
   if (fieldSchema) {
-    const type = fieldSchema.type.singleType;
+    // TODO: not 100% sure it works
+    const type = fieldSchema.type; //.singleType;
     const typeName = typeof type === "function" ? type.name : type;
     return typeName;
   } else {

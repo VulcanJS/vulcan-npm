@@ -356,7 +356,8 @@ export const Datatable = (props: DatatableProps) => {
       />
       <Components.DatatableContents
         {...props}
-        datatableData={multiRes.documents}
+        //datatableData={multiRes.documents}
+        results={multiRes.documents}
         totalCount={multiRes.totalCount}
         count={multiRes.count}
         model={model}
