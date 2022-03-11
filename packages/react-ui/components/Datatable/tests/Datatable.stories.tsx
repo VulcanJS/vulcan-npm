@@ -30,14 +30,18 @@ export default {
 } as Meta<DatatableProps>;
 
 const oneMultiMock: GraphqlQueryStub<{
-  oneFields: { results: Array<OneFieldType> };
+  // @see https://community.redwoodjs.com/t/dealing-with-graphql-success-but-data-is-null-in-storybook/2098
+  // It is critical that mocks get all needed fields!
+  // We should improve the typings
+  oneFields: { results: Array<OneFieldType>; totalCount: number };
 }> = {
   operationName: multiOperationName(OneFieldGraphql),
   response: {
     data: {
       // NOTE: MSW is ultra sensitive to missing __typename
       oneFields: {
-        results: [{ text: "hello!", __typename: "OneField" }],
+        results: [{ _id: "1", text: "hello!", __typename: "OneField" }],
+        totalCount: 0,
       },
     },
   },

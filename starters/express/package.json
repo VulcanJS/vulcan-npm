@@ -8,7 +8,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/app.js",
-    "dev": "nodemon",
+    "dev": "NODE_ENV=development nodemon",
     "dev:esbuild": "node -r esbuild-register ./src/app.ts # Not working yet",
     "transpile": "tsc # Beware, this won't resolve local dependencies (missing .js)",
     "build:tsup": "tsup-node",

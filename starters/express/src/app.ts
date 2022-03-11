@@ -65,7 +65,8 @@ let mongoUri;
 const startMongo = async () => {
   // Spin up a dummy mongo server
   mongod = await MongoMemoryServer.create();
-  mongoUri = await mongod.getUri();
+  mongoUri = mongod.getUri();
+  console.log("MongoUri", mongoUri);
   // const port = await mongod.getPort();
   // const dbPath = await mongod.getDbPath();
   // const dbName = await mongod.getDbName();
@@ -73,6 +74,7 @@ const startMongo = async () => {
   await mongoose.connect(mongoUri);
 };
 const closeMongo = async () => {
+  console.log("Exiting, close Mongo connection");
   // remove the collection
   // disconnect the client
   await mongoose.disconnect();
@@ -86,7 +88,7 @@ const startServer = async () => {
   const server = new ApolloServer({
     schema: vulcanSchema,
     context: ({ req }) => contextFromReq(models)(req as Request),
-    introspection: false,
+    introspection: process.env.NODE_ENV === "development", //false,
     //playground: false,
   });
   await server.start();
@@ -104,12 +106,11 @@ const startServer = async () => {
 };
 
 const start = async () => {
-  try {
-    await startMongo();
-    await startServer();
-  } finally {
-    await closeMongo();
-  }
+  await startMongo();
+  await startServer();
 };
 
 start();
+
+process.on("SIGINT", closeMongo);
+process.on("exit", closeMongo);

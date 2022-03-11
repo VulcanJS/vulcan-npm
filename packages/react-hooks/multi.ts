@@ -223,7 +223,7 @@ interface UseMultiOptions<TModel, TData, TVariables>
   queryOptions?: QueryHookOptions<TData, TVariables>;
 } // & useQuery options?
 
-interface MultiQueryResult<TModel = any, TData = any>
+export interface MultiQueryResult<TModel = any, TData = any>
   extends QueryResult<TData> {
   graphQLErrors: any;
   loadingInitial: boolean;
