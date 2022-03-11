@@ -113,7 +113,7 @@ const bootstrapFormComponents: Partial<PossibleFormComponents> = {
   //Form,
 };
 
-export const bootstrapVulcanComponents = {
+export const bootstrapVulcanComponents: any = {
   ...bootstrapCoreComponents,
   ...bootstrapFormComponents,
 };

@@ -2,13 +2,13 @@
   "name": "@vulcanjs/utils",
   "version": "0.5.4-alpha.0",
   "description": "Vulcan helpers",
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "files": [
     "dist/"
   ],
   "exports": {
     ".": "./dist/index.js",
-    "./testing": "./dist/testing.js"
+    "./testing": "./dist/testing.mjs"
   },
   "types": "./dist/index.d.ts",
   "typesVersions": {
@@ -27,7 +27,10 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "webpack --config ./webpack.config.js"
+    "build:webpack": "webpack --config ./webpack.config.js",
+    "build:tsup": "tsup",
+    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
+    "build": "yarn run build:tsup"
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
