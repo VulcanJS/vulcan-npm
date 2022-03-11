@@ -26,6 +26,7 @@ build
 coverage/
 coverage-unit/
 dist
+node_modules
 package-lock.json
 
 #vscode extension

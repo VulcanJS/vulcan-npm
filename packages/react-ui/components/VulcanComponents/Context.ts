@@ -26,3 +26,6 @@ export const VulcanComponentsContext =
       dummyHandler
     )
   );
+
+// Needed to guarantee that the exports stays named
+VulcanComponentsContext.displayName = "VulcanComponentsContext";

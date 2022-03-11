@@ -1,0 +1,28 @@
+{
+  "name": "vulcan-express",
+  "version": "0.0.1",
+  "description": "Vulcan Express",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "esr ./src/app.ts",
+    "build": "etsc"
+  },
+  "author": "Eric Burel (LBKE)",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.14.25",
+    "esbuild-node-tsc": "^1.8.3",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "@graphql-tools/schema": "^8.3.2",
+    "@vulcanjs/graphql": "^0.5.4-alpha.8",
+    "@vulcanjs/mongo": "^0.5.4-alpha.7",
+    "apollo-server-express": "^3.6.4",
+    "esbuild-runner": "^2.2.1",
+    "express": "^4.17.3",
+    "mongodb-memory-server": "^8.4.0",
+    "mongoose": "^6.2.5"
+  }
+}

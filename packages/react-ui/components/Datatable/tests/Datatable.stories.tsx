@@ -29,7 +29,7 @@ export default {
   parameters: { actions: { argTypesRegex: "^.*Callback$" } },
 } as Meta<DatatableProps>;
 
-const multiMock: GraphqlQueryStub<{
+const oneMultiMock: GraphqlQueryStub<{
   oneFields: { results: Array<OneFieldType> };
 }> = {
   operationName: multiOperationName(OneFieldGraphql),
@@ -42,14 +42,34 @@ const multiMock: GraphqlQueryStub<{
     },
   },
 };
+const emptyMultiMock: GraphqlQueryStub<{
+  oneFields: { results: Array<OneFieldType> };
+}> = {
+  operationName: multiOperationName(OneFieldGraphql),
+  response: {
+    data: {
+      // NOTE: MSW is ultra sensitive to missing __typename
+      oneFields: {
+        results: [],
+      },
+    },
+  },
+};
 
 // STORIES
 const DatatableTemplate: Story<DatatableProps> = (args) => (
   <Datatable {...args} />
 );
 export const DefaultDatatable = DatatableTemplate.bind({});
+DefaultDatatable.parameters = {
+  msw: {
+    handlers: [...graphqlQueryStubsToMsw([emptyMultiMock])],
+  },
+};
 
 export const WithOneItem = DatatableTemplate.bind({});
 WithOneItem.parameters = {
-  msw: [...graphqlQueryStubsToMsw([multiMock])],
+  msw: {
+    handlers: [...graphqlQueryStubsToMsw([oneMultiMock])],
+  },
 };

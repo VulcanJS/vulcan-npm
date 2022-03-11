@@ -53,5 +53,3 @@ export const VulcanComponentsProvider = ({
     />
   );
 };
-// Needed to guarantee that the exports stays named
-VulcanComponentsProvider.displayName = "VulcanComponentsProvider";

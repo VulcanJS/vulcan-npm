@@ -1,8 +1,8 @@
 import React from "react";
 import { IntlProvider, makeStringsRegistry } from "../packages/i18n";
 // @see https://storybook.js.org/addons/msw-storybook-addon
-import { initializeWorker, mswDecorator } from "msw-storybook-addon";
-initializeWorker();
+import { initialize, mswDecorator } from "msw-storybook-addon";
+initialize();
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },

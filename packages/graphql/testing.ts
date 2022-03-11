@@ -21,6 +21,7 @@ export interface GraphqlMutationStub<TData = any> {
 export const graphqlQueryStubsToMsw = (stubs: Array<GraphqlQueryStub>) => {
   return stubs.map((stub) => {
     const { operationName, response } = stub;
+    console.log("Registering mock for", operationName);
     return graphql.query(operationName, (req, res, ctx) => {
       return res(ctx.data(response.data));
     });
