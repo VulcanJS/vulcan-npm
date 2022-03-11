@@ -19,6 +19,7 @@ const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
       label={label}
       inputProperties={inputProperties}
     >
+      {/* @ts-ignore FIXME: leads to "Types of property 'capture' are incompatible" when trying to build the types... */}
       <input
         {...otherInputProperties}
         id={name} // needed for accessibility. NOTE: we might need to use "context" as a prefix when having
