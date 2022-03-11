@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-ui",
-  "version": "0.5.4-alpha.7",
+  "version": "0.5.4-alpha.8",
   "description": "Vulcan UI components for React",
   "main": "./dist/index.js",
   "files": [
@@ -24,11 +24,11 @@
   "license": "MIT",
   "dependencies": {
     "@vulcanjs/core": "^0.5.4-alpha.7",
-    "@vulcanjs/graphql": "^0.5.4-alpha.7",
+    "@vulcanjs/graphql": "^0.5.4-alpha.8",
     "@vulcanjs/i18n": "^0.5.4-alpha.7",
     "@vulcanjs/model": "^0.5.4-alpha.7",
     "@vulcanjs/permissions": "^0.5.4-alpha.7",
-    "@vulcanjs/react-hooks": "^0.5.4-alpha.7",
+    "@vulcanjs/react-hooks": "^0.5.4-alpha.8",
     "@vulcanjs/schema": "^0.5.4-alpha.7",
     "@vulcanjs/utils": "^0.5.4-alpha.7",
     "classnames": "^2.3.1",
