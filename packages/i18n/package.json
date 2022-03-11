@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/i18n",
-  "version": "0.5.3",
+  "version": "0.5.4-alpha.0",
   "description": "Vulcan i18n helpers",
   "main": "./dist/index.mjs",
   "files": [
@@ -31,7 +31,7 @@
   "license": "MIT",
   "dependencies": {
     "@vulcanjs/schema": "^0.5.3",
-    "@vulcanjs/utils": "^0.5.3",
+    "@vulcanjs/utils": "^0.5.4-alpha.0",
     "prop-types": "^15.7.2",
     "react-cookie": "^4.1.1",
     "simpl-schema": "^1.12.0"
