@@ -14,8 +14,8 @@
       "es6",
       "dom"
     ],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "ES2020",
+    "moduleResolution": "Node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
     "noLib": false,

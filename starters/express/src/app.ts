@@ -6,25 +6,20 @@ import express, { Request } from "express";
 import mongoose from "mongoose";
 import { ApolloServer, gql } from "apollo-server-express";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-// import { mergeSchemas } from "@graphql-tools/schema";
-
-// import mongoConnection from "~/api/middlewares/mongoConnection";
-// import corsOptions from "~/api/cors";
-// import { contextFromReq } from "~/api/context";
+import { mergeSchemas } from "@graphql-tools/schema";
 
 import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://github.com/nodkz/mongodb-memory-server
-//import { contextFromReq } from "./utils/context";
-//import {
-//  buildDefaultQueryResolvers,
-//  createGraphqlModelServer,
-//  buildApolloSchema,
-//} from "@vulcanjs/graphql/server";
-// import { createMongooseConnector } from "@vulcanjs/mongo";
+import { contextFromReq } from "./utils/context";
+import {
+  buildDefaultQueryResolvers,
+  createGraphqlModelServer,
+  buildApolloSchema,
+} from "@vulcanjs/graphql/server";
+import { createMongooseConnector } from "@vulcanjs/mongo";
 
 import http from "http";
 
 // Demo model
-/*
 const Contributor = createGraphqlModelServer({
   name: "Contributor",
   schema: {
@@ -61,8 +56,7 @@ const contributorConnector = createMongooseConnector(Contributor);
 Contributor.graphql.connector = contributorConnector;
 const models = [Contributor];
 const vulcanRawSchema = buildApolloSchema(models);
-const vulcanSchema = makeExecutableSchema(vulcanRawSchema);*/
-const models = [];
+const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
 
 // Init an in-memory Mongo server
 // TODO: use a real db like in Vulcan Next
@@ -90,8 +84,8 @@ const closeMongo = async () => {
 const startServer = async () => {
   // Define the server (using Express for easier middleware usage)
   const server = new ApolloServer({
-    //schema:vulcanSchema,
-    context: ({ req }) => ({}), //contextFromReq(models)(req as Request),
+    schema: vulcanSchema,
+    context: ({ req }) => contextFromReq(models)(req as Request),
     introspection: false,
     //playground: false,
   });
