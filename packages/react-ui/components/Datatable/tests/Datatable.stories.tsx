@@ -7,7 +7,7 @@ import {
 } from "../../form/tests/fixtures/graphqlModels";
 import { VulcanComponentsProvider } from "../../VulcanComponents";
 import {
-  GraphqlMutationStub,
+  GraphqlQueryStub,
   graphqlQueryStubsToMsw,
 } from "@vulcanjs/graphql/testing";
 import { multiOperationName } from "@vulcanjs/graphql";
@@ -29,12 +29,13 @@ export default {
   parameters: { actions: { argTypesRegex: "^.*Callback$" } },
 } as Meta<DatatableProps>;
 
-const multiMock: GraphqlMutationStub<{
+const multiMock: GraphqlQueryStub<{
   oneFields: { results: Array<OneFieldType> };
 }> = {
   operationName: multiOperationName(OneFieldGraphql),
   response: {
     data: {
+      // NOTE: MSW is ultra sensitive to missing __typename
       oneFields: {
         results: [{ text: "hello!", __typename: "OneField" }],
       },
