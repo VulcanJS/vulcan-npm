@@ -2,12 +2,17 @@
   "name": "vulcan-express",
   "version": "0.0.1",
   "description": "Vulcan Express",
-  "main": "app.ts",
+  "main": "./dist/app.mjs",
+  "private": true,
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/app.js",
-    "build": "tsc"
+    "dev": "nodemon",
+    "dev:esbuild": "node -r esbuild-register ./src/app.ts # Not working yet",
+    "transpile": "tsc # Beware, this won't resolve local dependencies (missing .js)",
+    "build:tsup": "tsup-node",
+    "build": "yarn run build:tsup"
   },
   "author": "Eric Burel (LBKE)",
   "license": "MIT",
@@ -15,6 +20,7 @@
     "esbuild": "^0.14.25",
     "esbuild-register": "^3.3.2",
     "nodemon": "^2.0.15",
+    "tsup": "^5.12.1",
     "typescript": "^4.6.2"
   },
   "dependencies": {

@@ -41,7 +41,7 @@
     "@vulcanjs/crud": "^0.5.4-alpha.7",
     "@vulcanjs/model": "^0.5.4-alpha.7",
     "@vulcanjs/utils": "^0.5.4-alpha.7",
-    "escape-string-regexp": "4.0.0",
+    "escape-string-regexp": "^5.0.0",
     "lodash": "^4.17.20"
   },
   "peerDependencies": {

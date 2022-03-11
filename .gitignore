@@ -29,6 +29,8 @@ dist
 node_modules
 package-lock.json
 .yalc
+.yalc.lock
+starters/express/yalc.lock
 
 #vscode extension
 .vscode/snipsnap.code-snippets
