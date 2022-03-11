@@ -5,8 +5,7 @@ trigger: the component that triggers the tooltip to appear
 
 */
 import React from "react";
-import Tooltip from "react-bootstrap/Tooltip";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 
 export const TooltipTrigger = ({
   children,

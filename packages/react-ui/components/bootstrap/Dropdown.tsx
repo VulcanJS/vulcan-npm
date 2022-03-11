@@ -1,9 +1,8 @@
 // TODO: uses react bootstrap a lot, need a refactor
 import React from "react";
 import PropTypes from "prop-types";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownItem from "react-bootstrap/DropdownItem";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import { Dropdown, DropdownButton } from "react-bootstrap";
+import DropdownItem from "react-bootstrap/esm/DropdownItem";
 import { useVulcanComponents } from "../VulcanComponents";
 // import { LinkContainer } from "react-router-bootstrap";
 
