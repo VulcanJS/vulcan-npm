@@ -2,16 +2,14 @@
   "name": "@vulcanjs/permissions",
   "version": "0.5.3",
   "description": "Vulcan permissions",
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "files": [
     "dist/"
   ],
   "exports": {
-    ".": {
-      "node": "./dist/index.js",
-      "import": "./dist/index.mjs"
-    }
+    ".": "./dist/index.mjs"
   },
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:tsup": "tsup",

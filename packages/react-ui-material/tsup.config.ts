@@ -13,8 +13,7 @@ export default defineConfig([
   {
     entry: ["index.ts"],
     ...commonConfig,
-    // IMPORTANT: keep iife around so that CommonJS ends with .cjs
-    format: ["cjs", "esm", "iife"],
+    format: ["esm"],
     outDir: "dist",
   },
   /*

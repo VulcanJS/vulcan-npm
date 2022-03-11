@@ -7,14 +7,8 @@
   ],
   "type": "module",
   "exports": {
-    ".": {
-      "node": "./dist/index.cjs",
-      "import": "./dist/index.js"
-    },
-    "./testing": {
-      "node": "./dist/testing.cjs",
-      "import": "./dist/testing.js"
-    },
+    ".": "./dist/index.js",
+    "./testing": "./dist/testing.js",
     "./server": "./dist/server/index.cjs"
   },
   "types": "./dist/index.d.ts",

@@ -13,22 +13,20 @@ export default defineConfig([
   {
     entry: ["index.ts"],
     ...commonConfig,
-    // IMPORTANT: keep iife around so that CommonJS ends with .cjs
-    format: ["cjs", "esm", "iife"],
+    format: ["esm"],
     outDir: "dist",
   },
   // testing utils use a separated entry point
   {
     entry: ["testing.ts"],
     ...commonConfig,
-    // IMPORTANT: keep iife around so that CommonJS ends with .cjs
-    format: ["cjs", "esm", "iife"],
+    format: ["esm"],
     outDir: "dist",
   },
   {
     entry: ["server/index.ts"],
     ...commonConfig,
-    format: ["cjs"],
+    format: ["esm"],
     outDir: "dist/server",
   },
   /*

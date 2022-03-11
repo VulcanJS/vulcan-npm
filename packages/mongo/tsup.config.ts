@@ -14,13 +14,13 @@ export default defineConfig([
     entry: ["index.ts"],
     ...commonConfig,
     // NOTE: it means CJS will be .js and ESM will be .mjs
-    format: ["cjs", "esm"],
+    format: ["esm"],
     outDir: "dist",
   },
   {
     entry: ["client/index.ts"],
     ...commonConfig,
-    format: ["esm", "iife"],
+    format: ["esm"],
     outDir: "dist/client",
   },
   /*

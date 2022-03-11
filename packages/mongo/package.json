@@ -8,10 +8,7 @@
   ],
   "type": "module",
   "exports": {
-    ".": {
-      "node": "./dist/index.js",
-      "import": "./dist/index.mjs"
-    },
+    ".": "./dist/index.js",
     "./client": "./dist/client/index.js"
   },
   "types": "./dist/index.d.ts",
