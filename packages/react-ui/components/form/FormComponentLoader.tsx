@@ -7,7 +7,7 @@ import React, { useEffect } from "react";
 // should we reenable this?
 // import { expandQueryFragments } from "meteor/vulcan:core";
 import { useLazyQuery, gql } from "@apollo/client";
-import isEmpty from "lodash/isEmpty";
+import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 
 export interface FormComponentLoaderProps {

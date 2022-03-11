@@ -16,22 +16,22 @@ import React, { useEffect, useRef, useState } from "react";
 import { runCallbacks, getErrors } from "@vulcanjs/core";
 import { useIntlContext } from "@vulcanjs/i18n";
 import { removeProperty } from "@vulcanjs/utils";
-import _filter from "lodash/filter";
-import cloneDeep from "lodash/cloneDeep";
-import compact from "lodash/compact";
-import get from "lodash/get";
-import isObject from "lodash/isObject";
-import mapValues from "lodash/mapValues";
-import merge from "lodash/merge";
-import omit from "lodash/omit";
-import omitBy from "lodash/omitBy";
-import pick from "lodash/pick";
-import pickBy from "lodash/pickBy";
-import set from "lodash/set";
-import unset from "lodash/unset";
-import update from "lodash/update";
-import without from "lodash/without";
-import isEmpty from "lodash/isEmpty";
+import _filter from "lodash/filter.js";
+import cloneDeep from "lodash/cloneDeep.js";
+import compact from "lodash/compact.js";
+import get from "lodash/get.js";
+import isObject from "lodash/isObject.js";
+import mapValues from "lodash/mapValues.js";
+import merge from "lodash/merge.js";
+import omit from "lodash/omit.js";
+import omitBy from "lodash/omitBy.js";
+import pick from "lodash/pick.js";
+import pickBy from "lodash/pickBy.js";
+import set from "lodash/set.js";
+import unset from "lodash/unset.js";
+import update from "lodash/update.js";
+import without from "lodash/without.js";
+import isEmpty from "lodash/isEmpty.js";
 import type { FormLayoutProps } from "../FormLayout";
 import type { FormSubmitProps } from "../FormSubmit";
 
@@ -474,12 +474,11 @@ export const Form = (props: FormProps) => {
     }
   }*/
 
-  const [currentDocument, setCurrentDocument] =
-    useState<{
-      title?: string;
-      _id?: string;
-      name?: string;
-    }>(initialDocument);
+  const [currentDocument, setCurrentDocument] = useState<{
+    title?: string;
+    _id?: string;
+    name?: string;
+  }>(initialDocument);
 
   /*
 

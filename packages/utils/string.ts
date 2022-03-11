@@ -7,11 +7,11 @@ Utilities
 // import marked from "marked";
 // import { getSetting, registerSetting } from "./settings.js";
 // import { Routes } from "./routes.js";
-// import set from "lodash/set";
-import get from "lodash/get";
-import isFunction from "lodash/isFunction";
+// import set from "lodash/set.js";
+import get from "lodash/get.js";
+import isFunction from "lodash/isFunction.js";
 // import pluralize from "pluralize";
-import isEmpty from "lodash/isEmpty";
+import isEmpty from "lodash/isEmpty.js";
 import { VulcanModel } from "@vulcanjs/model";
 
 /**

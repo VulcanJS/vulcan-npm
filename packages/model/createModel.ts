@@ -6,7 +6,7 @@
  */
 import { VulcanModel, ModelPermissionsOptions } from "./typings";
 import { VulcanSchema } from "@vulcanjs/schema";
-import cloneDeep from "lodash/cloneDeep";
+import cloneDeep from "lodash/cloneDeep.js";
 
 export type ExtendModelFunc<TExtended extends VulcanModel = VulcanModel> = (
   model: VulcanModel
@@ -130,11 +130,11 @@ export const createModel = <TModelDefinition extends VulcanModel>(
 //   schemaHasIntlFields,
 //   schemaHasIntlField,
 // } from "./intl";
-// import clone from "lodash/clone";
-// import isEmpty from "lodash/isEmpty";
-// import merge from "lodash/merge";
-// import _omit from "lodash/omit";
-// import mergeWith from "lodash/mergeWith";
+// import clone from "lodash/clone.js";
+// import isEmpty from "lodash/isEmpty.js";
+// import merge from "lodash/merge.js";
+// import _omit from "lodash/omit.js";
+// import mergeWith from "lodash/mergeWith.js";
 // import { createSchema, isCollectionType } from "./schema_utils";
 
 // // will be set to `true` if there is one or more intl schema fields

@@ -19,8 +19,8 @@ import {
   MultiVariables,
   MultiInput,
 } from "@vulcanjs/graphql";
-import merge from "lodash/merge";
-import get from "lodash/get";
+import merge from "lodash/merge.js";
+import get from "lodash/get.js";
 
 // default query input object
 const defaultInput = {

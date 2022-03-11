@@ -10,7 +10,7 @@ import {
 import { withStyles } from "../../lib/makeStyles";
 import Button from "@mui/material/Button";
 import classNames from "classnames";
-import _omit from "lodash/omit";
+import _omit from "lodash/omit.js";
 
 const styles = (theme) => ({
   root: {},

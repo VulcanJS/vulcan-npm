@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import _sortBy from "lodash/sortBy";
+import _sortBy from "lodash/sortBy.js";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { useVulcanComponents } from "../VulcanComponents";
 import { DatatableSelectControlledProps } from "./DatatableSelect";

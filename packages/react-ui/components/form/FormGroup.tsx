@@ -1,5 +1,5 @@
 import React, { PureComponent, useState } from "react";
-import _some from "lodash/some";
+import _some from "lodash/some.js";
 import { VulcanUser, isAdmin } from "@vulcanjs/permissions";
 import { FieldGroup } from "@vulcanjs/schema";
 import { FormField } from "./typings";

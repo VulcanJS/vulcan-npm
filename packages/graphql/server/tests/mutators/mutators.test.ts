@@ -4,7 +4,7 @@ import {
   deleteMutator,
   performMutationCheck,
 } from "../../resolvers/mutators";
-import merge from "lodash/merge";
+import merge from "lodash/merge.js";
 
 import { VulcanGraphqlModel } from "../../../typings";
 import { modifierToData } from "../../resolvers/validation";

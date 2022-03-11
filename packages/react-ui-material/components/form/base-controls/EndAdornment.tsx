@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Cancel";
 import MenuDownIcon from "@mui/icons-material/ArrowDropDown";
 import classNames from "classnames";
-import _omit from "lodash/omit";
+import _omit from "lodash/omit.js";
 
 export const styles = (theme) => ({
   inputAdornment: {

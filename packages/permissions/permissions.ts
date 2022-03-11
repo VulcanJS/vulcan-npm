@@ -4,13 +4,13 @@
  * - methods relying on maitaining a list of existing groups are ignored for the moment. We might reintroduce them later on.
  */
 // import Users from "./collection.js";
-import intersection from "lodash/intersection";
-import compact from "lodash/compact";
-import map from "lodash/map";
-import difference from "lodash/difference";
-import get from "lodash/get";
-import unset from "lodash/unset";
-import cloneDeep from "lodash/cloneDeep";
+import intersection from "lodash/intersection.js";
+import compact from "lodash/compact.js";
+import map from "lodash/map.js";
+import difference from "lodash/difference.js";
+import get from "lodash/get.js";
+import unset from "lodash/unset.js";
+import cloneDeep from "lodash/cloneDeep.js";
 // import {
 //   getCollection,
 //   forEachDocumentField,
@@ -23,7 +23,7 @@ import {
   VulcanDocument,
   forEachDocumentField,
 } from "@vulcanjs/schema";
-import isEqual from "lodash/isEqual";
+import isEqual from "lodash/isEqual.js";
 import { VulcanUser, GroupName } from "./typings";
 
 /**

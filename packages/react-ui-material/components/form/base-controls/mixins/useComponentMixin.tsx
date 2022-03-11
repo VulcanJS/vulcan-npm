@@ -2,7 +2,7 @@
  * A rewrite of the "Component" mixin, using hooks
  */
 import PropTypes from "prop-types";
-import _omit from "lodash/omit";
+import _omit from "lodash/omit.js";
 import classNames from "classnames";
 
 export const useComponentMixin = (props) => {

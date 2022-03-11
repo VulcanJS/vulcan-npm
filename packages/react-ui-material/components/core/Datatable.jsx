@@ -24,8 +24,8 @@ import TablePagination from "@mui/material/TablePagination";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { getFieldValue } from "./Card";
-import _assign from "lodash/assign";
-import _sortBy from "lodash/sortBy";
+import _assign from "lodash/assign.js";
+import _sortBy from "lodash/sortBy.js";
 import classNames from "classnames";
 
 /*

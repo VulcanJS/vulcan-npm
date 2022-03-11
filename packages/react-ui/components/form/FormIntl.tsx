@@ -1,5 +1,5 @@
 import React from "react";
-import omit from "lodash/omit";
+import omit from "lodash/omit.js";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 import { useFormContext } from "./FormContext";
 //import type { LocaleType } from "@vulcanjs/i18n";

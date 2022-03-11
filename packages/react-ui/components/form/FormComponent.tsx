@@ -6,7 +6,7 @@
  * (it means you can't extend the SmartForm with new inputType, instead use a fully custom input)
  */
 import React, { ComponentType, useEffect, useState } from "react";
-import get from "lodash/get";
+import get from "lodash/get.js";
 import SimpleSchema from "simpl-schema";
 import { isEmptyValue, getNullValue } from "./modules/utils";
 import type {
@@ -265,11 +265,10 @@ export const FormComponent = (props: FormComponentProps) => {
   const type = datatype;
   const countFromProps = getCharacterCountsFromProps(props);
   // equivalent to getDerivedStateFromProps
-  const [charsCountState, setCharacterCounts] =
-    useState<{
-      charsCount: number;
-      charsRemaining: number;
-    } | null>(countFromProps);
+  const [charsCountState, setCharacterCounts] = useState<{
+    charsCount: number;
+    charsRemaining: number;
+  } | null>(countFromProps);
 
   // TODO: move this logic somewhere else, as it is specific to String components.
   // Eg using an intermediate FormComponentText

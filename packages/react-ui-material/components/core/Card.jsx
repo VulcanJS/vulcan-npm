@@ -12,7 +12,7 @@ import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import classNames from "classnames";
-import get from "lodash/get";
+import get from "lodash/get.js";
 import Users from "meteor/vulcan:users";
 
 const getLabel = (field, fieldName, collection, intl) => {

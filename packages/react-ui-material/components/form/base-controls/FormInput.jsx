@@ -8,7 +8,7 @@ import FormHelper from "./FormHelper";
 import Input from "@mui/material/Input";
 import StartAdornment, { hideStartAdornment } from "./StartAdornment";
 import EndAdornment from "./EndAdornment";
-import _debounce from "lodash/debounce";
+import _debounce from "lodash/debounce.js";
 import classNames from "classnames";
 
 export const styles = (theme) => ({

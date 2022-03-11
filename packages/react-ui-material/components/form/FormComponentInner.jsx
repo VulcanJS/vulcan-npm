@@ -9,7 +9,7 @@ import {
 } from "meteor/vulcan:core";
 import { withStyles } from "../../lib/makeStyles";
 import classNames from "classnames";
-import _omit from "lodash/omit";
+import _omit from "lodash/omit.js";
 
 const styles = (theme) => ({
   formInput: {

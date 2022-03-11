@@ -1,5 +1,5 @@
-import _object from "lodash/object";
-import _map from "lodash/map";
+import _object from "lodash/object.js";
+import _map from "lodash/map.js";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { VulcanModel } from "@vulcanjs/model";
 import { getUserReadableFields, VulcanUser } from "@vulcanjs/permissions";

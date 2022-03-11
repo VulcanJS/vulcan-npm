@@ -1,7 +1,7 @@
-import toPath from "lodash/toPath";
-import initial from "lodash/initial";
-import flow from "lodash/fp/flow";
-import takeRight from "lodash/takeRight";
+import toPath from "lodash/toPath.js";
+import initial from "lodash/initial.js";
+import flow from "lodash/fp/flow.js";
+import takeRight from "lodash/takeRight.js";
 
 /**
  * Splits a path in string format into an array.

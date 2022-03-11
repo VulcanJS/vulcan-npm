@@ -8,10 +8,10 @@ import { FormProps, FormState } from "./typings";
  */
 
 import { VulcanSchema } from "@vulcanjs/schema";
-import uniq from "lodash/uniq";
-import compact from "lodash/compact";
-import get from "lodash/get";
-import pick from "lodash/pick";
+import uniq from "lodash/uniq.js";
+import compact from "lodash/compact.js";
+import get from "lodash/get.js";
+import pick from "lodash/pick.js";
 import {
   isIntlField,
   formatLabel,
@@ -20,13 +20,13 @@ import {
   IntlProviderContextValue,
 } from "@vulcanjs/i18n";
 
-import map from "lodash/map";
-import sortBy from "lodash/sortBy";
-import uniqBy from "lodash/uniqBy";
-import difference from "lodash/difference";
-import reject from "lodash/reject";
-import intersection from "lodash/intersection";
-import _filter from "lodash/filter";
+import map from "lodash/map.js";
+import sortBy from "lodash/sortBy.js";
+import uniqBy from "lodash/uniqBy.js";
+import difference from "lodash/difference.js";
+import reject from "lodash/reject.js";
+import intersection from "lodash/intersection.js";
+import _filter from "lodash/filter.js";
 import { capitalize } from "@vulcanjs/utils";
 import { VulcanFieldSchema } from "@vulcanjs/schema";
 import { VulcanModel } from "@vulcanjs/model";

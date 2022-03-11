@@ -3,7 +3,7 @@ import {
   autocompleteQueryTemplate,
 } from "@vulcanjs/graphql";
 import { VulcanGraphqlFieldSchema } from "@vulcanjs/graphql";
-import get from "lodash/get";
+import get from "lodash/get.js";
 
 /**
  * Get multi resolver name for a relation field

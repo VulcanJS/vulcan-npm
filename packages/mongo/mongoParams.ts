@@ -1,10 +1,10 @@
 /**
  * Converts Vulcan selector and options to Mongo parameters (selector, fields)
  */
-import uniq from "lodash/uniq";
-import isEmpty from "lodash/isEmpty";
+import uniq from "lodash/uniq.js";
+import isEmpty from "lodash/isEmpty.js";
 import escapeStringRegexp from "escape-string-regexp";
-import merge from "lodash/merge";
+import merge from "lodash/merge.js";
 import { isEmptyOrUndefined } from "@vulcanjs/utils";
 import { VulcanModel } from "@vulcanjs/model";
 import { FilterQuery, QueryFindOptions } from "mongoose";

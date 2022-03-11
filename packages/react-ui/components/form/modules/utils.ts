@@ -1,8 +1,8 @@
-import merge from "lodash/merge";
-import find from "lodash/find";
-import isPlainObject from "lodash/isPlainObject";
-import set from "lodash/set";
-import size from "lodash/size";
+import merge from "lodash/merge.js";
+import find from "lodash/find.js";
+import isPlainObject from "lodash/isPlainObject.js";
+import set from "lodash/set.js";
+import size from "lodash/size.js";
 
 import { removePrefix, filterPathsByPrefix } from "./path_utils";
 import { VulcanFieldSchema } from "@vulcanjs/schema";

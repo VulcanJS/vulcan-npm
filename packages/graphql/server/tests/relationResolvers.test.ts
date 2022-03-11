@@ -1,6 +1,6 @@
 import { createGraphqlModel } from "../../extendModel";
 import { hasMany, hasOne } from "../resolvers/relationResolvers";
-import merge from "lodash/merge";
+import merge from "lodash/merge.js";
 import { VulcanGraphqlFieldSchema } from "../../typings";
 
 const authorModel = createGraphqlModel({

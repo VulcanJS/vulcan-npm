@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import without from "lodash/without";
+import without from "lodash/without.js";
 import { useVulcanComponents } from "../VulcanComponents";
 
 // Object

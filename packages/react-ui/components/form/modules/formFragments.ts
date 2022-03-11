@@ -3,8 +3,8 @@
  * TODO: refactor to mutualize more code with vulcan-core defaultFragment functions
  * TODO: move to lib when refactored
  */
-import _uniq from "lodash/uniq";
-import _intersection from "lodash/intersection";
+import _uniq from "lodash/uniq.js";
+import _intersection from "lodash/intersection.js";
 import { gql } from "@apollo/client";
 import {
   getCreateableFields,
@@ -19,7 +19,7 @@ import {
 } from "@vulcanjs/graphql";
 import { capitalize } from "@vulcanjs/utils";
 import type { FormType } from "../typings";
-import compact from "lodash/compact";
+import compact from "lodash/compact.js";
 //  getFieldFragment,
 const intlSuffix = "_intl";
 

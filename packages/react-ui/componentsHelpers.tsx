@@ -1,6 +1,6 @@
 // import { compose } from "recompose";
 import React from "react";
-import difference from "lodash/difference";
+import difference from "lodash/difference.js";
 
 export const Components = {}; // will be populated on startup
 export const ComponentsTable = {}; // storage for infos about components

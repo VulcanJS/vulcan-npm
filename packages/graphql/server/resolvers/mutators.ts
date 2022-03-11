@@ -46,8 +46,8 @@ import {
   VulcanGraphqlModelServer,
 } from "../../typings";
 import { deprecate } from "@vulcanjs/utils";
-import cloneDeep from "lodash/cloneDeep";
-import isEmpty from "lodash/isEmpty";
+import cloneDeep from "lodash/cloneDeep.js";
+import isEmpty from "lodash/isEmpty.js";
 import { ContextWithUser } from "./typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";

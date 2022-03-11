@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DocumentNode, gql } from "@apollo/client";
 import { useQuery } from "@apollo/client";
 import moment from "moment";
-import isEmpty from "lodash/isEmpty";
+import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "../VulcanComponents";
 import { getFieldType } from "../form/modules/utils";
 

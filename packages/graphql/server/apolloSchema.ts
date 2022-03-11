@@ -6,7 +6,7 @@ import { VulcanGraphqlModelServer } from "../typings";
 import { parseAllModels } from "./parseAllModels";
 import { defaultTypeDefs, defaultResolvers } from "./defaultSchema";
 import { mergeResolvers } from "./utils";
-import isEmpty from "lodash/isEmpty";
+import isEmpty from "lodash/isEmpty.js";
 
 export const buildApolloSchema = (
   models: Array<VulcanGraphqlModelServer>

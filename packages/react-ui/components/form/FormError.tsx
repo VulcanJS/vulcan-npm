@@ -2,7 +2,7 @@ import React from "react";
 // import PropTypes from "prop-types";
 // import getContext from 'recompose/getContext';
 // import { Components, registerComponent } from 'meteor/vulcan:core';
-import get from "lodash/get";
+import get from "lodash/get.js";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 import { useFormContext } from "./FormContext";
 

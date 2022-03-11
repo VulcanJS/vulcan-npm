@@ -4,7 +4,7 @@
  *
  * TODO: do we still need this or can we put everything into "input" for "update" mutation?
  */
-import _merge from "lodash/merge";
+import _merge from "lodash/merge.js";
 
 interface VulcanMutationOptions {
   _id?: string;

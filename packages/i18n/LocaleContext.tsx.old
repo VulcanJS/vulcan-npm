@@ -24,8 +24,8 @@ import { Switch, Route } from "react-router-dom";
 import { withRouter } from "react-router";
 // import { withCookies } from "react-cookie";
 */
-import get from "lodash/get";
-import merge from "lodash/merge";
+import get from "lodash/get.js";
+import merge from "lodash/merge.js";
 import { useLocaleData } from "./hooks/useLocaleData";
 
 // see https://stackoverflow.com/questions/42862028/react-router-v4-with-multiple-layouts

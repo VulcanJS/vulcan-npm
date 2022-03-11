@@ -7,7 +7,7 @@ import ClearIcon from "@mui/icons-material/Cancel";
 import TextField from "@mui/material/TextField";
 import NoSsr from "@mui/material/NoSsr";
 import classNames from "classnames";
-import _debounce from "lodash/debounce";
+import _debounce from "lodash/debounce.js";
 
 const styles = (theme) => ({
   "@global": {

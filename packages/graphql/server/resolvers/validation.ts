@@ -5,14 +5,14 @@ Removed validateDocument and refactored validateData, so now we use only validat
 
 */
 
-import pickBy from "lodash/pickBy";
-import mapValues from "lodash/mapValues";
+import pickBy from "lodash/pickBy.js";
+import mapValues from "lodash/mapValues.js";
 import {
   VulcanDocument,
   forEachDocumentField,
   VulcanSchema,
 } from "@vulcanjs/schema";
-import _forEach from "lodash/forEach";
+import _forEach from "lodash/forEach.js";
 import { VulcanModel } from "@vulcanjs/model";
 import { ContextWithUser } from "./typings";
 import { DefaultMutatorName } from "../../typings";

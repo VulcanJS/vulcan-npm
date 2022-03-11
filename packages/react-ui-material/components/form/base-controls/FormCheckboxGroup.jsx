@@ -10,10 +10,10 @@ import FormHelper from "./FormHelper";
 import Checkbox from "@mui/material/Checkbox";
 import Switch from "@mui/material/Switch";
 import classNames from "classnames";
-import isEmpty from "lodash/isEmpty";
+import isEmpty from "lodash/isEmpty.js";
 import { Components } from "meteor/vulcan:core";
-import without from "lodash/without";
-import uniq from "lodash/uniq";
+import without from "lodash/without.js";
+import uniq from "lodash/uniq.js";
 
 const styles = (theme) => ({
   group: {

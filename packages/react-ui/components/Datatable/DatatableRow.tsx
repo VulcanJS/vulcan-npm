@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import _isFunction from "lodash/isFunction";
+import _isFunction from "lodash/isFunction.js";
 import { useVulcanComponents } from "../VulcanComponents";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { isAdmin, permissionCheck, VulcanUser } from "@vulcanjs/permissions";

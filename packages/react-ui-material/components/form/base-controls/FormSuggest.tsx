@@ -14,7 +14,7 @@ import StartAdornment, { hideStartAdornment } from "./StartAdornment";
 import EndAdornment from "./EndAdornment";
 import FormControlLayout from "./FormControlLayout";
 import FormHelper from "./FormHelper";
-import _isEqual from "lodash/isEqual";
+import _isEqual from "lodash/isEqual.js";
 import classNames from "classnames";
 import IsolatedScroll from "react-isolated-scroll";
 

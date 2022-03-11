@@ -5,8 +5,8 @@ export const defaultFieldSchema = {
   canUpdate: ["guests"],
 };
 
-import fromPairs from "lodash/fromPairs";
-import mapValues from "lodash/mapValues";
+import fromPairs from "lodash/fromPairs.js";
+import mapValues from "lodash/mapValues.js";
 import SimpleSchema from "simpl-schema";
 
 /**

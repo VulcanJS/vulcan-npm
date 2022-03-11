@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import _omit from "lodash/omit";
+import _omit from "lodash/omit.js";
 import classNames from "classnames";
 
 export default {

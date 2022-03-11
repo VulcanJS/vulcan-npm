@@ -9,13 +9,13 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import classNames from "classnames";
-import _isArray from "lodash/isArray";
+import _isArray from "lodash/isArray.js";
 import {
   addOtherMarker,
   isOtherValue,
   removeOtherMarker,
 } from "./FormCheckboxGroup";
-import isEmpty from "lodash/isEmpty";
+import isEmpty from "lodash/isEmpty.js";
 import { Components } from "meteor/vulcan:core";
 
 const styles = (theme) => ({

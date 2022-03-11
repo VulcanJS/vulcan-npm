@@ -10,7 +10,7 @@ import MenuList from "@mui/material/MenuList";
 import ListSubheader from "@mui/material/ListSubheader";
 import StartAdornment, { hideStartAdornment } from "./StartAdornment";
 import EndAdornment from "./EndAdornment";
-import _isArray from "lodash/isArray";
+import _isArray from "lodash/isArray.js";
 import classNames from "classnames";
 import { styles } from "./FormSuggest";
 import { useComponentMixin } from "./mixins/useComponentMixin";

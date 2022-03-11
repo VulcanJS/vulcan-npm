@@ -21,7 +21,7 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import Dropzone from "react-dropzone";
 import "cross-fetch/polyfill"; // patch for browser which don't have fetch implemented
-import set from "lodash/set";
+import set from "lodash/set.js";
 
 registerSetting(
   "cloudinary.cloudName",

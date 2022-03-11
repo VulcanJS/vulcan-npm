@@ -12,7 +12,7 @@ const { makeStyles: rawMakeStyles } = createMakeStyles({ useTheme });
 // tss-react has a slightly different API than mui v4,
 // as well as useStyles
 // We change it to fit mui v4 syntax
-import debounce from "lodash/debounce";
+import debounce from "lodash/debounce.js";
 const debouncedDeprecate = debounce(deprecate, 500);
 export const makeStyles = (...args) => {
   debouncedDeprecate(

@@ -1,6 +1,6 @@
 import { buildDefaultQueryResolvers } from "../resolvers/defaultQueryResolvers";
 import { createGraphqlModel } from "../../extendModel";
-import merge from "lodash/merge";
+import merge from "lodash/merge.js";
 import { Connector } from "@vulcanjs/crud/server";
 
 describe("graphql/query resolvers", function () {

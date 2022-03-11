@@ -2,7 +2,7 @@
  * Differences with Vulcan Meteor:
  * - No more "propertyName" option, data are returned in the "document" shortcut
  */
-import _merge from "lodash/merge";
+import _merge from "lodash/merge.js";
 
 import {
   singleClientTemplate,

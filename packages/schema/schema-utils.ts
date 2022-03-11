@@ -1,14 +1,14 @@
-import _reject from "lodash/reject";
-import _keys from "lodash/keys";
+import _reject from "lodash/reject.js";
+import _keys from "lodash/keys.js";
 import {
   getNestedSchema,
   getArrayChild,
   isBlackbox,
 } from "./simpleSchema-utils";
-import _isArray from "lodash/isArray";
-import _get from "lodash/get";
-import _isEmpty from "lodash/isEmpty";
-import _omit from "lodash/omit";
+import _isArray from "lodash/isArray.js";
+import _get from "lodash/get.js";
+import _isEmpty from "lodash/isEmpty.js";
+import _omit from "lodash/omit.js";
 // import SimpleSchema from "simpl-schema";
 import { VulcanDocument, VulcanFieldSchema, VulcanSchema } from "./typings";
 

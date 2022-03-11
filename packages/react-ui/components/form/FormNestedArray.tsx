@@ -3,8 +3,8 @@
  * after/before => After, Before with titlecase
  */
 import React, { useEffect } from "react";
-import _omit from "lodash/omit";
-import _get from "lodash/get";
+import _omit from "lodash/omit.js";
+import _get from "lodash/get.js";
 import { useFormContext } from "./FormContext";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 

@@ -35,10 +35,10 @@ import extendModel, {
   GraphqlModelDefinition,
   GraphqlModelOptions,
 } from "./extendModel";
-import cloneDeep from "lodash/cloneDeep";
-import isEmpty from "lodash/isEmpty";
+import cloneDeep from "lodash/cloneDeep.js";
+import isEmpty from "lodash/isEmpty.js";
 
-import merge from "lodash/merge";
+import merge from "lodash/merge.js";
 /**
  * This type is meant to be exposed server side
  *  @server-only
@@ -204,11 +204,11 @@ export const mergeModelDefinitionServer = (
 //   schemaHasIntlFields,
 //   schemaHasIntlField,
 // } from "./intl";
-// import clone from "lodash/clone";
-// import isEmpty from "lodash/isEmpty";
-// import merge from "lodash/merge";
-// import _omit from "lodash/omit";
-// import mergeWith from "lodash/mergeWith";
+// import clone from "lodash/clone.js";
+// import isEmpty from "lodash/isEmpty.js";
+// import merge from "lodash/merge.js";
+// import _omit from "lodash/omit.js";
+// import mergeWith from "lodash/mergeWith.js";
 // import { createSchema, isCollectionType } from "./schema_utils";
 
 // // will be set to `true` if there is one or more intl schema fields
