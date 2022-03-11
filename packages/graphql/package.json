@@ -9,7 +9,7 @@
   "exports": {
     ".": "./dist/index.js",
     "./testing": "./dist/testing.js",
-    "./server": "./dist/server/index.cjs"
+    "./server": "./dist/server/index.js"
   },
   "types": "./dist/index.d.ts",
   "typesVersions": {
