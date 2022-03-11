@@ -7,7 +7,7 @@
     "dist/"
   ],
   "exports": {
-    ".": "./dist/index.js",
+    ".": "./dist/index.mjs",
     "./testing": "./dist/testing.mjs"
   },
   "types": "./dist/index.d.ts",
