@@ -5,6 +5,7 @@
   "files": [
     "dist/"
   ],
+  "type": "module",
   "exports": {
     ".": "./dist/index.js",
     "./server": "./dist/server/index.js"
@@ -34,10 +35,12 @@
     "test": "echo \"Error: run tests from root\" && exit 1",
     "build:common": "esbuild index.ts --outdir=dist --sourcemap --bundle --minify",
     "build:server": "esbuild server/index.ts --outdir=dist/server --sourcemap --bundle --platform=node --target=node12.13",
-    "build": "yarn run build:common && yarn run build:server",
-    "build:types": "tsc --declaration --emitDeclarationOnly --project ./tsconfig.build.json",
+    "build:esbuild": "yarn run build:common && yarn run build:server",
     "build:webpack": "webpack --config ./webpack.config.js && webpack --config ./webpack.config.server.js # Old build => 3x slower!",
-    "build:swc": "spack # TODO: doesn't generate the same structure as webpack or tsc, not yet ok"
+    "build:swc": "spack # TODO: doesn't generate the same structure as webpack or tsc, not yet ok",
+    "build:types": "tsc --declaration --emitDeclarationOnly --project ./tsconfig.build.json",
+    "build:tsup": "tsup",
+    "build": "yarn run build:tsup"
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
