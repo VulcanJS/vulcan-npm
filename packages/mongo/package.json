@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/mongo",
-  "version": "0.5.4-alpha.0",
+  "version": "0.5.4-alpha.1",
   "description": "Vulcan mongo bindings and helpers",
   "main": "./dist/index.js",
   "files": [
@@ -40,7 +40,7 @@
   "dependencies": {
     "@vulcanjs/crud": "^0.5.4-alpha.0",
     "@vulcanjs/model": "^0.5.4-alpha.0",
-    "@vulcanjs/utils": "^0.5.4-alpha.0",
+    "@vulcanjs/utils": "^0.5.4-alpha.1",
     "escape-string-regexp": "4.0.0",
     "lodash": "^4.17.20"
   },
