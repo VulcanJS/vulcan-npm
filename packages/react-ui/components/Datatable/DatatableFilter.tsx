@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DocumentNode, gql } from "@apollo/client";
+import { DocumentNode } from "@apollo/client";
 import { useQuery } from "@apollo/client";
 import moment from "moment";
 import isEmpty from "lodash/isEmpty.js";

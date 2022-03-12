@@ -26,7 +26,10 @@
 
 // */
 
-import { useMutation, MutationResult, gql, FetchResult } from "@apollo/client";
+import { useMutation, MutationResult, FetchResult } from "@apollo/client";
+// @see https://stackoverflow.com/questions/70615613/apollo-client-named-export-remove-not-found
+// get gql from graphql-tag directly works with ESM
+import { gql } from "graphql-tag";
 
 import { filterFunction } from "@vulcanjs/mongo/client";
 import {

@@ -26,7 +26,9 @@ import {
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 
 import { getMswServer } from "@vulcanjs/utils/testing";
-import { gql } from "@apollo/client";
+// @see https://stackoverflow.com/questions/70615613/apollo-client-named-export-remove-not-found
+// get gql from graphql-tag directly works with ESM
+import { gql } from "graphql-tag";
 
 beforeEach(() => {
   // add relevant mocks

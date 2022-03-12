@@ -11,7 +11,11 @@ Differences with Vulcan Meteor:
 */
 
 import { DocumentNode } from "graphql";
-import { useQuery, gql, QueryResult, QueryHookOptions } from "@apollo/client";
+import { useQuery, QueryResult, QueryHookOptions } from "@apollo/client";
+// @see https://stackoverflow.com/questions/70615613/apollo-client-named-export-remove-not-found
+// get gql from graphql-tag directly works with ESM
+import { gql } from "graphql-tag";
+
 import { useState } from "react";
 import {
   multiClientTemplate,

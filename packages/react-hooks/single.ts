@@ -16,10 +16,12 @@ import { computeQueryVariables } from "./variables";
 import {
   OperationVariables,
   useQuery,
-  gql,
   QueryResult,
   QueryHookOptions,
 } from "@apollo/client";
+// @see https://stackoverflow.com/questions/70615613/apollo-client-named-export-remove-not-found
+// get gql from graphql-tag directly works with ESM
+import { gql } from "graphql-tag";
 
 const defaultInput = {
   enableCache: false,

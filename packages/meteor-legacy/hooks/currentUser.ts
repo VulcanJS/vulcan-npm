@@ -1,4 +1,7 @@
-import { useQuery, gql } from "@apollo/client";
+// @see https://stackoverflow.com/questions/70615613/apollo-client-named-export-remove-not-found
+// get gql from graphql-tag directly works with ESM
+import { useQuery } from "@apollo/client";
+import { gql } from "graphql-tag";
 import get from "lodash/get.js";
 
 import { currentUserFragment } from "../models/user";
