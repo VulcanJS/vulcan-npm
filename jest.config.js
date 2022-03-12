@@ -6,7 +6,11 @@
 const commonConfig = {
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
+    // add mjs so they are turned into cjs automatically until Jest
+    // have a better support of ESM, @see https://jestjs.io/fr/docs/ecmascript-modules
+    // https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs
+    // and https://bl.ocks.org/rstacruz/511f43265de4939f6ca729a3df7b001c
+    "^.+\\.(js|jsx|ts|tsx|mjs)$": "<rootDir>/node_modules/babel-jest",
   },
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [

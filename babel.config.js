@@ -66,4 +66,11 @@ module.exports = {
   ],
   plugins,
   babelrc: false,
+  env: {
+    // @see https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs
+    // @see https://bl.ocks.org/rstacruz/511f43265de4939f6ca729a3df7b001c
+    test: {
+      plugins: ["@babel/plugin-transform-modules-commonjs"],
+    },
+  },
 };
