@@ -21,6 +21,17 @@ Using TypeScript `paths` will only tell TypeScript where to find the code. Howev
 
 So, you also need Webpack to actually replace `~/components/myComponent` to `../../../components/myComponent`.
 
+## Setting a cron job
+
+Next is a serverless framework, so API routes like `api/graphql` are short-lived functions. There is no centralized place where you can setup cron jobs.
+Even in a monolith like Meteor, cron jobs can raise issues if you run multiple instances of the app.
+
+There are alternate patterns:
+
+- You may create an API route in Next that does what your cron job do, and call it from a GitHub Action or equivalent. See https://vercel.com/docs/concepts/solutions/cron-jobs
+- You may create a separate, long-lived "satellite" Express micro-server, just for those use cases
+- You can write scripts in TypeScript and build them with ncc, we have an example in the "/scripts" folder. It's however experimental. Then you can run the script and setup the cron job directly on a virtual machine somewhere.
+ 
 ## Debugging Cypress build
 
 See [Cypress Webpack Preprocessor doc](https://github.com/cypress-io/cypress-webpack-preprocessor), it describes a few environment variables useful to debug Cypress build.
