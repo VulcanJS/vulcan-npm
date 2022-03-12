@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import DropdownItem from "react-bootstrap/esm/DropdownItem.js";
+const DropdownItem = Dropdown.Item;
 import { useVulcanComponents } from "../VulcanComponents";
 // import { LinkContainer } from "react-router-bootstrap";
 

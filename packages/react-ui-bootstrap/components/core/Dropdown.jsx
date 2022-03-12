@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Components, registerComponent } from "meteor/vulcan:lib";
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import DropdownItem from "react-bootstrap/esm/DropdownItem.js";
+const DropdownItem = Dropdown.Item;
 import { LinkContainer } from "react-router-bootstrap";
 
 /*
