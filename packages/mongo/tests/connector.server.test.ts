@@ -76,7 +76,7 @@ describe("CRUD", () => {
   });
   afterAll(async () => {
     // drop the collection
-    await mongoose.connection.collections[collectionName].drop();
+    await mongoose.connection.dropCollection(collectionName);
   });
   test("create", async () => {
     const docToCreate = { text: "hello" };

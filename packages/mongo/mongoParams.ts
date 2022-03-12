@@ -17,7 +17,7 @@ function escapeStringRegexp(string) {
 import merge from "lodash/merge.js";
 import { isEmptyOrUndefined } from "@vulcanjs/utils";
 import { VulcanModel } from "@vulcanjs/model";
-import { FilterQuery, QueryFindOptions } from "mongoose";
+import { FilterQuery, QueryOptions } from "mongoose";
 import { FilterableInput } from "@vulcanjs/crud";
 
 // import { getSetting } from "./settings.js";
@@ -78,7 +78,7 @@ const getExpressionFieldNames = (expressionArray) => {
 // TODO: should we use TModel or Vulcan document here??
 interface FilterFunctionOutput {
   selector: FilterQuery<any>;
-  options: QueryFindOptions;
+  options: QueryOptions;
   filteredFields: Array<string>;
 }
 export const filterFunction = async (
@@ -90,7 +90,7 @@ export const filterFunction = async (
   const { filter, limit, sort, search, /*filterArguments,*/ offset, id } =
     input;
   let selector: FilterQuery<any> = {};
-  let options: QueryFindOptions = {
+  let options: QueryOptions = {
     sort: {},
   }; // TODO: check if FindOneOptions is the right type for this
   let filteredFields: Array<string> = [];
