@@ -32,5 +32,8 @@
     "express": "^4.17.3",
     "mongodb-memory-server": "^8.4.0",
     "mongoose": "^6.2.5"
+  },
+  "resolutions": {
+    "**/escape-string-regexp": "5.0.0"
   }
 }

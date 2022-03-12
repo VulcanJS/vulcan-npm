@@ -55,5 +55,8 @@
   "devDependencies": {
     "@types/mongoose": "^5.10.1",
     "mongodb-memory-server": "^6.9.2"
+  },
+  "resolutions": {
+    "**/escape-string-regexp": "^5.0.0"
   }
 }

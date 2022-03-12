@@ -3,7 +3,17 @@
  */
 import uniq from "lodash/uniq.js";
 import isEmpty from "lodash/isEmpty.js";
-import escapeStringRegexp from "escape-string-regexp";
+// It leads to annoying issues with Jest
+//import escapeStringRegexp from "escape-string-regexp";
+function escapeStringRegexp(string) {
+  if (typeof string !== "string") {
+    throw new TypeError("Expected a string");
+  }
+
+  // Escape characters with special meaning either inside or outside character sets.
+  // Use a simple backslash escape when it’s always valid, and a `\xnn` escape when the simpler form would be disallowed by Unicode patterns’ stricter grammar.
+  return string.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&").replace(/-/g, "\\x2d");
+}
 import merge from "lodash/merge.js";
 import { isEmptyOrUndefined } from "@vulcanjs/utils";
 import { VulcanModel } from "@vulcanjs/model";

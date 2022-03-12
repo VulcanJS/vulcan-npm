@@ -41,5 +41,8 @@
     "@vulcanjs/schema": "^0.5.4-alpha.7",
     "mock-apollo-client": "^1.1.0",
     "react-test-renderer": "^16.13.1"
+  },
+  "resolutions": {
+    "**/escape-string-regexp": "5.0.0"
   }
 }
