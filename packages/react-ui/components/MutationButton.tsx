@@ -18,10 +18,7 @@ Example Usage
 */
 import React, { useState } from "react";
 import { DocumentNode } from "graphql";
-import { MutationHookOptions, useMutation } from "@apollo/client";
-// @see https://stackoverflow.com/questions/70615613/apollo-client-named-export-remove-not-found
-// get gql from graphql-tag directly works with ESM
-import { gql } from "graphql-tag";
+import { gql, MutationHookOptions, useMutation } from "@apollo/client";
 import { useVulcanComponents } from "./VulcanComponents/Consumer";
 import { LoadingButtonProps } from "./LoadingButton";
 // import withMutation from '../containers/registeredMutation';

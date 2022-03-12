@@ -1,7 +1,7 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { MutationButton, MutationButtonProps } from "../MutationButton";
-import { gql } from "graphql-tag";
+import { gql } from "@apollo/client";
 import { VulcanComponentsProvider } from "../VulcanComponents";
 export default {
   component: MutationButton,

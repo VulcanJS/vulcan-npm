@@ -6,10 +6,7 @@ import React, { useEffect } from "react";
 // @see packages/vulcan-lib/lib/modules/fragments.js in Vulcan
 // should we reenable this?
 // import { expandQueryFragments } from "meteor/vulcan:core";
-import { useLazyQuery } from "@apollo/client";
-// @see https://stackoverflow.com/questions/70615613/apollo-client-named-export-remove-not-found
-// get gql from graphql-tag directly works with ESM
-import { gql } from "graphql-tag";
+import { useLazyQuery, gql } from "@apollo/client";
 import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 

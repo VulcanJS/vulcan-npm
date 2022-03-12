@@ -42,10 +42,7 @@ import React, { useRef } from "react";
 // Utils,
 // getFragment,
 //"meteor/vulcan:core";
-import { DocumentNode } from "@apollo/client";
-// @see https://stackoverflow.com/questions/70615613/apollo-client-named-export-remove-not-found
-// get gql from graphql-tag directly works with ESM
-import { gql } from "graphql-tag";
+import { DocumentNode, gql } from "@apollo/client";
 
 import getFormFragments from "./modules/formFragments";
 // import { VulcanModel } from "@vulcanjs/model";
