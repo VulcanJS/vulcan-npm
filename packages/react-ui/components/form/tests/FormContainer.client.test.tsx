@@ -39,7 +39,7 @@ const createMock: GraphqlMutationStub<any> = {
     data: {
       createOneField: {
         // always return the same object whatever the user created
-        data: { text: "hello" },
+        data: { _id: "1", text: "hello", __typename: "OneField" },
       },
     },
   },
@@ -62,7 +62,7 @@ test("create an empty document and call the successCallback", async () => {
     expect(successCallback).toHaveBeenCalled();
   });
   expect(successCallback).toHaveBeenCalledWith(
-    { text: "hello" },
+    { _id: "1", text: "hello", __typename: "OneField" },
     { form: undefined }
   );
 });
