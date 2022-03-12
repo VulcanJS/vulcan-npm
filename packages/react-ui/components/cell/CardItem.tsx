@@ -15,7 +15,7 @@ const getTypeName = (
     // TODO: not 100% sure it works
     const type = fieldSchema.type; //.singleType;
     const typeName = typeof type === "function" ? type.name : type;
-    return typeName;
+    return typeName + "";
   } else {
     return typeof value;
   }
@@ -64,7 +64,7 @@ export const CardItemSwitcher = (props: CellProps) => {
     model && fieldName ? getFieldSchema(fieldName, model) : undefined;
 
   if (!typeName) {
-    if (model) {
+    if (model && fieldName) {
       typeName = getTypeName(value, fieldName, model);
     } else {
       typeName = typeof value;

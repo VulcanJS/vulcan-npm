@@ -2,14 +2,14 @@
   "name": "@vulcanjs/i18n",
   "version": "0.5.4-alpha.9",
   "description": "Vulcan i18n helpers",
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.js",
   "files": [
     "dist/"
   ],
   "type": "module",
   "exports": {
-    ".": "./dist/index.mjs",
-    "./server": "./dist/server/index.mjs"
+    ".": "./dist/index.js",
+    "./server": "./dist/server/index.js"
   },
   "types": "./dist/index.d.ts",
   "typesVersions": {
