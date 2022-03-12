@@ -23,7 +23,7 @@
     "serve:doc": "yarn --cwd ./packages/docusaurus serve"
   },
   "devDependencies": {
-    "@apollo/client": "^3.3.19",
+    "@apollo/client": "^3.5.10",
     "@babel/core": "^7.11.6",
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@babel/preset-env": "^7.11.5",
