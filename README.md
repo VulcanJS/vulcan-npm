@@ -5,7 +5,7 @@
 
 ## Contribute
 
-For faster development, you may instead want to contribute to [Vulcan Next Starter](https://github.com/VulcanJS/vulcan-next-starter/issues/1). NPM packages will be published in this repo when they reach sufficient maturity.
+Discover [Vulcan Next](https://github.com/VulcanJS/vulcan-next), the Next.js and GraphQL starter app based on Vulcan NPM package library.
 
 After you've read the README, also check `./CONTRIBUTE.md` for more information about contributions.
 
