@@ -13,7 +13,15 @@ export interface Connector<
    * The _filter function let's you convert generic Vulcan Input format into the connector specific selector format
    */
   TSelector = any,
-  TOptions = any
+  TOptions = any,
+  /** Some code might need to access the raw collection
+   *
+   * /!\ It can't be typed at this point! You are responsible of checking the
+   * type of the raw collection when you manipulate it
+   *
+   * Use case: automatically generating Mongoose data source when user provide no data source
+   */
+  TRawCollection = any
 > {
   /**
    * Compute the relevant selectors
@@ -46,4 +54,5 @@ export interface Connector<
   ) => Promise<TModel>;
   // Returns true (NOTE: this is a deleteMany operation, so it doesn't return the document but a success response)
   delete: (selector: TSelector) => Promise<true>;
+  getRawCollection: () => TRawCollection;
 }

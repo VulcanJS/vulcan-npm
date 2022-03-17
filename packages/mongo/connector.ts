@@ -146,5 +146,8 @@ export const createMongooseConnector = <TModel = any>(
       return await filterFunction(model, input, context);
       //return { selector: {}, filteredFields: [], options: {} };
     },
+    getRawCollection: () => {
+      return MongooseModel;
+    },
   };
 };
