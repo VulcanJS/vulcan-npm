@@ -35,4 +35,5 @@ export interface VulcanGenericDataSource<TDocument = any> extends DataSource {
   findByFields: (fields: {
     [fieldName: string]: any;
   }) => Promise<Array<TDocument>>;
+  findManyByIds: (ids: Array<string>) => Promise<Array<TDocument>>;
 }

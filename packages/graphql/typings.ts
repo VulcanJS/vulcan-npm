@@ -10,7 +10,7 @@ import {
   VulcanFieldSchema,
   VulcanSchema,
 } from "@vulcanjs/schema";
-import { ContextWithUser } from "./server/resolvers";
+import { ContextWithUser, VulcanGenericDataSource } from "./server/resolvers";
 import { FilterableInput } from "@vulcanjs/crud";
 import { Connector } from "@vulcanjs/crud/server";
 
