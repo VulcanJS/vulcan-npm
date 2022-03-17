@@ -150,6 +150,16 @@ export interface GraphqlModelServer extends GraphqlModel {
    * model.graphql.connector = connector
    */
   connector?: Connector;
+  /**
+   * An Apollo dataSource
+   *
+   * Must at least implement default Vulcan methods
+   * (inspired by the Mongo data source) to make
+   * field resolvers and relation resolvers performant
+   *
+   * @see https://www.apollographql.com/docs/apollo-server/data/data-sources/
+   */
+  dataSource?: VulcanGenericDataSource | any;
 }
 
 // TODO: not used yet. A schema for graphql might contain those additional fields.

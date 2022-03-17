@@ -34,6 +34,7 @@
     "@vulcanjs/permissions": "^0.6.0",
     "@vulcanjs/schema": "^0.6.0",
     "@vulcanjs/utils": "^0.6.0",
+    "apollo-datasource": "^3.3.1",
     "debug": "^4.3.1",
     "deepmerge": "^4.2.2",
     "graphql-date": "^1.0.3",

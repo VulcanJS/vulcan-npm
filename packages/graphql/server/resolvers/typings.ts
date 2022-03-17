@@ -1,3 +1,4 @@
+import type { DataSource } from "apollo-datasource";
 export interface ContextWithUser {
   currentUser?: any;
   [key: string]: any;
@@ -29,7 +30,7 @@ export type VulcanApolloContext<TContext = any, TDataSources = any> = {
  * @see https://github.com/GraphQLGuide/apollo-datasource-mongodb/
  * @see https://github.com/GraphQLGuide/apollo-datasource-mongodb/#api
  */
-export interface VulcanGenericDataSource<TDocument = any> {
+export interface VulcanGenericDataSource<TDocument = any> extends DataSource {
   findOneById: (id: string) => Promise<TDocument>;
   findByFields: (fields: {
     [fieldName: string]: any;

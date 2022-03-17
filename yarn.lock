@@ -7285,6 +7285,14 @@ apollo-datasource@^3.3.0:
     apollo-server-caching "^3.3.0"
     apollo-server-env "^4.2.0"
 
+apollo-datasource@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/apollo-datasource/-/apollo-datasource-3.3.1.tgz#a1168dd68371930de3ed4245ad12fa8600efe2cc"
+  integrity sha512-Z3a8rEUXVPIZ1p8xrFL8bcNhWmhOmovgDArvwIwmJOBnh093ZpRfO+ESJEDAN4KswmyzCLDAwjsW4zQOONdRUw==
+  dependencies:
+    apollo-server-caching "^3.3.0"
+    apollo-server-env "^4.2.1"
+
 apollo-graphql@^0.9.0:
   version "0.9.5"
   resolved "https://registry.yarnpkg.com/apollo-graphql/-/apollo-graphql-0.9.5.tgz#9113483ca7f7fa49ee9e9a299c45d30b1cf3bf61"
@@ -7341,6 +7349,13 @@ apollo-server-env@^4.2.0:
   integrity sha512-4xJ+PCoWsFLj4rU6iXrIhqD7nI42goi4Iqrhsof9680ljSzkzd+PCwZsja3mHOFXKUQQUvJ7StVSgwaiRu45+A==
   dependencies:
     node-fetch "^2.6.1"
+
+apollo-server-env@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/apollo-server-env/-/apollo-server-env-4.2.1.tgz#ea5b1944accdbdba311f179e4dfaeca482c20185"
+  integrity sha512-vm/7c7ld+zFMxibzqZ7SSa5tBENc4B0uye9LTfjJwGoQFY5xsUPH5FpO5j0bMUDZ8YYNbrF9SNtzc5Cngcr90g==
+  dependencies:
+    node-fetch "^2.6.7"
 
 apollo-server-errors@^3.3.0:
   version "3.3.0"
@@ -15709,7 +15724,7 @@ node-fetch@2.6.1, node-fetch@^2.5.0, node-fetch@^2.6.0, node-fetch@^2.6.1:
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
-node-fetch@2.6.7:
+node-fetch@2.6.7, node-fetch@^2.6.7:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
