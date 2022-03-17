@@ -3,7 +3,25 @@
  */
 import { Connector } from "@vulcanjs/crud/server";
 import { VulcanDocument } from "@vulcanjs/schema";
+import { VulcanGenericDataSource } from "./typings";
 import { VulcanGraphqlModel } from "../../typings";
+
+export const getModelDataSource = <TModel extends VulcanDocument>(
+  context,
+  model: VulcanGraphqlModel
+): VulcanGenericDataSource => {
+  if (!context.dataSources)
+    throw new Error(
+      "DataSources not set in Apollo. You need to set at least the default dataSources for Vulcan graphql models."
+    );
+  const dataSource = context.dataSources[model.graphql.typeName];
+  if (dataSource)
+    throw new Error(
+      `Model of typeName ${model.graphql.typeName} have no default dataSource.`
+    );
+  return dataSource;
+};
+
 /**
  * We expect the connectors to be already in the context
  *
