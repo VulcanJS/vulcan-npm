@@ -5,10 +5,10 @@ Default mutations
 */
 
 import { createMutator, updateMutator, deleteMutator } from "./mutators";
-import { getModel } from "./context";
 
 import { ContextWithUser } from "./typings";
 import { MutationResolverDefinitions } from "../typings";
+import { getModel } from "../contextBuilder";
 
 const defaultOptions = {
   create: true,

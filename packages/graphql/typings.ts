@@ -11,9 +11,10 @@ import {
   VulcanFieldSchemaServer,
   VulcanSchema,
 } from "@vulcanjs/schema";
-import { ContextWithUser, VulcanGenericDataSource } from "./server/resolvers";
+import { ContextWithUser } from "./server/resolvers";
 import { FilterableInput } from "@vulcanjs/crud";
 import { Connector } from "@vulcanjs/crud/server";
+import { VulcanGenericDataSource } from "./server/contextBuilder";
 
 // SCHEMA TYPINGS
 // Custom resolver
@@ -161,7 +162,7 @@ export interface GraphqlModelServer extends GraphqlModel {
    *
    * @see https://www.apollographql.com/docs/apollo-server/data/data-sources/
    */
-  dataSource?: VulcanGenericDataSource | any;
+  createDataSource?: () => VulcanGenericDataSource | any;
 }
 
 // TODO: not used yet. A schema for graphql might contain those additional fields.

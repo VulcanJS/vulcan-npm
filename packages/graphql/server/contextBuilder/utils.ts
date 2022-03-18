@@ -1,11 +1,19 @@
 /**
  * Helpers for the graphql context
+ *
+ * NOTE: they should barely be used in end applications,
  */
 import { Connector } from "@vulcanjs/crud/server";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { VulcanGenericDataSource } from "./typings";
 import { VulcanGraphqlModel } from "../../typings";
 
+/**
+ * Get data source from the context.
+ * @param context
+ * @param model
+ * @returns
+ */
 export const getModelDataSource = <TModel extends VulcanDocument>(
   context,
   model: VulcanGraphqlModel
@@ -22,10 +30,18 @@ export const getModelDataSource = <TModel extends VulcanDocument>(
   return dataSource;
 };
 
+// INTERNAL
+
+// These methods are only needed for default resolvers, that cannot directly depend
+// on the models. For your own resolvers, use either a DataSource or import the model and its connector directly.
+
 /**
  * We expect the connectors to be already in the context
  *
  * This function is just an helper to retrieve it
+ *
+ * NOTE: you are not supposed to use this in an end application.
+ * Instead, directly import your model and its connector.
  * @param context
  * @param model
  */

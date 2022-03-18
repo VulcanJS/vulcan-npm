@@ -39,7 +39,7 @@ import { runCallbacks } from "@vulcanjs/core";
 
 import { throwError } from "./errors";
 import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
-import { getModelConnector } from "./context";
+import { getModelConnector } from "../contextBuilder";
 import {
   UpdateInput,
   DeleteInput,

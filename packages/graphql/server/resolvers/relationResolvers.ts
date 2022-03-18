@@ -1,6 +1,5 @@
 import { VulcanDocument } from "@vulcanjs/schema";
 import { RelationDefinition } from "../../typings";
-import { getModel, getModelConnector } from "./context";
 /*
 
 Default Relation Resolvers
@@ -8,7 +7,11 @@ Default Relation Resolvers
 */
 import { restrictViewableFields } from "@vulcanjs/permissions";
 import { QueryResolver } from "../typings";
-import { getModelDataSource } from ".";
+import {
+  getModelDataSource,
+  getModel,
+  getModelConnector,
+} from "../contextBuilder";
 
 interface RelationInput {
   // The initial field name (fooId)
