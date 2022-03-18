@@ -30,8 +30,14 @@ type ContextWithUser = { currentUser?: any };
 // This means that field callbacks probably belong to another intermediate package, for example vulcan-graphql
 // (given that those callbacks are meant to be called by graphql mutators)
 interface OnCreateInput<TModel = any> {
-  // Data passed for creation
-  data: Partial<TModel>;
+  /**
+   * Data passed on document creation
+   */
+  data: TModel;
+  /**
+   * Alias for data
+   */
+  document?: TModel;
   // originalData: VulcanDocument; // Data and original data are the same when this callback is called
   currentUser?: any;
   model?: any;
@@ -39,9 +45,17 @@ interface OnCreateInput<TModel = any> {
   schema?: VulcanSchema;
 }
 interface OnUpdateInput<TModel = any> {
-  // Data passed for
+  /**
+   * Data passed to the update function
+   * (can be incomplete, as it contains only the updated fields
+   * + null for the fields to remove)
+   */
   data: Partial<TModel>; // VulcanDocument;
   // originalData: any;
+  /**
+   * Document retrieved in the database
+   */
+  document?: TModel;
   // Document from the database
   originalDocument?: TModel;
   currentUser?: any;
@@ -50,8 +64,14 @@ interface OnUpdateInput<TModel = any> {
   schema?: VulcanSchema;
 }
 interface OnDeleteInput<TModel = any> {
-  // Document fetched from the database
+  /**
+   * Document fetched from the database
+   */
   document?: TModel;
+  /**
+   * Alias for document
+   */
+  data?: TModel;
   currentUser?: any;
   model?: any;
   context?: ContextWithUser;

@@ -54,18 +54,25 @@ import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
 import { isMemberOf, restrictViewableFields } from "@vulcanjs/permissions";
 import { FilterableInput } from "@vulcanjs/crud";
 
-type ValidateProperties = Partial<CreateMutatorProperties>;
+type ValidateProperties = Partial<
+  CreateMutatorProperties & UpdateMutatorProperties
+>;
 interface CreateMutatorProperties {
   /**
-   * @deprecated This use data instead
-   */
-  document?: any;
-  /**
-   * For create mutation
+   * Data passed to the create function
    */
   data: any;
   /**
-   * For update mutation
+   * Alias for data
+   * (used for consistency with update, here input data === the database document)
+   */
+  document?: any;
+  /**
+   * Alias for data, used for consistency during data validation
+   */
+  originalDocument?: any;
+  /**
+   * Alias for data, used for consistency during data validation
    */
   originalData?: any;
   currentUser?: any;
@@ -75,11 +82,13 @@ interface CreateMutatorProperties {
 }
 interface UpdateMutatorProperties {
   /**
-   * @deprecated This use data instead
+   * Document retrieved from the database
+   * (different from data)
    */
-  document?: any;
+  document: any;
   /**
-   * For create mutation
+   * Input data passed to the update function = partial data
+   * (different from document, which is the document in the database)
    */
   data: any;
   /**
@@ -437,6 +446,8 @@ Accepts a document reference by id, or Vulcan input
 
 Using a Mongo selector directly is deprecated, use an input instead.
 
+In charge of running the callbacks of the collection
+
 */
 export const updateMutator = async <TModel extends VulcanDocument>({
   model,
@@ -691,7 +702,14 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   Properties
 
   */
-  const properties = { document, currentUser, model, context, schema };
+  const properties = {
+    data: document,
+    document,
+    currentUser,
+    model,
+    context,
+    schema,
+  };
 
   /* Validation */
   if (validate) {
