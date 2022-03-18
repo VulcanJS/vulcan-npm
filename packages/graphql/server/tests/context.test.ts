@@ -1,5 +1,5 @@
 import { createGraphqlModel } from "../../extendModel";
-import { getModel, getModelConnector } from "../resolvers/context";
+import { getModel, getModelConnector } from "../contextBuilder";
 
 describe("graphql/context", () => {
   test("get model from context using the GraphQL typeName", () => {
