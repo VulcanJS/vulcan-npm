@@ -66,22 +66,19 @@ const Contributor = createGraphqlModelServer({
       canUpdate: ["guests"],
       //canDelete: ["guests"],
     },
-    // dumb demo, contributor points to himself
-    myselfId: {
-      type: Object,
+    // Virtual field that queries the contributor itself
+    // This is just a dumb demo for dataSources
+    myselfVirtual: {
+      type: String,
+      canRead: ["guests"],
+      canCreate: [],
+      canUpdate: [],
       resolveAs: {
         fieldName: "myself",
-        addOriginalField: true,
         typeName: "Contributor",
-        resolver: async (root, args, context) => {
-          console.log(root, args);
-          return await context.dataSources["Contributor"].findOneById(
-            root.myselfId
-          );
+        resolver: async (root /*: ContributorDocument*/, args, context) => {
+          return await context.dataSources["Contributor"].findOneById(root._id);
         },
-      },
-      onCreate: ({ data }) => {
-        return data._id;
       },
     },
 
@@ -100,10 +97,10 @@ const Contributor = createGraphqlModelServer({
   },
 });
 const contributorConnector = createMongooseConnector(Contributor, {
+  // Passing an instance is only needed in local development or if you have multiple mongoose connections
+  // Otherwise the default export of "mongoose" is always the default connection
   mongooseInstance: mongoose,
 });
-console.log(contributorConnector.getRawCollection());
-console.log(mongoose.modelNames());
 Contributor.graphql.connector = contributorConnector;
 //await mongoose.models["contributors"].deleteMany();
 const models = [Contributor];
@@ -138,11 +135,16 @@ const startServer = async () => {
   console.log(`🚀 Server ready at http://localhost:3000${server.graphqlPath}`);
 };
 
+const seedDb = async () => {
+  // insert some dummy data just for testing
+  console.log("Seeding...");
+  await contributorConnector.delete({});
+  await contributorConnector.create({ name: "John Doe" });
+  console.log("Done seeding db with 1 contributor");
+};
 const start = async () => {
   await startMongo();
-  // insert some dummy data just for testing
-  //await contributorConnector.delete({});
-  //await contributorConnector.create({ name: "John Doe" });
+  await seedDb();
   await startServer();
 };
 
