@@ -8,14 +8,15 @@ import { ApolloServer, gql } from "apollo-server-express";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 
 import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://github.com/nodkz/mongodb-memory-server
-import { createContext } from "./utils/context";
-import { createDataSources } from "./utils/dataSources";
 import {
   buildDefaultQueryResolvers,
   createGraphqlModelServer,
   buildApolloSchema,
+  createContext,
+  createDataSources,
 } from "@vulcanjs/graphql/server";
 import { createMongooseConnector } from "@vulcanjs/mongo";
+import { addDefaultMongoConnector } from "@vulcanjs/mongo-apollo";
 
 import http from "http";
 
@@ -47,6 +48,22 @@ const closeMongo = async () => {
 };
 
 // Demo model
+/**
+ * Demo model
+ * 
+ * Try this query for example:
+ * 
+ * query contribs {
+  contributors {
+    results {
+      name
+      myself {
+        name
+      }
+    }
+  }
+}
+ */
 const Contributor = createGraphqlModelServer({
   name: "Contributor",
   schema: {
@@ -104,6 +121,8 @@ const contributorConnector = createMongooseConnector(Contributor, {
 Contributor.graphql.connector = contributorConnector;
 //await mongoose.models["contributors"].deleteMany();
 const models = [Contributor];
+// Will add relevant data sources where necessary
+addDefaultMongoConnector(models);
 
 // Graphql schema
 const vulcanRawSchema = buildApolloSchema(models);
@@ -116,8 +135,16 @@ const startServer = async () => {
   // Define the server (using Express for easier middleware usage)
   const server = new ApolloServer({
     schema: vulcanSchema,
-    context: ({ req }) => contextForModels(req as Request),
-    dataSources: () => dataSourcesForModels(),
+    context: async ({ req }) => ({
+      // will generate context used by Vulcan default resolvers
+      ...(await contextForModels(req as Request)),
+      // add your own custom context here
+    }),
+    dataSources: () => ({
+      // will generate dataSources used by Vulcan default resolvers
+      ...dataSourcesForModels(),
+      // add your own data sources here
+    }),
     introspection: process.env.NODE_ENV === "development", //false,
     //playground: false,
   });

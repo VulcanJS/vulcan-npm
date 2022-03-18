@@ -28,6 +28,7 @@
     "@graphql-tools/schema": "^8.3.2",
     "@vulcanjs/graphql": "file:../../packages/graphql",
     "@vulcanjs/mongo": "file:../../packages/mongo",
+    "@vulcanjs/mongo-apollo": "file:../../packages/mongo-apollo",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-server-express": "^3.6.4",
     "esbuild-runner": "^2.2.1",

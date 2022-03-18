@@ -7,3 +7,5 @@ export * from "../extendModel.server";
 export * from "./apolloSchema";
 export * from "./typings";
 export * from "./resolvers";
+
+export * from "./contextBuilder";

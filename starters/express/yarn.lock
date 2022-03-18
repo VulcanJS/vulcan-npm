@@ -385,7 +385,7 @@
   optionalDependencies:
     msw "^0.35.0"
 
-"@vulcanjs/graphql@file:../../packages/graphql":
+"@vulcanjs/graphql@^0.6.0", "@vulcanjs/graphql@file:../../packages/graphql":
   version "0.6.0"
   dependencies:
     "@vulcanjs/core" "^0.6.0"
@@ -423,13 +423,23 @@
   dependencies:
     "@vulcanjs/schema" "^0.6.0"
 
-"@vulcanjs/mongo@file:../../packages/mongo":
+"@vulcanjs/mongo-apollo@file:../../packages/mongo-apollo":
+  version "0.6.0"
+  dependencies:
+    "@vulcanjs/crud" "^0.6.0"
+    "@vulcanjs/graphql" "^0.6.0"
+    "@vulcanjs/model" "^0.6.0"
+    "@vulcanjs/mongo" "^0.6.0"
+    "@vulcanjs/utils" "^0.6.0"
+    apollo-datasource-mongodb "^0.5.2"
+    lodash "^4.17.20"
+
+"@vulcanjs/mongo@^0.6.0", "@vulcanjs/mongo@file:../../packages/mongo":
   version "0.6.0"
   dependencies:
     "@vulcanjs/crud" "^0.6.0"
     "@vulcanjs/model" "^0.6.0"
     "@vulcanjs/utils" "^0.6.0"
-    escape-string-regexp "^5.0.0"
     lodash "^4.17.20"
 
 "@vulcanjs/permissions@^0.6.0":
@@ -1313,7 +1323,7 @@ escape-html@~1.0.3:
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
   integrity sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg=
 
-escape-string-regexp@5.0.0, escape-string-regexp@^1.0.5, escape-string-regexp@^5.0.0:
+escape-string-regexp@5.0.0, escape-string-regexp@^1.0.5:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-5.0.0.tgz#4683126b500b61762f2dbebace1806e8be31b1c8"
   integrity sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==
