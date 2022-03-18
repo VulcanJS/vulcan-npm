@@ -25,8 +25,9 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.2",
-    "@vulcanjs/graphql": "^0.5.4-alpha.8",
-    "@vulcanjs/mongo": "^0.5.4-alpha.7",
+    "@vulcanjs/graphql": "file:../../packages/graphql",
+    "@vulcanjs/mongo": "file:../../packages/mongo",
+    "apollo-datasource-mongodb": "^0.5.2",
     "apollo-server-express": "^3.6.4",
     "esbuild-runner": "^2.2.1",
     "express": "^4.17.3",

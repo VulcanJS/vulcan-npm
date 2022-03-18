@@ -1,4 +1,4 @@
-const merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const path = require("path");
 const commonConfig = require("./webpack.config.base.common.prod");
 // @see https://webpack.js.org/guides/typescript/

@@ -1,24 +1,16 @@
 {
-  "name": "@vulcanjs/mongo",
+  "name": "@vulcanjs/mongo-apollo",
   "version": "0.6.0",
-  "description": "Vulcan mongo bindings and helpers",
+  "description": "Vulcan mongo + Apollo graphql bindings and helpers",
   "main": "./dist/index.js",
   "files": [
     "dist/"
   ],
   "type": "module",
   "exports": {
-    ".": "./dist/index.js",
-    "./client": "./dist/client/index.js"
+    ".": "./dist/index.js"
   },
   "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "client": [
-        "./dist/client/index.d.ts"
-      ]
-    }
-  },
   "author": "eric-burel <eb@lebrun-burel.com>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
@@ -28,8 +20,6 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build:client": "webpack --config ./webpack.config.client.js",
-    "build:server": "webpack --config ./webpack.config.server.js",
     "build:tsup": "tsup",
     "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
     "build": "yarn run build:tsup # yarn run build:client && yarn run build:server"
@@ -39,8 +29,11 @@
   },
   "dependencies": {
     "@vulcanjs/crud": "^0.6.0",
+    "@vulcanjs/graphql": "^0.6.0",
     "@vulcanjs/model": "^0.6.0",
+    "@vulcanjs/mongo": "^0.6.0",
     "@vulcanjs/utils": "^0.6.0",
+    "apollo-datasource-mongodb": "^0.5.2",
     "lodash": "^4.17.20"
   },
   "peerDependencies": {

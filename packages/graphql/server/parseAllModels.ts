@@ -4,7 +4,7 @@
  *
  * Previously was the main GraphQL object
  */
-import { disableFragmentWarnings } from "@apollo/client";
+import { disableFragmentWarnings } from "graphql-tag";
 
 import parseModel from "./parseModel";
 import { VulcanGraphqlModel } from "../typings";
