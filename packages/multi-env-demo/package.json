@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/multi-env-demo",
-  "version": "0.6.0",
+  "version": "0.6.1-alpha.0",
   "description": "Vulcan demonstration of a fullstack packages (client AND server exports)",
   "main": "./dist/index.js",
   "files": [
