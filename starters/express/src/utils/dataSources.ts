@@ -15,7 +15,7 @@ interface ModelDataSources {
  * and field/relation resolvers for the dataSources
  * @param models
  */
-export const createDataSourcesForModels =
+export const createDataSources =
   (models: Array<VulcanGraphqlModelServer>) => (): ModelDataSources => {
     const dataSources = models.reduce((dataSources, model) => {
       // TODO: we should find a way to guarantee that all models have a default connector

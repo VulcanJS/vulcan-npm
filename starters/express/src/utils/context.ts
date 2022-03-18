@@ -20,7 +20,7 @@ const models = [Tweek, Twaik];
  * }
  */
 interface ModelContext {
-  [typeName: string]: { model: VulcanGraphqlModel; connector: Connector };
+  [typeName: string]: { model: VulcanGraphqlModelServer; connector: Connector };
 }
 /**
  * Build a default graphql context for a list of models
@@ -81,7 +81,7 @@ const userContextFromReq = async (
  * @param models
  * @returns
  */
-export const contextFromReq = (models) => async (req: Request) => {
+export const createContext = (models) => async (req: Request) => {
   //const userContext = await userContextFromReq(req);
   const context = {
     ...contextBase(models),

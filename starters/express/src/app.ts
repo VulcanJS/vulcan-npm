@@ -9,7 +9,8 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { mergeSchemas } from "@graphql-tools/schema";
 
 import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://github.com/nodkz/mongodb-memory-server
-import { contextFromReq } from "./utils/context";
+import { createContext } from "./utils/context";
+import { createDataSources } from "./utils/dataSources";
 import {
   buildDefaultQueryResolvers,
   createGraphqlModelServer,
@@ -18,45 +19,6 @@ import {
 import { createMongooseConnector } from "@vulcanjs/mongo";
 
 import http from "http";
-
-// Demo model
-const Contributor = createGraphqlModelServer({
-  name: "Contributor",
-  schema: {
-    _id: {
-      type: String,
-      optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
-      //canDelete: ["guests"],
-    },
-    name: {
-      type: String,
-      optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
-      //canDelete: ["guests"],
-    },
-  },
-  graphql: {
-    typeName: "Contributor",
-    multiTypeName: "Contributors",
-    queryResolvers: buildDefaultQueryResolvers({
-      typeName: "Contributor",
-    }),
-  },
-  permissions: {
-    canRead: ["guests"],
-    canCreate: ["guests"],
-  },
-});
-const contributorConnector = createMongooseConnector(Contributor);
-Contributor.graphql.connector = contributorConnector;
-const models = [Contributor];
-const vulcanRawSchema = buildApolloSchema(models);
-const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
 
 // Init an in-memory Mongo server
 // TODO: use a real db like in Vulcan Next
@@ -85,12 +47,57 @@ const closeMongo = async () => {
   process.exit(0);
 };
 
+// Demo model
+const Contributor = createGraphqlModelServer({
+  name: "Contributor",
+  schema: {
+    _id: {
+      type: String,
+      optional: true,
+      canRead: ["guests"],
+      canCreate: ["guests"],
+      canUpdate: ["guests"],
+      //canDelete: ["guests"],
+    },
+    name: {
+      type: String,
+      optional: true,
+      canRead: ["guests"],
+      canCreate: ["guests"],
+      canUpdate: ["guests"],
+      //canDelete: ["guests"],
+    },
+    // TODO: add resolved field using data source
+  },
+  graphql: {
+    typeName: "Contributor",
+    multiTypeName: "Contributors",
+    queryResolvers: buildDefaultQueryResolvers({
+      typeName: "Contributor",
+    }),
+  },
+  permissions: {
+    canRead: ["guests"],
+    canCreate: ["guests"],
+  },
+});
+const contributorConnector = createMongooseConnector(Contributor);
+Contributor.graphql.connector = contributorConnector;
+const models = [Contributor];
+
+// Graphql schema
+const vulcanRawSchema = buildApolloSchema(models);
+const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
+
+const contextForModels = createContext(models);
+const dataSourcesForModels = createDataSources(models);
 // Demo Apollo server
 const startServer = async () => {
   // Define the server (using Express for easier middleware usage)
   const server = new ApolloServer({
     schema: vulcanSchema,
-    context: ({ req }) => contextFromReq(models)(req as Request),
+    context: ({ req }) => contextForModels(req as Request),
+    dataSources: () => dataSourcesForModels(),
     introspection: process.env.NODE_ENV === "development", //false,
     //playground: false,
   });
