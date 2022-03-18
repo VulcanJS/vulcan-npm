@@ -4,6 +4,8 @@ import { filterFunction } from "./mongoParams";
 
 import mongoose, { QueryOptions, FilterQuery } from "mongoose";
 import { Connector } from "@vulcanjs/crud/server";
+import { debugVulcan } from "@vulcanjs/utils";
+const debugMongoose = debugVulcan("mongoose");
 
 export type MongooseConnector<TModel = any> = Connector<
   TModel,
@@ -70,18 +72,25 @@ export const createMongooseConnector = <TModel = any>(
     /** Force a mongoose model. Use if you need to customize the schema or options */
     mongooseModel?: mongoose.Model<any>;
     mongooseSchema?: mongoose.Schema;
+    /** Force a Mongoose instance (when using multiple databases,
+     * also useful during local development when not using Yalc) */
+    mongooseInstance?: mongoose.Mongoose;
   }
 ): MongooseConnector<TModel> => {
+  const mongooseInstance = options?.mongooseInstance || mongoose;
   // 1. use, retrieve or create the mongoose model
   // TODO: get a better key than "model.name" eg "model.mongo.collectionName"
-  let MongooseModel = options?.mongooseModel || mongoose.models?.[model.name];
+  let MongooseModel =
+    options?.mongooseModel || mongooseInstance.models?.[model.name];
   if (!MongooseModel) {
+    debugMongoose("Mongoose model", model.name, "not found, will create it.");
     // TODO: compute a Mongoose schema from a VulcanSchema automatically
     // TODO: remove the strict: false option! It bypassed Mongoose schema system until we are able to autocompute the Mongoose schema
     const schema =
-      options?.mongooseSchema || new mongoose.Schema({}, { strict: false });
+      options?.mongooseSchema ||
+      new mongooseInstance.Schema({}, { strict: false });
     // TODO: get name from a custom "model.mongo" option, using the model extension system like for graphql
-    MongooseModel = mongoose.model(model.name, schema);
+    MongooseModel = mongooseInstance.model(model.name, schema);
   }
   // 2. create the connector
   return {

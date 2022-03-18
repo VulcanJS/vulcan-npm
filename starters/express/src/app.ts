@@ -6,7 +6,6 @@ import express, { Request } from "express";
 import mongoose from "mongoose";
 import { ApolloServer, gql } from "apollo-server-express";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { mergeSchemas } from "@graphql-tools/schema";
 
 import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://github.com/nodkz/mongodb-memory-server
 import { createContext } from "./utils/context";
@@ -67,6 +66,25 @@ const Contributor = createGraphqlModelServer({
       canUpdate: ["guests"],
       //canDelete: ["guests"],
     },
+    // dumb demo, contributor points to himself
+    myselfId: {
+      type: Object,
+      resolveAs: {
+        fieldName: "myself",
+        addOriginalField: true,
+        typeName: "Contributor",
+        resolver: async (root, args, context) => {
+          console.log(root, args);
+          return await context.dataSources["Contributor"].findOneById(
+            root.myselfId
+          );
+        },
+      },
+      onCreate: ({ data }) => {
+        return data._id;
+      },
+    },
+
     // TODO: add resolved field using data source
   },
   graphql: {
@@ -81,8 +99,13 @@ const Contributor = createGraphqlModelServer({
     canCreate: ["guests"],
   },
 });
-const contributorConnector = createMongooseConnector(Contributor);
+const contributorConnector = createMongooseConnector(Contributor, {
+  mongooseInstance: mongoose,
+});
+console.log(contributorConnector.getRawCollection());
+console.log(mongoose.modelNames());
 Contributor.graphql.connector = contributorConnector;
+//await mongoose.models["contributors"].deleteMany();
 const models = [Contributor];
 
 // Graphql schema
@@ -117,6 +140,9 @@ const startServer = async () => {
 
 const start = async () => {
   await startMongo();
+  // insert some dummy data just for testing
+  //await contributorConnector.delete({});
+  //await contributorConnector.create({ name: "John Doe" });
   await startServer();
 };
 

@@ -8,6 +8,7 @@ import {
 import {
   VulcanDocument,
   VulcanFieldSchema,
+  VulcanFieldSchemaServer,
   VulcanSchema,
 } from "@vulcanjs/schema";
 import { ContextWithUser, VulcanGenericDataSource } from "./server/resolvers";
@@ -106,7 +107,8 @@ export interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
 }
 // @server-only
 export interface VulcanGraphqlFieldSchemaServer
-  extends VulcanGraphqlFieldSchema {
+  extends VulcanGraphqlFieldSchema,
+    VulcanFieldSchemaServer {
   // this is a custom function => it has to be defined only on the server
   resolveAs?: Array<ResolveAsDefinition> | ResolveAsDefinition;
 }

@@ -33,29 +33,29 @@ interface OnCreateInput<TModel = any> {
   // Data passed for creation
   data: Partial<TModel>;
   // originalData: VulcanDocument; // Data and original data are the same when this callback is called
-  currentUser: any;
-  model: any;
-  context: ContextWithUser;
-  schema: VulcanSchema;
+  currentUser?: any;
+  model?: any;
+  context?: ContextWithUser;
+  schema?: VulcanSchema;
 }
 interface OnUpdateInput<TModel = any> {
   // Data passed for
   data: Partial<TModel>; // VulcanDocument;
   // originalData: any;
   // Document from the database
-  originalDocument: TModel;
-  currentUser: any;
-  model: any;
-  context: ContextWithUser;
-  schema: VulcanSchema;
+  originalDocument?: TModel;
+  currentUser?: any;
+  model?: any;
+  context?: ContextWithUser;
+  schema?: VulcanSchema;
 }
 interface OnDeleteInput<TModel = any> {
   // Document fetched from the database
-  document: TModel;
-  currentUser: any;
-  model: any;
-  context: ContextWithUser;
-  schema: VulcanSchema;
+  document?: TModel;
+  currentUser?: any;
+  model?: any;
+  context?: ContextWithUser;
+  schema?: VulcanSchema;
 }
 
 // Definition of the group in a Field

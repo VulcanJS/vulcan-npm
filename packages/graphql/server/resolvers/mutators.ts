@@ -54,6 +54,7 @@ import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
 import { isMemberOf, restrictViewableFields } from "@vulcanjs/permissions";
 import { FilterableInput } from "@vulcanjs/crud";
 
+type ValidateProperties = Partial<CreateMutatorProperties>;
 interface CreateMutatorProperties {
   /**
    * @deprecated This use data instead
@@ -62,7 +63,7 @@ interface CreateMutatorProperties {
   /**
    * For create mutation
    */
-  data?: any;
+  data: any;
   /**
    * For update mutation
    */
@@ -80,11 +81,11 @@ interface UpdateMutatorProperties {
   /**
    * For create mutation
    */
-  data?: any;
+  data: any;
   /**
    * For update mutation
    */
-  originalData?: any;
+  originalData: any;
   originalDocument?: any;
   currentUser?: any;
   model?: VulcanGraphqlModel;
@@ -105,7 +106,7 @@ const validateMutationData = async ({
   model: VulcanGraphqlModelServer; // data model
   mutatorName: DefaultMutatorName;
   context: Object; // Graphql context
-  properties: CreateMutatorProperties; // TODO: add update/delete if they are different
+  properties: ValidateProperties; // TODO: add update/delete if they are different
   data?: any; // data to validate
   originalDocument?: VulcanDocument;
   validationFunction?: Function;
@@ -309,8 +310,9 @@ export const createMutator = async <TModel extends VulcanDocument>({
     try {
       let autoValue;
       // TODO: run for nested
-      if (schema[fieldName].onCreate) {
-        autoValue = await schema[fieldName].onCreate(properties); // eslint-disable-line no-await-in-loop
+      const onCreate = schema[fieldName].onCreate;
+      if (onCreate) {
+        autoValue = await onCreate(properties); // eslint-disable-line no-await-in-loop
       }
       if (typeof autoValue !== "undefined") {
         data[fieldName as keyof TModel] = autoValue;
@@ -533,8 +535,10 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   */
   for (let fieldName of Object.keys(schema)) {
     let autoValue;
-    if (schema[fieldName].onUpdate) {
-      autoValue = await schema[fieldName].onUpdate(properties); // eslint-disable-line no-await-in-loop
+    const onUpdate = schema[fieldName].onUpdate;
+
+    if (onUpdate) {
+      autoValue = await onUpdate(properties); // eslint-disable-line no-await-in-loop
     }
     if (typeof autoValue !== "undefined") {
       data[fieldName] = autoValue;
@@ -701,8 +705,9 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
 
   /* Run fields onDelete */
   for (let fieldName of Object.keys(schema)) {
-    if (schema[fieldName].onDelete) {
-      await schema[fieldName].onDelete(properties); // eslint-disable-line no-await-in-loop
+    const { onDelete } = schema[fieldName];
+    if (onDelete) {
+      await onDelete(properties); // eslint-disable-line no-await-in-loop
     }
   }
 
