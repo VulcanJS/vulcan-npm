@@ -78,8 +78,11 @@ const closeMongo = async () => {
   // remove the collection
   // disconnect the client
   await mongoose.disconnect();
+  console.log("Disconneced mongoose");
   // stop mongo server
   await mongod.stop();
+  console.log("Closed connection");
+  process.exit(0);
 };
 
 // Demo Apollo server

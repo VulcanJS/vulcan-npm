@@ -12,7 +12,8 @@
     "dev:esbuild": "node -r esbuild-register ./src/app.ts # Not working yet",
     "transpile": "tsc # Beware, this won't resolve local dependencies (missing .js)",
     "build:tsup": "tsup-node",
-    "build": "yarn run build:tsup"
+    "build": "yarn run build:tsup",
+    "preinstall": "rm -Rf ./node_modules/@vulcanjs/*"
   },
   "author": "Eric Burel (LBKE)",
   "license": "MIT",
