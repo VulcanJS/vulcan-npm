@@ -10,7 +10,8 @@ const debugMongoose = debugVulcan("mongoose");
 export type MongooseConnector<TModel = any> = Connector<
   TModel,
   FilterQuery<TModel>,
-  QueryOptions
+  QueryOptions,
+  mongoose.Model<any, any>
 >;
 
 /**
