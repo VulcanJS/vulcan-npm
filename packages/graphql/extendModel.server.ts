@@ -39,6 +39,8 @@ import cloneDeep from "lodash/cloneDeep.js";
 import isEmpty from "lodash/isEmpty.js";
 
 import merge from "lodash/merge.js";
+import { Connector } from "@vulcanjs/crud/server";
+import { DataSource } from "apollo-datasource";
 /**
  * This type is meant to be exposed server side
  *  @server-only
@@ -49,6 +51,19 @@ export interface GraphqlModelOptionsServer extends GraphqlModelOptions {
   /** Custom mutation resolvers (create, update, delete). Set to "null" if you don't want Vulcan to set any resolvers. Leave undefined if you want to use default resolvers. */
   mutationResolvers?: Partial<MutationResolverDefinitions> | null;
   callbacks?: MutationCallbackDefinitions;
+  /**
+   * Create a database connector. As a default, Vulcan Next will setup a Mongoose connector
+   * but it's better to set it explicitely.
+   *
+   * NOTE: we can't pass the connector directly, because it usually depends on the model itself
+   */
+  createConnector?: (self: VulcanGraphqlModelServer) => Connector;
+  /**
+   * Create a data source creator (/!\ it must be a closure)
+   */
+  makeCreateDataSource?: (
+    self: VulcanGraphqlModelServer
+  ) => () => DataSource | undefined;
 }
 
 /**
@@ -118,6 +133,7 @@ export const extendModelServer =
     const {
       mutationResolvers: mutationResolversFromOptions,
       queryResolvers: queryResolversFromOptions,
+      createConnector,
     } = options;
     let mutationResolvers = mutationResolversFromOptions,
       queryResolvers = queryResolversFromOptions;
@@ -142,8 +158,15 @@ export const extendModelServer =
       mutationResolvers: mutationResolvers ? mutationResolvers : undefined,
       queryResolvers: queryResolvers ? queryResolvers : undefined,
     };
+
+    /** Generate the model schema */
     finalModel.schema = extendSchemaServer(finalModel.schema);
-    const name = model.name;
+
+    /** Final step: generate the connector if possible*/
+    if (createConnector) {
+      finalModel.graphql.connector = createConnector(finalModel);
+    }
+
     return finalModel;
   };
 

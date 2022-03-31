@@ -5,7 +5,8 @@
  * When calling SimpleSchema(schema), you get an EvaluatedSchemaDefinition. We do not
  * use them in Vulcan core anymore.
  */
-import { SchemaDefinition /*, EvaluatedSchemaDefinition*/ } from "simpl-schema";
+//import { SchemaDefinition /*, EvaluatedSchemaDefinition*/ } from "simpl-schema";
+import type { SchemaDefinition } from "../simpleSchemaSimplifiedTypings";
 import { VulcanFieldInput } from "./form";
 
 export type FieldTypeName =

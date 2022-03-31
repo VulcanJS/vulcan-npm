@@ -4,128 +4,28 @@
 import express, { Request } from "express";
 // import cors from "cors";
 import mongoose from "mongoose";
-import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 
-import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://github.com/nodkz/mongodb-memory-server
 import {
-  buildDefaultQueryResolvers,
-  createGraphqlModelServer,
   buildApolloSchema,
   createContext,
   createDataSources,
 } from "@vulcanjs/graphql/server";
-import { createMongooseConnector } from "@vulcanjs/mongo";
 import { addDefaultMongoConnector } from "@vulcanjs/mongo-apollo";
 
 import http from "http";
 
-// Init an in-memory Mongo server
-// TODO: use a real db like in Vulcan Next
-let mongod;
-let mongoUri;
-const startMongo = async () => {
-  // Spin up a dummy mongo server
-  mongod = await MongoMemoryServer.create();
-  mongoUri = mongod.getUri();
-  console.log("MongoUri", mongoUri);
-  // const port = await mongod.getPort();
-  // const dbPath = await mongod.getDbPath();
-  // const dbName = await mongod.getDbName();
-  // Connect mongoose client
-  await mongoose.connect(mongoUri);
-};
-const closeMongo = async () => {
-  console.log("Exiting, close Mongo connection");
-  // remove the collection
-  // disconnect the client
-  await mongoose.disconnect();
-  console.log("Disconneced mongoose");
-  // stop mongo server
-  await mongod.stop();
-  console.log("Closed connection");
-  process.exit(0);
-};
+import { startMongo, closeMongo } from "./inMemoryMongo";
+import { Contributor, models } from "./models";
 
-// Demo model
-/**
- * Demo model
- * 
- * Try this query for example:
- * 
- * query contribs {
-  contributors {
-    results {
-      name
-      myself {
-        name
-      }
-    }
-  }
-}
- */
-const Contributor = createGraphqlModelServer({
-  name: "Contributor",
-  schema: {
-    _id: {
-      type: String,
-      optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
-      //canDelete: ["guests"],
-    },
-    name: {
-      type: String,
-      optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
-      //canDelete: ["guests"],
-    },
-    // Virtual field that queries the contributor itself
-    // This is just a dumb demo for dataSources
-    myselfVirtual: {
-      type: String,
-      canRead: ["guests"],
-      canCreate: [],
-      canUpdate: [],
-      resolveAs: {
-        fieldName: "myself",
-        typeName: "Contributor",
-        resolver: async (root /*: ContributorDocument*/, args, context) => {
-          return await context.dataSources["Contributor"].findOneById(root._id);
-        },
-      },
-    },
-
-    // TODO: add resolved field using data source
-  },
-  graphql: {
-    typeName: "Contributor",
-    multiTypeName: "Contributors",
-    queryResolvers: buildDefaultQueryResolvers({
-      typeName: "Contributor",
-    }),
-  },
-  permissions: {
-    canRead: ["guests"],
-    canCreate: ["guests"],
-  },
-});
-const contributorConnector = createMongooseConnector(Contributor, {
-  // Passing an instance is only needed in local development or if you have multiple mongoose connections
-  // Otherwise the default export of "mongoose" is always the default connection
-  mongooseInstance: mongoose,
-});
-Contributor.graphql.connector = contributorConnector;
-//await mongoose.models["contributors"].deleteMany();
-const models = [Contributor];
-// Will add relevant data sources where necessary
+// Will add relevant data sources and connectors if necessary
+// Using Mongo as a default
 addDefaultMongoConnector(models);
 
-// Graphql schema
+// Graphql resolvers and typedefs
 const vulcanRawSchema = buildApolloSchema(models);
+// Executable graphq schema
 const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
 
 const contextForModels = createContext(models);
@@ -165,8 +65,15 @@ const startServer = async () => {
 const seedDb = async () => {
   // insert some dummy data just for testing
   console.log("Seeding...");
-  await contributorConnector.delete({});
-  await contributorConnector.create({ name: "John Doe" });
+  /**
+   * NOTE: calling the mongoose model directly WON'T run
+   * the model callbacks.
+   *
+   * You may instead want to use a "mutator"
+   */
+  const contributorMongooseModel = mongoose.models[Contributor.name];
+  await contributorMongooseModel.remove({});
+  await contributorMongooseModel.create({ name: "John Doe" });
   console.log("Done seeding db with 1 contributor");
 };
 const start = async () => {
