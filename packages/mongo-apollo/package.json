@@ -43,8 +43,5 @@
   "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f",
   "publishConfig": {
     "access": "public"
-  },
-  "devDependencies": {
-    "mongodb-memory-server": "^6.9.2"
   }
 }
