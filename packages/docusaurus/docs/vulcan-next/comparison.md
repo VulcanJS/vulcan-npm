@@ -58,3 +58,21 @@ The first version of Vulcan was based on Meteor. Meteor and Vulcan brought many 
 
 However, Meteor development underwent a hiatus between 2016-2019 as the focus shifted on coding Apollo.
 It was later bought by Tiny and now regains a new wave of attention, however we already moved out by that time. Meteor is still an excellent framework for medium-sized apps.
+
+## Why no static code generation?
+
+Using Vulcan, you might notice that we *dynamically* generate the GraphQL "Type Definitions" (the GraphQL schema as a) and "resolvers" (the function that powers this schema).
+
+Many modern frameworks prefer *static* generation for both, meaning they will litterally produce pieces of code you can edit later on.
+
+
+- Static code generation is awesome when you need to customize the code later on. However,
+it also mean that you need to manage a lot of additional files in your codebase.
+
+- Dynamic generation won't generate any code. Customization is done either via the Vulcan Model object, or by [creating your custom resolvers as depicted in our GraphQL engine documentation](../vulcan-artemis/customResolvers.md).
+  
+Actually, both patterns are perfectly compatible! 
+
+For instance, you can use the generic, dynamic `useMulti` React hook from Vulcan to fetch data, but also generate some specific, static hooks using tools like [Wundergraph](https://wundergraph.com/).
+
+Note that we can still export the GraphQL schema as a file, what we cannot statically generate are the resolver functions tied to this schema or specific hooks for each Vulcan model.

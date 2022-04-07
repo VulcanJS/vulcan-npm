@@ -1,6 +1,13 @@
 /**
  * Inspired by existing Vulcan Next graphql API route
+ *
+ * TODO 2022/04 to reach beta release:
+ * - show how to setup the graphql context properly
+ * - show how to setup permissions via currentUser context
+ * - easy swap of the mongo database
+ * - automatically add _id, userId, timestamps in models
  */
+import mongoose from "mongoose";
 import express, { Request } from "express";
 // import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
@@ -19,15 +26,15 @@ import { startMongo, closeMongo } from "./inMemoryMongo";
 import { models } from "./models";
 import { seedDemoDb } from "./seedDemoDb";
 
-// Will add relevant data sources and connectors if necessary
-// Using Mongo as a default
-addDefaultMongoConnector(models);
-
 // Graphql resolvers and typedefs
 const vulcanRawSchema = buildApolloSchema(models);
 // Executable graphq schema
 const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
 
+// Will add relevant data sources and connectors if necessary
+// Using Mongo as a default
+// /!\ Must be called before graphql context creation
+addDefaultMongoConnector(models, { mongooseInstance: mongoose });
 const contextForModels = createContext(models);
 const dataSourcesForModels = createDataSources(models);
 

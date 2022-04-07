@@ -67,16 +67,17 @@ function convertIdAndTransformToJSON<TModel>(
   }
 }
 
+export interface MongooseConnectorOptions {
+  /** Force a mongoose model. Use if you need to customize the schema or options */
+  mongooseModel?: mongoose.Model<any>;
+  mongooseSchema?: mongoose.Schema;
+  /** Force a Mongoose instance (when using multiple databases,
+   * also useful during local development when not using Yalc) */
+  mongooseInstance?: mongoose.Mongoose;
+}
 export const createMongooseConnector = <TModel = any>(
   model: VulcanModel,
-  options?: {
-    /** Force a mongoose model. Use if you need to customize the schema or options */
-    mongooseModel?: mongoose.Model<any>;
-    mongooseSchema?: mongoose.Schema;
-    /** Force a Mongoose instance (when using multiple databases,
-     * also useful during local development when not using Yalc) */
-    mongooseInstance?: mongoose.Mongoose;
-  }
+  options?: MongooseConnectorOptions
 ): MongooseConnector<TModel> => {
   const mongooseInstance = options?.mongooseInstance || mongoose;
   // 1. use, retrieve or create the mongoose model

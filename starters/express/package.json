@@ -13,7 +13,12 @@
     "transpile": "tsc # Beware, this won't resolve local dependencies (missing .js)",
     "build:tsup": "tsup-node",
     "build": "yarn run build:tsup",
-    "preinstall": "rm -Rf ./node_modules/@vulcanjs/*"
+    "preinstall": "rm -Rf ./node_modules/@vulcanjs/*",
+    "mongo": "yarn run start:mogno",
+    "//start:mongo": "### Will start or create & start the image + store data locally in .mongo folder + remove the container when stopped.",
+    "start:mongo": "docker run --rm -p 27017:27017 -v \"$(pwd)/.mongo:/data/db\" --label vulcan-mongodb mongo:4.0.4 ",
+    "//start:mongo:windows": "### See https://stackoverflow.com/questions/46604827/pwd-in-npm-script/71214387",
+    "start:mongo:windows": "docker run --rm -p 27017:27017 -v \"%cd%\\.mongo:/data/db\" --label vulcan-mongodb mongo:4.0.4"
   },
   "author": "Eric Burel (LBKE)",
   "license": "MIT",

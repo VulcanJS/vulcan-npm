@@ -1,6 +1,11 @@
 import { VulcanGraphqlModelServer } from "@vulcanjs/graphql/server";
-import { createMongooseConnector } from "@vulcanjs/mongo";
+import {
+  createMongooseConnector,
+  MongooseConnectorOptions,
+} from "@vulcanjs/mongo";
 import { createMongooseDataSource } from "./createMongooseDataSource";
+import { debugVulcan } from "@vulcanjs/utils";
+const debugMongo = debugVulcan("mongo");
 
 /**
  * Add default Mongo connector and dataSource to models
@@ -10,13 +15,22 @@ import { createMongooseDataSource } from "./createMongooseDataSource";
  * @returns
  */
 export const addDefaultMongoConnector = (
-  models: Array<VulcanGraphqlModelServer>
+  models: Array<VulcanGraphqlModelServer>,
+  connectorOptions?: Pick<MongooseConnectorOptions, "mongooseInstance">
 ) => {
   models.forEach((model) => {
     if (!model.graphql.connector) {
-      model.graphql.connector = createMongooseConnector(model);
+      debugMongo("Creating default mongoose connector for model", model.name);
+      model.graphql.connector = createMongooseConnector(
+        model,
+        connectorOptions
+      );
     }
     if (!model.graphql.createDataSource) {
+      debugMongo(
+        "Creating default mongoose datasource maker for model",
+        model.name
+      );
       model.graphql.createDataSource = () =>
         createMongooseDataSource(model, model.graphql.connector!);
     }

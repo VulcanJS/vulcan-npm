@@ -12,17 +12,6 @@ import { createMongooseDataSource } from "@vulcanjs/mongo-apollo";
 /**
  * Demo model
  * 
- * Try this query for example:
-  
-  query contribs {
-  contributors {
-    results {
-      name
-      myself {
-        name
-      }
-    }
-  }
 }
  */
 export const Contributor = createGraphqlModelServer({
@@ -100,5 +89,49 @@ export const Contributor = createGraphqlModelServer({
   },
 });
 
+export const Repository = createGraphqlModelServer({
+  name: "Repository",
+  schema: {
+    _id: {
+      type: String,
+      optional: true,
+      canRead: ["guests"],
+      canCreate: ["guests"],
+      canUpdate: ["guests"],
+      //canDelete: ["guests"],
+    },
+    url: {
+      type: String,
+      optional: true,
+      canRead: ["guests"],
+      canCreate: ["guests"],
+      canUpdate: ["guests"],
+      //canDelete: ["guests"],
+    },
+    contributorId: {
+      type: String,
+      // You will be able to query the "contributor" field of any "repository" object
+      relation: {
+        fieldName: "contributor",
+        kind: "hasOne",
+        model: Contributor,
+        typeName: "Contributor",
+      },
+      canRead: ["guests"],
+      canCreate: ["guests"],
+      canUpdate: ["guests"],
+    },
+  },
+  graphql: {
+    // Automated pluralization can lead to unexpected bugs, we prefer an explicit plural name
+    multiTypeName: "Repositories",
+    typeName: "Repository",
+  },
+  permissions: {
+    canRead: ["guests"],
+    canCreate: ["guests"],
+  },
+});
+
 //await mongoose.models["contributors"].deleteMany();
-export const models = [Contributor];
+export const models = [Contributor, Repository];
