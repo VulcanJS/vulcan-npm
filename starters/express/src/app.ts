@@ -6,6 +6,9 @@
  * - show how to setup permissions via currentUser context
  * - easy swap of the mongo database
  * - automatically add _id, userId, timestamps in models
+ * - get rid of unwanted dependency to React (stems from @vulcanjs/i18n who exports some providers,
+ * it should be factored to split React specifics and generic i18n features)
+ * - get rid of escape-string-regex issue
  */
 import mongoose from "mongoose";
 import express, { Request } from "express";
@@ -18,6 +21,7 @@ import {
   createContext,
   createDataSources,
 } from "@vulcanjs/graphql/server";
+
 import { addDefaultMongoConnector } from "@vulcanjs/mongo-apollo";
 
 import http from "http";
