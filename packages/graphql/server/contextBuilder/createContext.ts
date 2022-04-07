@@ -33,7 +33,8 @@ const createContextForModels = (
   return models.reduce(
     (context, model: VulcanGraphqlModelServer) => ({
       ...context,
-      [model.name]: {
+      // NOTE: it's the typeName we use here, not the "model.name"
+      [model.graphql.typeName]: {
         model,
         connector:
           model.graphql.connector /* || createMongooseConnector(model),*/,
