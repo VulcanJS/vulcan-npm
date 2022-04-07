@@ -3,7 +3,6 @@
  */
 import express, { Request } from "express";
 // import cors from "cors";
-import mongoose from "mongoose";
 import { ApolloServer } from "apollo-server-express";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 
@@ -17,7 +16,8 @@ import { addDefaultMongoConnector } from "@vulcanjs/mongo-apollo";
 import http from "http";
 
 import { startMongo, closeMongo } from "./inMemoryMongo";
-import { Contributor, models } from "./models";
+import { models } from "./models";
+import { seedDemoDb } from "./seedDemoDb";
 
 // Will add relevant data sources and connectors if necessary
 // Using Mongo as a default
@@ -30,6 +30,13 @@ const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
 
 const contextForModels = createContext(models);
 const dataSourcesForModels = createDataSources(models);
+
+const app = express();
+// Redirection so the home page points to graphql directly
+app.get("/", (req, res) => {
+  res.redirect("/api/graphql");
+});
+
 // Demo Apollo server
 const startServer = async () => {
   // Define the server (using Express for easier middleware usage)
@@ -50,7 +57,6 @@ const startServer = async () => {
   });
   await server.start();
 
-  const app = express();
   const httpServer = http.createServer(app);
 
   // app.set("trust proxy", true);
@@ -62,23 +68,9 @@ const startServer = async () => {
   console.log(`🚀 Server ready at http://localhost:3000${server.graphqlPath}`);
 };
 
-const seedDb = async () => {
-  // insert some dummy data just for testing
-  console.log("Seeding...");
-  /**
-   * NOTE: calling the mongoose model directly WON'T run
-   * the model callbacks.
-   *
-   * You may instead want to use a "mutator"
-   */
-  const contributorMongooseModel = mongoose.models[Contributor.name];
-  await contributorMongooseModel.remove({});
-  await contributorMongooseModel.create({ name: "John Doe" });
-  console.log("Done seeding db with 1 contributor");
-};
 const start = async () => {
   await startMongo();
-  await seedDb();
+  await seedDemoDb();
   await startServer();
 };
 
