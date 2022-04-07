@@ -13,11 +13,12 @@ such as cron-jobs.
 
 Instead, you might want to create an Express based micro-server.
 
+
 You could also want to use Vulcan with other frontend technologies, like Create React App, in which
 case you need an additional Express server for the backend.
 
 **Great news: we got you covered.**
 
-At the time of writing (early 2022), our Express starter is just a single file, [available here on GitHub](https://github.com/VulcanJS/vulcan-npm/tree/main/starters/express).
-But it works perfect, uses TypeScript, Apollo Server, and is built using Tsup
-for a fast refresh.
+[Vulcan Express](https://github.com/VulcanJS/vulcan-express) is the perfect solution for you!
+
+Vulcan Express is in alpha stage, yet it works fine, uses TypeScript, Apollo Server, [Vulcan Artemis](../vulcan-artemis) for the CRUD operation, and is built using [Tsup](https://github.com/egoist/tsup) for a fast refresh during development.

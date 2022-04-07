@@ -13,13 +13,13 @@ Also, Next.js includes API routes, which makes it a full-stack framework. API ro
 
 ### Blitz.js
 
-#### A more classical architecture
+#### Vulcan prefers a more classical architecture
 
 [Blitz.js](https://blitzjs.com/) is the most famous framework built around Next. Vulcan Next aims at being slightly simpler and standard. We do not try to achieve a "zero-api" data layer and instead rely on GraphQL language. We do not use Prisma and prefer direct access to the database (Mongo is our default, SQL is possible). Finally, we use dynamic feature generation based on a schema, as opposed to static code generation. This pattern is more flexible when you are in the early stage of designing your application model.
 
 Blitz is an innovative and bold technology. Vulcan Next is suited when a simpler architecture fits your need or you are still in the process of learning Next.js.
 
-#### Both are toolkits
+#### Both Vulcan and Blitz are reusable toolkits
 
 Blitz used to be focused on Next.js but pivoted toward creating a reusable toolkit in 2022. We've been pursuing the same goal since 2019, with however a way smaller scope. We mainly aim at making the basic CRUD operations (Create, Read, Update, Delete) very easy to setup in any Express and/or React compatible app (which includes Next.js).
 
@@ -37,10 +37,9 @@ Vulcan is a framework. It means that we provide a Next.js app too (I hope a well
 
 We have a long history of being stuck with Meteor before moving to Next.js, that's why we try to make most of our codebase framework-independant.
   
-### Next Right Now
+### Next Right Now and other boilerplates
 
 There are plenty of Next.js boilerplates that use various technologies. I won't quote all of them, but [Next Right Now](https://github.com/UnlyEd/next-right-now) is definitely worth a try. It's one of the earliest and most mature Next.js boilerplate around.
-
 
 ## Vulcan vs other non Next.js technologies
 
@@ -52,7 +51,9 @@ This limitation is also shared by other technologies at the time of writing (ear
 
 Next/Vulcan Next are able to handle multi-tenancy, i18n, A/B testing... more elegantly when it comes to static rendering.
 
-- [Meteor](https://www.meteor.com/developers/):  Meteor is one of the first mature fullstack JavaScript framework ever. 
+In terms of philosophy, Vulcan is a cross-point between various technologies maintained by many different people: Next, Express, React, Storybook, Jest, Apollo, GraphQL... We don't really aim to invent a lot of "new things", but instead we gather the best ideas around the world and mix them in a single project.
+
+- [Meteor](https://www.meteor.com/developers/): Meteor is one of the first mature fullstack JavaScript framework ever. 
 The first version of Vulcan was based on Meteor. Meteor and Vulcan brought many innovations: structuring the code as a monorepo of reusable packages, making it easy to share code between the client and the server, having a schema-based client/server communication layer...
 
 However, Meteor development underwent a hiatus between 2016-2019 as the focus shifted on coding Apollo.

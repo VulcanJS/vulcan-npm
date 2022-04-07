@@ -1,7 +1,6 @@
 ---
 title: "Custom resolvers"
 ---
-
 # Why a custom resolver?
 
 A custom resolver is needed for everything that is not a normal CRUD operation.

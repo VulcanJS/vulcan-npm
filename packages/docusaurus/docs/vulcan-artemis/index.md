@@ -7,8 +7,7 @@ sidebar_position: 2
 
 **Documentation in progress.**
 
-
-# Easy CRUD for Apollo GraphQL
+# Easy CRUD for GraphQL servers
 
 ## In a nutshell
 
@@ -35,7 +34,7 @@ In your Apollo client, this means you also need to create at least 4 type querie
 
 Yet, all your code will look vaguely the same: you check permissions, you update the data, your run some code when before or after the database operation...
 
-**Let's improve that! **
+**Let's improve that!**
 
 ## Free CRUD resolvers for your data model
 
@@ -62,4 +61,4 @@ There is also no obligation to use Artemis hooks client-side. Or to use React. O
 
 ## Give it a try!
 
-The easiest way to start with Artemis, is to discover our [Next.js starter](../vulcan-next)
+The easiest way to start with Artemis, is to discover either our [Next.js starter](../vulcan-next) or our [Express starter](../vulcan-express)
