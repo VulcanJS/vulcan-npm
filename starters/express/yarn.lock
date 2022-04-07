@@ -365,36 +365,38 @@
     "@types/node" "*"
     "@types/webidl-conversions" "*"
 
-"@vulcanjs/core@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@vulcanjs/core/-/core-0.6.0.tgz#708a21610aa351b10ffb0aa6a9808c0700bed60c"
-  integrity sha512-x9PDIuFj3ys++nmxFtoqy3v5jJW7wuaW688Np78eI1N2BjRI2IxW3lz/trXr4VvjmNODkW+gK8Cb8FSbnrZMOA==
+"@vulcanjs/core@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/core/-/core-0.6.1.tgz#231afd7bbed7a2bfc0f0dce4b657d34a6b8d67b2"
+  integrity sha512-QlNbhO/W75cin4zbqnPgUKuZUOZlcCwrWPYlVHoApCN9tYGeeEXprBS/oWke61t+FmO1gejMrZanm4M/JAkmkQ==
   dependencies:
-    "@vulcanjs/utils" "^0.6.0"
+    "@vulcanjs/utils" "^0.6.1"
     debug "^4.3.1"
     lodash "^4.17.21"
 
-"@vulcanjs/crud@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@vulcanjs/crud/-/crud-0.6.0.tgz#b062aa7a1fca686a90517dc91c859ec14650ac9d"
-  integrity sha512-jVXwa+ExR4XA0v6j/tFtHzNeAerEQsBuvXvRoGcBCovD5nxtGSjg7PoD0yf6yyS4HpjMsZMc8IT4O3X4hmSf8g==
+"@vulcanjs/crud@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/crud/-/crud-0.6.1.tgz#48a1758947c7f1a9b743cc9fd0a59f7a96283639"
+  integrity sha512-7kTLHMx3i4ypHf+iVR88H2B2PogF/iVHM8y+6iF0wUseNBlVpw6khOiFA3KrRh0xniVmBdtc8OOCa4PqNnrmWA==
   dependencies:
-    "@vulcanjs/schema" "^0.6.0"
+    "@vulcanjs/schema" "^0.6.1"
     debug "^4.3.1"
     lodash "^4.17.21"
   optionalDependencies:
     msw "^0.35.0"
 
-"@vulcanjs/graphql@^0.6.0", "@vulcanjs/graphql@file:../../packages/graphql":
-  version "0.6.0"
+"@vulcanjs/graphql@^0.6.1", "@vulcanjs/graphql@latest":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/graphql/-/graphql-0.6.1.tgz#afd520900be0e5c20d450f593756cb111e5bcc6d"
+  integrity sha512-RG4WcoI1lZFoSKIDdJ8q9HyZt0j1x2t1IiP2GXiI1l5y8CN9B1ndAEBgPEcuD8dMzfyupmCkbO9s0FR2HlLpBg==
   dependencies:
-    "@vulcanjs/core" "^0.6.0"
-    "@vulcanjs/crud" "^0.6.0"
-    "@vulcanjs/i18n" "^0.6.0"
-    "@vulcanjs/model" "^0.6.0"
-    "@vulcanjs/permissions" "^0.6.0"
-    "@vulcanjs/schema" "^0.6.0"
-    "@vulcanjs/utils" "^0.6.0"
+    "@vulcanjs/core" "^0.6.1"
+    "@vulcanjs/crud" "^0.6.1"
+    "@vulcanjs/i18n" "^0.6.1"
+    "@vulcanjs/model" "^0.6.1"
+    "@vulcanjs/permissions" "^0.6.1"
+    "@vulcanjs/schema" "^0.6.1"
+    "@vulcanjs/utils" "^0.6.1"
     apollo-datasource "^3.3.1"
     debug "^4.3.1"
     deepmerge "^4.2.2"
@@ -405,66 +407,70 @@
   optionalDependencies:
     msw "^0.35.0"
 
-"@vulcanjs/i18n@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@vulcanjs/i18n/-/i18n-0.6.0.tgz#8a9030c227aaa02c2b697db4f49b71ecb97c116c"
-  integrity sha512-lydO/0IVLKwvWO8NDmObeAPw1DsoCQzr57gtgGAU0ZPRfMqO2+5l7j/mhvbdioXF1s9mkArHDUbPgiacMbO4cA==
+"@vulcanjs/i18n@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/i18n/-/i18n-0.6.1.tgz#263fd1a44cfe9a60f6b199e9763abbf308e2fef7"
+  integrity sha512-DYjQDT9wx3eb8GAhdGQY40icULFo52u69noi7MiuMel3/IlzETlMaHnW7Z1KulfH/y8h0F1coDCZ85UjGvOKaQ==
   dependencies:
-    "@vulcanjs/schema" "^0.6.0"
-    "@vulcanjs/utils" "^0.6.0"
+    "@vulcanjs/schema" "^0.6.1"
+    "@vulcanjs/utils" "^0.6.1"
     prop-types "^15.7.2"
     react-cookie "^4.1.1"
     simpl-schema "^1.12.0"
 
-"@vulcanjs/model@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@vulcanjs/model/-/model-0.6.0.tgz#87f26499b8e88020203c71f61b9e2d2c302c1021"
-  integrity sha512-fJxkvM7xbhqHhDmgOR4udeR/cvhUH1ZZQwY3mCwG0smTPDIj1NTdRBzo3Ls6kWf5fHb4vuW6C5ld8f0Uf0fj7Q==
+"@vulcanjs/model@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/model/-/model-0.6.1.tgz#9e1e13546aee6d432fb74386c02894714aa40da2"
+  integrity sha512-w74KcnhrzDhk7BJFIeEpDCeRJg/mcbj1QRj4QYVDoDwFc2XkyhHCmBlfE7nk4yYJzH+JtzSYrgIvIu3ySM0XrA==
   dependencies:
-    "@vulcanjs/schema" "^0.6.0"
+    "@vulcanjs/schema" "^0.6.1"
 
-"@vulcanjs/mongo-apollo@file:../../packages/mongo-apollo":
-  version "0.6.0"
+"@vulcanjs/mongo-apollo@latest":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/mongo-apollo/-/mongo-apollo-0.6.1.tgz#2983a3458a882ff24fe977fea4b7f339ebac1e56"
+  integrity sha512-Gw2SOsy7TgSf4ZoVi/aR4AXsP+zKOdv3zbDx5E6/Uw/FHUdqapV/vS36D8NHje8afcwzWqzmzbCM7iNYiSiodA==
   dependencies:
-    "@vulcanjs/crud" "^0.6.0"
-    "@vulcanjs/graphql" "^0.6.0"
-    "@vulcanjs/model" "^0.6.0"
-    "@vulcanjs/mongo" "^0.6.0"
-    "@vulcanjs/utils" "^0.6.0"
+    "@vulcanjs/crud" "^0.6.1"
+    "@vulcanjs/graphql" "^0.6.1"
+    "@vulcanjs/model" "^0.6.1"
+    "@vulcanjs/mongo" "^0.6.1"
+    "@vulcanjs/utils" "^0.6.1"
     apollo-datasource-mongodb "^0.5.2"
     lodash "^4.17.20"
 
-"@vulcanjs/mongo@^0.6.0", "@vulcanjs/mongo@file:../../packages/mongo":
-  version "0.6.0"
+"@vulcanjs/mongo@^0.6.1", "@vulcanjs/mongo@latest":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/mongo/-/mongo-0.6.1.tgz#45a0cbc5a4a43a02fd46e4d1566a0109d6308566"
+  integrity sha512-w7l7fAnTRuOXEmWwbXaaymqFdPTUOzoKEexjqkqUJeOYMXb4cbSgtDUCJ0fu3Wb9CCBsyxAiaJkxk8yYN+9EsA==
   dependencies:
-    "@vulcanjs/crud" "^0.6.0"
-    "@vulcanjs/model" "^0.6.0"
-    "@vulcanjs/utils" "^0.6.0"
+    "@vulcanjs/crud" "^0.6.1"
+    "@vulcanjs/model" "^0.6.1"
+    "@vulcanjs/utils" "^0.6.1"
     lodash "^4.17.20"
 
-"@vulcanjs/permissions@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@vulcanjs/permissions/-/permissions-0.6.0.tgz#c82e600419a53463fc96530e23ecea9fd5db8962"
-  integrity sha512-O9aDR67pWU9D4eBkpeRG/fYdKp3cQo5g/vzq/yfTQjl7qm/FsLmKDDkptWIrMEWhuRUWOKXyijQtpTC1c4OXIA==
+"@vulcanjs/permissions@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/permissions/-/permissions-0.6.1.tgz#ea01a0aaef869dd62df32451d26c792fddcdf2b4"
+  integrity sha512-PUi2Y4iAQEmPXAYm1wU6Vgu2O9ah4Ld+8vM/Ni/96haHGp6sseWP4NncnwVfaBPXxU3GPfq5MUkCnHAPFNGl0g==
   dependencies:
-    "@vulcanjs/model" "^0.6.0"
-    "@vulcanjs/schema" "^0.6.0"
+    "@vulcanjs/model" "^0.6.1"
+    "@vulcanjs/schema" "^0.6.1"
     lodash "^4.17.21"
 
-"@vulcanjs/schema@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@vulcanjs/schema/-/schema-0.6.0.tgz#c29d58b744bdf9e9a6b86949550d1d82a067db96"
-  integrity sha512-0NQAxp5QNS04Uxi9KpichGr6zPcZvTuJmAiOBGfWRc6ta0jQyhg/+1cIwvQaKbP2Dr3pIH5PhUxdIisPwsDqfw==
+"@vulcanjs/schema@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/schema/-/schema-0.6.1.tgz#4c3ad124757ab1d8585fb4ad2c3293e8ee71a05d"
+  integrity sha512-ryZBRgA/c9B0FAQRv2NlB3qnxGTy6G6q2EbZUtrABW7LZ2G7hfEfA0QFG56cbh0UqA6EgE/GrxnFwKx4mhxo8w==
   dependencies:
     lodash "^4.17.21"
     simpl-schema "^1.12.0"
 
-"@vulcanjs/utils@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@vulcanjs/utils/-/utils-0.6.0.tgz#3580274f76721512693984d977f7ad2307f352a5"
-  integrity sha512-hbA5OedPI3m7deUlBdItwrRUrxbafHONbelKPaQTi6l4KdJAbc6Cy1cuyKRgbzmh+c3sFUoO3KvG+pcchWYZkQ==
+"@vulcanjs/utils@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@vulcanjs/utils/-/utils-0.6.1.tgz#d011c87acf195e5ed8241965452fe8e6c10c95c6"
+  integrity sha512-H+V4i7bKW8M759u5q6Nfw1up2FHpT0OrSeQm2hqomSfHuJLWbHPQL4FlXXipOvw9YifCsnu4w/ubn/iEP7hgCQ==
   dependencies:
-    "@vulcanjs/model" "^0.6.0"
+    "@vulcanjs/model" "^0.6.1"
     debug "^4.3.1"
     lodash "^4.17.21"
     speakingurl "^14.0.1"
@@ -1323,10 +1329,10 @@ escape-html@~1.0.3:
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
   integrity sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg=
 
-escape-string-regexp@5.0.0, escape-string-regexp@^1.0.5:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-5.0.0.tgz#4683126b500b61762f2dbebace1806e8be31b1c8"
-  integrity sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==
+escape-string-regexp@4.0.0, escape-string-regexp@^1.0.5:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
+  integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
 etag@~1.8.1:
   version "1.8.1"
@@ -2224,9 +2230,9 @@ minimatch@^3.0.4:
     brace-expansion "^1.1.7"
 
 minimist@^1.2.0:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
-  integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
+  integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
 moment-timezone@^0.5.33:
   version "0.5.34"
