@@ -30,6 +30,8 @@ yarn
 yarn build
 # Typechecking
 yarn typecheck
+# Run storybook without issue
+yarn build:storybook
 # Unit test
 yarn test
 # Update typedoc

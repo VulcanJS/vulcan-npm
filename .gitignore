@@ -40,3 +40,4 @@ generated/
 
 # Turborepo
 .turbo
+storybook-static/
