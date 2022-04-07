@@ -1,3 +1,4 @@
+import { convertIdAndTransformToJSON } from "@vulcanjs/crud/server";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { RelationDefinition } from "../../typings";
 /*
@@ -45,7 +46,11 @@ export const hasOne =
       // when resolving the relation field for an array of item
       // (EG get address of N users)
       const dt = getModelDataSource(context, relatedModel);
-      relatedDocument = await dt.findOneById(documentId);
+      const rawDocument = await dt.findOneById(documentId);
+      // DataSource will provide _id as an ObjectId, we want to conver them to string _id first
+      if (rawDocument) {
+        relatedDocument = convertIdAndTransformToJSON(rawDocument);
+      }
     } catch (err) {
       console.warn(
         "Could not retrieve related document using a DataSource, error:",
@@ -85,7 +90,10 @@ export const hasMany =
     let relatedDocuments: Array<VulcanDocument> = [];
     try {
       const dt = getModelDataSource(context, relatedModel);
-      relatedDocuments = await dt.findManyByIds(documentIds);
+      const rawDocuments = await dt.findManyByIds(documentIds);
+      if (rawDocuments) {
+        relatedDocuments = convertIdAndTransformToJSON(rawDocuments);
+      }
     } catch (err) {
       console.warn(
         "Could not retrieve related document using a DataSource, error:",

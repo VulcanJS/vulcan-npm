@@ -45,7 +45,7 @@
   },
   "peerDependencies": {
     "mongodb": ">= 3.6.2",
-    "mongoose": ">= 5.10.15"
+    "mongoose": ">= 6.2"
   },
   "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f",
   "publishConfig": {

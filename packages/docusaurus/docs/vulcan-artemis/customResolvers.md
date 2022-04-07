@@ -64,3 +64,7 @@ Field resolvers behave almost the same as top-level resolvers. So you can either
 The only difference is that, if possible, you should use [DataSources](https://www.apollographql.com/docs/apollo-server/data/data-sources/). DataSources will reduce the number of calls to your database in many scenarios.
 
 As a default, Artemis will generate [Mongo DataSources](https://github.com/GraphQLGuide/apollo-datasource-mongodb) for each model.
+
+**Be careful with ObjectId from Mongo ddocuments!** You should convert them to string ids before responding to a GraphQL request, otherwise you may end up with unexpected issues. Vulcan Artemis default relation resolvers and Mongoose connector will handle the conversion for you.
+
+In your custom resolvers, you might need to use our `convertIdAndTransformToJSON` helper exported from `@vulcanjs/crud/server`, it works for a single document or an array of documents.
