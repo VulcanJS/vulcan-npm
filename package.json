@@ -85,7 +85,8 @@
   },
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "starters/*"
     ],
     "nohoist": [
       "@storybook",
