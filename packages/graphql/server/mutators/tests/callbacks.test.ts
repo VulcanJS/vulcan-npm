@@ -3,7 +3,7 @@ import {
   createGraphqlModelServer,
 } from "../../../extendModel.server";
 import { VulcanGraphqlModel } from "../../../typings";
-import { createMutator } from "../../resolvers/mutators";
+import { createMutator } from "..";
 import merge from "lodash/merge.js";
 import { Connector } from "@vulcanjs/crud/server";
 

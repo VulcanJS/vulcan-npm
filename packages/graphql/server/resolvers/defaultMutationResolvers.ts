@@ -4,7 +4,7 @@ Default mutations
 
 */
 
-import { createMutator, updateMutator, deleteMutator } from "./mutators";
+import { createMutator, updateMutator, deleteMutator } from "../mutators";
 
 import { ContextWithUser } from "./typings";
 import { MutationResolverDefinitions } from "../typings";

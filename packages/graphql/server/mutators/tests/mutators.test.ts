@@ -3,7 +3,7 @@ import {
   updateMutator,
   deleteMutator,
   performMutationCheck,
-} from "../../resolvers/mutators";
+} from "..";
 import merge from "lodash/merge.js";
 
 import { VulcanGraphqlModel } from "../../../typings";
