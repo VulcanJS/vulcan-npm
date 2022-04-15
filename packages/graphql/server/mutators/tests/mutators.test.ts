@@ -3,11 +3,11 @@ import {
   updateMutator,
   deleteMutator,
   performMutationCheck,
-} from "..";
+} from "@vulcanjs/crud/server";
 
-import { modifierToData } from "../validation";
+import { modifierToData } from "@vulcanjs/crud/server";
 import { Connector } from "@vulcanjs/crud/server";
-import { createGraphqlModelServer } from "../..";
+import { createGraphqlModelServer } from "@vulcanjs/graphql/server";
 
 const guestsPermissions = {
   type: String,

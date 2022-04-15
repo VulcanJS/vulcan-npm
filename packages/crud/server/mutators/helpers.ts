@@ -1,16 +1,13 @@
 import { validateData } from "./validation";
 import { runCallbacks } from "@vulcanjs/core";
 
-import { throwError } from "../resolvers/errors";
+import { throwError } from "./errors";
 import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
-import { VulcanGraphqlModelServer } from "../../typings";
 import { deprecate } from "@vulcanjs/utils";
-import { ContextWithUser } from "../resolvers/typings";
 import { VulcanDocument } from "@vulcanjs/schema";
-import { VulcanGraphqlModel } from "../../typings";
 import type { DefaultMutatorName } from "@vulcanjs/crud";
 import { isMemberOf } from "@vulcanjs/permissions";
-import { FilterableInput } from "@vulcanjs/crud";
+import { FilterableInput, VulcanCrudModelServer } from "..";
 
 type ValidateProperties = Partial<
   CreateMutatorProperties & UpdateMutatorProperties
@@ -34,7 +31,7 @@ export interface CreateMutatorProperties {
    */
   originalData?: any;
   currentUser?: any;
-  model?: VulcanGraphqlModel;
+  model?: VulcanCrudModelServer;
   context?: any;
   schema?: any;
 }
@@ -55,7 +52,7 @@ export interface UpdateMutatorProperties {
   originalData: any;
   originalDocument?: any;
   currentUser?: any;
-  model?: VulcanGraphqlModel;
+  model?: VulcanCrudModelServer;
   context?: any;
   schema?: any;
 }
@@ -70,7 +67,7 @@ export const validateMutationData = async ({
   currentUser,
   properties,
 }: {
-  model: VulcanGraphqlModelServer; // data model
+  model: VulcanCrudModelServer; // data model
   mutatorName: DefaultMutatorName;
   currentUser?: any;
   properties: ValidateProperties; // TODO: add update/delete if they are different
@@ -78,7 +75,7 @@ export const validateMutationData = async ({
   originalDocument?: VulcanDocument;
   validationFunction?: Function;
 }): Promise<void> => {
-  const { typeName } = model.graphql;
+  const { name } = model;
   // basic simple schema validation
   const simpleSchemaValidationErrors = validateData({
     document: data,
@@ -89,7 +86,7 @@ export const validateMutationData = async ({
   });
   // custom validation
   const customValidationErrors = await runCallbacks({
-    hookName: `${typeName}.${mutatorName}.validate`,
+    hookName: `${name}.${mutatorName}.validate`,
     iterator: [],
     callbacks: model?.crud?.callbacks?.[mutatorName]?.validate || [],
     args: [properties],
@@ -118,7 +115,7 @@ const operationChecks: {
 interface MutationCheckOptions {
   user?: any | null;
   document?: VulcanDocument | null;
-  model: VulcanGraphqlModel;
+  model: VulcanCrudModelServer;
   operationName: OperationName;
   asAdmin?: boolean;
 }
@@ -130,10 +127,10 @@ Perform security check
 */
 export const performMutationCheck = (options: MutationCheckOptions) => {
   const { user, document, model, operationName, asAdmin = false } = options;
-  const { typeName } = model.graphql;
+  const { name } = model;
   const permissionsCheck = model.permissions?.[operationChecks[operationName]];
   let allowOperation = false;
-  const fullOperationName = `${typeName}:${operationName}`;
+  const fullOperationName = `${name}:${operationName}`;
   const documentId = document?._id;
   const data = { documentId, operationName: fullOperationName };
   // 1. if no permission has been defined, throw error
@@ -157,11 +154,12 @@ export const performMutationCheck = (options: MutationCheckOptions) => {
 };
 
 interface GetSelectorInput {
-  context: ContextWithUser;
-  model: VulcanGraphqlModelServer;
+  model: VulcanCrudModelServer;
   dataId?: string;
   selector?: Object;
   input?: FilterableInput<VulcanDocument>;
+  // Legacy graphql context
+  context: any;
 }
 
 /**

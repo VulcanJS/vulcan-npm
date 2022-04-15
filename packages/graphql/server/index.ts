@@ -7,6 +7,6 @@ export * from "../extendModel.server";
 export * from "./apolloSchema";
 export * from "./typings";
 export * from "./resolvers";
-export * from "./mutators";
+export * from "@vulcanjs/crud/server/mutators";
 
 export * from "./contextBuilder";

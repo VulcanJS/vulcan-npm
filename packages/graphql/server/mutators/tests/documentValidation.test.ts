@@ -1,4 +1,4 @@
-import { validateData } from "..";
+import { validateData } from "@vulcanjs/crud/server";
 import { createModel } from "@vulcanjs/model";
 // import Users from "meteor/vulcan:users"
 

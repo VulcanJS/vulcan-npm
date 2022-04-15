@@ -1,8 +1,6 @@
 import { runCallbacks } from "@vulcanjs/core";
 
-import { VulcanGraphqlModelServer } from "../../typings";
 import cloneDeep from "lodash/cloneDeep.js";
-import { ContextWithUser } from "../resolvers/typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { restrictViewableFields } from "@vulcanjs/permissions";
 import {
@@ -10,9 +8,10 @@ import {
   performMutationCheck,
   validateMutationData,
 } from "./helpers";
+import { VulcanCrudModelServer } from "..";
 
 interface CreateMutatorInput {
-  model: VulcanGraphqlModelServer;
+  model: VulcanCrudModelServer;
   document?: VulcanDocument;
   /**
    * Document you want to create
@@ -23,7 +22,7 @@ interface CreateMutatorInput {
    *
    * @deprecated Prefer passing currentUser directly
    **/
-  context?: ContextWithUser;
+  context?: any;
   /**
    * Current user, needed for permission check
    */

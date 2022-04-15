@@ -4,7 +4,11 @@ Default mutations
 
 */
 
-import { createMutator, updateMutator, deleteMutator } from "../mutators";
+import {
+  createMutator,
+  updateMutator,
+  deleteMutator,
+} from "@vulcanjs/crud/server/mutators";
 
 import { ContextWithUser } from "./typings";
 import { MutationResolverDefinitions } from "../typings";

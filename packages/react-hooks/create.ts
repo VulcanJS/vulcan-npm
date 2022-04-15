@@ -39,7 +39,7 @@ import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 import { VulcanMutationHookOptions } from "./typings";
 
 import { addToData, matchSelector } from "./cacheUpdate";
-import { CreateVariables } from "@vulcanjs/graphql"; // TODO: we should depend only on client code
+import { CreateVariables } from "@vulcanjs/crud"; // TODO: we should depend only on client code
 
 import debug from "debug";
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";

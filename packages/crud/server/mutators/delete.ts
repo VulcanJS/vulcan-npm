@@ -1,8 +1,6 @@
 import { runCallbacks } from "@vulcanjs/core";
 
-import { DeleteInput, VulcanGraphqlModelServer } from "../../typings";
 import isEmpty from "lodash/isEmpty.js";
-import { ContextWithUser } from "../resolvers/typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { restrictViewableFields } from "@vulcanjs/permissions";
 import {
@@ -10,14 +8,17 @@ import {
   performMutationCheck,
   validateMutationData,
 } from "./helpers";
+import { DeleteInput, VulcanCrudModelServer } from "..";
 
 interface DeleteMutatorCommonInput {
-  model: VulcanGraphqlModelServer;
+  model: VulcanCrudModelServer;
   currentUser?: any;
-  context?: ContextWithUser;
+  /** @deprecated pass currentUser instead */
+  context?: any;
   validate?: boolean;
   asAdmin?: boolean;
 }
+
 /*
 
 Delete
@@ -48,7 +49,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
     | { input: DeleteInput; dataId?: undefined; selector?: undefined }
   )): Promise<{ data: TModel }> => {
   const mutatorName = "delete";
-  const { typeName } = model.graphql;
+  const { name } = model;
   const { schema } = model;
 
   // get currentUser from context if possible
@@ -128,7 +129,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
 
   /* Before */
   document = await runCallbacks({
-    hookName: `${typeName}.${mutatorName}.before`,
+    hookName: `${name}.${mutatorName}.before`,
     callbacks: model.crud?.callbacks?.[mutatorName]?.before || [],
     iterator: document,
     args: [properties],
@@ -139,7 +140,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
 
   /* After */
   document = await runCallbacks({
-    hookName: `${typeName}.${mutatorName}.after`,
+    hookName: `${name}.${mutatorName}.after`,
     callbacks: model.crud?.callbacks?.[mutatorName]?.after || [],
     iterator: document,
     args: [properties],
@@ -147,7 +148,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
 
   /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
   runCallbacks({
-    hookName: `${model.graphql.typeName.toLowerCase()}.${mutatorName}.async`,
+    hookName: `${name.toLowerCase()}.${mutatorName}.async`,
     callbacks: model.crud?.callbacks?.[mutatorName]?.async || [],
     args: [properties],
   });

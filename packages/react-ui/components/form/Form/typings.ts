@@ -2,7 +2,7 @@ import type {
   CreateVariables,
   UpdateVariables,
   DeleteVariables,
-} from "@vulcanjs/graphql";
+} from "@vulcanjs/crud";
 import { VulcanModel } from "@vulcanjs/model";
 import { VulcanUser } from "@vulcanjs/permissions";
 import { VulcanSchema } from "@vulcanjs/schema";

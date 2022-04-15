@@ -46,13 +46,12 @@ import { DocumentNode, gql } from "@apollo/client";
 
 import getFormFragments from "./modules/formFragments";
 // import { VulcanModel } from "@vulcanjs/model";
-import {
-  VulcanGraphqlModel,
+import { VulcanGraphqlModel, getFragmentName } from "@vulcanjs/graphql";
+import type {
   CreateVariables,
   UpdateVariables,
   DeleteVariables,
-  getFragmentName,
-} from "@vulcanjs/graphql";
+} from "@vulcanjs/crud";
 import { capitalize } from "@vulcanjs/utils";
 import {
   useSingle,

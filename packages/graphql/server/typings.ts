@@ -1,4 +1,4 @@
-import { CreateVariables, UpdateVariables } from "../typings";
+import { CreateVariables, UpdateVariables } from "@vulcanjs/crud";
 
 /**
  * @see https://graphql.org/learn/execution/#root-fields-resolvers

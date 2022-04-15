@@ -59,7 +59,7 @@ export const buildDeleteQuery = ({
 };
 
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
-import { DeleteVariables } from "@vulcanjs/graphql";
+import { DeleteVariables } from "@vulcanjs/crud";
 
 /**
  * Compute new list for removed elements

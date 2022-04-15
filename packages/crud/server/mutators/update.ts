@@ -1,10 +1,8 @@
 import { modifierToData, dataToModifier } from "./validation";
 import { runCallbacks } from "@vulcanjs/core";
 
-import { UpdateInput, VulcanGraphqlModelServer } from "../../typings";
 import cloneDeep from "lodash/cloneDeep.js";
 import isEmpty from "lodash/isEmpty.js";
-import { ContextWithUser } from "../resolvers/typings";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { restrictViewableFields } from "@vulcanjs/permissions";
 import {
@@ -13,9 +11,10 @@ import {
   UpdateMutatorProperties,
   validateMutationData,
 } from "./helpers";
+import type { UpdateInput, VulcanCrudModelServer } from "..";
 
 interface UpdateMutatorCommonInput {
-  model: VulcanGraphqlModelServer;
+  model: VulcanCrudModelServer;
   /**
    * Using a "set" syntax
    * @deprecated
@@ -50,7 +49,7 @@ interface UpdateMutatorCommonInput {
   /**
    * @deprecated 0.6 Pass only current user instead of the full graphql context
    */
-  context?: ContextWithUser;
+  context?: any;
 }
 
 interface DataIdInput {
@@ -115,7 +114,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   asAdmin,
   context = {},
 }: UpdateMutatorInput): Promise<{ data: TModel }> => {
-  const { typeName } = model.graphql;
+  const { name } = model;
   const mutatorName = "update";
   const { schema } = model;
   let data;
@@ -223,7 +222,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 
   /* Before */
   data = await runCallbacks({
-    hookName: `${typeName}.${mutatorName}.before`,
+    hookName: `${name}.${mutatorName}.before`,
     callbacks: model.crud?.callbacks?.[mutatorName]?.before || [],
     iterator: data,
     args: [properties],
@@ -263,7 +262,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 
   /* After */
   document = await runCallbacks({
-    hookName: `${typeName}.${mutatorName}.after`,
+    hookName: `${name}.${mutatorName}.after`,
     callbacks: model.crud?.callbacks?.[mutatorName]?.after || [],
     iterator: document,
     args: [properties],
@@ -271,7 +270,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
 
   /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
   runCallbacks({
-    hookName: `${model.graphql.typeName.toLowerCase()}.${mutatorName}.async`,
+    hookName: `${name.toLowerCase()}.${mutatorName}.async`,
     callbacks: model.crud?.callbacks?.[mutatorName]?.async || [],
     args: [properties],
   });
