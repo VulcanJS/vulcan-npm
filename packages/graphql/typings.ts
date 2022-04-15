@@ -180,9 +180,6 @@ export interface VulcanGraphqlModelServer
   graphql: GraphqlModelServer;
 }
 
-// Mutations
-export type DefaultMutatorName = "create" | "update" | "delete";
-
 // Callbacks typings
 type MaybeAsync<T> = T | Promise<T>;
 interface CreateProperties {

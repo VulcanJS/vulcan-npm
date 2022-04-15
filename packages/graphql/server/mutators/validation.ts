@@ -1,7 +1,10 @@
 /* 
 
 Differences with vulcan Meteor:
+
 Removed validateDocument and refactored validateData, so now we use only validateData called with mutatorName.
+
+Do not need the GraphQL context, only the current user
 
 */
 
@@ -14,8 +17,7 @@ import {
 } from "@vulcanjs/schema";
 import _forEach from "lodash/forEach.js";
 import { VulcanModel } from "@vulcanjs/model";
-import { ContextWithUser } from "./typings";
-import { DefaultMutatorName } from "../../typings";
+import type { DefaultMutatorName } from "@vulcanjs/crud";
 import { canCreateField, canUpdateField } from "@vulcanjs/permissions";
 import { toSimpleSchema, ValidationError } from "@vulcanjs/schema";
 
@@ -49,12 +51,11 @@ const validateDocumentPermissions = (
   fullDocument: VulcanDocument,
   documentToValidate: VulcanDocument,
   schema: VulcanSchema,
-  context: ContextWithUser,
+  currentUser?: any,
   mode = "create"
   // currentPath = ""
 ): Array<ValidationError> => {
   let validationErrors: Array<ValidationError> = [];
-  const { currentUser } = context;
   forEachDocumentField(
     documentToValidate,
     schema,
@@ -87,7 +88,7 @@ interface ValidateDataInput {
   originalDocument?: VulcanDocument;
   document: VulcanDocument;
   model: VulcanModel;
-  context: any;
+  currentUser?: any;
   mutatorName: DefaultMutatorName;
   validationContextName?: string;
 }
@@ -103,7 +104,7 @@ export const validateData = ({
   originalDocument,
   document,
   model,
-  context,
+  currentUser,
   mutatorName,
   validationContextName = "defaultContext", // TODO: what is this?
 }: ValidateDataInput): Array<ValidationError> => {
@@ -121,7 +122,7 @@ export const validateData = ({
       originalDocument ? originalDocument : document,
       document,
       schema,
-      context,
+      currentUser,
       mutatorName
     )
   );

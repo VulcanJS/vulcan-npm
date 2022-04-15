@@ -103,8 +103,9 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
     document,
     currentUser,
     model,
-    context,
     schema,
+    // legacy, only current user will be used
+    context,
   };
 
   /* Validation */
@@ -112,7 +113,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
     await validateMutationData({
       model,
       mutatorName,
-      context,
+      currentUser,
       properties,
     });
   }

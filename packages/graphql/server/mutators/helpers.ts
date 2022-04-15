@@ -1,4 +1,4 @@
-import { validateData } from "../resolvers/validation";
+import { validateData } from "./validation";
 import { runCallbacks } from "@vulcanjs/core";
 
 import { throwError } from "../resolvers/errors";
@@ -7,7 +7,8 @@ import { VulcanGraphqlModelServer } from "../../typings";
 import { deprecate } from "@vulcanjs/utils";
 import { ContextWithUser } from "../resolvers/typings";
 import { VulcanDocument } from "@vulcanjs/schema";
-import { DefaultMutatorName, VulcanGraphqlModel } from "../../typings";
+import { VulcanGraphqlModel } from "../../typings";
+import type { DefaultMutatorName } from "@vulcanjs/crud";
 import { isMemberOf } from "@vulcanjs/permissions";
 import { FilterableInput } from "@vulcanjs/crud";
 
@@ -66,12 +67,12 @@ export const validateMutationData = async ({
   data,
   originalDocument,
   mutatorName,
-  context,
+  currentUser,
   properties,
 }: {
   model: VulcanGraphqlModelServer; // data model
   mutatorName: DefaultMutatorName;
-  context: Object; // Graphql context
+  currentUser?: any;
   properties: ValidateProperties; // TODO: add update/delete if they are different
   data?: any; // data to validate
   originalDocument?: VulcanDocument;
@@ -83,7 +84,7 @@ export const validateMutationData = async ({
     document: data,
     originalDocument,
     model,
-    context,
+    currentUser,
     mutatorName,
   });
   // custom validation

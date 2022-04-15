@@ -1,4 +1,4 @@
-import { validateData } from "../resolvers/validation";
+import { validateData } from "..";
 import { createModel } from "@vulcanjs/model";
 // import Users from "meteor/vulcan:users"
 
@@ -25,9 +25,19 @@ describe("vulcan:lib/validation", () => {
         },
       });
       // create
-      const errors = validateData({ document: { foo: "bar" }, model, context: defaultContext, mutatorName: 'create' });
+      const errors = validateData({
+        document: { foo: "bar" },
+        model,
+        context: defaultContext,
+        mutatorName: "create",
+      });
       expect(errors).toHaveLength(0);
-      const updateErrors = validateData({ document: { foo: "bar" }, model, context: defaultContext, mutatorName: 'update' });
+      const updateErrors = validateData({
+        document: { foo: "bar" },
+        model,
+        context: defaultContext,
+        mutatorName: "update",
+      });
       expect(updateErrors).toHaveLength(0);
     });
     test("create error for non creatable field", () => {
@@ -42,7 +52,7 @@ describe("vulcan:lib/validation", () => {
         document: { foo: "bar", bar: "foo" },
         model,
         context: defaultContext,
-        mutatorName: 'create'
+        mutatorName: "create",
       });
       expect(errors).toHaveLength(1);
       expect(errors[0]).toMatchObject({
@@ -53,7 +63,7 @@ describe("vulcan:lib/validation", () => {
         document: { foo: "bar", bar: "foo" },
         model,
         context: defaultContext,
-        mutatorName: 'update'
+        mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(1);
       expect(updateErrors[0]).toMatchObject({
@@ -82,7 +92,7 @@ describe("vulcan:lib/validation", () => {
         document: { nested: { foo: "bar", bar: "foo" } },
         model,
         context: defaultContext,
-        mutatorName: 'create'
+        mutatorName: "create",
       });
       expect(errors).toHaveLength(1);
       expect(errors[0]).toMatchObject({
@@ -95,7 +105,7 @@ describe("vulcan:lib/validation", () => {
         // document: { nested: { foo: "bar", bar: "foo", zed: 'hello' } },
         model,
         context: defaultContext,
-        mutatorName: 'update'
+        mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(2);
       expect(updateErrors[0]).toMatchObject(
@@ -130,7 +140,7 @@ describe("vulcan:lib/validation", () => {
         document: { nested: [{ foo: "bar", bar: "foo" }] },
         model,
         context: defaultContext,
-        mutatorName: 'create'
+        mutatorName: "create",
       });
       expect(errors).toHaveLength(1);
       expect(errors[0]).toMatchObject({
@@ -142,7 +152,7 @@ describe("vulcan:lib/validation", () => {
         document: { nested: [{ foo: "bar", bar: "foo" }] },
         model,
         context: defaultContext,
-        mutatorName: 'update'
+        mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(1);
       expect(updateErrors[0]).toMatchObject({
@@ -173,7 +183,7 @@ describe("vulcan:lib/validation", () => {
         document: { nested: { nok: "bar", ok: "foo" } },
         model,
         context: defaultContext,
-        mutatorName: 'create'
+        mutatorName: "create",
       });
       expect(errors).toHaveLength(1);
       expect(errors[0]).toMatchObject({
@@ -183,10 +193,10 @@ describe("vulcan:lib/validation", () => {
       // update with set and unset
       const updateErrors = validateData({
         document: { nested: { nok: "bar", ok: "foo", zed: null } },
-        // document: { nested: { nok: "bar", ok: "foo", zed: "hello" } }, 
+        // document: { nested: { nok: "bar", ok: "foo", zed: "hello" } },
         model,
         context: defaultContext,
-        mutatorName: 'update'
+        mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(2);
       expect(updateErrors[0]).toMatchObject(
@@ -219,7 +229,7 @@ describe("vulcan:lib/validation", () => {
         document: { nested: { foo: "bar" } },
         model,
         context: defaultContext,
-        mutatorName: 'create'
+        mutatorName: "create",
       });
       expect(errors).toHaveLength(0);
 
@@ -227,7 +237,7 @@ describe("vulcan:lib/validation", () => {
         document: { nested: { foo: "bar" } },
         model,
         context: defaultContext,
-        mutatorName: 'update'
+        mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(0);
     });
@@ -249,7 +259,7 @@ describe("vulcan:lib/validation", () => {
         document: { array: [1, 2, 3] },
         model,
         context: defaultContext,
-        mutatorName: 'create'
+        mutatorName: "create",
       });
       expect(errors).toHaveLength(0);
 
@@ -257,7 +267,7 @@ describe("vulcan:lib/validation", () => {
         document: { array: [1, 2, 3] },
         model,
         context: defaultContext,
-        mutatorName: 'update'
+        mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(0);
     });

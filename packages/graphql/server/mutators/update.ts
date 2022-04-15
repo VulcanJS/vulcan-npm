@@ -1,4 +1,4 @@
-import { modifierToData, dataToModifier } from "../resolvers/validation";
+import { modifierToData, dataToModifier } from "./validation";
 import { runCallbacks } from "@vulcanjs/core";
 
 import { UpdateInput, VulcanGraphqlModelServer } from "../../typings";
@@ -47,6 +47,9 @@ interface UpdateMutatorCommonInput {
    * @default false
    */
   asAdmin?: boolean;
+  /**
+   * @deprecated 0.6 Pass only current user instead of the full graphql context
+   */
   context?: ContextWithUser;
 }
 
@@ -184,8 +187,9 @@ export const updateMutator = async <TModel extends VulcanDocument>({
     document: currentDocument,
     currentUser,
     model,
-    context,
     schema,
+    // legacy, only current-user will be used
+    context,
   };
 
   /* Validation */
@@ -195,7 +199,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
       data,
       originalDocument: currentDocument,
       mutatorName,
-      context,
+      currentUser,
       properties,
     });
   }

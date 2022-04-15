@@ -14,11 +14,34 @@ import {
 interface CreateMutatorInput {
   model: VulcanGraphqlModelServer;
   document?: VulcanDocument;
+  /**
+   * Document you want to create
+   */
   data: VulcanDocument;
+  /**
+   * Optional GraphQL context. The "currentUser" field will be used to check permissions.
+   *
+   * @deprecated Prefer passing currentUser directly
+   **/
   context?: ContextWithUser;
-  currentUser?: any; // allow to impersonate an user from server directly
+  /**
+   * Current user, needed for permission check
+   */
+  currentUser?: any;
+  /**
+   * Bypass permission checks.
+   *
+   * Usually useful when writing scripts outside of a GraphQL mutation, eg for seed.
+   *
+   * Use carefully.
+   */
   asAdmin?: boolean; // bypass security checks like field restriction
-  validate?: boolean; // run validation, can be bypassed when calling from a server
+  /**
+   * Bypass document validation.
+   *
+   * Use carefully.
+   */
+  validate?: boolean;
 }
 /**
  * Create a new object
@@ -38,7 +61,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
 
   const { schema } = model;
 
-  // get currentUser from context if possible
+  // get currentUser from graphql context if provided
   if (!currentUser && context.currentUser) {
     currentUser = context.currentUser;
   }
@@ -49,8 +72,9 @@ export const createMutator = async <TModel extends VulcanDocument>({
     originalData,
     currentUser,
     model,
-    context,
     schema,
+    // legacy, only currentUser will be used
+    context,
   };
 
   const { typeName } = model.graphql;
@@ -71,7 +95,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
       model,
       data,
       mutatorName,
-      context,
+      currentUser,
       properties,
     });
   }
