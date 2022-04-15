@@ -156,7 +156,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
    *
    * Using the model connector directly allows us to use mutators outside of graphql
    */
-  const connector = model.graphql.connector; //getModelConnector(context, model);
+  const connector = model.crud.connector; //getModelConnector(context, model);
   if (!connector)
     throw new Error(
       `Model ${model.name} has no GraphQL connector. Cannot update a document for this model.`
@@ -224,7 +224,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   /* Before */
   data = await runCallbacks({
     hookName: `${typeName}.${mutatorName}.before`,
-    callbacks: model.graphql?.callbacks?.[mutatorName]?.before || [],
+    callbacks: model.crud?.callbacks?.[mutatorName]?.before || [],
     iterator: data,
     args: [properties],
   });
@@ -264,7 +264,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   /* After */
   document = await runCallbacks({
     hookName: `${typeName}.${mutatorName}.after`,
-    callbacks: model.graphql?.callbacks?.[mutatorName]?.after || [],
+    callbacks: model.crud?.callbacks?.[mutatorName]?.after || [],
     iterator: document,
     args: [properties],
   });
@@ -272,7 +272,7 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
   runCallbacks({
     hookName: `${model.graphql.typeName.toLowerCase()}.${mutatorName}.async`,
-    callbacks: model.graphql?.callbacks?.[mutatorName]?.async || [],
+    callbacks: model.crud?.callbacks?.[mutatorName]?.async || [],
     args: [properties],
   });
 

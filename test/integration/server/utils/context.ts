@@ -35,7 +35,7 @@ const createContextForModels = (
       ...context,
       [model.name]: {
         model,
-        connector: model.graphql.connector || createMongooseConnector(model),
+        connector: model.crud.connector || createMongooseConnector(model),
       },
     }),
     {}

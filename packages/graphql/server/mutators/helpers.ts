@@ -91,7 +91,7 @@ export const validateMutationData = async ({
   const customValidationErrors = await runCallbacks({
     hookName: `${typeName}.${mutatorName}.validate`,
     iterator: [],
-    callbacks: model?.graphql?.callbacks?.[mutatorName]?.validate || [],
+    callbacks: model?.crud?.callbacks?.[mutatorName]?.validate || [],
     args: [properties],
   });
   const validationErrors = [
@@ -186,7 +186,7 @@ export async function getSelector({
     );
     selector = selector;
   } else if (input) {
-    const connector = model.graphql.connector;
+    const connector = model.crud.connector;
     if (!connector)
       throw new Error(
         `Model ${model.name} has no graphql connector, cannot select a document.`

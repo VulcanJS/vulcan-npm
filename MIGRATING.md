@@ -3,6 +3,10 @@
 ## To version > v0.6.1
 
 - i18n React components are now located in the separate package `@vulcanjs/react-i18n`
+- "connectors" are now defined in the "crud.connector" field
+- mutators are now reusable without requiring a full-fledged graphql context, instead simply pass the current user.
+Ensure model callbacks are not using "context" to get other models but instead imports them explicitely
+- mutators hook name is now the model "name" and not graphql "typeName" (since mutators do not depend on graphql)
 
 ## From Vulcan Meteor
 

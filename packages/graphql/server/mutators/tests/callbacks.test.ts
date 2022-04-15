@@ -85,7 +85,7 @@ describe("create callbacks", () => {
         }),
         permissions: membersPermissions,
       });
-      Foo.graphql.connector = {
+      Foo.crud.connector = {
         ...defaultPartialConnector,
         create,
       } as Connector;
@@ -117,7 +117,7 @@ describe("create callbacks", () => {
         }),
         permissions: membersPermissions,
       });
-      Foo.graphql.connector = {
+      Foo.crud.connector = {
         ...defaultPartialConnector,
         create,
       } as Connector;
@@ -157,7 +157,7 @@ describe("create callbacks", () => {
         }),
         permissions: membersPermissions,
       });
-      Foo.graphql.connector = {
+      Foo.crud.connector = {
         ...defaultPartialConnector,
       } as Connector;
       const data = {};
@@ -187,7 +187,7 @@ describe("create callbacks", () => {
         }),
         permissions: membersPermissions,
       });
-      Foo.graphql.connector = {
+      Foo.crud.connector = {
         ...defaultPartialConnector,
       } as Connector;
       const data = {};

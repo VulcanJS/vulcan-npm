@@ -22,7 +22,7 @@ export const createDataSources =
     const dataSources = models.reduce((dataSources, model) => {
       // TODO: we should find a way to guarantee that all models have a default connector
       /* const connector =
-        model.graphql.connector || createMongooseConnector(model);*/
+        model.crud.connector || createMongooseConnector(model);*/
       if (!model.graphql.createDataSource)
         throw new Error(
           "GraphQL models must have a createDataSource function."

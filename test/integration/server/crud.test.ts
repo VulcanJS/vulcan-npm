@@ -74,7 +74,7 @@ const Contributor = createGraphqlModelServer({
   },
 });
 const contributorConnector = createMongooseConnector(Contributor);
-Contributor.graphql.connector = contributorConnector;
+Contributor.crud.connector = contributorConnector;
 
 // Drop the data
 beforeEach(async () => {
@@ -144,9 +144,9 @@ describe("crud operations", () => {
   test("run multi query with filter and sort", async () => {
     const server = await makeApolloServer();
     // feed the db
-    await Contributor.graphql.connector?.create({ name: "Alice" });
-    await Contributor.graphql.connector?.create({ name: "Bob" });
-    await Contributor.graphql.connector?.create({ name: "Charlie" });
+    await Contributor.crud.connector?.create({ name: "Alice" });
+    await Contributor.crud.connector?.create({ name: "Bob" });
+    await Contributor.crud.connector?.create({ name: "Charlie" });
 
     // Get Bob and Charlie, in descending order
     const res = await server.executeOperation({

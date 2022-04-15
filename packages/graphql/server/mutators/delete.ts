@@ -73,7 +73,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   }
 
   // get document from database
-  const connector = model.graphql.connector;
+  const connector = model.crud.connector;
   if (!connector)
     throw new Error(
       `Model ${model.name} has no connector. Cannot delete document.`
@@ -129,7 +129,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   /* Before */
   document = await runCallbacks({
     hookName: `${typeName}.${mutatorName}.before`,
-    callbacks: model.graphql?.callbacks?.[mutatorName]?.before || [],
+    callbacks: model.crud?.callbacks?.[mutatorName]?.before || [],
     iterator: document,
     args: [properties],
   });
@@ -140,7 +140,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   /* After */
   document = await runCallbacks({
     hookName: `${typeName}.${mutatorName}.after`,
-    callbacks: model.graphql?.callbacks?.[mutatorName]?.after || [],
+    callbacks: model.crud?.callbacks?.[mutatorName]?.after || [],
     iterator: document,
     args: [properties],
   });
@@ -148,7 +148,7 @@ export const deleteMutator = async <TModel extends VulcanDocument>({
   /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
   runCallbacks({
     hookName: `${model.graphql.typeName.toLowerCase()}.${mutatorName}.async`,
-    callbacks: model.graphql?.callbacks?.[mutatorName]?.async || [],
+    callbacks: model.crud?.callbacks?.[mutatorName]?.async || [],
     args: [properties],
   });
 

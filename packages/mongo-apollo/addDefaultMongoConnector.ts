@@ -19,12 +19,9 @@ export const addDefaultMongoConnector = (
   connectorOptions?: Pick<MongooseConnectorOptions, "mongooseInstance">
 ) => {
   models.forEach((model) => {
-    if (!model.graphql.connector) {
+    if (!model.crud.connector) {
       debugMongo("Creating default mongoose connector for model", model.name);
-      model.graphql.connector = createMongooseConnector(
-        model,
-        connectorOptions
-      );
+      model.crud.connector = createMongooseConnector(model, connectorOptions);
     }
     if (!model.graphql.createDataSource) {
       debugMongo(
@@ -32,7 +29,7 @@ export const addDefaultMongoConnector = (
         model.name
       );
       model.graphql.createDataSource = () =>
-        createMongooseDataSource(model, model.graphql.connector!);
+        createMongooseDataSource(model, model.crud.connector!);
     }
   });
   return models;

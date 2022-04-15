@@ -7,12 +7,12 @@
  */
 import {
   //VulcanGraphqlModel,
-  MutationCallbackDefinitions,
   //VulcanGraphqlSchema,
   VulcanGraphqlModelServer,
   VulcanGraphqlSchemaServer,
 } from "./typings";
 import { VulcanModel, createModel, CreateModelOptions } from "@vulcanjs/model";
+import type { MutationCallbackDefinitions } from "@vulcanjs/crud/server";
 /*
 import {
   getDefaultFragmentText,
@@ -134,6 +134,7 @@ export const extendModelServer =
       mutationResolvers: mutationResolversFromOptions,
       queryResolvers: queryResolversFromOptions,
       createConnector,
+      callbacks,
     } = options;
     let mutationResolvers = mutationResolversFromOptions,
       queryResolvers = queryResolversFromOptions;
@@ -163,8 +164,11 @@ export const extendModelServer =
     finalModel.schema = extendSchemaServer(finalModel.schema);
 
     /** Final step: generate the connector if possible*/
+    finalModel.crud = {
+      callbacks,
+    }; // just to avoid having an empty object if connector is created later on
     if (createConnector) {
-      finalModel.graphql.connector = createConnector(finalModel);
+      finalModel.crud.connector = createConnector(finalModel);
     }
 
     return finalModel;

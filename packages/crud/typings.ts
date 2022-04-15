@@ -59,8 +59,7 @@ type VulcanSelectorSortOption = "asc" | "desc";
 
 type FieldSelector<TModel = any> = {
   [key in keyof TModel]?: ConditionSelector; // NOTE: we cannot yet pass native values | string | number | boolean | null | ;
-} &
-  { [key in PossibleOperators]?: never };
+} & { [key in PossibleOperators]?: never };
 
 type ConditionSelector = {
   //[key in VulcanSelectorCondition]?: VulcanSelector<TModel>;
@@ -117,3 +116,10 @@ export interface FilterableInput<TModel = any> {
   search?: string;
   offset?: number;
 }
+
+// Not used yet
+//export interface VulcanCrudModel
+//  extends VulcanModel<{} /* VulcanCrudSchema */> {
+//  // Nothing yet
+//  //crud: CrudModel;
+// }

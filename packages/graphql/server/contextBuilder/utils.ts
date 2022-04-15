@@ -7,6 +7,7 @@ import { Connector } from "@vulcanjs/crud/server";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { VulcanGenericDataSource } from "./typings";
 import { VulcanGraphqlModel } from "../../typings";
+import { VulcanGraphqlModelServer } from "../../dist";
 
 /**
  * Get data source from the context.
@@ -67,7 +68,10 @@ export const getModelConnector = <TModel extends VulcanDocument>(
  * Get the model from graphql context (helps avoiding circular dependencies)
  * @param typeName The model typeName
  */
-export const getModel = (context, typeName: string): VulcanGraphqlModel => {
+export const getModel = (
+  context,
+  typeName: string
+): VulcanGraphqlModelServer => {
   if (!context[typeName]) {
     throw new Error(
       `No model found in the GraphQL context for typeName ${typeName}`

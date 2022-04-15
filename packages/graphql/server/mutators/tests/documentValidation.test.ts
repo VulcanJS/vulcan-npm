@@ -4,7 +4,6 @@ import { createModel } from "@vulcanjs/model";
 
 const test = it;
 
-const defaultContext = {};
 describe("vulcan:lib/validation", () => {
   describe("validate document permissions per field (on creation and update)", () => {
     const guestsPermissions = {
@@ -28,14 +27,12 @@ describe("vulcan:lib/validation", () => {
       const errors = validateData({
         document: { foo: "bar" },
         model,
-        context: defaultContext,
         mutatorName: "create",
       });
       expect(errors).toHaveLength(0);
       const updateErrors = validateData({
         document: { foo: "bar" },
         model,
-        context: defaultContext,
         mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(0);
@@ -51,7 +48,6 @@ describe("vulcan:lib/validation", () => {
       const errors = validateData({
         document: { foo: "bar", bar: "foo" },
         model,
-        context: defaultContext,
         mutatorName: "create",
       });
       expect(errors).toHaveLength(1);
@@ -62,7 +58,6 @@ describe("vulcan:lib/validation", () => {
       const updateErrors = validateData({
         document: { foo: "bar", bar: "foo" },
         model,
-        context: defaultContext,
         mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(1);
@@ -91,7 +86,6 @@ describe("vulcan:lib/validation", () => {
       const errors = validateData({
         document: { nested: { foo: "bar", bar: "foo" } },
         model,
-        context: defaultContext,
         mutatorName: "create",
       });
       expect(errors).toHaveLength(1);
@@ -104,7 +98,6 @@ describe("vulcan:lib/validation", () => {
         document: { nested: { foo: "bar", bar: "foo", zed: null } },
         // document: { nested: { foo: "bar", bar: "foo", zed: 'hello' } },
         model,
-        context: defaultContext,
         mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(2);
@@ -139,7 +132,6 @@ describe("vulcan:lib/validation", () => {
       const errors = validateData({
         document: { nested: [{ foo: "bar", bar: "foo" }] },
         model,
-        context: defaultContext,
         mutatorName: "create",
       });
       expect(errors).toHaveLength(1);
@@ -151,7 +143,6 @@ describe("vulcan:lib/validation", () => {
       const updateErrors = validateData({
         document: { nested: [{ foo: "bar", bar: "foo" }] },
         model,
-        context: defaultContext,
         mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(1);
@@ -182,7 +173,6 @@ describe("vulcan:lib/validation", () => {
       const errors = validateData({
         document: { nested: { nok: "bar", ok: "foo" } },
         model,
-        context: defaultContext,
         mutatorName: "create",
       });
       expect(errors).toHaveLength(1);
@@ -195,7 +185,6 @@ describe("vulcan:lib/validation", () => {
         document: { nested: { nok: "bar", ok: "foo", zed: null } },
         // document: { nested: { nok: "bar", ok: "foo", zed: "hello" } },
         model,
-        context: defaultContext,
         mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(2);
@@ -228,7 +217,6 @@ describe("vulcan:lib/validation", () => {
       const errors = validateData({
         document: { nested: { foo: "bar" } },
         model,
-        context: defaultContext,
         mutatorName: "create",
       });
       expect(errors).toHaveLength(0);
@@ -236,7 +224,6 @@ describe("vulcan:lib/validation", () => {
       const updateErrors = validateData({
         document: { nested: { foo: "bar" } },
         model,
-        context: defaultContext,
         mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(0);
@@ -258,7 +245,6 @@ describe("vulcan:lib/validation", () => {
       const errors = validateData({
         document: { array: [1, 2, 3] },
         model,
-        context: defaultContext,
         mutatorName: "create",
       });
       expect(errors).toHaveLength(0);
@@ -266,7 +252,6 @@ describe("vulcan:lib/validation", () => {
       const updateErrors = validateData({
         document: { array: [1, 2, 3] },
         model,
-        context: defaultContext,
         mutatorName: "update",
       });
       expect(updateErrors).toHaveLength(0);

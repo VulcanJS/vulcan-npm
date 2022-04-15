@@ -6,14 +6,12 @@ import {
   QueryResolver,
 } from "./server/typings";
 import {
-  VulcanDocument,
   VulcanFieldSchema,
   VulcanFieldSchemaServer,
   VulcanSchema,
 } from "@vulcanjs/schema";
-import { ContextWithUser } from "./server/resolvers";
-import { FilterableInput } from "@vulcanjs/crud";
-import { Connector } from "@vulcanjs/crud/server";
+import type { FilterableInput /*, VulcanCrudModel*/ } from "@vulcanjs/crud";
+import type { VulcanCrudModelServer } from "@vulcanjs/crud/server";
 import { VulcanGenericDataSource } from "./server/contextBuilder";
 
 // SCHEMA TYPINGS
@@ -140,19 +138,6 @@ interface GraphqlModel {
 export interface GraphqlModelServer extends GraphqlModel {
   queryResolvers?: QueryResolverDefinitions;
   mutationResolvers?: MutationResolverDefinitions;
-  callbacks?: MutationCallbackDefinitions;
-  /**
-   * Connector tied to a model
-   *
-   * NOTE: since the connector itself depends on the model, you need
-   * to define this value AFTER creating the model
-   *
-   * @example
-   * const connector = ...
-   * const model = ...
-   * model.graphql.connector = connector
-   */
-  connector?: Connector;
   /**
    * An Apollo dataSource
    *
@@ -171,65 +156,14 @@ export interface GraphqlModelServer extends GraphqlModel {
 //   resolveAs;
 // }
 // Extended model with extended schema
-export interface VulcanGraphqlModel extends VulcanModel<VulcanGraphqlSchema> {
+export interface VulcanGraphqlModel
+  extends VulcanModel<VulcanGraphqlSchema> /*, VulcanCrudModel*/ {
   graphql: GraphqlModel;
 }
 // @server-only
-export interface VulcanGraphqlModelServer
-  extends VulcanModel<VulcanGraphqlSchemaServer> {
+export interface VulcanGraphqlModelServer //VulcanModel<VulcanGraphqlSchemaServer>,
+  extends VulcanCrudModelServer<VulcanGraphqlSchemaServer> {
   graphql: GraphqlModelServer;
-}
-
-// Callbacks typings
-type MaybeAsync<T> = T | Promise<T>;
-interface CreateProperties {
-  data: any;
-  originalData: VulcanDocument;
-  currentUser: any;
-  model: VulcanGraphqlModel;
-  context: ContextWithUser;
-  schema: VulcanSchema;
-}
-type CreateBeforeCb = (
-  data: VulcanDocument,
-  properties: CreateProperties
-) => MaybeAsync<VulcanDocument>;
-type CreateAfterCb = (
-  data: VulcanDocument,
-  properties: CreateProperties
-) => MaybeAsync<VulcanDocument>;
-type CreateAsyncCb = (
-  data: any, // TODO: not sure what happens when no iterator is provided in runCallbacks
-  properties: CreateProperties
-) => MaybeAsync<void>;
-type ValidationError = any;
-type ValidateCb = (
-  validationErrors: Array<ValidationError>,
-  properties: any
-) => MaybeAsync<Array<ValidationError>>;
-// type CreateCallback = (document: VulcanDocument) => VulcanDocument | Promise<VulcanDocument>
-export interface MutationCallbackDefinitions {
-  create?: {
-    /**
-     * @example packages/graphql/server/resolvers/mutators.ts
-     */
-    validate?: Array<ValidateCb>;
-    before?: Array<CreateBeforeCb>;
-    after?: Array<CreateAfterCb>;
-    async?: Array<Function>;
-  };
-  update?: {
-    validate?: Array<ValidateCb>;
-    before?: Array<Function>;
-    after?: Array<Function>;
-    async?: Array<Function>;
-  };
-  delete?: {
-    validate?: Array<ValidateCb>;
-    before?: Array<Function>;
-    after?: Array<Function>;
-    async?: Array<Function>;
-  };
 }
 
 // Wrap input type, so the input is in the "input" field as an object

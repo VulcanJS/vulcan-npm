@@ -3,7 +3,9 @@ title: Outside GraphQL
 ---
 # Reuse Artemis logic in an Express endpoint
 
-Artemis core logic doesn't really depend on GraphQL. `mutator` functions are actually reusable in any Express application in a few easy steps.
+Artemis core logic doesn't really depend on GraphQL. 
+
+`mutator` functions are actually reusable in any Express application in a few easy steps.
 
 In an Express middleware:
 

@@ -69,10 +69,10 @@ export const Contributor = createGraphqlModelServer({
     // /!\ This just an example, necessary if you want to support SQL.
     // You can remove this field if you use Mongo
     makeCreateDataSource: (contributorModel) => () => {
-      if (contributorModel.graphql.connector) {
+      if (contributorModel.crud.connector) {
         return createMongooseDataSource(
           contributorModel,
-          contributorModel.graphql.connector
+          contributorModel.crud.connector
         );
       } else {
         console.warn(

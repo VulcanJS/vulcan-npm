@@ -77,7 +77,7 @@ export const createMutator = async <TModel extends VulcanDocument>({
     context,
   };
 
-  const { typeName } = model.graphql;
+  const { name } = model; //model.graphql;
   const mutatorName = "create";
 
   /* Authorization */
@@ -132,14 +132,14 @@ export const createMutator = async <TModel extends VulcanDocument>({
   }
   /* Before */
   data = await runCallbacks({
-    hookName: `${typeName}.${mutatorName}.before`,
-    callbacks: model.graphql?.callbacks?.[mutatorName]?.before || [],
+    hookName: `${name}.${mutatorName}.before`,
+    callbacks: model.crud?.callbacks?.[mutatorName]?.before || [],
     iterator: data,
     args: [properties],
   });
 
   /* DB Operation */
-  const connector = model.graphql.connector;
+  const connector = model.crud.connector;
   if (!connector)
     throw new Error(
       `Model ${model.name} has no connector. Cannot create a document.`
@@ -148,16 +148,16 @@ export const createMutator = async <TModel extends VulcanDocument>({
 
   /* After */
   document = await runCallbacks({
-    hookName: `${typeName}.${mutatorName}.after`,
-    callbacks: model.graphql?.callbacks?.[mutatorName]?.after || [],
+    hookName: `${name}.${mutatorName}.after`,
+    callbacks: model.crud?.callbacks?.[mutatorName]?.after || [],
     iterator: document,
     args: [properties],
   });
 
   /* Async side effects, mutation won't wait for them to return. Use for analytics for instance */
   runCallbacks({
-    hookName: `${typeName}.${mutatorName}.async`,
-    callbacks: model.graphql?.callbacks?.[mutatorName]?.async || [],
+    hookName: `${name}.${mutatorName}.async`,
+    callbacks: model.crud?.callbacks?.[mutatorName]?.async || [],
     args: [properties],
   });
 

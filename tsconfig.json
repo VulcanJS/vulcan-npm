@@ -40,7 +40,7 @@
     "**/dist/*",
     "**/webpack.config.js",
     // @see https://github.com/facebook/docusaurus/issues/3424
-    "packages/docusaurus",
+    "docusaurus",
     "starters/**/*"
   ]
 }
