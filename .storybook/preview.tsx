@@ -1,5 +1,6 @@
 import React from "react";
-import { IntlProvider, makeStringsRegistry } from "../packages/i18n";
+import { makeStringsRegistry } from "../packages/i18n";
+import { IntlProvider } from "../packages/react-i18n";
 // @see https://storybook.js.org/addons/msw-storybook-addon
 import { initialize, mswDecorator } from "msw-storybook-addon";
 initialize();

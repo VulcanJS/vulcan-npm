@@ -1,7 +1,8 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { VulcanComponentsProvider } from "../../VulcanComponents/Provider";
-import { IntlProvider, makeStringsRegistry } from "@vulcanjs/react-i18n";
+import { IntlProvider } from "@vulcanjs/react-i18n";
+import { makeStringsRegistry } from "@vulcanjs/i18n";
 import { action, actions } from "@storybook/addon-actions";
 import { FormNestedArray, FormNestedArrayProps } from "../FormNestedArray";
 import { FormContext } from "../FormContext";
