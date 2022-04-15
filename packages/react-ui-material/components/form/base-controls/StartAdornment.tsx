@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { instantiateComponent } from "@vulcanjs/react-ui";
-import { useIntlContext } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/react-i18n";
 import { withStyles } from "../../../lib/makeStyles";
 import InputAdornment from "@mui/material/InputAdornment";
 import WebIcon from "@mui/icons-material/Web";

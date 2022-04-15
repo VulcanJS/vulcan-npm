@@ -1,6 +1,6 @@
 import { useBlockTransition } from "../useBlockTransition/useBlockTransition";
 import debug from "debug";
-import { useIntlContext } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/react-i18n";
 const debugTransitions = debug("vn:route-transitions");
 
 /**

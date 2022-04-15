@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { instantiateComponent } from "@vulcanjs/react-ui";
-import { useIntlContext } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/react-i18n";
 import Typography from "@mui/material/Typography";
 import Fab from "@mui/material/Fab";
 import Grid from "@mui/material/Grid";

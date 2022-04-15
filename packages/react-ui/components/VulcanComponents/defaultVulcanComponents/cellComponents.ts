@@ -1,3 +1,6 @@
+/**
+ * Used by DataTable and Cards
+ */
 import { CellComponents } from "..";
 import { CardItemSwitcher } from "../../cell/CardItem";
 import {

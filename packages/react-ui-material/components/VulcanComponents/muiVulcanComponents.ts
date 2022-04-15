@@ -12,7 +12,7 @@
  *
  * In other scenarios, use good, old import/export.
  */
-import { FormattedMessage } from "@vulcanjs/i18n";
+import { FormattedMessage } from "@vulcanjs/react-i18n";
 // import { FormError } from "../FormError";
 // // TODO: currently we need the default export because we pass components manually
 // import FormComponent from "../FormComponent";

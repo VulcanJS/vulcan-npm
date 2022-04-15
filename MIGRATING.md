@@ -1,3 +1,9 @@
+# Migration steps and significant changes for each version
+
+## To version > v0.6.1
+
+- i18n React components are now located in the separate package `@vulcanjs/react-i18n`
+
 ## From Vulcan Meteor
 
 ### No need to call new SimpleSchema() for nested field

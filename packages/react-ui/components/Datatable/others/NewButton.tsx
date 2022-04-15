@@ -1,4 +1,4 @@
-import { useIntlContext } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/react-i18n";
 import { VulcanModel } from "@vulcanjs/model";
 import { VulcanDocument } from "@vulcanjs/schema";
 import React from "react";

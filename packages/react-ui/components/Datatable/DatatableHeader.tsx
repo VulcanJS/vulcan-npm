@@ -1,5 +1,6 @@
 import React from "react";
-import { formatLabel, useIntlContext } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/react-i18n";
+import { formatLabel } from "@vulcanjs/i18n";
 import { VulcanModel } from "@vulcanjs/model";
 import { useVulcanComponents } from "../VulcanComponents";
 

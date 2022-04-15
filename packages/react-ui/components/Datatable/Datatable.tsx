@@ -19,7 +19,7 @@ import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { isAdmin } from "@vulcanjs/permissions";
 // NOTE: import from "CONSUMER" to avoid infinite loop
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
-import { useIntlContext } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/react-i18n";
 import { permissionCheck } from "@vulcanjs/permissions";
 
 const ascSortOperator = "asc";

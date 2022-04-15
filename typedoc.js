@@ -17,6 +17,7 @@ module.exports = {
     "packages/mongo-apollo/index.ts",
     "packages/permissions/index.ts",
     "packages/react-hooks/index.ts",
+    "packages/react-i18n/index.ts",
     "packages/react-ui/index.ts",
     "packages/react-ui-bootstrap/index.ts",
     "packages/react-ui-material/index.ts",

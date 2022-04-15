@@ -14,7 +14,7 @@ This component expects:
 
 import React, { useEffect, useRef, useState } from "react";
 import { runCallbacks, getErrors } from "@vulcanjs/core";
-import { useIntlContext } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/react-i18n";
 import { removeProperty } from "@vulcanjs/utils";
 import _filter from "lodash/filter.js";
 import cloneDeep from "lodash/cloneDeep.js";

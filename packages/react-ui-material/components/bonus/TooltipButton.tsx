@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { instantiateComponent } from "@vulcanjs/react-ui";
-import { intlShape } from "@vulcanjs/i18n";
+import { intlShape } from "@vulcanjs/react-i18n";
 import { withStyles } from "../../lib/makeStyles";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";

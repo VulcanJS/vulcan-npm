@@ -1,6 +1,6 @@
 import { deprecate } from "@vulcanjs/utils";
 import React, { Component, useContext } from "react";
-import type { StringsRegistry } from "../../intl";
+import type { StringsRegistry } from "@vulcanjs/i18n";
 // TODO: do we still need the shape?
 import { intlShape } from "./shape";
 import { Message } from "./typings";

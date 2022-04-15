@@ -1,5 +1,5 @@
 import React, { MouseEventHandler } from "react";
-import { useIntlContext } from "@vulcanjs/i18n";
+import { useIntlContext } from "@vulcanjs/react-i18n";
 import { whitelistInputProps } from "./ui_utils";
 import { FormComponentProps } from "./FormComponent";
 /*
