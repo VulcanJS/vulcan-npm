@@ -2,15 +2,10 @@
   "version": "0.6.1",
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "packages": [
-    "packages/*",
-    "starters/*"
-  ],
+  "packages": ["packages/*", "starters/*", "docusaurus"],
   "command": {
     "publish": {
-      "ignoreChanges": [
-        "*.md"
-      ]
+      "ignoreChanges": ["*.md"]
     }
   }
 }

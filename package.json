@@ -18,9 +18,9 @@
     "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'",
     "typedoc": "typedoc",
     "publish": "lerna publish",
-    "start:doc": "yarn --cwd ./packages/docusaurus start",
-    "build:doc": "yarn --cwd ./packages/docusaurus build",
-    "serve:doc": "yarn --cwd ./packages/docusaurus serve"
+    "start:doc": "yarn --cwd ./docusaurus start",
+    "build:doc": "yarn --cwd ./docusaurus build",
+    "serve:doc": "yarn --cwd ./docusaurus serve"
   },
   "devDependencies": {
     "@apollo/client": "^3.5.10",
