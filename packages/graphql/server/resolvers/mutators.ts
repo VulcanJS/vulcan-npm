@@ -39,7 +39,6 @@ import { runCallbacks } from "@vulcanjs/core";
 
 import { throwError } from "./errors";
 import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
-import { getModelConnector } from "../contextBuilder";
 import {
   UpdateInput,
   DeleteInput,
@@ -200,7 +199,7 @@ export const performMutationCheck = (options: MutationCheckOptions) => {
 
 interface GetSelectorInput {
   context: ContextWithUser;
-  model: VulcanGraphqlModel;
+  model: VulcanGraphqlModelServer;
   dataId?: string;
   selector?: Object;
   input?: FilterableInput<VulcanDocument>;
@@ -209,8 +208,8 @@ interface GetSelectorInput {
 /**
  * Get the selector, in the format that matches the relevant connector
  * (for instance Mongo)
- * @param param0
- * @returns
+ *
+ * @deprecated 0.6
  */
 async function getSelector({
   dataId,
@@ -228,7 +227,11 @@ async function getSelector({
     );
     selector = selector;
   } else if (input) {
-    const connector = getModelConnector(context, model);
+    const connector = model.graphql.connector;
+    if (!connector)
+      throw new Error(
+        `Model ${model.name} has no graphql connector, cannot select a document.`
+      );
     const filterParameters = await connector._filter(input, context);
     selector = filterParameters.selector;
   }
@@ -244,12 +247,11 @@ interface CreateMutatorInput {
   asAdmin?: boolean; // bypass security checks like field restriction
   validate?: boolean; // run validation, can be bypassed when calling from a server
 }
-
-/*
-
-Create
-
-*/
+/**
+ *
+ *
+ *
+ */
 export const createMutator = async <TModel extends VulcanDocument>({
   model,
   data: originalData,
@@ -340,7 +342,11 @@ export const createMutator = async <TModel extends VulcanDocument>({
   });
 
   /* DB Operation */
-  const connector = getModelConnector<TModel>(context, model);
+  const connector = model.graphql.connector;
+  if (!connector)
+    throw new Error(
+      `Model ${model.name} has no connector. Cannot create a document.`
+    );
   let document = await connector.create(data);
 
   /* After */
@@ -497,7 +503,11 @@ export const updateMutator = async <TModel extends VulcanDocument>({
   }
 
   // get original document from database or arguments
-  const connector = getModelConnector(context, model);
+  const connector = model.graphql.connector; //getModelConnector(context, model);
+  if (!connector)
+    throw new Error(
+      `Model ${model.name} has no GraphQL connector. Cannot update a document for this model.`
+    );
   const foundCurrentDocument = await connector.findOne(selector);
 
   /* Authorization */
