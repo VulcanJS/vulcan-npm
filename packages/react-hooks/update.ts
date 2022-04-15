@@ -38,8 +38,9 @@ import {
 import { multiQueryUpdater, ComputeNewDataFunc } from "./multiQueryUpdater";
 // import { computeQueryVariables } from "./variables";
 import { computeNewDataAfterCreate } from "./create";
-import { VulcanMutationHookOptions } from "./typings";
-import { UpdateVariables, VulcanGraphqlModel } from "@vulcanjs/graphql"; // TODO: import client code only
+import type { VulcanMutationHookOptions } from "./typings";
+import type { VulcanGraphqlModel } from "@vulcanjs/graphql"; // TODO: import client code only
+import type { UpdateVariables } from "@vulcanjs/crud";
 
 // We can reuse the same function to compute the new list after an element update
 const computeNewDataAfterUpdate: ComputeNewDataFunc = computeNewDataAfterCreate;
