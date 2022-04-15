@@ -61,6 +61,7 @@ export function buildDefaultMutationResolvers({
           data,
           currentUser: context.currentUser,
           validate: true,
+          // legacy, only the currentUser is actually needed (mutators won't use Apollo datasources)
           context,
         });
       },
@@ -89,6 +90,7 @@ export function buildDefaultMutationResolvers({
           input,
           currentUser: context.currentUser,
           validate: true,
+          // legacy, only the currentUser is actually needed (mutators won't use Apollo datasources)
           context,
         });
       },
@@ -106,6 +108,7 @@ export function buildDefaultMutationResolvers({
           input,
           currentUser: context.currentUser,
           validate: true,
+          // legacy, only the currentUser is actually needed (mutators won't use Apollo datasources)
           context,
         });
       },
