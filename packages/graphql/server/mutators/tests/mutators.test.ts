@@ -7,9 +7,10 @@ import {
 import merge from "lodash/merge.js";
 
 import { VulcanGraphqlModel } from "../../../typings";
-import { modifierToData } from "../../resolvers/validation";
+import { modifierToData } from "../validation";
 import { createGraphqlModel } from "../../../extendModel";
 import { Connector } from "@vulcanjs/crud/server";
+import { createGraphqlModelServer } from "../..";
 
 const guestsPermissions = {
   type: String,
@@ -65,12 +66,22 @@ const schema = {
     },
   },
 };
-const Foo = createGraphqlModel({
-  schema,
-  name: "Foo",
-  graphql: { typeName: "Foo", multiTypeName: "Foos" },
-  permissions: membersPermissions,
-}) as VulcanGraphqlModel;
+
+const initTests = () => {
+  const RawFoo = createGraphqlModelServer({
+    schema,
+    name: "Foo",
+    graphql: { typeName: "Foo", multiTypeName: "Foos" },
+    permissions: membersPermissions,
+  });
+  // hack to fix the typings and guarantee that connector is defined
+  const Foo = RawFoo as typeof RawFoo & {
+    graphql: Required<Pick<typeof RawFoo["graphql"], "connector">>;
+  };
+  Foo.graphql.connector = {} as Connector;
+  return { Foo };
+};
+const { Foo } = initTests();
 
 const currentUser = { _id: "42" };
 
@@ -93,23 +104,17 @@ describe("graphql/resolvers/mutators", function () {
 
   describe("create, update and delete mutators", () => {
     // create fake context
-    let defaultContext: {
-      Foo: { connector: Partial<Connector>; model: VulcanGraphqlModel };
-    };
+    let defaultConnector: Partial<Connector>;
     beforeEach(() => {
-      defaultContext = {
-        Foo: {
-          model: Foo,
-          connector: {
-            create: async () => "1", // returns the new doc id
-            findOneById: async () => ({
-              id: "1",
-            }),
-            findOne: async () => ({ id: "1" }),
-            update: async () => ({ id: "1" }),
-          },
-        },
+      defaultConnector = {
+        create: async () => "1", // returns the new doc id
+        findOneById: async () => ({
+          id: "1",
+        }),
+        findOne: async () => ({ id: "1" }),
+        update: async () => ({ id: "1" }),
       };
+      Foo.graphql.connector = defaultConnector as Connector;
     });
     describe("create mutator", () => {
       test("can run createMutator", async function () {
@@ -145,72 +150,68 @@ describe("graphql/resolvers/mutators", function () {
       });
       test("update mutator should pass the right selector to get the current document taking dataId argument", async () => {
         const data = { _id: "1", foo: "fooUpdate" };
-        defaultContext.Foo.connector.findOne = jest.fn(async () => data);
+        Foo.graphql.connector.findOne = jest.fn(async () => data);
         await updateMutator({
           ...updateArgs,
           dataId: data._id,
           context: defaultContext,
           data,
         });
-        expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
+        expect(Foo.graphql.connector.findOne).toHaveBeenCalledWith({
           _id: "1",
         });
       });
       test("update mutator should pass the right selector to get the current document taking selector argument", async () => {
         const data = { _id: "1", foo: "fooUpdate" };
-        defaultContext.Foo.connector.findOne = jest.fn(async () => data);
+        Foo.graphql.connector.findOne = jest.fn(async () => data);
         await updateMutator({
           ...updateArgs,
           selector: { _id: data._id },
           context: defaultContext,
           data,
         });
-        expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
+        expect(Foo.graphql.connector.findOne).toHaveBeenCalledWith({
           _id: "1",
         });
       });
       test("update mutator should pass the right selector to get the current document taking input argument", async () => {
         const data = { _id: "1", foo: "fooUpdate" };
-        defaultContext.Foo.connector.findOne = jest.fn(async () => data);
+        Foo.graphql.connector.findOne = jest.fn(async () => data);
         await updateMutator({
           ...updateArgs,
           input: { id: data._id, data },
           context: defaultContext,
         });
-        expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
+        expect(Foo.graphql.connector.findOne).toHaveBeenCalledWith({
           _id: "1",
         });
       });
     });
   });
   describe("delete mutator and callbacks", () => {
-    // create fake context
-    let defaultContext: {
-      Foo: { connector: Partial<Connector>; model: VulcanGraphqlModel };
-    };
-    const defaultParams = {
-      model: Foo,
-      context: {},
-      asAdmin: true, // bypass field restriction
-    };
-    beforeEach(() => {
-      defaultContext = {
-        Foo: {
-          model: Foo,
-          connector: {
-            create: async () => "1", // returns the new doc id
-            findOneById: async () => ({
-              id: "1",
-            }),
-            findOne: async () => ({ id: "1" }),
-            update: async () => ({ id: "1" }),
-            delete: async () => {
-              return true;
-            },
-          },
+    const initDeletionTest = () => {
+      const { Foo } = initTests();
+      const defaultConnector: Partial<Connector> = {
+        create: async () => "1", // returns the new doc id
+        findOneById: async () => ({
+          id: "1",
+        }),
+        findOne: async () => ({ id: "1" }),
+        update: async () => ({ id: "1" }),
+        delete: async () => {
+          return true;
         },
       };
-    });
+      Foo.graphql.connector = defaultConnector as Connector;
+      // create fake context
+      const defaultParams = {
+        model: Foo,
+        context: {},
+        asAdmin: true, // bypass field restriction
+      };
+      return { defaultParams, Foo };
+    };
+    const { defaultParams } = initDeletionTest();
     test("refuse deletion if selector is empty", async () => {
       const emptySelector = {};
 
@@ -219,19 +220,13 @@ describe("graphql/resolvers/mutators", function () {
       ).rejects.toThrow();
     });
     test("refuse deletion if document is not found", async () => {
+      const { Foo, defaultParams } = initDeletionTest();
       jest.spyOn(console, "error").mockImplementationOnce(() => {}); // silences console.error
       const nullSelector = { documentId: null };
+      Foo.graphql.connector.findOne = async () => null;
 
-      const context = {
-        Foo: {
-          connector: {
-            findOne: async () => null,
-          },
-        },
-      };
       const params = {
         ...defaultParams,
-        context,
       };
 
       await expect(
@@ -239,24 +234,18 @@ describe("graphql/resolvers/mutators", function () {
       ).rejects.toThrow();
     });
     test("accept valid deletions", async () => {
+      const { Foo, defaultParams } = initDeletionTest();
       const validIdSelector = { _id: "foobar" };
       const validDocIdSelector = { documentId: "foobar" };
       const validSlugSelector = { slug: "foobar" };
       const foo = { hello: "world" };
 
-      const context = merge({}, defaultContext, {
-        Foo: {
-          connector: {
-            findOne: async () => foo,
-            delete: async () => foo,
-          },
-        },
-        currentUser,
-      });
+      Foo.graphql.connector.findOne = async () => foo;
+      Foo.graphql.connector.delete = async () => true;
 
       const params = {
         ...defaultParams,
-        context,
+        currentUser,
       };
 
       await expect(
@@ -271,44 +260,38 @@ describe("graphql/resolvers/mutators", function () {
     });
 
     test("pass the right id to get the current document", async () => {
+      const { defaultParams, Foo } = initDeletionTest();
       const data = { _id: "1", foo: "fooUpdate" };
-      defaultContext.Foo.connector.findOne = jest.fn(async () => data);
+      Foo.graphql.connector.findOne = jest.fn(async () => data);
       await deleteMutator({
         ...defaultParams,
-        context: defaultContext,
         currentUser,
         dataId: "1",
       });
-      expect(defaultContext.Foo.connector.findOne).toHaveBeenCalledWith({
+      expect(Foo.graphql.connector.findOne).toHaveBeenCalledWith({
         _id: "1",
       });
     });
   });
 
   describe("field onCreate/onUpdate callbacks", () => {
-    const context = merge({}, defaultContext, {
-      Foo: {
-        connector: {
-          create: async (data) => ({
-            ...data, // preserve provided data => this is needed to test the callbacks
-            id: "1",
-          }),
-          findOne: async () => ({
-            id: "1",
-            foo2: "bar",
-          }),
-          update: async (selector, modifier) => ({
-            id: "1",
-            ...modifierToData(modifier), // we need to preserve the existing document
-          }),
-        },
-      },
+    const { Foo } = initTests();
+    Foo.graphql.connector.create = async (data) => ({
+      ...data, // preserve provided data => this is needed to test the callbacks
+      id: "1",
+    });
+    Foo.graphql.connector.findOne = async () => ({
+      id: "1",
+      foo2: "bar",
+    });
+    Foo.graphql.connector.update = async (selector, modifier) => ({
+      id: "1",
+      ...modifierToData(modifier), // we need to preserve the existing document
     });
     const defaultArgs = {
       model: Foo,
       document: { foo2: "bar" },
       validate: false,
-      context,
       // we test while being logged out
       asAdmin: false,
       currentUser,
@@ -366,57 +349,59 @@ describe("graphql/resolvers/mutators", function () {
           canRead: ["guests"],
         },
       };
-      const Foo = createGraphqlModel({
+      const RawFoo = createGraphqlModelServer({
         schema,
         name: "Foo",
         graphql: { typeName: "Foo", multiTypeName: "Foos" },
         permissions: membersPermissions,
       });
-      const context = merge({}, defaultContext, {
-        currentUser: { _id: "42" }, // To remove ?
-        Foo: {
-          model: Foo,
-          connector: { create: async (data) => ({ _id: 1, ...data }) },
-        },
-      });
+      // hack to fix the typings and guarantee that connector is defined
+      const Foo = RawFoo as typeof RawFoo & {
+        graphql: Required<Pick<typeof RawFoo["graphql"], "connector">>;
+      };
+      Foo.graphql.connector = {} as Connector;
+
+      const currentUser = { _id: "42" };
+      Foo.graphql.connector.create = async (data) => ({ _id: 1, ...data });
       const { data: resultDocument } = await createMutator({
         ...defaultArgs,
         model: Foo,
-        context,
+        currentUser,
         data: {},
       });
       expect(resultDocument.userId).toEqual("42");
     });
   });
   describe("permissions and validation", () => {
-    const context = {
-      Foo: {
-        connector: {
-          create: async (data) => ({
-            ...data, // preserve provided data => this is needed to test the callbacks
-            id: "1",
-          }),
-          findOne: async () => ({
-            id: "1",
-            foo2: "bar",
-          }),
-          update: async (selector, modifier) => ({
-            id: "1",
-            ...modifierToData(modifier), // we need to preserve the existing document
-          }),
-          delete: async () => null,
-        },
-      },
+    const initPermissionTests = () => {
+      const { Foo } = initTests();
+      Foo.graphql.connector = {
+        ...Foo.graphql.connector,
+        create: async (data) => ({
+          ...data, // preserve provided data => this is needed to test the callbacks
+          id: "1",
+        }),
+        findOne: async () => ({
+          id: "1",
+          foo2: "bar",
+        }),
+        update: async (selector, modifier) => ({
+          id: "1",
+          ...modifierToData(modifier), // we need to preserve the existing document
+        }),
+        delete: async () => true,
+      };
+      const defaultArgs = {
+        model: Foo,
+        document: { foo2: "bar" },
+        validate: false,
+        // we test while being logged out
+        asAdmin: false,
+        currentUser,
+      };
+      return { Foo, defaultArgs };
     };
-    const defaultArgs = {
-      model: Foo,
-      document: { foo2: "bar" },
-      validate: false,
-      context,
-      // we test while being logged out
-      asAdmin: false,
-      currentUser,
-    };
+    const { Foo, defaultArgs } = initPermissionTests();
     describe("fields filtering", () => {
       test("filter out non allowed field before returning new document", async () => {
         const { data: resultDocument } = await createMutator({
@@ -454,6 +439,7 @@ describe("graphql/resolvers/mutators", function () {
     describe("schema based validation", () => {
       const rawDocument = { foo2: "bar" };
       const expectedDocument = { foo2: "bar", publicAuto: "CREATED" };
+      const { defaultArgs } = initPermissionTests();
       test("can create a valid document with no permission error", async () => {
         const { data: createdDocument } = await createMutator({
           ...defaultArgs,
@@ -466,7 +452,7 @@ describe("graphql/resolvers/mutators", function () {
   });
 });
 
-const adminFoo = createGraphqlModel({
+const adminFoo = createGraphqlModelServer({
   schema,
   name: "adminFoo",
   graphql: { typeName: "adminFoo", multiTypeName: "adminFoos" },
@@ -475,7 +461,7 @@ const adminFoo = createGraphqlModel({
     canUpdate: ["admins"],
     canDelete: ["admins"],
   },
-}) as VulcanGraphqlModel;
+});
 
 describe("performMutationCheck", () => {
   test("throws a 'document not found' error if there is no document", () => {
