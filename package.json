@@ -87,7 +87,8 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "starters/*"
+      "starters/*",
+      "docusaurus"
     ],
     "nohoist": [
       "@storybook",
