@@ -6,8 +6,8 @@
     "prebuild": "yarn run clean:build",
     "build": "turbo run build build:types",
     "publish:local": "yarn workspaces run yalc push # then, use 'yalc link <package-name>' in your project",
-    "link-yarn-legacy": "yarn workspaces run yarn link && ./scripts/link-duplicates.sh # deprecated, symlink creates issue with React, Webpack...",
-    "unlink-yarn-legacy": "yarn workspaces run yarn unlink",
+    "link-yarn-legacy": "yarn workspaces foreach yarn link && ./scripts/link-duplicates.sh # deprecated, symlink creates issue with React, Webpack...",
+    "unlink-yarn-legacy": "yarn workspaces foreach yarn unlink",
     "clean": "rm -Rf ./node_modules ./packages/*/node_modules && yarn run clean:build",
     "clean:build": "rm -Rf ./packages/*/dist",
     "test": "jest",
@@ -15,7 +15,7 @@
     "coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006",
     "build:storybook": "build-storybook",
-    "depcheck": "yarn workspaces run --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'",
+    "depcheck": "yarn workspaces foreach --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'",
     "typedoc": "typedoc",
     "publish": "lerna publish",
     "start:doc": "yarn --cwd ./docusaurus start",
@@ -97,9 +97,8 @@
       "**/@storybook/**"
     ]
   },
-  "dependencies": {},
   "msw": {
     "workerDirectory": "./storybook/public"
   },
-  "packageManager": "yarn@1.22.5"
+  "packageManager": "yarn@3.2.0"
 }

@@ -29,7 +29,7 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/schema": "latest"
+    "@vulcanjs/schema": "*"
   },
   "devDependencies": {
     "ts-loader": "^8.0.3"

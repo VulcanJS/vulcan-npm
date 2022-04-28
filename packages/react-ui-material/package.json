@@ -29,10 +29,10 @@
     "@mui/styles": "^5.2.1",
     "@vulcanjs/core": "latest",
     "@vulcanjs/graphql": "latest",
-    "@vulcanjs/react-i18n": "latest",
     "@vulcanjs/model": "latest",
     "@vulcanjs/permissions": "latest",
     "@vulcanjs/react-hooks": "latest",
+    "@vulcanjs/react-i18n": "*",
     "@vulcanjs/schema": "latest",
     "@vulcanjs/utils": "latest",
     "autosuggest-highlight": "^3.2.0",
@@ -47,7 +47,7 @@
   },
   "peerDependencies": {
     "@apollo/client": "^3.5.5",
-    "@vulcanjs/react-ui": "latest",
+    "@vulcanjs/react-ui": "*",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

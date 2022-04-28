@@ -1,7 +1,15 @@
 # Vulcan NPM
 
+## From Lerna to Yarn 2
+
+Lerna is officially deprecated. Instead we are progressively replacing it with Yarn 2 workspaces.
+
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 
+- https://yarnpkg.com/getting-started/install
+- Use `yarn workspaces foreach` to replace "Lerna Exec"
+- Use "*" as the version dependency to force Yarn to install local versions when the package is not yet published: https://blog.charlesloubao.com/one-line-javascript-tip-1-how-to-install-a-local/
+- If necessary, go back to "classic" with "yarn set classic" 
 
 ## Contribute
 

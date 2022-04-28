@@ -38,9 +38,9 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/crud": "latest",
-    "@vulcanjs/model": "latest",
-    "@vulcanjs/utils": "latest",
+    "@vulcanjs/crud": "*",
+    "@vulcanjs/model": "*",
+    "@vulcanjs/utils": "*",
     "lodash": "^4.17.20"
   },
   "peerDependencies": {

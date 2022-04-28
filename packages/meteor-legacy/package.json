@@ -29,7 +29,7 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/graphql": "latest",
+    "@vulcanjs/graphql": "*",
     "lodash": "^4.17.21"
   },
   "peerDependencies": {

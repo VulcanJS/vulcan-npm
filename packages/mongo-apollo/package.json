@@ -28,11 +28,11 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/crud": "latest",
-    "@vulcanjs/graphql": "latest",
-    "@vulcanjs/model": "latest",
-    "@vulcanjs/mongo": "latest",
-    "@vulcanjs/utils": "latest",
+    "@vulcanjs/crud": "*",
+    "@vulcanjs/graphql": "*",
+    "@vulcanjs/model": "*",
+    "@vulcanjs/mongo": "*",
+    "@vulcanjs/utils": "*",
     "apollo-datasource-mongodb": "^0.5.2",
     "lodash": "^4.17.20"
   },

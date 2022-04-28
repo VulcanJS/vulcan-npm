@@ -21,8 +21,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/model": "latest",
-    "@vulcanjs/schema": "latest",
+    "@vulcanjs/model": "*",
+    "@vulcanjs/schema": "*",
     "lodash": "^4.17.21"
   },
   "peerDependencies": {

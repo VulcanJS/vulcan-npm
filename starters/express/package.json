@@ -13,7 +13,6 @@
     "transpile": "tsc # Beware, this won't resolve local dependencies (missing .js)",
     "build:tsup": "tsup-node",
     "build": "yarn run build:tsup",
-    "preinstall": "rm -Rf ./node_modules/@vulcanjs/*",
     "mongo": "yarn run start:mogno",
     "//start:mongo": "### Will start or create & start the image + store data locally in .mongo folder + remove the container when stopped.",
     "start:mongo": "docker run --rm -p 27017:27017 -v \"$(pwd)/.mongo:/data/db\" --label vulcan-mongodb mongo:4.0.4 ",
@@ -31,17 +30,14 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.2",
-    "@vulcanjs/graphql": "latest",
-    "@vulcanjs/mongo": "latest",
-    "@vulcanjs/mongo-apollo": "latest",
+    "@vulcanjs/graphql": "*",
+    "@vulcanjs/mongo": "*",
+    "@vulcanjs/mongo-apollo": "*",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-server-express": "^3.6.4",
     "esbuild-runner": "^2.2.1",
     "express": "^4.17.3",
     "mongodb-memory-server": "^8.4.0",
     "mongoose": "^6.2.5"
-  },
-  "resolutions": {
-    "**/escape-string-regexp": "4.0.0"
   }
 }

@@ -21,7 +21,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/mongo": "latest",
+    "@vulcanjs/mongo": "*",
     "classnames": "^2.3.1",
     "debug": "^4.3.1",
     "lodash": "^4.17.21",
@@ -29,7 +29,7 @@
   },
   "peerDependencies": {
     "@apollo/client": "^3.5.5",
-    "@vulcanjs/react-ui": "latest",
+    "@vulcanjs/react-ui": "*",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

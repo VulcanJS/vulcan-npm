@@ -24,9 +24,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/schema": "latest",
-    "@vulcanjs/utils": "latest",
-    "@vulcanjs/i18n": "latest",
+    "@vulcanjs/i18n": "*",
+    "@vulcanjs/schema": "*",
+    "@vulcanjs/utils": "*",
     "prop-types": "^15.7.2",
     "react-cookie": "^4.1.1",
     "simpl-schema": "^1.12.0"
