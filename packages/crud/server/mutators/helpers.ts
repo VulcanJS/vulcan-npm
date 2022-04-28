@@ -7,7 +7,8 @@ import { deprecate } from "@vulcanjs/utils";
 import { VulcanDocument } from "@vulcanjs/schema";
 import type { DefaultMutatorName } from "@vulcanjs/crud";
 import { isMemberOf } from "@vulcanjs/permissions";
-import { FilterableInput, VulcanCrudModelServer } from "..";
+import type { VulcanCrudModelServer } from "../typings";
+import type { FilterableInput } from "../../typings";
 
 type ValidateProperties = Partial<
   CreateMutatorProperties & UpdateMutatorProperties

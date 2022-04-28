@@ -6,6 +6,14 @@
   "files": [
     "dist/"
   ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {}
+  },
   "author": "eric-burel <eb@lebrun-burel.com>",
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
@@ -15,7 +23,9 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "webpack --config ./webpack.config.js"
+    "build:tsup": "tsup",
+    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json ",
+    "build": "yarn run build:tsup"
   },
   "bugs": {
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"

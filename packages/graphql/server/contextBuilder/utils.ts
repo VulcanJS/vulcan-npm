@@ -6,8 +6,8 @@
 import { Connector } from "@vulcanjs/crud/server";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { VulcanGenericDataSource } from "./typings";
-import { VulcanGraphqlModel } from "../../typings";
-import { VulcanGraphqlModelServer } from "../../dist";
+import type { VulcanGraphqlModel } from "../../typings";
+import type { VulcanGraphqlModelServer } from "../../typings";
 
 /**
  * Get data source from the context.

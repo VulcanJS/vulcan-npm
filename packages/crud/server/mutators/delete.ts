@@ -8,7 +8,8 @@ import {
   performMutationCheck,
   validateMutationData,
 } from "./helpers";
-import { DeleteInput, VulcanCrudModelServer } from "..";
+import type { VulcanCrudModelServer } from "../typings";
+import type { DeleteInput } from "../../typings";
 
 interface DeleteMutatorCommonInput {
   model: VulcanCrudModelServer;

@@ -27923,7 +27923,7 @@ __metadata:
     tsup: ^5.11.13
     turbo: ^1.1.5
     typedoc: ^0.21.4
-    typescript: 4.2.2
+    typescript: 4.6
     webpack: ^4.41.6
     webpack-cli: ^3.3.11
     webpack-merge: ^5.8.0
@@ -31134,13 +31134,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.2.2":
-  version: 4.2.2
-  resolution: "typescript@npm:4.2.2"
+"typescript@npm:4.6, typescript@npm:^4.5.2, typescript@npm:^4.6.2":
+  version: 4.6.3
+  resolution: "typescript@npm:4.6.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: e035ade8bac05c23dbd30045122f7b0c6f63693c23c394b563161118c0bea66887ec470337d3e9f44e6459793332f741c731e86eeffd83ddebff23f70f71669b
+  checksum: 255bb26c8cb846ca689dd1c3a56587af4f69055907aa2c154796ea28ee0dea871535b1c78f85a6212c77f2657843a269c3a742d09d81495b97b914bf7920415b
   languageName: node
   linkType: hard
 
@@ -31154,23 +31154,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.5.2, typescript@npm:^4.6.2":
+"typescript@patch:typescript@4.6#~builtin<compat/typescript>, typescript@patch:typescript@^4.5.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>":
   version: 4.6.3
-  resolution: "typescript@npm:4.6.3"
+  resolution: "typescript@patch:typescript@npm%3A4.6.3#~builtin<compat/typescript>::version=4.6.3&hash=bda367"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 255bb26c8cb846ca689dd1c3a56587af4f69055907aa2c154796ea28ee0dea871535b1c78f85a6212c77f2657843a269c3a742d09d81495b97b914bf7920415b
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@4.2.2#~builtin<compat/typescript>":
-  version: 4.2.2
-  resolution: "typescript@patch:typescript@npm%3A4.2.2#~builtin<compat/typescript>::version=4.2.2&hash=bda367"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 2ea53f587f80083e0f184f552c044233fe07c2b5b7f04d2aaa8bd495f1f19822dbb27f3f060a2c6947240278045659ca00f1e4dea0d7e6f86ed3abd691796229
+  checksum: 6bf45caf847062420592e711bc9c28bf5f9a9a7fa8245343b81493e4ededae33f1774009d1234d911422d1646a2c839f44e1a23ecb111b40a60ac2ea4c1482a8
   languageName: node
   linkType: hard
 
@@ -31181,16 +31171,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 365df18cf979c971ef9543b2acaa8694377a803f98e1804c41d0ede0b09d7046cb0cd98f2eaf3884b0fe923c01a60af1f653841bd8805c9715d5479c09a4ebe4
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@^4.5.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>":
-  version: 4.6.3
-  resolution: "typescript@patch:typescript@npm%3A4.6.3#~builtin<compat/typescript>::version=4.6.3&hash=bda367"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 6bf45caf847062420592e711bc9c28bf5f9a9a7fa8245343b81493e4ededae33f1774009d1234d911422d1646a2c839f44e1a23ecb111b40a60ac2ea4c1482a8
   languageName: node
   linkType: hard
 

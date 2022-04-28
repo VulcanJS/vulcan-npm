@@ -11,7 +11,8 @@ import {
   UpdateMutatorProperties,
   validateMutationData,
 } from "./helpers";
-import type { UpdateInput, VulcanCrudModelServer } from "..";
+import type { VulcanCrudModelServer } from "../typings";
+import type { UpdateInput } from "../../typings";
 
 interface UpdateMutatorCommonInput {
   model: VulcanCrudModelServer;
