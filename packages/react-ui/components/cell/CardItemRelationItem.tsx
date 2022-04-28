@@ -1,7 +1,7 @@
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import { VulcanDocument } from "@vulcanjs/schema";
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { useVulcanComponents } from "../VulcanComponents";
 
 /*
@@ -40,7 +40,8 @@ export const CardItemRelationItem = ({
 export const DefaultCell = ({ document, label }) => (
   <li className="relation-default-cell">
     {document.pagePath ? (
-      <Link to={document.pagePath}>{label}</Link>
+      //<Link to={document.pagePath}>{label}</Link>
+      <a href={document.pagePath}>{label}</a>
     ) : (
       <span>{label}</span>
     )}
@@ -54,10 +55,15 @@ export const UserCell = ({ document }) => {
     <div className="contents-user user-item">
       {/*<Components.Avatar size="small" user={document} />*/}
       {document.pagePath ? (
+        <a className="user-item-name" href={document.pagePath}>
+          {document.displayName}
+        </a>
+      ) : (
+        /*
         <Link className="user-item-name" to={document.pagePath}>
           {document.displayName}
         </Link>
-      ) : (
+        */
         <span className="user-item-name">{document.displayName}</span>
       )}
     </div>

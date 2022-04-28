@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import without from "lodash/without.js";
 import { useVulcanComponents } from "../VulcanComponents";
 
@@ -16,8 +16,9 @@ export const CardItemObject = (props) => {
         {/* TODO: we should allow to pass a custom cell for each model instead of providing our own cell for users */}
         {/*<Components.Avatar size="small" user={user} link />*/}
         {user.pagePath ? (
-          <Link to={user.pagePath}>{user.displayName}</Link>
+          <a href={user.pagePath}>{user.displayName}</a>
         ) : (
+          /*<Link to={user.pagePath}>{user.displayName}</Link>*/
           <span>{user.displayName}</span>
         )}
       </div>
