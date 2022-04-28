@@ -1,6 +1,5 @@
 // import { compose } from "recompose";
 import React from "react";
-import difference from "lodash/difference.js";
 
 export const Components = {}; // will be populated on startup
 export const ComponentsTable = {}; // storage for infos about components
@@ -238,7 +237,7 @@ export const instantiateComponent = (
     component.prototype &&
     component.prototype.isReactComponent
   ) {
-    const Component = component as React.ComponentType;
+    const Component = component as React.ComponentType<any>;
     return <Component {...props} />;
   } else if (typeof component === "function") {
     return component(props);
@@ -247,7 +246,7 @@ export const instantiateComponent = (
     component.$$typeof &&
     component.render
   ) {
-    const Component = component as React.ComponentType;
+    const Component = component as React.ComponentType<any>;
     return <Component {...props} />;
   } else {
     return component;

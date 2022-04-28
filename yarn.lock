@@ -7931,12 +7931,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^16.9.5":
-  version: 16.9.15
-  resolution: "@types/react-dom@npm:16.9.15"
+"@types/react-dom@npm:^17":
+  version: 17.0.16
+  resolution: "@types/react-dom@npm:17.0.16"
   dependencies:
-    "@types/react": ^16
-  checksum: 37e3518a461c5dbfc89bad2c0f0585254398e502a08b353ba63a7bc92e76f1c80a45d7c4c41a19c3b164270c1b3fbfc5d574b99d016d6af8808294e407c344b0
+    "@types/react": ^17
+  checksum: 2f41a45ef955c8f68a7bcd22343715f15e1560a5e5ba941568b3c970d9151f78fe0975ecf4df7f691339af546555e0f23fa423a0a5bcd7ea4dd4f9c245509936
   languageName: node
   linkType: hard
 
@@ -8037,14 +8037,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^16, @types/react@npm:^16.9.23":
-  version: 16.14.25
-  resolution: "@types/react@npm:16.14.25"
+"@types/react@npm:^17":
+  version: 17.0.44
+  resolution: "@types/react@npm:17.0.44"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 3a06cf26f2cad40b14bea707a0ca5343d6bcce133a27ecc291c269d65d9998fd56807371c8e912b95c6fe5c426751ac2e419ae6df0e69bba59e4d84e1165f48f
+  checksum: ebee02778ca08f954c316dc907802264e0121c87b8fa2e7e0156ab0ef2a1b0a09d968c016a3600ec4c9a17dc09b4274f292d9b15a1a5369bb7e4072def82808f
   languageName: node
   linkType: hard
 
@@ -27896,7 +27896,7 @@ __metadata:
     "@testing-library/react": ^11.2.7
     "@types/jest": ^26.0.14
     "@types/node": ^13.7.6
-    "@types/react": ^16.9.23
+    "@types/react": ^17
     apollo-server: ^3.5.0
     apollo-server-express: ^3.5.0
     auto-changelog: ^2.2.1
@@ -32014,8 +32014,8 @@ __metadata:
     "@types/jest": ^25.2.3
     "@types/node": ^13.7.6
     "@types/nodemailer": ^6.4.4
-    "@types/react": ^16.9.23
-    "@types/react-dom": ^16.9.5
+    "@types/react": ^17
+    "@types/react-dom": ^17
     "@types/shelljs": ^0.8.8
     "@vercel/ncc": ^0.30.0
     "@vulcanjs/crud": "*"
