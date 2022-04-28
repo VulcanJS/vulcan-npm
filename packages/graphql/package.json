@@ -27,13 +27,13 @@
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/core": "^0.6.1",
-    "@vulcanjs/crud": "^0.6.1",
-    "@vulcanjs/i18n": "^0.6.1",
-    "@vulcanjs/model": "^0.6.1",
-    "@vulcanjs/permissions": "^0.6.1",
-    "@vulcanjs/schema": "^0.6.1",
-    "@vulcanjs/utils": "^0.6.1",
+    "@vulcanjs/core": "latest",
+    "@vulcanjs/crud": "latest",
+    "@vulcanjs/i18n": "latest",
+    "@vulcanjs/model": "latest",
+    "@vulcanjs/permissions": "latest",
+    "@vulcanjs/schema": "latest",
+    "@vulcanjs/utils": "latest",
     "apollo-datasource": "^3.3.1",
     "debug": "^4.3.1",
     "deepmerge": "^4.2.2",
@@ -46,7 +46,7 @@
     "@apollo/client": "^3.5.5",
     "apollo-server": "^2.18.2",
     "graphql": "^15.5.0",
-    "react": "^17.0.2"
+    "react": "^17.0.1"
   },
   "repository": {
     "type": "git",

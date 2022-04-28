@@ -31,8 +31,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/schema": "^0.6.1",
-    "@vulcanjs/utils": "^0.6.1",
+    "@vulcanjs/schema": "latest",
+    "@vulcanjs/utils": "latest",
     "prop-types": "^15.7.2",
     "simpl-schema": "^1.12.0"
   },

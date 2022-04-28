@@ -23,10 +23,10 @@
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/core": "^0.6.1",
-    "@vulcanjs/permissions": "^0.6.1",
-    "@vulcanjs/schema": "^0.6.1",
-    "@vulcanjs/model": "^0.6.1",
+    "@vulcanjs/core": "latest",
+    "@vulcanjs/permissions": "latest",
+    "@vulcanjs/schema": "latest",
+    "@vulcanjs/model": "latest",
     "debug": "^4.3.1",
     "lodash": "^4.17.21"
   },

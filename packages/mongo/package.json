@@ -38,9 +38,9 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/crud": "^0.6.1",
-    "@vulcanjs/model": "^0.6.1",
-    "@vulcanjs/utils": "^0.6.1",
+    "@vulcanjs/crud": "latest",
+    "@vulcanjs/model": "latest",
+    "@vulcanjs/utils": "latest",
     "lodash": "^4.17.20"
   },
   "peerDependencies": {
@@ -52,6 +52,6 @@
     "access": "public"
   },
   "optionalDependencies": {
-    "mongodb-memory-server": "^6.9.2"
+    "mongodb-memory-server": "^8.4.0"
   }
 }

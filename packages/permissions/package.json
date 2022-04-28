@@ -21,13 +21,13 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/model": "^0.6.1",
-    "@vulcanjs/schema": "^0.6.1",
+    "@vulcanjs/model": "latest",
+    "@vulcanjs/schema": "latest",
     "lodash": "^4.17.21"
   },
   "peerDependencies": {
-    "react": ">= 16.13.1",
-    "react-dom": ">= 16.13.1"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "publishConfig": {
     "access": "public"

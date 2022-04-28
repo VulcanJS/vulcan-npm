@@ -23,15 +23,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/core": "^0.6.1",
-    "@vulcanjs/graphql": "^0.6.1",
-    "@vulcanjs/i18n": "^0.6.1",
-    "@vulcanjs/react-i18n": "^0.6.1",
-    "@vulcanjs/model": "^0.6.1",
-    "@vulcanjs/permissions": "^0.6.1",
-    "@vulcanjs/react-hooks": "^0.6.1",
-    "@vulcanjs/schema": "^0.6.1",
-    "@vulcanjs/utils": "^0.6.1",
+    "@vulcanjs/core": "latest",
+    "@vulcanjs/graphql": "latest",
+    "@vulcanjs/i18n": "latest",
+    "@vulcanjs/react-i18n": "latest",
+    "@vulcanjs/model": "latest",
+    "@vulcanjs/permissions": "latest",
+    "@vulcanjs/react-hooks": "latest",
+    "@vulcanjs/schema": "latest",
+    "@vulcanjs/utils": "latest",
     "classnames": "^2.3.1",
     "debug": "^4.3.1",
     "lodash": "^4.17.21",
@@ -41,8 +41,8 @@
   },
   "peerDependencies": {
     "@apollo/client": "^3.5.5",
-    "react": ">= 16.13.1",
-    "react-dom": ">= 16.13.1"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "publishConfig": {
     "access": "public"
