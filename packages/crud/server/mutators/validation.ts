@@ -17,7 +17,7 @@ import {
 } from "@vulcanjs/schema";
 import _forEach from "lodash/forEach.js";
 import { VulcanModel } from "@vulcanjs/model";
-import type { DefaultMutatorName } from "@vulcanjs/crud";
+import type { DefaultMutatorName } from "../../typings";
 import { canCreateField, canUpdateField } from "@vulcanjs/permissions";
 import { toSimpleSchema, ValidationError } from "@vulcanjs/schema";
 

@@ -8,7 +8,7 @@ import {
   performMutationCheck,
   validateMutationData,
 } from "./helpers";
-import type { VulcanCrudModelServer } from "../typings";
+import { VulcanCrudModelServer } from "../typings";
 
 interface CreateMutatorInput {
   model: VulcanCrudModelServer;
