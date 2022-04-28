@@ -1,4 +1,4 @@
-import { gql } from "graphql-tag";
+import gql from "graphql-tag";
 import { getFragmentName } from "../utils";
 
 test("get fragment name", () => {

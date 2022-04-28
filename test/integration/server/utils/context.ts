@@ -2,12 +2,14 @@
  * Context creation, for graphql but also REST endpoints
  */
 import { Connector } from "@vulcanjs/crud/server";
-import { VulcanGraphqlModel } from "@vulcanjs/graphql/server";
+import {
+  VulcanGraphqlModel,
+  VulcanGraphqlModelServer,
+} from "@vulcanjs/graphql/server";
 
 import { createMongooseConnector } from "@vulcanjs/mongo";
 import { Request } from "express";
 import debug from "debug";
-import { VulcanGraphqlModelServer } from "@vulcanjs/graphql";
 const debugGraphqlContext = debug("vn:graphql:context");
 
 /**

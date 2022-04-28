@@ -1,7 +1,7 @@
 import { createGraphqlModelServer } from "../../../extendModel.server";
 import { normalizeGraphQLSchema } from "../../../testing";
 import { parseModel } from "../../parseModel";
-import { VulcanGraphqlSchemaServer } from "../../../typings";
+import { VulcanGraphqlSchemaServer } from "../../typings";
 
 const makeFooModel = (schema: VulcanGraphqlSchemaServer) =>
   createGraphqlModelServer({

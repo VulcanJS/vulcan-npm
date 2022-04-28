@@ -10,7 +10,7 @@ import { parseModel } from "../../parseModel";
 import { buildDefaultMutationResolvers } from "../../resolvers/defaultMutationResolvers";
 import { buildDefaultQueryResolvers } from "../../resolvers/defaultQueryResolvers";
 import { getGraphQLType } from "../../../utils";
-import { VulcanGraphqlSchemaServer } from "../../../typings";
+import { VulcanGraphqlSchemaServer } from "../../typings";
 
 const FooModel = (schema: VulcanGraphqlSchemaServer) =>
   createGraphqlModelServer({

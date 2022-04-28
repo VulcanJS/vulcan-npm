@@ -4,7 +4,7 @@
  * As a default, will generate Mongoose connector
  */
 import { Connector } from "@vulcanjs/crud/server";
-import { VulcanGraphqlModelServer } from "../../";
+import type { VulcanGraphqlModelServer } from "../typings";
 
 import { Request } from "express";
 import debug from "debug";

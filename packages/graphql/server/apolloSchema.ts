@@ -2,7 +2,7 @@
  * Finalize the graphql schema creation by adding
  * common elements to the model-based schema
  */
-import { VulcanGraphqlModelServer } from "../typings";
+import { VulcanGraphqlModelServer } from "./typings";
 import { parseAllModels } from "./parseAllModels";
 import { defaultTypeDefs, defaultResolvers } from "./defaultSchema";
 import { mergeResolvers } from "./utils";

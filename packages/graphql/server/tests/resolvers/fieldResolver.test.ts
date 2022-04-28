@@ -1,7 +1,7 @@
 // for resolver testing
 import { ApolloServer } from "apollo-server";
 import { createGraphqlModelServer } from "../../../extendModel.server";
-import { VulcanGraphqlSchemaServer } from "../../../typings";
+import { VulcanGraphqlSchemaServer } from "../../typings";
 import { buildApolloSchema } from "../../apolloSchema";
 const makeFooModel = (schema: VulcanGraphqlSchemaServer) =>
   createGraphqlModelServer({
