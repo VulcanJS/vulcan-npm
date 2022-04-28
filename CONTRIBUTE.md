@@ -31,29 +31,6 @@ The command `yarn run link:vulcan` will do this for all @vulcanjs packages
 
 A similar documentation exists in Vulcan Next project.
 
-## Lerna Tips
-
-### Yarn workspaces
-
-Yarn workspaces allow to share dependencies between packages. This is especially useful for dev dependencies such as Jest.
-
-They are equivalent to using NPM + Lerne "Hoist" feature.
-
-https://classic.yarnpkg.com/blog/2017/08/02/introducing-workspaces/
-
-### Dependency from a local package to another local package
-
-Install packages using `lerna bootstrap`. 
-
-To add a dependency between 2 local Vulcan packages: 
-
-```sh
-yarn lerna add @vulcanjs/<your-dependency> --scope=@vulcanjs/<the-parent-package>
-```
-
-You need this command because the package won't exist yet on NPMJS, so you need Lerna to manage the dependency.
-You can run it from anywhere, and the `--scope` part is mandatory (otherwise the package get added everywhere).
-
 ## Common issues
 
 ## No index.d.ts in dist
@@ -70,6 +47,11 @@ You mistakenly imported local code from another package, like importing from `..
 
 If your import are correct and you still have this issue, this also seems to unexpectedly affect "@vulcanjs/mongo/client" (client entrypoint) as well.
 In this case, set a false webpack alias for the faulty package (see react-hooks for instance)
+
+## Package self-referencing or leaking server code
+
+If `build:types` refuses to overwrite a file, you might have wrongly imported "dist" in your code ; have a package
+that references itself ; or leak some server code in a shared package.
 
 ### Forgetting to include tests and stories in tsconfig.json
 

@@ -1,15 +1,6 @@
 # Vulcan NPM
 
-## From Lerna to Yarn 2
 
-Lerna is officially deprecated. Instead we are progressively replacing it with Yarn 2 workspaces.
-
-[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
-
-- https://yarnpkg.com/getting-started/install
-- Use `yarn workspaces foreach` to replace "Lerna Exec"
-- Use "*" as the version dependency to force Yarn to install local versions when the package is not yet published: https://blog.charlesloubao.com/one-line-javascript-tip-1-how-to-install-a-local/
-- If necessary, go back to "classic" with "yarn set classic" 
 
 ## Contribute
 
@@ -18,6 +9,18 @@ Discover [Vulcan Next](https://github.com/VulcanJS/vulcan-next), the Next.js and
 After you've read the README, also check `./CONTRIBUTE.md` for more information about contributions.
 
 See Vulcan Next for detailed documentation: [https://github.com/VulcanJS/vulcan-next](https://github.com/VulcanJS/vulcan-next)
+
+## From Lerna to Yarn 2
+
+RIP [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
+
+Lerna is officially deprecated. Instead we are progressively replacing it with Yarn 2 workspaces.
+
+
+- Install Yarn 2: https://yarnpkg.com/getting-started/install
+- Use `yarn workspaces foreach` to replace "lerna Exec"
+- Use "*" as the version dependency to force Yarn to install local versions when the package is not yet published: https://blog.charlesloubao.com/one-line-javascript-tip-1-how-to-install-a-local/
+- If necessary, go back to "classic" with "yarn set classic" 
 
 ## Install Vulcan NPM and start coding
 

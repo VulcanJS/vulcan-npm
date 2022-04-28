@@ -24,8 +24,8 @@ let mongod;
 let mongoUri;
 beforeAll(async () => {
   // Spin up a dummy mongo server
-  mongod = new MongoMemoryServer();
-  mongoUri = await mongod.getUri();
+  mongod = await MongoMemoryServer.create();
+  mongoUri = mongod.getUri();
   // const port = await mongod.getPort();
   // const dbPath = await mongod.getDbPath();
   // const dbName = await mongod.getDbName();

@@ -258,6 +258,7 @@ describe("react-hooks/queries", function () {
       await act(async () => {
         await queryResult.loadMore();
       });
+      await waitForNextUpdate();
       queryResult = result.current;
       expect(queryResult.data).toEqual({
         foos: {

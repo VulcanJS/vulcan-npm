@@ -10,15 +10,23 @@ import { Connector } from "@vulcanjs/crud/server";
 let mongod;
 beforeAll(async () => {
   // Spin up a dummy mongo server
-  mongod = new MongoMemoryServer();
+  mongod = await MongoMemoryServer.create();
 
-  const uri = await mongod.getUri();
+  const uri = mongod.getUri();
   // const port = await mongod.getPort();
   // const dbPath = await mongod.getDbPath();
   // const dbName = await mongod.getDbName();
   // Connect mongoose client
   await mongoose.connect(uri);
 });
+afterAll(async () => {
+  // remove the collection
+  // disconnect the client
+  await mongoose.disconnect();
+  // stop mongo server
+  await mongod.stop();
+});
+
 const Foo = createModel({
   name: "Foo",
   schema: {
@@ -212,12 +220,4 @@ describe("CRUD", () => {
     const foundDoc = await connector.findOne({ _id: createdDoc._id });
     expect(foundDoc).toBeNull();
   });
-});
-
-afterAll(async () => {
-  // remove the collection
-  // disconnect the client
-  await mongoose.disconnect();
-  // stop mongo server
-  await mongod.stop();
 });

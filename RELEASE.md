@@ -23,7 +23,7 @@ git checkout main && git pull
 # - Ignore dependencies that should disappear (work in progress)
 yarn run depcheck
 # Clear all node_modules
-yarn clean
+# yarn clean
 # Reinstall to get a fresh version (takes a while)
 yarn
 # Build
