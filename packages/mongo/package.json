@@ -31,7 +31,7 @@
     "build:client": "webpack --config ./webpack.config.client.js",
     "build:server": "webpack --config ./webpack.config.server.js",
     "build:tsup": "tsup",
-    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
+    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json ",
     "build": "yarn run build:tsup # yarn run build:client && yarn run build:server"
   },
   "bugs": {

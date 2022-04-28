@@ -13,7 +13,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:tsup": "tsup",
-    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json # Tsup generates .d.ts but we still need this for .d.ts.map",
+    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json ",
     "build:webpack": "webpack --config ./webpack.config.js",
     "build": "yarn run build:tsup"
   },
