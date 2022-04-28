@@ -7,6 +7,7 @@
 - mutators are now reusable without requiring a full-fledged graphql context, instead simply pass the current user.
 Ensure model callbacks are not using "context" to get other models but instead imports them explicitely
 - mutators hook name is now the model "name" and not graphql "typeName" (since mutators do not depend on graphql)
+- Mutators are exported from `@vulcanjs/crud/server` instead of graphql
 
 ## From Vulcan Meteor
 

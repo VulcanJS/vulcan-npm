@@ -1,6 +1,16 @@
 {
     "search.exclude": {
         "**/dist": true,
-        "coverage-unit": true
+        "**/coverage-unit": true,
+        "**/.git": true, // this is a default value
+        "**/.DS_Store": true, // this is a default value
+        //"**/node_modules": true, // this excludes all folders 
+        // named "node_modules" from 
+        // the explore tree
+        "**/.yalc": true,
+        "**/.mongo": true,
+        "**/.turbo": true,
+        "**/.next": true,
+        "**/.vn/scripts/js-generated": true
     }
 }

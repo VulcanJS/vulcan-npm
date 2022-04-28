@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "postinstall": "lerna bootstrap --force-local",
+    "postinstall": "lerna bootstrap --force-local && node ./scripts/fix-apollo.js",
     "prebuild": "yarn run clean:build",
     "build": "turbo run build build:types",
     "publish:local": "lerna exec yalc push # then, use 'yalc link <package-name>' in your project",

@@ -31,6 +31,7 @@ package-lock.json
 .yalc
 .yalc.lock
 starters/express/yalc.lock
+starters/next/yalc.lock
 
 #vscode extension
 .vscode/snipsnap.code-snippets

@@ -8,7 +8,7 @@ import {
   createMutator,
   updateMutator,
   deleteMutator,
-} from "@vulcanjs/crud/server/mutators";
+} from "@vulcanjs/crud/server";
 
 import { ContextWithUser } from "./typings";
 import { MutationResolverDefinitions } from "../typings";
