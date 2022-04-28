@@ -100,5 +100,6 @@
   "dependencies": {},
   "msw": {
     "workerDirectory": "./storybook/public"
-  }
+  },
+  "packageManager": "yarn@1.22.5"
 }
