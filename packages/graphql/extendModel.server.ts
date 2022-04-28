@@ -10,7 +10,7 @@ import {
   //VulcanGraphqlSchema,
   VulcanGraphqlModelServer,
   VulcanGraphqlSchemaServer,
-} from "./typings";
+} from "./server/typings";
 import { VulcanModel, createModel, CreateModelOptions } from "@vulcanjs/model";
 import type { MutationCallbackDefinitions } from "@vulcanjs/crud/server";
 /*
