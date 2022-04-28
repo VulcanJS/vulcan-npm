@@ -7,7 +7,7 @@ import {
 
 import { modifierToData } from "@vulcanjs/crud/server";
 import { Connector } from "@vulcanjs/crud/server";
-import { createGraphqlModelServer } from "@vulcanjs/graphql/server";
+import { createGraphqlModelServer } from "../../../extendModel.server";
 
 const guestsPermissions = {
   type: String,

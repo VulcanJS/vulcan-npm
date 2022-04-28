@@ -28,7 +28,7 @@ import {
 // import { buildResolveAsResolver } from "./resolvers/resolveAsResolver";
 import * as relations from "./resolvers/relationResolvers";
 import { withFieldPermissionCheckResolver } from "./resolvers/fieldResolver";
-import { ResolveAsDefinition } from "../typings";
+import { ResolveAsDefinition } from "./typings";
 
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (

@@ -1,18 +1,7 @@
 import { VulcanModel } from "@vulcanjs/model";
 import { OperationVariables } from "@apollo/client";
-import {
-  MutationResolverDefinitions,
-  QueryResolverDefinitions,
-  QueryResolver,
-} from "./server/typings";
-import {
-  VulcanFieldSchema,
-  VulcanFieldSchemaServer,
-  VulcanSchema,
-} from "@vulcanjs/schema";
+import { VulcanFieldSchema, VulcanSchema } from "@vulcanjs/schema";
 import type { FilterableInput /*, VulcanCrudModel*/ } from "@vulcanjs/crud";
-import type { VulcanCrudModelServer } from "@vulcanjs/crud/server";
-import { VulcanGenericDataSource } from "./server/contextBuilder";
 
 // SCHEMA TYPINGS
 // Custom resolver
@@ -35,51 +24,6 @@ import { VulcanGenericDataSource } from "./server/contextBuilder";
         },
       }
  */
-export interface ResolveAsDefinition {
-  /**
-   *
-   * Resolved field name
-   *
-   * @example if field is "userId", resolved fieldName should be "user"
-   **/
-  fieldName: string;
-  /**
-   * Return type of the resolver
-   *
-   * NOTE: it's an alias for "type"
-   */
-  typeName?: string;
-  /**
-   * Alias for typeName
-   *
-   * @deprecated
-   */
-  type?: string;
-  /** Graphql description (helper text in your graphql schema) */
-  description?: string;
-  /**
-   * Graphql arguments of the resolver, as comma separated string,
-   * if it takes some params
-   * TODO: not sure if this, or an array of "name, type"?
-   * @example arguments: "foobar: string,hello: string"
-   * resolver: async (document, {foobar, hello}, context, info) => {...}
-   */
-  arguments?: string;
-  /**
-   * The resolver function
-   *
-   * NOTE: your function will be wrapped with a permission checker,
-   * based on the field "canRead" permissions
-   *
-   *
-   */
-  resolver?: QueryResolver;
-  /**
-   * Whether keeping the field or not
-   * @example if field is "userId" and resolved field is "user", set to true to keep "userId" in the document
-   */
-  addOriginalField?: boolean;
-}
 interface RelationDefinitionBase {
   fieldName: string;
   kind: "hasOne" | "hasMany";
@@ -104,26 +48,17 @@ export interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
   query?: string | (() => string); // field-specific data loading query
   autocompleteQuery?: string | (() => string); // query used to populate autocomplete
 }
-// @server-only
-export interface VulcanGraphqlFieldSchemaServer
-  extends VulcanGraphqlFieldSchema,
-    VulcanFieldSchemaServer {
-  // this is a custom function => it has to be defined only on the server
-  resolveAs?: Array<ResolveAsDefinition> | ResolveAsDefinition;
-}
 // Base schema + GraphQL Fields
 export type VulcanGraphqlSchema = VulcanSchema<VulcanGraphqlFieldSchema>;
-// @server-only
-export type VulcanGraphqlSchemaServer =
-  VulcanSchema<VulcanGraphqlFieldSchemaServer>;
 
 // MODEL TYPINGS
 // Those typings extends the raw model/schema system
 export interface VulcanGraphqlModelSkeleton extends VulcanModel {
   graphql: Pick<GraphqlModel, "typeName">;
 }
+
 // information relevant for server and client
-interface GraphqlModel {
+export interface GraphqlModel {
   typeName: string;
   multiTypeName: string; // plural name for the multi resolver
   multiResolverName: string;
@@ -134,22 +69,6 @@ interface GraphqlModel {
 // Client only model fields
 // interface GraphqlClientModel extends GraphqlModel {}
 
-// Server only model fields
-export interface GraphqlModelServer extends GraphqlModel {
-  queryResolvers?: QueryResolverDefinitions;
-  mutationResolvers?: MutationResolverDefinitions;
-  /**
-   * An Apollo dataSource
-   *
-   * Must at least implement default Vulcan methods
-   * (inspired by the Mongo data source) to make
-   * field resolvers and relation resolvers performant
-   *
-   * @see https://www.apollographql.com/docs/apollo-server/data/data-sources/
-   */
-  createDataSource?: () => VulcanGenericDataSource | any;
-}
-
 // TODO: not used yet. A schema for graphql might contain those additional fields.
 // export interface VulcanFieldSchemaGraphql extends VulcanFieldSchema {
 //   relation;
@@ -159,11 +78,6 @@ export interface GraphqlModelServer extends GraphqlModel {
 export interface VulcanGraphqlModel
   extends VulcanModel<VulcanGraphqlSchema> /*, VulcanCrudModel*/ {
   graphql: GraphqlModel;
-}
-// @server-only
-export interface VulcanGraphqlModelServer //VulcanModel<VulcanGraphqlSchemaServer>,
-  extends VulcanCrudModelServer<VulcanGraphqlSchemaServer> {
-  graphql: GraphqlModelServer;
 }
 
 // Wrap input type, so the input is in the "input" field as an object

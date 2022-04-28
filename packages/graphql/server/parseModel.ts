@@ -26,7 +26,8 @@ import {
 
 import _isEmpty from "lodash/isEmpty.js";
 import _initial from "lodash/initial.js";
-import { VulcanGraphqlModel, VulcanGraphqlModelServer } from "../typings";
+import { VulcanGraphqlModel } from "../typings";
+import { VulcanGraphqlModelServer } from "./typings";
 import { ModelResolverMap, AnyResolverMap } from "./typings";
 import {
   ParsedModelMutationResolvers,

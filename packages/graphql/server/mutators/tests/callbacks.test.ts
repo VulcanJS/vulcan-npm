@@ -1,7 +1,7 @@
 import {
   createGraphqlModel,
   createGraphqlModelServer,
-} from "@vulcanjs/graphql/extendModel.server";
+} from "../../../extendModel.server";
 import { createMutator } from "@vulcanjs/crud/server";
 import merge from "lodash/merge.js";
 import { Connector } from "@vulcanjs/crud/server";

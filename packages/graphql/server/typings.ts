@@ -1,4 +1,76 @@
+import type { VulcanCrudModelServer } from "@vulcanjs/crud/server";
 import { CreateVariables, UpdateVariables } from "@vulcanjs/crud";
+import { VulcanGenericDataSource } from "./contextBuilder";
+import { VulcanFieldSchemaServer, VulcanSchema } from "@vulcanjs/schema";
+import { GraphqlModel, VulcanGraphqlFieldSchema } from "../typings";
+
+export interface ResolveAsDefinition {
+  /**
+   *
+   * Resolved field name
+   *
+   * @example if field is "userId", resolved fieldName should be "user"
+   **/
+  fieldName: string;
+  /**
+   * Return type of the resolver
+   *
+   * NOTE: it's an alias for "type"
+   */
+  typeName?: string;
+  /**
+   * Alias for typeName
+   *
+   * @deprecated
+   */
+  type?: string;
+  /** Graphql description (helper text in your graphql schema) */
+  description?: string;
+  /**
+   * Graphql arguments of the resolver, as comma separated string,
+   * if it takes some params
+   * TODO: not sure if this, or an array of "name, type"?
+   * @example arguments: "foobar: string,hello: string"
+   * resolver: async (document, {foobar, hello}, context, info) => {...}
+   */
+  arguments?: string;
+  /**
+   * The resolver function
+   *
+   * NOTE: your function will be wrapped with a permission checker,
+   * based on the field "canRead" permissions
+   *
+   *
+   */
+  resolver?: QueryResolver;
+  /**
+   * Whether keeping the field or not
+   * @example if field is "userId" and resolved field is "user", set to true to keep "userId" in the document
+   */
+  addOriginalField?: boolean;
+}
+
+// Server only model fields
+export interface GraphqlModelServer extends GraphqlModel {
+  queryResolvers?: QueryResolverDefinitions;
+  mutationResolvers?: MutationResolverDefinitions;
+  /**
+   * An Apollo dataSource
+   *
+   * Must at least implement default Vulcan methods
+   * (inspired by the Mongo data source) to make
+   * field resolvers and relation resolvers performant
+   *
+   * @see https://www.apollographql.com/docs/apollo-server/data/data-sources/
+   */
+  createDataSource?: () => VulcanGenericDataSource | any;
+}
+
+// @server-only
+export interface VulcanGraphqlModelServer //VulcanModel<VulcanGraphqlSchemaServer>,
+  extends VulcanCrudModelServer<VulcanGraphqlSchemaServer> {
+  graphql: GraphqlModelServer;
+}
 
 /**
  * @see https://graphql.org/learn/execution/#root-fields-resolvers
@@ -91,4 +163,15 @@ export interface MutationResolverDefinitions {
   update?: MutationResolverDefinition<UpdateVariables>;
   upsert?: MutationResolverDefinition;
   delete?: MutationResolverDefinition;
+}
+// @server-only
+export type VulcanGraphqlSchemaServer =
+  VulcanSchema<VulcanGraphqlFieldSchemaServer>;
+
+// @server-only
+export interface VulcanGraphqlFieldSchemaServer
+  extends VulcanGraphqlFieldSchema,
+    VulcanFieldSchemaServer {
+  // this is a custom function => it has to be defined only on the server
+  resolveAs?: Array<ResolveAsDefinition> | ResolveAsDefinition;
 }
