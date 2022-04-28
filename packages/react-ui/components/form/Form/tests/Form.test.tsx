@@ -250,9 +250,10 @@ describe("vulcan-forms/Form", function () {
       fireEvent.click(submitButton);
       // @see https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
       // When using a promise, you need to wait for it to be done in the "act"
-      await act(() => {
+      await act(async () => {
         // it could be improved by checking visual state (does the form show success message etc.)
-        return createPromise;
+        // @see https://twitter.com/ericbureltech/status/1519577354556825600
+        await createPromise;
       });
       expect(createDocument).toHaveBeenCalledTimes(1);
       expect(createDocument.mock.calls[0][0]).toEqual({ input: { data: {} } });
@@ -276,9 +277,10 @@ describe("vulcan-forms/Form", function () {
       submitButton.click();
       // @see https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
       // When using a promise, you need to wait for it to be done in the "act"
-      await act(() => {
+      await act(async () => {
         // it could be improved by checking visual state (does the form show success message etc.)
-        return createPromise;
+        // @see https://twitter.com/ericbureltech/status/1519577354556825600
+        await createPromise;
       });
       expect(createDocument).toHaveBeenCalledTimes(1);
       expect(createDocument.mock.calls[0][0]).toEqual({
