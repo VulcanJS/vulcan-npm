@@ -66,13 +66,9 @@ yarn run chromatic
 ```
 
 ```sh
-### Versionning
-# Complete the migrating documentation if there are breaking changes
-npm version patch # patch or minor or major depending on the situation
-# yarn version --new-version <level>  # command for yarn v1
-# yarn version patch # works only with yarn v2 @see https://github.com/yarnpkg/yarn/issues/5367
+### Changelog (versionning is handled at repo level)
 yarn run auto-changelog # update changelog
-git commit -am "bump version"
+git commit -am "bump next version"
 ```
 
 ## Deploy
