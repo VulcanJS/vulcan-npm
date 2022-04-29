@@ -4,7 +4,12 @@
  *
  * Previously was the main GraphQL object
  */
-import { disableFragmentWarnings } from "graphql-tag";
+
+// Won't work (05/2022) because we treat graphql-tag as an external during build due to
+// https://github.com/evanw/esbuild/issues/1921,
+// Which in turns makes it a CJS import
+//import { disableFragmentWarnings } from "graphql-tag";
+import gql from "graphql-tag";
 
 import parseModel from "./parseModel";
 import { VulcanGraphqlModel } from "../typings";
@@ -19,7 +24,7 @@ import {
   MutationTypeDefinition,
 } from "./typings";
 
-disableFragmentWarnings();
+gql.disableFragmentWarnings();
 
 // TODO: parse all models and return the whole schema
 export const parseAllModels = (

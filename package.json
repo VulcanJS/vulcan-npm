@@ -29,6 +29,7 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
+    "@lerna-lite/cli": "^1.0.5",
     "@mdx-js/react": "^1.6.22",
     "@storybook/addon-actions": "^6.4.5",
     "@storybook/addon-docs": "^6.4.5",

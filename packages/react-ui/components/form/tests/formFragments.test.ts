@@ -22,11 +22,16 @@ const makeModel = (schema) =>
     },
   });
 
-import { disableFragmentWarnings } from "graphql-tag";
+// Won't work (05/2022) because we treat graphql-tag as an external during build due to
+// https://github.com/evanw/esbuild/issues/1921,
+// Which in turns makes it a CJS import
+//import { disableFragmentWarnings } from "graphql-tag/";
+import gql from "graphql-tag";
+
 beforeEach(() => {
   // @see https://github.com/apollographql/graphql-tag#warnings
   // Let you define the same fragment twice in tests
-  disableFragmentWarnings();
+  gql.disableFragmentWarnings();
 });
 describe("vulcan:form/formFragments", function () {
   test("generate valid query and mutation fragment", () => {
