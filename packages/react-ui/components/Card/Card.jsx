@@ -1,12 +1,12 @@
-import { registerComponent, Components, formatLabel } from 'meteor/vulcan:lib';
-import { intlShape } from 'meteor/vulcan:i18n';
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import without from 'lodash/without';
-import withComponents from '../../containers/withComponents.js';
-import Users from 'meteor/vulcan:users';
-import get from 'lodash/get';
+import { registerComponent, Components, formatLabel } from "meteor/vulcan:lib";
+import { intlShape } from "meteor/vulcan:i18n";
+import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import without from "lodash/without";
+import withComponents from "../../containers/withComponents.js";
+import Users from "meteor/vulcan:users";
+import get from "lodash/get.js";
 
 /*
 
@@ -25,7 +25,14 @@ const getLabel = (field, fieldName, collection, intl) => {
 
 // Main component
 
-const CardItem = ({ label, value, typeName, Components, fieldName, collection }) => (
+const CardItem = ({
+  label,
+  value,
+  typeName,
+  Components,
+  fieldName,
+  collection,
+}) => (
   <tr>
     <td className="datacard-label">
       <strong>{label}</strong>
@@ -46,12 +53,13 @@ const CardEdit = (props, context) => (
   <tr>
     <td colSpan="2">
       <Components.ModalTrigger
-        label={context.intl.formatMessage({ id: 'cards.edit' })}
+        label={context.intl.formatMessage({ id: "cards.edit" })}
         component={
           <Components.Button variant="info">
             <Components.FormattedMessage id="cards.edit" />
           </Components.Button>
-        }>
+        }
+      >
         <CardEditForm {...props} />
       </Components.ModalTrigger>
     </td>
@@ -60,27 +68,49 @@ const CardEdit = (props, context) => (
 
 CardEdit.contextTypes = { intl: intlShape };
 
-const CardEditForm = ({ collection, document, closeModal, ...editFormProps }) => (
+const CardEditForm = ({
+  collection,
+  document,
+  closeModal,
+  ...editFormProps
+}) => (
   <Components.SmartForm
     collection={collection}
     documentId={document._id}
     showRemove={true}
-    successCallback={document => {
+    successCallback={(document) => {
       closeModal();
     }}
     {...editFormProps}
   />
 );
 
-const Card = ({ title, className, collection, document, currentUser, fields, showEdit = true, Components, ...editFormProps }, { intl }) => {
-  const fieldNames = fields ? fields : without(Object.keys(document), '__typename');
+const Card = (
+  {
+    title,
+    className,
+    collection,
+    document,
+    currentUser,
+    fields,
+    showEdit = true,
+    Components,
+    ...editFormProps
+  },
+  { intl }
+) => {
+  const fieldNames = fields
+    ? fields
+    : without(Object.keys(document), "__typename");
 
   let canUpdate = false;
 
   // new APIs
-  const permissionCheck = get(collection, 'options.permissions.canUpdate');
+  const permissionCheck = get(collection, "options.permissions.canUpdate");
   // openCRUD backwards compatibility
-  const check = get(collection, 'options.mutations.edit.check') || get(collection, 'options.mutations.update.check');
+  const check =
+    get(collection, "options.mutations.edit.check") ||
+    get(collection, "options.mutations.update.check");
 
   if (Users.isAdmin(currentUser)) {
     canUpdate = true;
@@ -89,8 +119,8 @@ const Card = ({ title, className, collection, document, currentUser, fields, sho
       check: permissionCheck,
       user: currentUser,
       context: { Users },
-      operationName: 'update',
-      document
+      operationName: "update",
+      document,
     });
   } else if (check) {
     canUpdate = check && check(currentUser, document, { Users });
@@ -99,16 +129,23 @@ const Card = ({ title, className, collection, document, currentUser, fields, sho
   const typeName = collection && collection.typeName.toLowerCase();
   const semantizedClassName = classNames(
     className,
-    'datacard',
+    "datacard",
     typeName && `datacard-${typeName}`,
-    document && document._id && `datacard-${document._id}`);
+    document && document._id && `datacard-${document._id}`
+  );
 
   return (
     <div className={semantizedClassName}>
       {title && <div className="datacard-title">{title}</div>}
-      <table className="table table-bordered" style={{ maxWidth: '100%' }}>
+      <table className="table table-bordered" style={{ maxWidth: "100%" }}>
         <tbody>
-          {showEdit && canUpdate ? <CardEdit collection={collection} document={document} {...editFormProps} /> : null}
+          {showEdit && canUpdate ? (
+            <CardEdit
+              collection={collection}
+              document={document}
+              {...editFormProps}
+            />
+          ) : null}
           {fieldNames.map((fieldName, index) => (
             <CardItem
               key={index}
@@ -126,7 +163,7 @@ const Card = ({ title, className, collection, document, currentUser, fields, sho
   );
 };
 
-Card.displayName = 'Card';
+Card.displayName = "Card";
 
 Card.propTypes = {
   className: PropTypes.string,
@@ -143,7 +180,7 @@ Card.contextTypes = {
 };
 
 registerComponent({
-  name: 'Card',
+  name: "Card",
   component: Card,
   hocs: [withComponents],
 });

@@ -1,7 +1,7 @@
-import get from 'lodash/get';
+import get from "lodash/get.js";
 
 export const makeRadiogroup = (field = {}) => {
-  const hasOther = !!get(field, 'itemProperties.showOther');
+  const hasOther = !!get(field, "itemProperties.showOther");
 
   if (!field.options) {
     throw new Error(`Radiogroup fields need an 'options' property`);
@@ -10,12 +10,15 @@ export const makeRadiogroup = (field = {}) => {
   const rgField = {
     ...field,
     type: Array,
-    input: 'radiogroup',
+    input: "radiogroup",
   };
 
   // if field doesn't allow "other" responses, limit it to whitelist of allowed values
   if (!hasOther) {
-    rgField.arrayItem = {...rgField.arrayItem, allowedValues: field.options.map(({value}) => value)};
+    rgField.arrayItem = {
+      ...rgField.arrayItem,
+      allowedValues: field.options.map(({ value }) => value),
+    };
   }
 
   return rgField;

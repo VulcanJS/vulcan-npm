@@ -1,23 +1,40 @@
-import { Components, registerComponent, Strings, runCallbacks, hasIntlFields, Routes, getLocale, getStrings } from 'meteor/vulcan:lib';
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { IntlProvider, intlShape, IntlContext } from 'meteor/vulcan:i18n';
-import withCurrentUser from '../containers/currentUser.js';
-import withUpdate from '../containers/update.js';
-import withSiteData from '../containers/siteData.js';
-import withLocaleData from '../containers/localeData.js';
-import { withApollo } from '@apollo/client/react/hoc';
-import { withCookies } from 'react-cookie';
-import moment from 'moment';
-import { Switch, Route } from 'react-router-dom';
-import { withRouter } from 'react-router';
-import get from 'lodash/get';
-import merge from 'lodash/merge';
+import {
+  Components,
+  registerComponent,
+  Strings,
+  runCallbacks,
+  hasIntlFields,
+  Routes,
+  getLocale,
+  getStrings,
+} from "meteor/vulcan:lib";
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import { IntlProvider, intlShape, IntlContext } from "meteor/vulcan:i18n";
+import withCurrentUser from "../containers/currentUser.js";
+import withUpdate from "../containers/update.js";
+import withSiteData from "../containers/siteData.js";
+import withLocaleData from "../containers/localeData.js";
+import { withApollo } from "@apollo/client/react/hoc";
+import { withCookies } from "react-cookie";
+import moment from "moment";
+import { Switch, Route } from "react-router-dom";
+import { withRouter } from "react-router";
+import get from "lodash/get.js";
+import merge from "lodash/merge";
 
 // see https://stackoverflow.com/questions/42862028/react-router-v4-with-multiple-layouts
-const RouteWithLayout = ({ layoutComponent, layoutName, component, currentRoute, ...rest }) => {
+const RouteWithLayout = ({
+  layoutComponent,
+  layoutName,
+  component,
+  currentRoute,
+  ...rest
+}) => {
   // if defined, use ErrorCatcher component to wrap layout contents
-  const ErrorCatcher = Components.ErrorCatcher ? Components.ErrorCatcher : Components.Dummy;
+  const ErrorCatcher = Components.ErrorCatcher
+    ? Components.ErrorCatcher
+    : Components.Dummy;
 
   return (
     <Route
@@ -27,11 +44,15 @@ const RouteWithLayout = ({ layoutComponent, layoutName, component, currentRoute,
       // (instead of just Switch > Route), we must write <RouteWithLayout exact ... />
       //exact
       {...rest}
-      render={props => {
+      render={(props) => {
         const layoutProps = { ...props, currentRoute };
         const childComponentProps = { ...props, currentRoute };
         // Use layoutComponent, or else registered layout component; or else default layout
-        const layout = layoutComponent ? layoutComponent : layoutName ? Components[layoutName] : Components.Layout;
+        const layout = layoutComponent
+          ? layoutComponent
+          : layoutName
+          ? Components[layoutName]
+          : Components.Layout;
         const children = (
           <ErrorCatcher>
             <Components.RouterHook currentRoute={currentRoute} />
@@ -51,11 +72,11 @@ class App extends PureComponent {
     super(props);
     const { currentUser, locale } = props;
     if (currentUser) {
-      runCallbacks('events.identify', currentUser);
+      runCallbacks("events.identify", currentUser);
     }
 
     // get translation strings loaded dynamically
-    const loadedStrings = get(props.locale, 'data.locale.strings');
+    const loadedStrings = get(props.locale, "data.locale.strings");
     // get translation strings bundled statically
     const bundledStrings = Strings[locale.id];
 
@@ -73,7 +94,7 @@ class App extends PureComponent {
   }
 
   componentDidMount = async () => {
-    runCallbacks('app.mounted', this.props);
+    runCallbacks("app.mounted", this.props);
   };
 
   // actually returns an id, not a locale
@@ -81,7 +102,7 @@ class App extends PureComponent {
     return this.state.locale.id;
   };
 
-  setLocale = async localeId => {
+  setLocale = async (localeId) => {
     // note: this is the getLocale in intl.js, not this.getLocale()!
     const localeObject = getLocale(localeId);
     const { cookies, updateUser, client, currentUser } = this.props;
@@ -89,31 +110,47 @@ class App extends PureComponent {
 
     // if this is a dynamic locale, fetch its data from the server
     if (localeObject.dynamic) {
-      this.setState({ locale: { ...this.state.locale, loading: true, rtl: localeObject?.rtl ?? false } });
+      this.setState({
+        locale: {
+          ...this.state.locale,
+          loading: true,
+          rtl: localeObject?.rtl ?? false,
+        },
+      });
       localeStrings = await this.loadLocaleStrings(localeId);
     } else {
       localeStrings = getStrings(localeId);
     }
 
     // before removing the loading we have to change the rtl class on HTML tag if it exists
-    if (document && typeof document.getElementsByTagName === 'function' && document.getElementsByTagName('html')) {
-      const htmlTag = document.getElementsByTagName('html');
+    if (
+      document &&
+      typeof document.getElementsByTagName === "function" &&
+      document.getElementsByTagName("html")
+    ) {
+      const htmlTag = document.getElementsByTagName("html");
       if (htmlTag && htmlTag.length === 1) {
         // change in locale didn't change the html lang as well, which is fixed by this PR
         htmlTag[0].lang = localeId;
         if (localeObject?.rtl === true) {
-          htmlTag[0].classList.add('rtl');
+          htmlTag[0].classList.add("rtl");
         } else {
-          htmlTag[0].classList.remove('rtl');
+          htmlTag[0].classList.remove("rtl");
         }
       }
     }
     this.setState({
-      locale: { ...this.state.locale, loading: false, id: localeId, rtl: localeObject?.rtl ?? false, strings: localeStrings },
+      locale: {
+        ...this.state.locale,
+        loading: false,
+        id: localeId,
+        rtl: localeObject?.rtl ?? false,
+        strings: localeStrings,
+      },
     });
 
-    cookies.remove('locale', { path: '/' });
-    cookies.set('locale', localeId, { path: '/' });
+    cookies.remove("locale", { path: "/" });
+    cookies.set("locale", localeId, { path: "/" });
     // if user is logged in, change their `locale` profile property
     if (currentUser) {
       await updateUser({
@@ -133,10 +170,14 @@ class App extends PureComponent {
   withLocalData HoC
 
   */
-  loadLocaleStrings = async localeId => {
+  loadLocaleStrings = async (localeId) => {
     const result = await this.props.locale.refetch({ localeId });
-    const fetchedLocaleStrings = get(result, 'data.locale.strings', []);
-    const localeStrings = merge({}, this.state.localeStrings, fetchedLocaleStrings);
+    const fetchedLocaleStrings = get(result, "data.locale.strings", []);
+    const localeStrings = merge(
+      {},
+      this.state.localeStrings,
+      fetchedLocaleStrings
+    );
     return localeStrings;
   };
 
@@ -151,7 +192,7 @@ class App extends PureComponent {
     const currentUser = this.props.currentUser;
     const nextUser = nextProps.currentUser;
     if (nextUser && (!currentUser || currentUser._id !== nextUser._id)) {
-      runCallbacks('events.identify', nextUser);
+      runCallbacks("events.identify", nextUser);
     }
   }
 
@@ -179,13 +220,23 @@ class App extends PureComponent {
               </div>
             ) : routeNames.length ? (
               <Switch>
-                {routeNames.map(key => (
+                {routeNames.map((key) => (
                   // NOTE: if we want the exact props to be taken into account
                   // we have to pass it to the RouteWithLayout, not the underlying Route,
                   // because it is the direct child of Switch
-                  <RouteWithLayout exact currentRoute={Routes[key]} siteData={this.props.siteData} key={key} {...Routes[key]} />
+                  <RouteWithLayout
+                    exact
+                    currentRoute={Routes[key]}
+                    siteData={this.props.siteData}
+                    key={key}
+                    {...Routes[key]}
+                  />
                 ))}
-                <RouteWithLayout siteData={this.props.siteData} currentRoute={{ name: '404' }} component={Components.Error404} />
+                <RouteWithLayout
+                  siteData={this.props.siteData}
+                  currentRoute={{ name: "404" }}
+                  component={Components.Error404}
+                />
                 {/* <Route component={Components.Error404} />  */}
               </Switch>
             ) : (
@@ -213,15 +264,15 @@ App.childContextTypes = {
   getLocale: PropTypes.func,
 };
 
-App.displayName = 'App';
+App.displayName = "App";
 
 const updateOptions = {
-  collectionName: 'Users',
-  fragmentName: 'UsersCurrent',
+  collectionName: "Users",
+  fragmentName: "UsersCurrent",
 };
 
 registerComponent(
-  'App',
+  "App",
   App,
   withCurrentUser,
   withSiteData,

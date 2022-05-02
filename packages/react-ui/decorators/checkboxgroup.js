@@ -1,7 +1,7 @@
-import get from 'lodash/get';
+import get from "lodash/get.js";
 
 export const makeCheckboxgroup = (field = {}) => {
-  const hasOther = !!get(field, 'itemProperties.showOther');
+  const hasOther = !!get(field, "itemProperties.showOther");
 
   if (!field.options) {
     throw new Error(`Checkboxgroup fields need an 'options' property`);
@@ -11,12 +11,15 @@ export const makeCheckboxgroup = (field = {}) => {
   const cbgField = {
     ...field,
     type: Array,
-    input: 'checkboxgroup',
+    input: "checkboxgroup",
   };
 
   // if field doesn't allow "other" responses, limit it to whitelist of allowed values
   if (!hasOther) {
-    cbgField.arrayItem = { ...cbgField.arrayItem, allowedValues: field.options.map(({ value }) => value) };
+    cbgField.arrayItem = {
+      ...cbgField.arrayItem,
+      allowedValues: field.options.map(({ value }) => value),
+    };
   }
 
   return cbgField;

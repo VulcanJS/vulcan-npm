@@ -121,7 +121,7 @@ You can also pass a `testVariables(params)` function instead, in which case the 
 
 ```js
 import VulcanEmail from 'meteor/vulcan:email';
-import get from 'lodash/get';
+import get from 'lodash/get.js';
 
 const postsQuery = `
   query PostsSingleQuery($input: SinglePostInput!){
