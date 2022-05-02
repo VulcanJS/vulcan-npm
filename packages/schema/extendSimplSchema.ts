@@ -29,6 +29,8 @@ SimpleSchema.extendOptions([
   "options", // form options
   "query", // field-specific data loading query
   "autocompleteQuery", // query used to populate autocomplete
+  "dynamicQuery", // field-specific data loading query
+  "staticQuery", // field-specific data loading query
   "selectable", // field can be used as part of a selector when querying for data
   "unique", // field can be used as part of a selectorUnique when querying for data
   "orderable", // field can be used to order results when querying for data (backwards-compatibility)

@@ -1,9 +1,4 @@
-import { Schema } from "inspector";
-import SimpleSchema, {
-  SchemaDefinition,
-  EvaluatedSchemaDefinition,
-} from "simpl-schema";
-import { forEachDocumentField } from "./schema-utils";
+import SimpleSchema from "simpl-schema";
 /**
  * Helpers specific to Simple Schema
  * See "schema_utils" for more generic methods
