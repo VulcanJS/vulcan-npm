@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-ui-material",
-  "version": "0.6.4-alpha.0",
+  "version": "0.6.4-alpha.1",
   "description": "Vulcan UI components for React - Written with Material UI",
   "main": "./dist/index.js",
   "files": [
@@ -28,10 +28,10 @@
     "@mui/material": "^5.2.1",
     "@mui/styles": "^5.2.1",
     "@vulcanjs/core": "^0.6.4-alpha.0",
-    "@vulcanjs/graphql": "^0.6.4-alpha.0",
+    "@vulcanjs/graphql": "^0.6.4-alpha.1",
     "@vulcanjs/model": "^0.6.4-alpha.0",
     "@vulcanjs/permissions": "^0.6.4-alpha.0",
-    "@vulcanjs/react-hooks": "^0.6.4-alpha.0",
+    "@vulcanjs/react-hooks": "^0.6.4-alpha.1",
     "@vulcanjs/react-i18n": "^0.6.4-alpha.0",
     "@vulcanjs/schema": "^0.6.2",
     "@vulcanjs/utils": "^0.6.4-alpha.0",
