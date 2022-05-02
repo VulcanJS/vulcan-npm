@@ -22,17 +22,19 @@ const printModelName = (model: VulcanGraphqlModel) =>
  * @param model
  * @returns
  */
-export const getModelDataSource = <TModel extends VulcanDocument>(
-  context,
+export const getModelDataSource = <TDocument extends VulcanDocument>(
+  context: {
+    dataSources?: { [dtName: string]: VulcanGenericDataSource<any> };
+  },
   model: VulcanGraphqlModel
-): VulcanGenericDataSource => {
+): VulcanGenericDataSource<TDocument> => {
   if (!context.dataSources)
     throw new Error(
       "DataSources not set in Apollo. You need to set at least the default dataSources for Vulcan graphql models."
     );
   const dataSource =
     // model.name is the default but we fallback to typeName just in case
-    context.dataSource[model.name] ||
+    context.dataSources[model.name] ||
     context.dataSources[model.graphql.typeName];
   if (!dataSource) {
     throw new Error(`${printModelName(model)} have no default dataSource.`);
