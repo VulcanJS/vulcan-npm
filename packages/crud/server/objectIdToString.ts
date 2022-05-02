@@ -1,3 +1,5 @@
+import type { VulcanDocument } from "@vulcanjs/schema";
+
 /**
  * Converts Mongo ObjectId to string
  *
@@ -16,18 +18,18 @@
  * TODO: not sure why we need to turn the document into JSON though
  */
 type MongoDoc<TModel> = {
-  toJSON: () => TModel;
-  _id: { toString: () => string };
+  toJSON?: () => TModel;
+  _id?: { toString: () => string };
 };
-export function convertIdAndTransformToJSON<TModel>(
+export function convertIdAndTransformToJSON<TModel extends VulcanDocument>(
   doc: MongoDoc<TModel>
-): TModel;
-export function convertIdAndTransformToJSON<TModel>(
+): TModel & { _id: string };
+export function convertIdAndTransformToJSON<TModel extends VulcanDocument>(
   docs: Array<MongoDoc<TModel>>
-): Array<TModel>;
-export function convertIdAndTransformToJSON<TModel>(
+): Array<TModel & { _id: string }>;
+export function convertIdAndTransformToJSON<TModel extends VulcanDocument>(
   docOrDocs: MongoDoc<TModel> | Array<MongoDoc<TModel>>
-): TModel | Array<TModel> {
+): (TModel & { _id: string }) | Array<TModel & { _id: string }> {
   if (!Array.isArray(docOrDocs)) {
     const doc = docOrDocs;
     if (!doc)
@@ -42,18 +44,24 @@ export function convertIdAndTransformToJSON<TModel>(
           in your database (coming from Meteor?)`
       );
     }
-    return { ...docOrDocs.toJSON(), _id: docOrDocs._id.toString() };
+    return {
+      ...(doc.toJSON ? doc.toJSON() : doc),
+      _id: doc._id.toString(),
+    } as TModel & { _id: string };
   } else {
-    return docOrDocs.map((document) => {
-      if (!document._id) {
+    return docOrDocs.map((doc) => {
+      if (!doc._id) {
         throw new Error(
           `Document has no valid _id ${JSON.stringify(
-            document
+            doc
           )} during id transformation. You may use malformed document _id
           in your database (coming from Meteor?)`
         );
       }
-      return { ...document.toJSON(), _id: document._id.toString() };
+      return {
+        ...(doc.toJSON ? doc.toJSON() : doc),
+        _id: doc._id.toString(),
+      } as TModel & { _id: string };
     });
   }
 }
