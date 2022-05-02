@@ -29,6 +29,8 @@ export const createDataSources =
         );
       return {
         ...dataSources,
+        // TODO: in context we use "model.graphql.typeName" but here we use "name"
+        // The getters are robust to both, but we should clarify
         [model.name]: model.graphql.createDataSource() /*||
           createMongooseDataSource(model, connector),*/,
       };

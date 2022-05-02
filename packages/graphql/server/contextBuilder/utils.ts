@@ -9,6 +9,13 @@ import { VulcanGenericDataSource } from "./typings";
 import type { VulcanGraphqlModel } from "../../typings";
 import type { VulcanGraphqlModelServer } from "../typings";
 
+const printModelName = (model: VulcanGraphqlModel) =>
+  `Model of name ${model.name} ${
+    model.name !== model.graphql.typeName
+      ? `and typeName ${model.graphql.typeName}`
+      : undefined
+  }`;
+
 /**
  * Get data source from the context.
  * @param context
@@ -23,11 +30,12 @@ export const getModelDataSource = <TModel extends VulcanDocument>(
     throw new Error(
       "DataSources not set in Apollo. You need to set at least the default dataSources for Vulcan graphql models."
     );
-  const dataSource = context.dataSources[model.graphql.typeName];
+  const dataSource =
+    // model.name is the default but we fallback to typeName just in case
+    context.dataSource[model.name] ||
+    context.dataSources[model.graphql.typeName];
   if (!dataSource) {
-    throw new Error(
-      `Model of typeName ${model.graphql.typeName} have no default dataSource.`
-    );
+    throw new Error(`${printModelName(model)} have no default dataSource.`);
   }
   return dataSource;
 };
@@ -51,17 +59,18 @@ export const getModelConnector = <TModel extends VulcanDocument>(
   context,
   model: VulcanGraphqlModel
 ): Connector<TModel> => {
-  if (!context[model.graphql.typeName]) {
+  const modelContext = context[model.name] || context[model.graphql.typeName];
+  if (!modelContext) {
+    throw new Error(`${printModelName(model)} not found in Graphql context`); // TODO: unify error messages
+  }
+  if (!modelContext.connector) {
     throw new Error(
-      `Model of typeName ${model.graphql.typeName} not found in Graphql context`
+      `${printModelName(
+        model
+      )} found in Graphql context but connector is not defined`
     ); // TODO: unify error messages
   }
-  if (!context[model.graphql.typeName].connector) {
-    throw new Error(
-      `Model ${model.graphql.typeName} found in Graphql context but connector is not defined`
-    ); // TODO: unify error messages
-  }
-  return context[model.graphql.typeName].connector;
+  return modelContext.connector;
 };
 
 /**
