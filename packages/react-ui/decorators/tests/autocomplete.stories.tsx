@@ -2,13 +2,13 @@ import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { screen, userEvent } from "@storybook/testing-library";
+import { makeAutocomplete } from "@vulcanjs/graphql";
 
 import {
   createGraphqlModel,
   fieldDynamicQueryName,
   autocompleteQueryName,
 } from "@vulcanjs/graphql";
-import { makeAutocomplete } from "../autocomplete";
 import { Form, FormProps } from "../../components/form";
 import {
   GraphqlQueryStub,

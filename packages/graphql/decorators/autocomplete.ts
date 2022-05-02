@@ -1,8 +1,8 @@
 import {
   fieldDynamicQueryTemplate,
   autocompleteQueryTemplate,
-} from "@vulcanjs/graphql";
-import { VulcanGraphqlFieldSchema } from "@vulcanjs/graphql";
+} from "../templates";
+import type { VulcanGraphqlFieldSchema } from "../typings";
 import get from "lodash/get.js";
 
 /**
