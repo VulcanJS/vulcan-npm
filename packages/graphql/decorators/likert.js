@@ -1,4 +1,4 @@
-import SimpleSchema from 'simpl-schema';
+import SimpleSchema from "simpl-schema";
 
 export const makeLikert = (field = {}) => {
   // get typeName from fieldName unless it's already specified in field object
@@ -23,8 +23,9 @@ export const makeLikert = (field = {}) => {
   // add additional field object properties
   const likertField = {
     ...field,
+    // TODO: drop this dependency
     type: new SimpleSchema(typeObject),
-    input: 'likert',
+    input: "likert",
   };
 
   return likertField;

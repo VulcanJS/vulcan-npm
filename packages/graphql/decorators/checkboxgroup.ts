@@ -1,6 +1,10 @@
 import get from "lodash/get.js";
+import { VulcanGraphqlFieldSchema } from "../typings";
 
-export const makeCheckboxgroup = (field = {}) => {
+export const makeCheckboxgroup = (
+  // FIXME: leads to weird typing issue with simple schema
+  field: Partial</*VulcanGraphqlFieldSchema*/ any> = {}
+) => {
   const hasOther = !!get(field, "itemProperties.showOther");
 
   if (!field.options) {
@@ -8,7 +12,7 @@ export const makeCheckboxgroup = (field = {}) => {
   }
 
   // add additional field object properties
-  const cbgField = {
+  const cbgField: any = {
     ...field,
     type: Array,
     input: "checkboxgroup",

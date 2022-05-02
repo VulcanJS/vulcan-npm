@@ -1,13 +1,13 @@
 import get from "lodash/get.js";
 
-export const makeRadiogroup = (field = {}) => {
+export const makeRadiogroup = (field: any = {}) => {
   const hasOther = !!get(field, "itemProperties.showOther");
 
   if (!field.options) {
     throw new Error(`Radiogroup fields need an 'options' property`);
   }
 
-  const rgField = {
+  const rgField: any = {
     ...field,
     type: Array,
     input: "radiogroup",
