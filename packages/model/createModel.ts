@@ -18,9 +18,20 @@ export interface CreateModelOptions<TSchema = VulcanSchema> {
   extensions?: Array<ExtendModelFunc>;
 }
 
+// extract array items recursively
+// first level: foo.$; second level: foo.$.$; etc.
+export const extractArrayItems = (schema, fieldName, arrayItem, level = 1) => {
+  const delimiter = ".$";
+  const key = fieldName + delimiter.repeat(level);
+  schema[key] = arrayItem;
+  if (arrayItem.arrayItem) {
+    extractArrayItems(schema, fieldName, arrayItem.arrayItem, ++level);
+  }
+};
+
 /**
- * Convert a schema to a valid schema
- * => in Vulcan Next we correctly split apiSchema and dbSchema so no
+ * Convert a schema definition to a valid Vulcan schema
+ * => in Vulcan Next we correctly split apiSchema and dbSchema so almost no
  * need of such a function
  * +
  * we try to have a unified syntax for schema
@@ -28,7 +39,8 @@ export interface CreateModelOptions<TSchema = VulcanSchema> {
  * We convert to a valid Simple-Schema only has a last resort when
  * we actually need Simple-Schema (eg for validation)
  *
- * @deprecated Use a server model instead of API schema ; use a custom
+ * @deprecated Used only internally in Vulcan to parse "arrayItem".
+ * If used in your app: use a server model instead of API schema ; use a custom
  * connector instead of dbSchema ; for other fields we parse them directly in createModel
  *
  * @param schema
@@ -70,9 +82,8 @@ export const createSchema = (
 
     // find any field with an `arrayItem` property defined and add corresponding
     // `foo.$` array item field to schema
-    // TODO: not sure if we still need this
     if (arrayItem) {
-      modifiedSchema[`${fieldName}.$`] = arrayItem;
+      extractArrayItems(modifiedSchema, fieldName, arrayItem);
     }
 
     // for added security, remove any API-related permission checks from db fields
@@ -101,9 +112,6 @@ export const createModel = <TModelDefinition extends VulcanModel>(
   const { schema, name, extensions = [], permissions = {} } = options;
 
   const model: VulcanModel = {
-    // TODO: ideally we shouldn't even need this parsing step
-    // however, this means correctly typing our schemas for arrays
-    // and improving the graphql pipeline
     schema: createSchema(schema),
     name,
     permissions,
