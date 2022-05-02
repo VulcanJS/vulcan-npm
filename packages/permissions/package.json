@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/permissions",
-  "version": "0.6.2",
+  "version": "0.6.4-alpha.0",
   "description": "Vulcan permissions",
   "main": "./dist/index.js",
   "files": [
@@ -21,7 +21,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/model": "^0.6.2",
+    "@vulcanjs/model": "^0.6.4-alpha.0",
     "@vulcanjs/schema": "^0.6.2",
     "lodash": "^4.17.21"
   },
