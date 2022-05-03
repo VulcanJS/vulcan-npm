@@ -36,14 +36,6 @@ Load .env development config automatically in Jest
 Graphql code generator for better autocompletion
 Demo support of multiple graphQL API using Link split
 
-## Demo custom server for SSR?
-
-NOTE: Using a custom server to serve Next pages is not recommended. We may choose not to support this feature.
-
-ts-node, nodemon to have hot reload
-Jest for the custom server
-Fullstack cypress testing/coverage of the custom server
-
 ## Next
 
 Remove debug routes from bundle during build

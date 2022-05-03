@@ -98,6 +98,12 @@ See e2e tests for the authentication workflow to get some usage examples.
 
 ## Storybook
 
+### Webpack 5 and TypeScript config
+
+You can write your Storybook config as normal TypeScript files and even import your local code.
+
+NOTE: installing `ts-node` may break Storybook, see [this Stack Overflow ticket](https://stackoverflow.com/questions/69808808/storybook-main-ts-cannot-use-import-statement-outside-a-module)
+
 ### Same import as in Next
 
 We reuse our Webpack config extension function, so you can enjoy magic imports and isomorphic imports in Storybook too.
