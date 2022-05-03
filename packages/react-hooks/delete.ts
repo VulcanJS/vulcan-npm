@@ -26,7 +26,8 @@
 
  */
 
-import { useMutation, MutationResult, gql } from "@apollo/client";
+import { useMutation, MutationResult } from "@apollo/client";
+import gql from "graphql-tag";
 import {
   deleteClientTemplate,
   Fragment,

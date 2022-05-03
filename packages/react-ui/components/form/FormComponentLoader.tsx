@@ -6,7 +6,8 @@ import React, { useEffect } from "react";
 // @see packages/vulcan-lib/lib/modules/fragments.js in Vulcan
 // should we reenable this?
 // import { expandQueryFragments } from "meteor/vulcan:core";
-import { useLazyQuery, gql } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
+import gql from "graphql-tag";
 import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "../VulcanComponents/Consumer";
 

@@ -42,7 +42,8 @@ import React, { useRef } from "react";
 // Utils,
 // getFragment,
 //"meteor/vulcan:core";
-import { DocumentNode, gql } from "@apollo/client";
+import { DocumentNode } from "@apollo/client";
+import gql from "graphql-tag";
 
 import getFormFragments from "./modules/formFragments";
 // import { VulcanModel } from "@vulcanjs/model";

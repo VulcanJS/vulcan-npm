@@ -5,8 +5,8 @@ import {
   MutationHookOptions,
   MutationFunctionOptions,
   OperationVariables,
-  gql,
 } from "@apollo/client";
+import gql from "graphql-tag";
 
 import { ApolloVariables } from "@vulcanjs/graphql";
 

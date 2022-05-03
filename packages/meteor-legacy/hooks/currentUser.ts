@@ -1,4 +1,5 @@
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import gql from "graphql-tag";
 import get from "lodash/get.js";
 
 import { currentUserFragment } from "../models/user";

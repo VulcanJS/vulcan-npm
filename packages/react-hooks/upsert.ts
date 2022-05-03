@@ -27,7 +27,8 @@
 
  */
 
-import { useMutation, MutationResult, gql, FetchResult } from "@apollo/client";
+import { useMutation, MutationResult, FetchResult } from "@apollo/client";
+import gql from "graphql-tag";
 
 import { upsertClientTemplate } from "@vulcanjs/graphql";
 

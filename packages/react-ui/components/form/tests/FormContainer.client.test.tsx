@@ -26,7 +26,7 @@ import {
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 
 import { getMswServer } from "@vulcanjs/utils/testing";
-import { gql } from "@apollo/client";
+import gql from "graphql-tag";
 
 beforeEach(() => {
   // add relevant mocks

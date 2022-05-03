@@ -22,7 +22,7 @@ const commonConfig = {
   ],
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    "/node_modules/",
+    "/node_modules/(?!(@apollo/client|ts-invariant))",
     "^.+\\.module\\.(css|sass|scss)$",
   ],
   // A map from regular expressions to module names that allow to stub out resources with a single module

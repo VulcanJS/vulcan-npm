@@ -16,10 +16,10 @@ import { computeQueryVariables } from "./variables";
 import {
   OperationVariables,
   useQuery,
-  gql,
   QueryResult,
   QueryHookOptions,
 } from "@apollo/client";
+import gql from "graphql-tag";
 
 const defaultInput = {
   enableCache: false,
