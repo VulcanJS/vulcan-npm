@@ -222,7 +222,11 @@ module.exports = {
       ...commonConfig,
       displayName: "client",
       testEnvironment: "jsdom",
-      testMatch: ["**/!(*.server).test.[jt]s?(x)"],
+      testMatch: [
+        "**/!(*.server).test.[jt]s?(x)",
+        // order matters: https://jestjs.io/fr/docs/configuration#testmatch-arraystring
+        "!**/server**",
+      ],
       modulePaths: ["<rootDir>"],
       // The paths to modules that run some code to configure or set up the testing environment before each test
       setupFiles: ["./jest/setup.js"],
