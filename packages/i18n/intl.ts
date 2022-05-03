@@ -322,18 +322,21 @@ export const validateIntlField = (Locales: Array<LocaleType>) =>
     }
   };
 
-/*
+/**
 
 Get an array of intl keys to try for a field
+
+@example For model Foo of schema { foobar: { type: String, intlId: "foobar_translation"}} 
+=> ["foobar_translation", "foo.foobar"]
 
 */
 export const getIntlKeys = ({
   fieldName,
-  collectionName,
+  modelName,
   schema,
 }: {
   fieldName: string;
-  collectionName: string;
+  modelName: string;
   schema: VulcanSchema;
 }) => {
   const fieldSchema =
@@ -345,8 +348,8 @@ export const getIntlKeys = ({
   if (intlId) {
     intlKeys.push(intlId);
   }
-  if (collectionName) {
-    intlKeys.push(`${collectionName.toLowerCase()}.${fieldName}`);
+  if (modelName) {
+    intlKeys.push(`${modelName.toLowerCase()}.${fieldName}`);
   }
   intlKeys.push(`global.${fieldName}`);
   intlKeys.push(fieldName);

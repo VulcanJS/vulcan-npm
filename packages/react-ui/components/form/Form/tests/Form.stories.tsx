@@ -84,6 +84,21 @@ OneTextInput.args = {
   }),
 };
 
+export const I18nField = FormTemplate.bind({});
+I18nField.args = {
+  model: createModel({
+    name: "Biography",
+    schema: {
+      someText: {
+        ...defaultFieldSchema,
+        type: String,
+        intlId: "field_token",
+        intl: true,
+      },
+    },
+  }),
+};
+
 export const AllBasicFields = FormTemplate.bind({});
 AllBasicFields.args = {
   model: createModel({

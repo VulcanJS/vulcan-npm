@@ -41,10 +41,9 @@ const getModelIntlKeys = (
   flatSchema: any,
   fieldName: string
 ) => {
-  const collectionName = model.name.toLowerCase();
   return getIntlKeys({
     fieldName: fieldName,
-    collectionName,
+    modelName: model.name,
     schema: flatSchema,
   });
 };
@@ -216,15 +215,15 @@ export const getFieldNames = (
 // --------------------------------------------------------------------- //
 
 const initField = (
-  props,
+  props: { model: VulcanModel; layout?: "horizontal" | "vertical" },
   state: Pick<FormState, "currentDocument" | "flatSchema" | "originalSchema">,
-  context,
-  fieldName,
-  fieldSchema
+  context: any,
+  fieldName: string,
+  fieldSchema: VulcanFieldSchema
 ) => {
   const { model } = props;
   const { currentDocument, flatSchema } = state;
-  const isArray = get(fieldSchema, "type.0.type") === Array;
+  const isArray = fieldSchema.type === Array;
 
   // intialize properties
   let field: Partial<FormField> = {
@@ -242,7 +241,11 @@ const initField = (
   }
 
   field.label = getLabel(model, flatSchema, context, fieldName);
-  field.intlKeys = getIntlKeys(fieldName);
+  field.intlKeys = getIntlKeys({
+    fieldName,
+    modelName: model.name,
+    schema: model.schema,
+  });
   // // replace value by prefilled value if value is empty
   // const prefill = fieldSchema.prefill || (fieldSchema.form && fieldSchema.form.prefill);
   // if (prefill) {
