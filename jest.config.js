@@ -10,7 +10,7 @@ const commonConfig = {
     // have a better support of ESM, @see https://jestjs.io/fr/docs/ecmascript-modules
     // https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs
     // and https://bl.ocks.org/rstacruz/511f43265de4939f6ca729a3df7b001c
-    "^.+\\.(js|jsx|ts|tsx|mjs)$": "<rootDir>/node_modules/babel-jest",
+    "^.+\\.(js|jsx|ts|tsx|mjs)$": "babel-jest",
   },
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
@@ -162,11 +162,17 @@ const commonConfig = {
   // This option allows use of a custom test runner
   // testRunner: "jasmine2",
 
+  /*
+  testEnvironmentOptions: {
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
-  // testURL: "http://localhost",
+   url: 'https://jestjs.io'
+ }*/
 
   // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
-  // timers: "real",
+  /*
+   fakeTimers: {
+   enableGlobally: true
+ }*/
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
@@ -214,9 +220,8 @@ module.exports = {
   projects: [
     {
       ...commonConfig,
-      name: "client",
       displayName: "client",
-      // testEnvironment: "jsdom", // defautl already
+      testEnvironment: "jsdom",
       testMatch: ["**/!(*.server).test.[jt]s?(x)"],
       modulePaths: ["<rootDir>"],
       // The paths to modules that run some code to configure or set up the testing environment before each test
@@ -225,7 +230,6 @@ module.exports = {
     },
     {
       ...commonConfig,
-      name: "server",
       displayName: "server",
       testEnvironment: "node",
       testMatch: ["**/*.server.test.[jt]s?(x)"],
@@ -235,21 +239,19 @@ module.exports = {
     // integration tests
     {
       ...commonConfig,
-      name: "integration-server",
+      displayName: "integration-client",
+      testEnvironment: "jsdom",
+      roots: undefined,
+      rootDir: ".",
+      testMatch: ["<rootDir>/test/integration/client/**/*.test.[jt]s?(x)"],
+    },
+    {
+      ...commonConfig,
       displayName: "integration-server",
       testEnvironment: "node",
       roots: undefined,
       rootDir: ".",
       testMatch: ["<rootDir>/test/integration/server/**/*.test.[jt]s?(x)"],
-    },
-    {
-      ...commonConfig,
-      name: "integration-client",
-      displayName: "integration-client",
-      testEnvironment: "node",
-      roots: undefined,
-      rootDir: ".",
-      testMatch: ["<rootDir>/test/integration/client/**/*.test.[jt]s?(x)"],
     },
   ],
 };
