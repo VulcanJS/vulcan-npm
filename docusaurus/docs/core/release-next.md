@@ -65,18 +65,5 @@ yarn run chromatic
 ```sh
 ### Changelog (versionning is handled at repo level)
 yarn run auto-changelog # update changelog
-git commit -am "bump next version"
-```
-
-## Deploy
-
-```sh
-
-### Deploy
-git checkout main && git merge release/<next-version>
-git push
-
-### Update devel branches with fixes
-git checkout develop && git pull && git merge main && git push
-
+git commit -am "bump next starter version"
 ```
