@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/meteor-legacy",
-  "version": "0.6.4",
+  "version": "0.6.7-alpha.0",
   "description": "Vulcan Meteor bindings",
   "main": "./dist/index.js",
   "files": [
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build:tsup": "tsup",
+    "build:tsup": "tsup --external graphql --external graphql-tag",
     "build": "yarn run build:tsup"
   },
   "bugs": {
