@@ -20,7 +20,7 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build:tsup": "tsup",
+    "build:tsup": "tsup --external graphql --external graphql-tag",
     "build": "yarn run build:tsup"
   },
   "bugs": {
