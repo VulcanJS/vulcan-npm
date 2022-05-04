@@ -1,3 +1,6 @@
+---
+title: Migrate
+---
 # Migration steps and significant changes for each version
 
 ## To version > v0.6.1
