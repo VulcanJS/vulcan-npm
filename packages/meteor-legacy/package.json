@@ -21,8 +21,6 @@
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
     "build:tsup": "tsup",
-    "build:webpack": "webpack --config ./webpack.config.js",
-    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json ",
     "build": "yarn run build:tsup"
   },
   "bugs": {

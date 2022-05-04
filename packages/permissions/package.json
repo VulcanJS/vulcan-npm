@@ -14,7 +14,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:tsup": "tsup",
-    "build:webpack": "webpack --config ./webpack.config.js",
     "build": "yarn run build:tsup",
     "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json "
   },

@@ -9187,11 +9187,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/demo@^0.6.2, @vulcanjs/demo@workspace:packages/demo":
-  version: 0.0.0-use.local
-  resolution: "@vulcanjs/demo@workspace:packages/demo"
-  languageName: unknown
-  linkType: soft
+"@vulcanjs/demo@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "@vulcanjs/demo@npm:0.6.2"
+  checksum: 5e151c206e3c54ac322af4f43b55f04390f93be05ec7a7425be49c34b9f7be377f95b587b484f0f8602d75790a83dfb5b9ce004f67ff5052196964c530ac13e5
+  languageName: node
+  linkType: hard
 
 "@vulcanjs/docusaurus@workspace:docusaurus":
   version: 0.0.0-use.local
@@ -9321,12 +9322,6 @@ __metadata:
   dependenciesMeta:
     mongodb-memory-server:
       optional: true
-  languageName: unknown
-  linkType: soft
-
-"@vulcanjs/multi-env-demo@workspace:packages/multi-env-demo":
-  version: 0.0.0-use.local
-  resolution: "@vulcanjs/multi-env-demo@workspace:packages/multi-env-demo"
   languageName: unknown
   linkType: soft
 
