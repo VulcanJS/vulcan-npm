@@ -22,7 +22,7 @@
     "build:code": "esbuild src/index.ts --bundle --platform=node --external:graphql --external:graphql-helix --external:remix --outfile=dist/index.js",
     "build:types": "tsc && echo 'export * from \"./dist\";' > index.server.d.ts",
     "format": "prettier --write .",
-    "/prepare": "install-peers && remix setup node"
+    "//prepare": "install-peers && remix setup node"
   },
   "dependencies": {
     "graphql-helix": "^1.11.0"
@@ -42,5 +42,8 @@
   "peerDependencies": {
     "graphql": "^16.2.0"
   },
-  "gitHead": "38982b9883b3b38aaddaaaa26804c635888c3c64"
+  "gitHead": "8c2d515a39072d95b081abdac9ee80d1894e0868",
+  "publishConfig": {
+    "access": "public"
+  }
 }
