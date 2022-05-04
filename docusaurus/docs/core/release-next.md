@@ -1,3 +1,6 @@
+---
+title: Release Next.js starter
+---
 # Release process
 
 ## Create a release branch

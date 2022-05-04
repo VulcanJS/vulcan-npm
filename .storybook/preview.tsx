@@ -49,7 +49,11 @@ export const decorators = [
   mswDecorator,
   apolloClientDecorator,
   (Story) => (
-    <IntlProvider locale="fr" stringsRegistry={makeStringsRegistry()}>
+    <IntlProvider
+      messages={[]}
+      locale="fr"
+      stringsRegistry={makeStringsRegistry()}
+    >
       <Story />
     </IntlProvider>
   ),
