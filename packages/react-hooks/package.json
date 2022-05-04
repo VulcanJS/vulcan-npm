@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:tsup": "tsup",
+    "build:tsup": "tsup --external graphql --external graphql-tag",
     "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json ",
     "build": "yarn run build:tsup"
   },

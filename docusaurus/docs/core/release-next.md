@@ -3,13 +3,6 @@
 ## Create a release branch
 
 ```sh
-### To the right branch
-git checkout main && git pull
-git checkout devel && git pull
-# cat package.json | grep version # to get the current version
-# git checkout -b release/<next-version>
-git merge main # get hot fixes if any
-git merge devel
 # No need to clean node_modules, yarn will do it for you on install
 # rm -Rf node_modules
 yarn install # no missing module surprise
