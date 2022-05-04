@@ -5129,7 +5129,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/dev@npm:^1.4.3":
+"@remix-run/dev@npm:^1.0.0, @remix-run/dev@npm:^1.4.3":
   version: 1.4.3
   resolution: "@remix-run/dev@npm:1.4.3"
   dependencies:
@@ -5222,7 +5222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/node@npm:*, @remix-run/node@npm:1.4.3":
+"@remix-run/node@npm:*, @remix-run/node@npm:1.4.3, @remix-run/node@npm:^1.0.0":
   version: 1.4.3
   resolution: "@remix-run/node@npm:1.4.3"
   dependencies:
@@ -5241,7 +5241,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/react@npm:*":
+"@remix-run/react@npm:*, @remix-run/react@npm:^1.0.0":
   version: 1.4.3
   resolution: "@remix-run/react@npm:1.4.3"
   dependencies:
@@ -5254,7 +5254,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/serve@npm:*":
+"@remix-run/serve@npm:*, @remix-run/serve@npm:^1.0.0":
   version: 1.4.3
   resolution: "@remix-run/serve@npm:1.4.3"
   dependencies:
@@ -10243,6 +10243,26 @@ __metadata:
     "@apollo/client": ^3.5.5
     react: ^17.0.1
     react-dom: ^17.0.1
+  languageName: unknown
+  linkType: soft
+
+"@vulcanjs/remix-graphql@^0.2.1, @vulcanjs/remix-graphql@workspace:packages/remix-graphql":
+  version: 0.0.0-use.local
+  resolution: "@vulcanjs/remix-graphql@workspace:packages/remix-graphql"
+  dependencies:
+    "@remix-run/dev": ^1.0.0
+    "@remix-run/node": ^1.0.0
+    "@remix-run/react": ^1.0.0
+    "@remix-run/serve": ^1.0.0
+    "@types/react": ^17.0.38
+    "@types/react-dom": ^17.0.11
+    esbuild: ^0.14.10
+    graphql-helix: ^1.11.0
+    install-peers-cli: ^2.2.0
+    prettier: ^2.5.1
+    typescript: ^4.1.2
+  peerDependencies:
+    graphql: ^16.2.0
   languageName: unknown
   linkType: soft
 
@@ -17929,59 +17949,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eurodance-stack-template@workspace:starters/remix":
-  version: 0.0.0-use.local
-  resolution: "eurodance-stack-template@workspace:starters/remix"
-  dependencies:
-    "@faker-js/faker": ^6.1.1
-    "@prisma/client": ^3.11.1
-    "@remix-run/dev": ^1.4.3
-    "@remix-run/eslint-config": "*"
-    "@remix-run/node": "*"
-    "@remix-run/react": "*"
-    "@remix-run/serve": "*"
-    "@remix-run/server-runtime": "*"
-    "@testing-library/cypress": ^8.0.2
-    "@testing-library/dom": ^8.12.0
-    "@testing-library/jest-dom": ^5.16.3
-    "@testing-library/react": ^12.1.4
-    "@testing-library/user-event": ^14.0.4
-    "@types/bcryptjs": ^2.4.2
-    "@types/eslint": ^8.4.1
-    "@types/node": ^17.0.23
-    "@types/react": ^17.0.43
-    "@types/react-dom": ^17.0.14
-    "@vitejs/plugin-react": ^1.3.0
-    autoprefixer: ^10.4.4
-    bcryptjs: ^2.4.3
-    binode: ^1.0.5
-    c8: ^7.11.0
-    cross-env: ^7.0.3
-    cypress: ^9.5.3
-    eslint: ^8.12.0
-    eslint-config-prettier: ^8.5.0
-    happy-dom: ^2.55.0
-    msw: ^0.39.2
-    npm-run-all: ^4.1.5
-    postcss: ^8.4.12
-    prettier: 2.6.1
-    prettier-plugin-tailwindcss: ^0.1.8
-    prisma: ^3.11.1
-    react: ^17.0.2
-    react-dom: ^17.0.2
-    remix: ^1.4.3
-    start-server-and-test: ^1.14.0
-    tailwindcss: ^3.0.23
-    tiny-invariant: ^1.2.0
-    ts-node: ^10.7.0
-    tsconfig-paths: ^3.14.1
-    typescript: ^4.6.3
-    vite: ^2.9.1
-    vite-tsconfig-paths: ^3.4.1
-    vitest: ^0.8.2
-  languageName: unknown
-  linkType: soft
-
 "eval@npm:^0.1.8":
   version: 0.1.8
   resolution: "eval@npm:0.1.8"
@@ -18145,6 +18112,15 @@ __metadata:
   dependencies:
     pify: ^2.2.0
   checksum: f01927ce59bccec804e171bf859a26e362c1f50aa9ebc69f7cafdcce3859d29d4b6267fd47237c18b0a1830614bd3f0ee14b7380d9bad18a4e7af9b5f0b6984f
+  languageName: node
+  linkType: hard
+
+"executioner@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "executioner@npm:2.0.1"
+  dependencies:
+    mixly: ^1.0.0
+  checksum: 2de2cec06240c8f574f13c550cc7dfeeeb06005a2d71dab7cc84a97e3e2bb456c9aaccf36db2865bcb231447d29f6bab29d1310d8fa3fd86e0a0449ec75b72f0
   languageName: node
   linkType: hard
 
@@ -19257,6 +19233,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fulcon@npm:^1.0.1":
+  version: 1.0.2
+  resolution: "fulcon@npm:1.0.2"
+  checksum: 212a4b4d699601b91c3980bd41ff1a320dd36d9a61465d333bc3ea41d62109328f51d21a81f6cff5ba952b1dd259198502fb6bfd4a9460c515511e6ff5ce73f3
+  languageName: node
+  linkType: hard
+
 "function-bind@npm:^1.1.1":
   version: 1.1.1
   resolution: "function-bind@npm:1.1.1"
@@ -19943,6 +19926,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graphql-helix@npm:^1.11.0":
+  version: 1.12.0
+  resolution: "graphql-helix@npm:1.12.0"
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: eac17d3b231c46b5961ae99272d0b758dd0f77c86a088a65b9c3599a63cb1b3f835859e3d06cfa3f3bb6d689e604d742746055c5a680bff5b678eaaac94e5ef7
+  languageName: node
+  linkType: hard
+
 "graphql-tag@npm:2.10.3":
   version: 2.10.3
   resolution: "graphql-tag@npm:2.10.3"
@@ -20023,7 +20015,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.3.0":
+"graphql@npm:^16.3.0, graphql@npm:^16.4.0":
   version: 16.4.0
   resolution: "graphql@npm:16.4.0"
   checksum: 8cac2c466891b6c6ace2fa3807f93815dea53cbec372998c139e796a321a6882c2324cc605e5f9aa45356890239aa9e731a04d8c59ec524db82bd18fb48aafee
@@ -21352,6 +21344,18 @@ __metadata:
   bin:
     insert-module-globals: bin/cmd.js
   checksum: c44de7e802186e3207e24beadd71a5bb834700456a9e6f5c8fbb415b6f8356aff44df806e32bf9131143c53348d873fb050ea2b8f3c4cac762922e191b6bef15
+  languageName: node
+  linkType: hard
+
+"install-peers-cli@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "install-peers-cli@npm:2.2.0"
+  dependencies:
+    commander: ^2.20.0
+    executioner: ^2.0.1
+  bin:
+    install-peers: ./install.js
+  checksum: 5daa83098875cfa6e94d5652e472fadf961ebc3cf2f0c5e7399b5d33e2db0c4c05f620545436880cf9354d4b17d8a38af7fbb1ad4a46c7e4f78c2928ddeb37f2
   languageName: node
   linkType: hard
 
@@ -25731,6 +25735,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mixly@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "mixly@npm:1.0.0"
+  dependencies:
+    fulcon: ^1.0.1
+  checksum: 9cf488349f6f7ac8ba6a167cc87fb6f39c7341068a606524906176e2cc2f0677582bf6de3b92ef7b1701902e7f38530f9acbfc66ee450d97abe4132e18ce603a
+  languageName: node
+  linkType: hard
+
 "mkdirp-classic@npm:^0.5.2":
   version: 0.5.3
   resolution: "mkdirp-classic@npm:0.5.3"
@@ -29009,6 +29022,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier@npm:^2.5.1":
+  version: 2.6.2
+  resolution: "prettier@npm:2.6.2"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 48d08dde8e9fb1f5bccdd205baa7f192e9fc8bc98f86e1b97d919de804e28c806b0e6cc685e4a88211aa7987fa9668f30baae19580d87ced3ed0f2ec6572106f
+  languageName: node
+  linkType: hard
+
 "pretty-bytes@npm:^5.6.0":
   version: 5.6.0
   resolution: "pretty-bytes@npm:5.6.0"
@@ -30953,12 +30975,59 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remix@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "remix@npm:1.4.3"
-  checksum: f272f23664e512de008e64dd5dee9889c19f185bd1b4754fe8ad57b5375f24451abc5bee3a3b7b0238824e1fc559f98363e6efa8af3c6595f3ad1e4f21e3e5c0
-  languageName: node
-  linkType: hard
+"remix-ffa2@workspace:starters/remix":
+  version: 0.0.0-use.local
+  resolution: "remix-ffa2@workspace:starters/remix"
+  dependencies:
+    "@faker-js/faker": ^6.1.1
+    "@prisma/client": ^3.11.1
+    "@remix-run/dev": ^1.4.3
+    "@remix-run/eslint-config": "*"
+    "@remix-run/node": "*"
+    "@remix-run/react": "*"
+    "@remix-run/serve": "*"
+    "@remix-run/server-runtime": "*"
+    "@testing-library/cypress": ^8.0.2
+    "@testing-library/dom": ^8.12.0
+    "@testing-library/jest-dom": ^5.16.3
+    "@testing-library/react": ^12.1.4
+    "@testing-library/user-event": ^14.0.4
+    "@types/bcryptjs": ^2.4.2
+    "@types/eslint": ^8.4.1
+    "@types/node": ^17.0.23
+    "@types/react": ^17.0.43
+    "@types/react-dom": ^17.0.14
+    "@vitejs/plugin-react": ^1.3.0
+    "@vulcanjs/remix-graphql": ^0.2.1
+    autoprefixer: ^10.4.4
+    bcryptjs: ^2.4.3
+    binode: ^1.0.5
+    c8: ^7.11.0
+    cross-env: ^7.0.3
+    cypress: ^9.5.3
+    eslint: ^8.12.0
+    eslint-config-prettier: ^8.5.0
+    graphql: ^16.4.0
+    happy-dom: ^2.55.0
+    msw: ^0.39.2
+    npm-run-all: ^4.1.5
+    postcss: ^8.4.12
+    prettier: 2.6.1
+    prettier-plugin-tailwindcss: ^0.1.8
+    prisma: ^3.11.1
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    start-server-and-test: ^1.14.0
+    tailwindcss: ^3.0.23
+    tiny-invariant: ^1.2.0
+    ts-node: ^10.7.0
+    tsconfig-paths: ^3.14.1
+    typescript: ^4.6.3
+    vite: ^2.9.1
+    vite-tsconfig-paths: ^3.4.1
+    vitest: ^0.8.2
+  languageName: unknown
+  linkType: soft
 
 "remove-trailing-separator@npm:^1.0.1":
   version: 1.1.0
@@ -34875,7 +34944,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.6.3":
+"typescript@npm:^4.1.2, typescript@npm:^4.6.3":
   version: 4.6.4
   resolution: "typescript@npm:4.6.4"
   bin:
@@ -34905,7 +34974,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.6.3#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.1.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.3#~builtin<compat/typescript>":
   version: 4.6.4
   resolution: "typescript@patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=bda367"
   bin:

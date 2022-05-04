@@ -21,6 +21,7 @@ module.exports = {
     "packages/react-ui/index.ts",
     "packages/react-ui-bootstrap/index.ts",
     "packages/react-ui-material/index.ts",
+    "packages/remix-graphql/src/index.ts",
     "packages/schema/index.ts",
     "packages/utils/index.ts",
     "packages/utils/testing.ts",

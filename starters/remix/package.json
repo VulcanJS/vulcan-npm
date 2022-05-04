@@ -1,5 +1,5 @@
 {
-  "name": "eurodance-stack-template",
+  "name": "remix-ffa2",
   "private": true,
   "description": "",
   "license": "",
@@ -37,10 +37,11 @@
     "@remix-run/react": "*",
     "@remix-run/serve": "*",
     "@remix-run/server-runtime": "*",
+    "@vulcanjs/remix-graphql": "^0.2.1",
     "bcryptjs": "^2.4.3",
+    "graphql": "^16.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "remix": "^1.4.3",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
@@ -84,10 +85,10 @@
   "engines": {
     "node": ">=14"
   },
-  "prisma": {
-    "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
-  },
   "installConfig": {
     "hoistingLimits": "dependencies"
+  },
+  "prisma": {
+    "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
   }
 }

@@ -1,0 +1,10 @@
+node_modules
+yarn-error.log
+
+.cache
+build
+public/build
+.env
+
+dist
+index.server.d.ts
