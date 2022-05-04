@@ -17,7 +17,7 @@
     "build:storybook": "build-storybook",
     "//depcheck-yarn": "# FXIME: doesn't work as intented # Don't forget to install workspace-tools plugin: yarn plugin import workspace-tools",
     "depcheck-yarn": "yarn workspaces foreach -A -v run depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link' || echo 'Did you install workspace-tools? Command: yarn plugin import workspace-tools'",
-    "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns=dist --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link'",
+    "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns='dist,tsup.config.ts' --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link,tsup'",
     "typedoc": "typedoc",
     "publish": "lerna publish",
     "start:doc": "yarn --cwd ./docusaurus start",

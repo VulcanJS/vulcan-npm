@@ -38,6 +38,8 @@
   "dependencies": {
     "@vulcanjs/crud": "^0.6.4-alpha.3",
     "@vulcanjs/model": "^0.6.4-alpha.0",
+    "@vulcanjs/permissions": "*",
+    "@vulcanjs/schema": "*",
     "@vulcanjs/utils": "^0.6.4-alpha.0",
     "lodash": "^4.17.20"
   },

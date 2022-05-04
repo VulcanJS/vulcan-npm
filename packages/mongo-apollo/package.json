@@ -30,11 +30,9 @@
   "dependencies": {
     "@vulcanjs/crud": "^0.6.4-alpha.3",
     "@vulcanjs/graphql": "^0.6.4-alpha.3",
-    "@vulcanjs/model": "^0.6.4-alpha.0",
     "@vulcanjs/mongo": "^0.6.4-alpha.3",
     "@vulcanjs/utils": "^0.6.4-alpha.0",
-    "apollo-datasource-mongodb": "^0.5.2",
-    "lodash": "^4.17.20"
+    "apollo-datasource-mongodb": "^0.5.2"
   },
   "peerDependencies": {
     "mongodb": ">= 3.6.2",

@@ -22,8 +22,6 @@
   "author": "Eric Burel (LBKE)",
   "license": "MIT",
   "devDependencies": {
-    "esbuild": "^0.14.25",
-    "esbuild-register": "^3.3.2",
     "nodemon": "^2.0.15",
     "tsup": "^5.12.1",
     "typescript": "^4.6.2"
@@ -33,9 +31,7 @@
     "@vulcanjs/graphql": "^0.6.4-alpha.3",
     "@vulcanjs/mongo": "^0.6.4-alpha.3",
     "@vulcanjs/mongo-apollo": "^0.6.4-alpha.3",
-    "apollo-datasource-mongodb": "^0.5.2",
     "apollo-server-express": "^3.6.4",
-    "esbuild-runner": "^2.2.1",
     "express": "^4.17.3",
     "mongodb-memory-server": "^8.4.0",
     "mongoose": "^6.2.5"

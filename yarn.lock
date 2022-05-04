@@ -9276,9 +9276,18 @@ __metadata:
   resolution: "@vulcanjs/model@workspace:packages/model"
   dependencies:
     "@vulcanjs/schema": ^0.6.2
-    ts-loader: ^8.0.3
+    lodash: ^4.17.21
   languageName: unknown
   linkType: soft
+
+"@vulcanjs/model@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "@vulcanjs/model@npm:0.6.2"
+  dependencies:
+    "@vulcanjs/schema": ^0.6.2
+  checksum: 1071c0ff4bd27090a5dcd870be0e50d718a498a4c304ac0941dd10eedf87e604e6cfc55c4d18705c31eb48c05bd059aa18ccda6b00e7be28286357e57c73965c
+  languageName: node
+  linkType: hard
 
 "@vulcanjs/mongo-apollo@^0.6.4-alpha.3, @vulcanjs/mongo-apollo@workspace:packages/mongo-apollo":
   version: 0.0.0-use.local
@@ -9286,11 +9295,9 @@ __metadata:
   dependencies:
     "@vulcanjs/crud": ^0.6.4-alpha.3
     "@vulcanjs/graphql": ^0.6.4-alpha.3
-    "@vulcanjs/model": ^0.6.4-alpha.0
     "@vulcanjs/mongo": ^0.6.4-alpha.3
     "@vulcanjs/utils": ^0.6.4-alpha.0
     apollo-datasource-mongodb: ^0.5.2
-    lodash: ^4.17.20
   peerDependencies:
     mongodb: ">= 3.6.2"
     mongoose: ">= 6.2"
@@ -9303,6 +9310,8 @@ __metadata:
   dependencies:
     "@vulcanjs/crud": ^0.6.4-alpha.3
     "@vulcanjs/model": ^0.6.4-alpha.0
+    "@vulcanjs/permissions": "*"
+    "@vulcanjs/schema": "*"
     "@vulcanjs/utils": ^0.6.4-alpha.0
     lodash: ^4.17.20
     mongodb-memory-server: ^8.4.0
@@ -9335,11 +9344,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@vulcanjs/permissions@npm:*":
+  version: 0.6.2
+  resolution: "@vulcanjs/permissions@npm:0.6.2"
+  dependencies:
+    "@vulcanjs/model": ^0.6.2
+    "@vulcanjs/schema": ^0.6.2
+    lodash: ^4.17.21
+  peerDependencies:
+    react: ^17.0.1
+    react-dom: ^17.0.1
+  checksum: 8f8cce949edf4b99b8c675ad1f17015e96025e96974b605605d3395930f834a425dde5355e0a2c6725674bbfba5f1df9537540a03f63625ea10cdae361fb266d
+  languageName: node
+  linkType: hard
+
 "@vulcanjs/react-hooks@^0.6.4-alpha.3, @vulcanjs/react-hooks@workspace:packages/react-hooks":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-hooks@workspace:packages/react-hooks"
   dependencies:
     "@testing-library/react-hooks": ^3.4.1
+    "@vulcanjs/crud": ^0.6.4-alpha.3
     "@vulcanjs/graphql": ^0.6.4-alpha.3
     "@vulcanjs/mongo": ^0.6.4-alpha.3
     "@vulcanjs/schema": ^0.6.2
@@ -9361,11 +9385,8 @@ __metadata:
   resolution: "@vulcanjs/react-i18n@workspace:packages/react-i18n"
   dependencies:
     "@vulcanjs/i18n": ^0.6.4-alpha.0
-    "@vulcanjs/schema": ^0.6.2
     "@vulcanjs/utils": ^0.6.4-alpha.0
     prop-types: ^15.7.2
-    react-cookie: ^4.1.1
-    simpl-schema: ^1.12.0
   peerDependencies:
     "@apollo/client": ^3.5.5
     react: ^17.0.1
@@ -9459,7 +9480,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/schema@^0.6.2, @vulcanjs/schema@workspace:packages/schema":
+"@vulcanjs/schema@*, @vulcanjs/schema@^0.6.2, @vulcanjs/schema@workspace:packages/schema":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/schema@workspace:packages/schema"
   dependencies:
@@ -15767,29 +15788,6 @@ __metadata:
   version: 0.14.38
   resolution: "esbuild-openbsd-64@npm:0.14.38"
   conditions: os=openbsd & cpu=x64
-  languageName: node
-  linkType: hard
-
-"esbuild-register@npm:^3.3.2":
-  version: 3.3.2
-  resolution: "esbuild-register@npm:3.3.2"
-  peerDependencies:
-    esbuild: ">=0.12 <1"
-  checksum: 94c353571b23f9a54d00e4551f03696c99b068699f6afaa2bed9cdf5247ec54536f50ea4c68572485904026a4fd374625418682fd240837895839aeba3f29ec2
-  languageName: node
-  linkType: hard
-
-"esbuild-runner@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "esbuild-runner@npm:2.2.1"
-  dependencies:
-    source-map-support: 0.5.19
-    tslib: 2.3.1
-  peerDependencies:
-    esbuild: "*"
-  bin:
-    esr: bin/esr.js
-  checksum: 6818c1a0b7773ca6d688ceb8dc33f8077eabf1a3154c86b5e9006321c11a29a5544500f56456e804cdbdefae2281614e2e2b2bf1173316f80e36a2da496d3795
   languageName: node
   linkType: hard
 
@@ -29347,16 +29345,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:0.5.19":
-  version: 0.5.19
-  resolution: "source-map-support@npm:0.5.19"
-  dependencies:
-    buffer-from: ^1.0.0
-    source-map: ^0.6.0
-  checksum: c72802fdba9cb62b92baef18cc14cc4047608b77f0353e6c36dd993444149a466a2845332c5540d4a6630957254f0f68f4ef5a0120c33d2e83974c51a05afbac
-  languageName: node
-  linkType: hard
-
 "source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.19, source-map-support@npm:~0.5.12, source-map-support@npm:~0.5.20":
   version: 0.5.21
   resolution: "source-map-support@npm:0.5.21"
@@ -31077,22 +31065,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^8.0.3":
-  version: 8.4.0
-  resolution: "ts-loader@npm:8.4.0"
-  dependencies:
-    chalk: ^4.1.0
-    enhanced-resolve: ^4.0.0
-    loader-utils: ^2.0.0
-    micromatch: ^4.0.0
-    semver: ^7.3.4
-  peerDependencies:
-    typescript: "*"
-    webpack: "*"
-  checksum: 79da0f364c013231bff28baede3f4f4081b1cca30b24df2d9f31a0517e0524eca2c8e4d438b853b1566a3a8eb9ff51ab0b36743346f0b3d5daa7001c98e5c738
-  languageName: node
-  linkType: hard
-
 "ts-pnp@npm:^1.1.6":
   version: 1.2.0
   resolution: "ts-pnp@npm:1.2.0"
@@ -31115,13 +31087,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.3.1, tslib@npm:~2.3.0":
-  version: 2.3.1
-  resolution: "tslib@npm:2.3.1"
-  checksum: de17a98d4614481f7fcb5cd53ffc1aaf8654313be0291e1bfaee4b4bb31a20494b7d218ff2e15017883e8ea9626599b3b0e0229c18383ba9dce89da2adf15cb9
-  languageName: node
-  linkType: hard
-
 "tslib@npm:^1.8.1, tslib@npm:^1.9.0":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
@@ -31133,6 +31098,13 @@ __metadata:
   version: 2.4.0
   resolution: "tslib@npm:2.4.0"
   checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
+  languageName: node
+  linkType: hard
+
+"tslib@npm:~2.3.0":
+  version: 2.3.1
+  resolution: "tslib@npm:2.3.1"
+  checksum: de17a98d4614481f7fcb5cd53ffc1aaf8654313be0291e1bfaee4b4bb31a20494b7d218ff2e15017883e8ea9626599b3b0e0229c18383ba9dce89da2adf15cb9
   languageName: node
   linkType: hard
 
@@ -32298,11 +32270,7 @@ __metadata:
     "@vulcanjs/graphql": ^0.6.4-alpha.3
     "@vulcanjs/mongo": ^0.6.4-alpha.3
     "@vulcanjs/mongo-apollo": ^0.6.4-alpha.3
-    apollo-datasource-mongodb: ^0.5.2
     apollo-server-express: ^3.6.4
-    esbuild: ^0.14.25
-    esbuild-register: ^3.3.2
-    esbuild-runner: ^2.2.1
     express: ^4.17.3
     mongodb-memory-server: ^8.4.0
     mongoose: ^6.2.5

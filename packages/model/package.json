@@ -29,10 +29,8 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/schema": "^0.6.2"
-  },
-  "devDependencies": {
-    "ts-loader": "^8.0.3"
+    "@vulcanjs/schema": "^0.6.2",
+    "lodash": "^4.17.21"
   },
   "gitHead": "f4594745e0a5c455a2f0c3e78fa3ff7a35ef4c95",
   "publishConfig": {

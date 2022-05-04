@@ -19,6 +19,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@vulcanjs/crud": "^0.6.4-alpha.3",
     "@vulcanjs/graphql": "^0.6.4-alpha.3",
     "@vulcanjs/mongo": "^0.6.4-alpha.3",
     "debug": "^4.3.1",
