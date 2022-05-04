@@ -49,7 +49,7 @@ const sidebars = {
         {
           type: "category",
           label: "For contributors",
-          items: ["vulcan-next/contribute", "vulcan-next/release-process"],
+          items: ["vulcan-next/contribute", "core/release-next"],
         },
         "vulcan-next/from-vulcan-v1",
 
