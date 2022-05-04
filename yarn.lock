@@ -9305,7 +9305,7 @@ __metadata:
     "@docusaurus/core": 2.0.0-beta.15
     "@docusaurus/module-type-aliases": 2.0.0-beta.15
     "@docusaurus/preset-classic": 2.0.0-beta.15
-    "@mdx-js/react": ^2.1.1
+    "@mdx-js/react": ^1.6.21
     "@tsconfig/docusaurus": ^1.0.4
     clsx: ^1.1.1
     prism-react-renderer: ^1.2.1
