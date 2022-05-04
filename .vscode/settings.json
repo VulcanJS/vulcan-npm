@@ -11,6 +11,7 @@
         "**/.mongo": true,
         "**/.turbo": true,
         "**/.next": true,
-        "**/.vn/scripts/js-generated": true
+        "**/.vn/scripts/js-generated": true,
+        "**/remix/**/build": true
     }
 }

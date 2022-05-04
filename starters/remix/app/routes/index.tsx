@@ -9,7 +9,7 @@ import {
   //processRequestWithGraphQL,
   // When using a remote endpoint
   sendGraphQLRequest,
-} from "remix-graphql/index.server";
+} from "@vulcanjs/remix-graphql/index.server";
 //import gql from "graphql-tag";
 
 const JERRYS_QUERY = /*gql*/ `
@@ -60,7 +60,9 @@ export const loader: LoaderFunction = (args) =>
   });
 
 type LoaderData = {
-  data?: any;
+  data?: {
+    characters?: { results?: Array<any> };
+  };
   errors?: GraphQLError[];
 }; // TODO: compute automatically based on the query?
 
@@ -70,24 +72,28 @@ type LoaderData = {
 export default function Index() {
   const user = useOptionalUser();
   const { data } = useLoaderData<LoaderData>();
-  console.log("Got data", data);
+  const jerrys = data?.characters?.results?.length
+    ? data.characters.results.slice(0, 5)
+    : [];
   return (
     <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
       <div className="relative sm:pb-16 sm:pt-8">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
             <div className="absolute inset-0">
-              <img
+              {/**<img
                 className="h-full w-full object-cover"
                 src="https://user-images.githubusercontent.com/1500684/157774694-99820c51-8165-4908-a031-34fc371ac0d6.jpg"
                 alt="Sonic Youth On Stage"
-              />
-              <div className="absolute inset-0 bg-[color:rgba(254,204,27,0.5)] mix-blend-multiply" />
+              />*/}
+              <div className="absolute inset-0 bg-[color:#7a273c] mix-blend-multiply" />
             </div>
             <div className="lg:pb-18 relative px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pt-32">
               <h1 className="text-center text-6xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
                 <span className="block uppercase text-yellow-500 drop-shadow-md">
-                  Indie Stack
+                  Vulcan Eurodance Stack
+                  <br />
+                  🇪🇺 🐸 🛵
                 </span>
               </h1>
               <p className="mx-auto mt-6 max-w-lg text-center text-xl text-white sm:max-w-3xl">
@@ -130,6 +136,17 @@ export default function Index() {
           </div>
         </div>
 
+        <div className="mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8">
+          <h2 className="text-xl">Results of a loader using GraphQL:</h2>
+          <pre>
+            <code>{JSON.stringify(jerrys, null, 2)}</code>
+          </pre>
+          <p>
+            Note: no client-side GraphQL was involved! GraphQL is used only
+            server-side. Remix handles the data fetching via its loader system
+            as usual.
+          </p>
+        </div>
         <div className="mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8">
           <div className="mt-6 flex flex-wrap justify-center gap-8">
             {[
