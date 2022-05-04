@@ -95,6 +95,8 @@
       "docusaurus"
     ],
     "nohoist": [
+      "@remix-run",
+      "remix",
       "@storybook",
       "@storybook/addon-docs",
       "**/@storybook",

@@ -1,5 +1,5 @@
 {
-  "name": "indie-stack-template",
+  "name": "eurodance-stack-template",
   "private": true,
   "description": "",
   "license": "",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^6.1.1",
-    "@remix-run/dev": "*",
+    "@remix-run/dev": "^1.4.3",
     "@remix-run/eslint-config": "*",
     "@testing-library/cypress": "^8.0.2",
     "@testing-library/dom": "^8.12.0",

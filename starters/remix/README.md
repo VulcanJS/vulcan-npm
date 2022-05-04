@@ -1,15 +1,41 @@
-# Remix Indie Stack
+# Vulcan Eurodance Stack
 
-![The Remix Indie Stack](https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf)
+The Remix Eurodance Stack 🇪🇺 🐸 🛵
+*Based on Remix [Indie Stack](https://github.com/remix-run/indie-stack)*
+
+<!--![The Remix Eurodance Stack](https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf)-->
 
 Learn more about [Remix Stacks](https://remix.run/stacks).
 
 ```
-npx create-remix --template remix-run/indie-stack
+npx create-remix --template remix-run/eurodance-stack
 ```
 
 ## What's in the stack
 
+### From Vulcan (work in progress):
+
+**Development tools**
+
+- A Storybook based development workflow. Write a story, get unit and visual regression tests for free.
+
+**GraphQL**
+
+- Invisible GraphQL: work transparently with GraphQL, without ever depending client-side
+- A GraphQL resource route with [GraphQL Yoga](https://www.graphql-yoga.com/)
+- Vulcan Artemis Engine
+
+**MongoDB supports (via Prisma)**
+
+Remix stacks works with Prisma out-of-the-box, and various databases.
+For historical reasons, Vulcan prefers Mongo, but you can switch very easily to any database.
+
+**Vercel deployment**
+
+Remix stacks hosts on Fly out-of-the-box.
+For historical reasons Vulcan prefers Vercel, but you can deploy your Remix app almost anywhere very easily.
+
+### From Remix indie stack:
 - [Fly app deployment](https://fly.io) with [Docker](https://www.docker.com/)
 - Production-ready [SQLite Database](https://sqlite.org)
 - Healthcheck endpoint for [Fly backups region fallbacks](https://fly.io/docs/reference/configuration/#services-http_checks)
@@ -80,8 +106,8 @@ Prior to your first deployment, you'll need to do a few things:
 - Create two apps on Fly, one for staging and one for production:
 
   ```sh
-  fly create indie-stack-template
-  fly create indie-stack-template-staging
+  fly create eurodance-stack-template
+  fly create eurodance-stack-template-staging
   ```
 
   - Initialize Git.
@@ -101,8 +127,8 @@ Prior to your first deployment, you'll need to do a few things:
 - Add a `SESSION_SECRET` to your fly app secrets, to do this you can run the following commands:
 
   ```sh
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app indie-stack-template
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app indie-stack-template-staging
+  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app eurodance-stack-template
+  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app eurodance-stack-template-staging
   ```
 
   If you don't have openssl installed, you can also use [1password](https://1password.com/password-generator/) to generate a random secret, just replace `$(openssl rand -hex 32)` with the generated secret.
@@ -110,8 +136,8 @@ Prior to your first deployment, you'll need to do a few things:
 - Create a persistent volume for the sqlite database for both your staging and production environments. Run the following:
 
   ```sh
-  fly volumes create data --size 1 --app indie-stack-template
-  fly volumes create data --size 1 --app indie-stack-template-staging
+  fly volumes create data --size 1 --app eurodance-stack-template
+  fly volumes create data --size 1 --app eurodance-stack-template-staging
   ```
 
 Now that everything is set up you can commit and push your changes to your repo. Every commit to your `main` branch will trigger a deployment to your production environment, and every commit to your `dev` branch will trigger a deployment to your staging environment.
@@ -170,3 +196,43 @@ This project uses ESLint for linting. That is configured in `.eslintrc.js`.
 ### Formatting
 
 We use [Prettier](https://prettier.io/) for auto-formatting in this project. It's recommended to install an editor plugin (like the [VSCode Prettier plugin](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) to get auto-formatting on save. There's also a `npm run format` script you can run to format all files in the project.
+
+---
+
+## They support Vulcan
+
+### Contributors
+
+This project exists thanks to all the people who contribute.
+
+<a href="https://github.com/VulcanJS/vulcan-next/graphs/contributors"><img src="https://opencollective.com/vulcan/contributors.svg?width=890&button=false" /></a>
+
+### Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/vulcan#contribute)]
+
+<a href="https://opencollective.com/vulcan#contributors" target="_blank"><img src="https://opencollective.com/vulcan/backers.svg?width=890"/></a>
+
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/vulcan#contribute)]
+
+<a href="https://opencollective.com/vulcan#contributors" target="_blank"><img src="https://opencollective.com/vulcan/sponsors.svg?width=890"/></a>
+
+### Technical supports
+
+They give time and share knowledge to support the project.
+
+<a href="https://aplines.com" target="_blank" rel="noopener noreferrer">
+<img src="https://aplines.com/wp-content/uploads/2020/06/logo-1.png" alt="aplines" height="75"/>
+</a>
+<a href="https://www.lbke.fr" target="_blank" rel="noopener noreferrer">
+<img src="https://www.lbke.fr/img/logo-md.png" height="75" alt="lbke" />
+</a>
+<a href="https://letter.so/" target="_blank" rel="noopener noreferrer">
+<img src="https://github.com/VulcanJS/vulcan-next/blob/devel/public/img/letter-96x96.png?raw=true" height="75" alt="lette.so" />
+</a>
+
+## Other cool stuff that inspires us
+
+- [remix-graphql](https://github.com/thomasheyenbrock/remix-graphql) served as a basis to setup GraphQL in Remix
