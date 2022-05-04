@@ -8,8 +8,9 @@
 Ensure model callbacks are not using "context" to get other models but instead imports them explicitely
 - mutators hook name is now the model "name" and not graphql "typeName" (since mutators do not depend on graphql)
 - Mutators are exported from `@vulcanjs/crud/server` instead of graphql
+- `@vulcanjs/graphql` no longer exports server code, use `@vulcanjs/graphql/server` where relevant
 
-## From Vulcan Meteor
+## From Vulcan Meteor legacy version
 
 ### No need to call new SimpleSchema() for nested field
 

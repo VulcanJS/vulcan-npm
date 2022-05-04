@@ -22,7 +22,7 @@ git checkout main && git pull
 # - Beware of things that should stay peer deps, like React
 # - Ignore dependencies that should disappear (work in progress)
 yarn run depcheck
-# Clear all node_modules
+# Clear all node_modules => yarn install will do that already
 # yarn clean
 # Reinstall to get a fresh version (takes a while)
 yarn

@@ -2,18 +2,22 @@
 
 ## Read the Readme
 
-Start by reading the Readme for basic install information.
+Start by reading Vulcan NPM Readme for basic install information.
 
 Then, the package.json list the typical commands you'd expect from an NPM library: build, test...
 
 ## Recommended: use Jest and Storybook to test your code
 
-When adding feature to Vulcan Next or fixing bug, you'll want to run your code to test it.
+When adding feature to Vulcan or fixing bug, you'll want to run your code to test it.
 
 - For components, you can run Storybook: `yarn run storybook`. Stories let you render components in a certain state, and even automate some operations on them using the "play" function. Documentation: https://storybook.js.org/
 - For code, you can run unit tests with Jest: `yarn run test` or `yarn run test <your-test-file-name>`.
 - For graphql operations, check `test/integration` folder: you can run a full Vulcan backend, similar to the backend running in Vulcan Next.
 You can even use an in-memory Mongo database.
+
+
+Starter apps with UI like Vulcan Next may have their own specific Storybook and Jest setup.
+Run `cd starters/next` to move to the relevant folders.
 
 ## Advanced: plug to another application
 
@@ -30,6 +34,8 @@ The command `yarn run link:vulcan` will do this for all @vulcanjs packages
 - When you update code in Vulcan NPM, rerun `yarn run build && yarn run publish:local`. Your app will automatically reload with the new version.
 
 A similar documentation exists in Vulcan Next project.
+
+**/!\ Next 12 is known to have issues with Yalc + ESM @see https://github.com/vercel/next.js/issues/35110**
 
 ## Common issues
 

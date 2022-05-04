@@ -10,10 +10,11 @@ git checkout devel && git pull
 # git checkout -b release/<next-version>
 git merge main # get hot fixes if any
 git merge devel
-rm -Rf node_modules
+# No need to clean node_modules, yarn will do it for you on install
+# rm -Rf node_modules
 yarn install # no missing module surprise
-yarn upgrade # update versions to latest Vulcan NPM release
-
+yarn upgrade:vulcan # update versions to latest Vulcan NPM release
+# yarn up # Optionnaly upgrade all packages to latest version (may produce breaking changes!)
 ```
 
 ## Run the app, run tests
