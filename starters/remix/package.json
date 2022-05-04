@@ -40,6 +40,7 @@
     "bcryptjs": "^2.4.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "remix": "^1.4.3",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
@@ -85,5 +86,8 @@
   },
   "prisma": {
     "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
+  },
+  "installConfig": {
+    "hoistingLimits": "dependencies"
   }
 }

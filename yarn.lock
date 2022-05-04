@@ -17969,6 +17969,7 @@ __metadata:
     prisma: ^3.11.1
     react: ^17.0.2
     react-dom: ^17.0.2
+    remix: ^1.4.3
     start-server-and-test: ^1.14.0
     tailwindcss: ^3.0.23
     tiny-invariant: ^1.2.0
@@ -30949,6 +30950,13 @@ __metadata:
   dependencies:
     mdast-squeeze-paragraphs: ^4.0.0
   checksum: 2071eb74d0ecfefb152c4932690a9fd950c3f9f798a676f1378a16db051da68fb20bf288688cc153ba5019dded35408ff45a31dfe9686eaa7a9f1df9edbb6c81
+  languageName: node
+  linkType: hard
+
+"remix@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "remix@npm:1.4.3"
+  checksum: f272f23664e512de008e64dd5dee9889c19f185bd1b4754fe8ad57b5375f24451abc5bee3a3b7b0238824e1fc559f98363e6efa8af3c6595f3ad1e4f21e3e5c0
   languageName: node
   linkType: hard
 
