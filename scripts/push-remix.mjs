@@ -1,3 +1,7 @@
+#!/usr/bin/env zx
+import "zx/globals";
+
+const startersFolder = "starters";
 const remixPrefix = `${startersFolder}/remix`;
 const remixRepo = "https://github.com/VulcanJS/vulcan-remix.git";
 // just an alias to respect Remix terminology
