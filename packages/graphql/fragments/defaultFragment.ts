@@ -11,8 +11,8 @@ import {
   getNestedSchema,
   hasNestedSchema,
 } from "@vulcanjs/schema";
-import { VulcanSchema } from "@vulcanjs/schema";
-import { VulcanGraphqlModelSkeleton } from "../typings";
+import type { VulcanSchema } from "@vulcanjs/schema";
+import type { VulcanGraphqlModelSkeleton } from "../typings";
 
 const intlSuffix = "_intl";
 

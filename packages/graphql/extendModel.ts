@@ -11,7 +11,7 @@ import {
   getDefaultFragmentText,
   getDefaultFragmentName,
 } from "./fragments/defaultFragment";
-import { camelCaseify, Merge } from "@vulcanjs/utils";
+import { camelCaseify } from "@vulcanjs/utils";
 /**
  * Typing is tricky here:
  * - we want to tell the user when they tried to use a server-only field client-side, and point them to the right solution (type: never)

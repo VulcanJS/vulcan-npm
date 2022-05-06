@@ -4,7 +4,7 @@ import {
   sortInputType,
 } from "./filtering";
 import { camelCaseify } from "@vulcanjs/utils";
-import { VulcanGraphqlModel } from "../typings";
+import type { VulcanGraphqlModel } from "../typings";
 
 // eslint-disable-next-line
 const deprecated1 = `# Deprecated (use 'filter/id' fields instead).`;

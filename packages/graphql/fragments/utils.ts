@@ -1,6 +1,6 @@
-import { VulcanGraphqlModel } from "../typings";
-import { Fragment } from "./typings";
-import { DocumentNode, FragmentDefinitionNode } from "graphql";
+import type { VulcanGraphqlModel } from "../typings";
+import type { Fragment } from "./typings";
+import type { DocumentNode, FragmentDefinitionNode } from "graphql";
 
 /**
  * Get model fragment in safe manner. Priority:
