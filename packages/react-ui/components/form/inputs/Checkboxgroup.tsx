@@ -144,6 +144,7 @@ export const FormComponentCheckboxGroup = (props: FormInputProps) => {
     <Components.FormItem
       name={name}
       label={label}
+      path={path}
       inputProperties={inputProperties}
       {...itemProperties}
     >

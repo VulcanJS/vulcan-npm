@@ -10,12 +10,13 @@ import { useVulcanComponents } from "../../VulcanComponents/Consumer";
  */
 const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
   const Components = useVulcanComponents();
-  const { inputProperties = {}, itemProperties = {} } = props;
+  const { inputProperties = {}, itemProperties = {}, path } = props;
   const { label, name, ...otherInputProperties } = inputProperties;
 
   return (
     <Components.FormItem
       name={name}
+      path={path}
       label={label}
       inputProperties={inputProperties}
       {...itemProperties}
@@ -49,6 +50,7 @@ export const FormItem = (
 const HTMLSelectAdapter = (props: FormInputProps) => {
   const {
     multiple,
+    path,
     inputProperties = {},
     options = [],
     itemProperties,
@@ -62,6 +64,7 @@ const HTMLSelectAdapter = (props: FormInputProps) => {
     <Components.FormItem
       name={name}
       label={label}
+      path={path}
       inputProperties={inputProperties}
       {...itemProperties}
     >
@@ -108,7 +111,7 @@ export const FormComponentCheckbox = (props: FormInputProps) => {
  * @returns
  */
 export const FormComponentRadioGroup = (props: FormInputProps) => {
-  const { inputProperties, options = [], itemProperties } = props;
+  const { path, inputProperties, options = [], itemProperties } = props;
   const { label, name } = inputProperties;
   if (!Array.isArray(options))
     throw new Error("RadioGroup not yet supporting functional options");
@@ -116,6 +119,7 @@ export const FormComponentRadioGroup = (props: FormInputProps) => {
   const Components = useVulcanComponents();
   return (
     <Components.FormItem
+      path={path}
       name={name}
       label={label}
       inputProperties={inputProperties}

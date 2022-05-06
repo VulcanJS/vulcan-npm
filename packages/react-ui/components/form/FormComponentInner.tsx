@@ -33,7 +33,7 @@ export interface FormComponentInnerProps extends FormComponentProps {
   formComponents: PossibleVulcanComponents;
   intlKeys?: any;
   inputClassName: any;
-  name: any;
+  name?: string;
   input: any;
   beforeComponent: any;
   afterComponent: any;

@@ -24,6 +24,7 @@ export const Autocomplete = (props) => {
     itemProperties = {},
     autocompleteQuery,
     optionsFunction,
+    name,
   } = props;
 
   const Components = useVulcanComponents();
@@ -59,7 +60,12 @@ export const Autocomplete = (props) => {
     : [];
 
   return (
-    <Components.FormItem path={path} label={label} {...itemProperties}>
+    <Components.FormItem
+      path={path}
+      name={name}
+      label={label}
+      {...itemProperties}
+    >
       <AsyncTypeahead
         {...inputProperties}
         multiple={false}
