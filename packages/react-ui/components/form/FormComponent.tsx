@@ -183,7 +183,8 @@ ComponentType => {
 
 type Options<TField = any> = Array<{ label: string; value: TField }>;
 
-export interface FormComponentProps<TField = any> extends FormField {
+export interface FormComponentProps<TField = any>
+  extends Omit<FormField, "type"> {
   document: any;
   datatype: VulcanFieldType; // TODO: type of the field, replace this by a cleaner value like we do in graphql to get the field type
   disabled: boolean;

@@ -1,5 +1,5 @@
 import React from "react";
-import { FormInputProps } from "../FormComponentInner";
+import { FormInputProps, FormTextAreaProps } from "../FormComponentInner";
 import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
 /**
@@ -10,7 +10,7 @@ import { useVulcanComponents } from "../../VulcanComponents/Consumer";
  */
 const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
   const Components = useVulcanComponents();
-  const { inputProperties } = props;
+  const { inputProperties, itemProperties } = props;
   const { label, name, ...otherInputProperties } = inputProperties;
 
   return (
@@ -18,6 +18,7 @@ const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
       name={name}
       label={label}
       inputProperties={inputProperties}
+      {...itemProperties}
     >
       {/* @ts-ignore FIXME: leads to "Types of property 'capture' are incompatible" when trying to build the types... */}
       <input
@@ -46,7 +47,7 @@ export const FormItem = (
 };
 
 const HTMLSelectAdapter = (props: FormInputProps) => {
-  const { inputProperties, options = [] } = props;
+  const { inputProperties, options = [], itemProperties } = props;
   const { label, name } = inputProperties;
   if (!Array.isArray(options))
     throw new Error("HTMLSelectAdapater not yet supporting functional options");
@@ -57,6 +58,7 @@ const HTMLSelectAdapter = (props: FormInputProps) => {
       name={name}
       label={label}
       inputProperties={inputProperties}
+      {...itemProperties}
     >
       {/** TODO: whitelisting feature should be smarter to differentiate select and input */}
       <select
@@ -69,33 +71,41 @@ const HTMLSelectAdapter = (props: FormInputProps) => {
     </Components.FormItem>
   );
 };
-export const FormComponentDefault = (props) => (
+export const FormComponentDefault = (props: FormInputProps) => (
   <HTMLInputAdapter type="text" {...props} />
 );
-export const FormComponentPassword = (props) => (
+export const FormComponentPassword = (props: FormInputProps) => (
   <HTMLInputAdapter type="password" {...props} />
 );
-export const FormComponentNumber = (props) => (
+export const FormComponentNumber = (props: FormInputProps) => (
   <HTMLInputAdapter type="number" {...props} />
 );
-export const FormComponentUrl = (props) => (
+export const FormComponentUrl = (props: FormInputProps) => (
   <HTMLInputAdapter type="url" {...props} />
 );
-export const FormComponentEmail = (props) => (
+export const FormComponentEmail = (props: FormInputProps) => (
   <HTMLInputAdapter type="email" {...props} />
 );
-export const FormComponentTextarea = (props) => <textarea {...props} />;
+export const FormComponentTextarea = (props: FormTextAreaProps) => {
+  const { inputProperties, itemProperties } = props;
+  return <textarea {...inputProperties} />;
+};
 // TODO: at the moment we use a select instead
-export const FormComponentCheckbox = (props) => (
+export const FormComponentCheckbox = (props: FormInputProps) => (
   <HTMLSelectAdapter type="checkbox" {...props} />
 );
 // TODO: atm we use a select multiple instead of checkboxes
-export const FormComponentCheckboxGroup = (props) => (
+export const FormComponentCheckboxGroup = (props: FormInputProps) => (
   <FormComponentSelectMultiple {...props} />
 );
-// TODO: atm we use a select instead of radio
-export const FormComponentRadioGroup = (props) => {
-  const { inputProperties, options = [] } = props;
+
+/**
+ *
+ * @param props
+ * @returns
+ */
+export const FormComponentRadioGroup = (props: FormInputProps) => {
+  const { inputProperties, options = [], itemProperties } = props;
   const { label, name } = inputProperties;
   if (!Array.isArray(options))
     throw new Error("RadioGroup not yet supporting functional options");
@@ -106,6 +116,7 @@ export const FormComponentRadioGroup = (props) => {
       name={name}
       label={label}
       inputProperties={inputProperties}
+      {...itemProperties}
     >
       {/** TODO: whitelisting feature should be smarter to differentiate select and input */}
       {options.map((option) => {
