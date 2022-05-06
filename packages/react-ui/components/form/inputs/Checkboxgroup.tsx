@@ -156,26 +156,32 @@ export const FormComponentCheckboxGroup = (props: FormInputProps) => {
               : "form-check-unchecked"
             : "";
           return (
-            <Components.FormComponentCheckbox
-              {...inputProperties}
-              name={name}
-              layout="elementOnly"
-              key={i}
-              label={<Components.FormOptionLabel option={option} name={name} />}
-              value={isChecked}
-              checked={isChecked}
-              id={`${path}.${i}`}
-              path={`${path}.${i}`}
-              //ref={refFunction}
-              onChange={(event) => {
-                const isChecked = event.target.checked;
-                const newValue = isChecked
-                  ? [...value, option.value]
-                  : without(value, option.value);
-                updateCurrentValues({ [path]: newValue });
-              }}
-              className={checkClass}
-            />
+            <>
+              <Components.FormOptionLabel option={option} name={name} />
+              <input
+                type="checkbox"
+                {...inputProperties}
+                name={name}
+                //layout="elementOnly"
+                key={i}
+                /*label={
+                  <Components.FormOptionLabel option={option} name={name} />
+                }*/
+                //value={isChecked}
+                checked={isChecked}
+                id={`${path}.${i}`}
+                // path={`${path}.${i}`}
+                //ref={refFunction}
+                onChange={(event) => {
+                  const isChecked = event.target.checked;
+                  const newValue = isChecked
+                    ? [...value, option.value]
+                    : without(value, option.value);
+                  updateCurrentValues({ [path]: newValue });
+                }}
+                className={checkClass}
+              />
+            </>
           );
         })}
         {itemProperties.showOther && (

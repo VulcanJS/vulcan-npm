@@ -10,7 +10,7 @@ import { useVulcanComponents } from "../../VulcanComponents/Consumer";
  */
 const HTMLInputAdapter = (props: FormInputProps & { type: string }) => {
   const Components = useVulcanComponents();
-  const { inputProperties, itemProperties } = props;
+  const { inputProperties = {}, itemProperties = {} } = props;
   const { label, name, ...otherInputProperties } = inputProperties;
 
   return (
