@@ -10149,7 +10149,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/meteor-legacy@^0.6.7-alpha.0, @vulcanjs/meteor-legacy@workspace:packages/meteor-legacy":
+"@vulcanjs/meteor-legacy@^0.6.6-alpha.3, @vulcanjs/meteor-legacy@workspace:packages/meteor-legacy":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/meteor-legacy@workspace:packages/meteor-legacy"
   dependencies:
@@ -10312,7 +10312,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui@^0.6.4, @vulcanjs/react-ui@workspace:packages/react-ui":
+"@vulcanjs/react-ui@^0.6.6-alpha.3, @vulcanjs/react-ui@workspace:packages/react-ui":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui@workspace:packages/react-ui"
   dependencies:
@@ -36151,12 +36151,12 @@ __metadata:
     "@vulcanjs/crud": ^0.6.4
     "@vulcanjs/graphql": ^0.6.4
     "@vulcanjs/mdx": ^0.6.4
-    "@vulcanjs/meteor-legacy": ^0.6.7-alpha.0
+    "@vulcanjs/meteor-legacy": ^0.6.6-alpha.3
     "@vulcanjs/model": ^0.6.4
     "@vulcanjs/mongo": ^0.6.4
     "@vulcanjs/mongo-apollo": ^0.6.4
     "@vulcanjs/react-hooks": ^0.6.4
-    "@vulcanjs/react-ui": ^0.6.4
+    "@vulcanjs/react-ui": ^0.6.6-alpha.3
     "@vulcanjs/schema": ^0.6.4
     apollo-datasource-mongodb: ^0.5.2
     apollo-server: ^3

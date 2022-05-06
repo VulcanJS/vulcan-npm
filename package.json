@@ -111,6 +111,7 @@
   "packageManager": "yarn@3.2.0",
   "resolutions": {
     "@types/react": "^17.0.16",
-    "@types/react-dom": "^17.0.16"
+    "@types/react-dom": "^17.0.16",
+    "@storybook/{app}/webpack": "^5"
   }
 }

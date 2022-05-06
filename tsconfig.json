@@ -12,7 +12,8 @@
     "jsx": "react",
     "lib": [
       "es6",
-      "dom"
+      "dom",
+      "dom.iterable" // @see https://stackoverflow.com/questions/50677868/error-ts2339-property-entries-does-not-exist-on-type-formdata
     ],
     "module": "ES2020",
     "moduleResolution": "Node",
@@ -41,6 +42,8 @@
     "**/webpack.config.js",
     // @see https://github.com/facebook/docusaurus/issues/3424
     "docusaurus",
-    "starters/**/*"
+    "starters/**/*",
+    // FIXME: we already exclude them in packages/remix-graphql/tsconfig yet it's not respected somehow
+    "packages/remix-graphql/examples/**"
   ]
 }
