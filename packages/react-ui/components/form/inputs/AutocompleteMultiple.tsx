@@ -77,6 +77,7 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
   return (
     <Components.FormItem
       {...props} /*path={path} label={label} {...itemProperties}*/
+      {...itemProperties}
       name={path}
     >
       {/** @ts-ignore */}
