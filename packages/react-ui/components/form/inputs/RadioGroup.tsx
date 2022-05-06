@@ -7,7 +7,15 @@ import { useVulcanComponents } from "../../VulcanComponents/Consumer";
  * @returns
  */
 export const FormComponentRadioGroup = (props: FormInputProps) => {
-  const { path, inputProperties, options = [], itemProperties } = props;
+  const {
+    value: propsValue,
+    path,
+    inputProperties,
+    options = [],
+    itemProperties,
+  } = props;
+  // NOTE: inputProperties.value is undefined
+  // use "props.value" instead
   const { label, name } = inputProperties;
   if (!Array.isArray(options))
     throw new Error("RadioGroup not yet supporting functional options");
@@ -35,7 +43,7 @@ export const FormComponentRadioGroup = (props: FormInputProps) => {
               key={value}
               {...inputProperties}
               value={value}
-              checked={value === inputProperties.value}
+              checked={value === propsValue}
             />
           </div>
         );
