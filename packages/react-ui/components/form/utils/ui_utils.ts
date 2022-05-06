@@ -49,7 +49,7 @@ export const whitelistInputProps = (
     "placeholder",
   ];
   const value = props.value;
-  let safeValue;
+  let safeValue = value;
   // No null values in HTML inputs
   if (value === null) safeValue = undefined;
   // if value is null, return undefined
