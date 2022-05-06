@@ -44,9 +44,8 @@ import {
   FormComponentNumber,
   FormComponentUrl,
   FormComponentEmail,
-  FormComponentTextarea,
   FormComponentCheckbox,
-  FormComponentRadioGroup,
+  FormComponentTextarea,
   FormComponentSelect,
   FormComponentSelectMultiple,
   FormComponentDateTime,
@@ -57,8 +56,9 @@ import {
   // used by ui-bootstrap and ui-material
   FormItem,
   FormComponentAutocomplete,
-} from "../../form/inputs/BasicInputs";
-import { FormComponentCheckboxGroup } from "../../form/inputs/Checkboxgroup";
+  FormComponentCheckboxGroup,
+  FormComponentRadioGroup,
+} from "../../form/inputs";
 
 import { FormContainer } from "../../form";
 import { AutocompleteMultiple } from "../../form/inputs/AutocompleteMultiple";
