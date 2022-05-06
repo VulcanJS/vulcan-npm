@@ -2,7 +2,7 @@ import React from "react";
 import { FormInputProps, FormTextAreaProps } from "../FormComponentInner";
 import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
-const HTMLSelectAdapter = (props: FormInputProps) => {
+const HTMLSelectAdapter = (props: FormInputProps<HTMLSelectElement>) => {
   const {
     multiple,
     path,
@@ -26,7 +26,10 @@ const HTMLSelectAdapter = (props: FormInputProps) => {
       {/** TODO: whitelisting feature should be smarter to differentiate select and input */}
       <select
         multiple={multiple}
-        {...(inputProperties as unknown as React.HTMLProps<HTMLSelectElement>)}
+        {...inputProperties}
+        value={
+          inputProperties.value === null ? undefined : inputProperties.value
+        }
       >
         {options.map(({ label, value }) => (
           <option key={value} label={label} value={value}></option>
@@ -36,9 +39,9 @@ const HTMLSelectAdapter = (props: FormInputProps) => {
   );
 };
 
-export const FormComponentSelect = (props: FormInputProps) => (
-  <HTMLSelectAdapter {...props} />
-);
+export const FormComponentSelect = (
+  props: FormInputProps<HTMLSelectElement>
+) => <HTMLSelectAdapter {...props} />;
 
 export const FormComponentSelectMultiple = (props) => {
   const Components = useVulcanComponents();

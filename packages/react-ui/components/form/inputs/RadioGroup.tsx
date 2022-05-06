@@ -33,8 +33,9 @@ export const FormComponentRadioGroup = (props: FormInputProps) => {
               id={value}
               name={name}
               key={value}
-              value={value}
               {...inputProperties}
+              value={value}
+              checked={value === inputProperties.value}
             />
           </div>
         );

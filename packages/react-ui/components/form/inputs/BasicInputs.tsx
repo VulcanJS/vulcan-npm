@@ -69,8 +69,8 @@ export const FormComponentTime = (props) => (
   <HTMLInputAdapter type="time" {...props} />
 );
 export const FormComponentStaticText = (props: FormInputProps) => {
-  const { value, inputProperties } = props;
-  return <input {...inputProperties} value={value} disabled />;
+  const { inputProperties } = props;
+  return <input {...inputProperties} disabled />;
 };
 export const FormComponentLikert = (props) =>
   "Likert component not yet implemented";

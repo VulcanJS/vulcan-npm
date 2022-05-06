@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import without from "lodash/without.js";
+import omit from "lodash/omit.js";
 import uniq from "lodash/uniq.js";
 import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "../../VulcanComponents";
@@ -157,11 +158,11 @@ export const FormComponentCheckboxGroup = (props: FormInputProps) => {
               : "form-check-unchecked"
             : "";
           return (
-            <div className="form-item-option">
+            <div className="form-item-option" key={option.value}>
               <Components.FormOptionLabel option={option} name={name} />
               <input
                 type="checkbox"
-                {...inputProperties}
+                {...omit(inputProperties, "value")}
                 name={name}
                 //layout="elementOnly"
                 key={i}

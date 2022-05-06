@@ -193,6 +193,13 @@ export interface FormInputProps<TInput = HTMLInputElement>
   extends FormComponentInnerProps {
   // TODO: note sure about this, there also seems to be label and other props that are not HTMLInput props per se
   // It may depend on the type of input as well, maybe the type is more an union
+  /**
+   * Input properties will contain all props that can be safely passed down to the root input
+   * (often an HTML "input" or textarea)
+   *
+   * This includes the current "value", that can be obtained either from "props" or "props.inputProperties.value"
+   * in input components
+   */
   inputProperties: React.HTMLProps<TInput>;
   itemProperties: any; // TODO
 }
