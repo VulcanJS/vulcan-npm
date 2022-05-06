@@ -1,6 +1,6 @@
-export * from "./FormContainer";
-export * from "./Form";
+export * from "./core/FormContainer";
+export * from "./core/Form";
 
-export * from "./FormContext";
+export * from "./core/FormContext";
 
-export type { FormInputProps } from "./FormComponentInner";
+export type { FormInputProps } from "./core/FormComponentInner";

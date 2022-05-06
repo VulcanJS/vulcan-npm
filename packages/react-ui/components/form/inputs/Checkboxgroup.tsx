@@ -4,7 +4,7 @@ import omit from "lodash/omit.js";
 import uniq from "lodash/uniq.js";
 import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "../../VulcanComponents";
-import { FormInputProps } from "../FormComponentInner";
+import { FormInputProps } from "../core/FormComponentInner";
 import { useFormContext } from "..";
 
 // this marker is used to identify "other" values

@@ -4,13 +4,13 @@ import { Story, Meta } from "@storybook/react";
 import { Form } from "../Form";
 import { FormProps } from "../typings";
 import { createModel } from "@vulcanjs/model";
-import * as models from "../../tests/fixtures/models";
+import * as models from "../../../tests/fixtures/models";
 import {
   defaultFieldSchema,
   basicFieldsSchema,
   withDefaultFieldSchema,
-} from "../../tests/fixtures/schemas";
-import { VulcanComponentsProvider } from "../../../VulcanComponents/Provider";
+} from "../../../tests/fixtures/schemas";
+import { VulcanComponentsProvider } from "../../../../VulcanComponents/Provider";
 import { action } from "@storybook/addon-actions";
 
 export default {

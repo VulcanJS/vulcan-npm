@@ -1,9 +1,5 @@
-import {
-  VulcanFieldType,
-  VulcanCoreInput,
-  VulcanFieldInput,
-} from "@vulcanjs/schema";
-import SimpleSchema from "simpl-schema";
+import type { VulcanFieldType, VulcanCoreInput } from "@vulcanjs/schema";
+// import SimpleSchema from "simpl-schema";
 
 export const standardInputs: Array<VulcanCoreInput> = [
   "number",
@@ -49,7 +45,7 @@ export const getAutoInputFromType = (
   fieldType: VulcanFieldType
 ): VulcanCoreInput => {
   const autoType =
-    fieldType === Number || fieldType === SimpleSchema.Integer
+    fieldType === Number //|| fieldType === SimpleSchema.Integer
       ? "number"
       : fieldType === Boolean
       ? "checkbox"

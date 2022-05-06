@@ -1,5 +1,5 @@
 import React from "react";
-import { FormInputProps, FormTextAreaProps } from "../FormComponentInner";
+import type { FormInputProps } from "../core/FormComponentInner";
 import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
 const HTMLSelectAdapter = (props: FormInputProps<HTMLSelectElement>) => {

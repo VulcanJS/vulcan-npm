@@ -32,24 +32,24 @@ import unset from "lodash/unset.js";
 import update from "lodash/update.js";
 import without from "lodash/without.js";
 import isEmpty from "lodash/isEmpty.js";
-import type { FormLayoutProps } from "../FormLayout";
-import type { FormSubmitProps } from "../FormSubmit";
+import type { FormLayoutProps } from "../../elements/FormLayout";
+import type { FormSubmitProps } from "../../elements/FormSubmit";
 
 import {
   convertSchema,
   getEditableFields,
   getInsertableFields,
-} from "../modules/schema_utils";
-import { isEmptyValue } from "../modules/utils";
-import { getParentPath } from "../modules/path_utils";
+} from "../../utils/schema_utils";
+import { isEmptyValue } from "../../utils/utils";
+import { getParentPath } from "../../utils/path_utils";
 // import withCollectionProps from "./withCollectionProps";
 import { FormContext } from "../FormContext";
 import { getFieldGroups, getFieldNames, getLabel } from "./fields";
 import { isNotSameDocument } from "./utils";
-import { useWarnOnUnsaved } from "../useWarnOnUnsaved";
-import { useVulcanComponents } from "../../VulcanComponents/Consumer";
+import { useWarnOnUnsaved } from "../../hooks/useWarnOnUnsaved";
+import { useVulcanComponents } from "../../../VulcanComponents/Consumer";
 
-import type { FormType } from "../typings";
+import type { FormType } from "../../typings";
 import {
   CreateDocumentResult,
   FormProps,

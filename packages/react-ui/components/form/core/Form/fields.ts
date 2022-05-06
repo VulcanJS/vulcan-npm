@@ -1,6 +1,9 @@
-import { formProperties } from "../modules/schema_utils";
+/**
+ * Field processing functions that computes groups and add relevant props for i18n
+ */
+import { formProperties } from "../../utils/schema_utils";
 import { FieldGroup } from "@vulcanjs/schema";
-import { FormField } from "../typings";
+import { FormField } from "../../typings";
 import { FormProps, FormState } from "./typings";
 
 /**
@@ -311,7 +314,7 @@ const handleFieldPath = (
   // }
   return field;
 };
-const handleFieldParent = (field, parentFieldName) => {
+const handleFieldParent = (field: FormField, parentFieldName?: string) => {
   // if field has a parent field, pass it on
   if (parentFieldName) {
     field.parentFieldName = parentFieldName;
@@ -319,7 +322,11 @@ const handleFieldParent = (field, parentFieldName) => {
 
   return field;
 };
-const handlePermissions = (field, fieldName, mutableFields: Array<any>) => {
+const handlePermissions = (
+  field: FormField,
+  fieldName: string,
+  mutableFields: Array<any>
+) => {
   // if field is not creatable/updatable, disable it
   if (!mutableFields.includes(fieldName)) {
     field.disabled = true;
@@ -330,7 +337,7 @@ const handleFieldChildren = (
   props: FormProps,
   state: Pick<FormState, "currentDocument" | "flatSchema" | "originalSchema">,
   context: any,
-  field,
+  field: FormField,
   fieldName: string,
   fieldSchema: any, // TODO: not a VulcanField, more a FormField
   schema: VulcanSchema,
@@ -450,7 +457,7 @@ export const getFieldGroups = (
   state: FormSchemaState,
   context: IntlProviderContextValue,
   mutableFields: Array<string>,
-  formatMessage: Function
+  formatMessage: any
 ) => {
   const { schema, currentDocument } = state;
   // build fields array by iterating over the list of field names

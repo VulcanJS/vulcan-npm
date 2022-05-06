@@ -1,4 +1,4 @@
-import { getNestedFieldSchemaOrType } from "../modules/schema_utils";
+import { getNestedFieldSchemaOrType } from "../utils/schema_utils";
 
 const addressSchema = {
   street: {

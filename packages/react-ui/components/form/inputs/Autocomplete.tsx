@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import { useVulcanComponents } from "../../VulcanComponents/Consumer";
-import { useFormContext } from "../FormContext";
+import { useFormContext } from "../core/FormContext";
 
 export const Autocomplete = (props) => {
   const {

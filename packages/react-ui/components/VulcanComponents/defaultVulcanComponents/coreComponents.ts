@@ -1,6 +1,6 @@
 import { FormattedMessage } from "@vulcanjs/react-i18n";
-import { Button } from "../../form/core/Button";
-import { Loading } from "../../form/core/Loading";
+import { Button } from "../../core/Button";
+import { Loading } from "../../core/Loading";
 
 import { LoadingButton } from "../../LoadingButton";
 import { MutationButton } from "../../MutationButton";

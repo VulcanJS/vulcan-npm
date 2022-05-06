@@ -1,6 +1,6 @@
 import React from "react";
-import { useFormContext } from "./FormContext";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useFormContext } from "../core/FormContext";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
 /**
  * Display errors for the current form, based on the context

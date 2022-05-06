@@ -1,8 +1,8 @@
 import React from "react";
 // Load only the type, to define the API for each component
 // TODO: maybe do the reverse, define the props here and an unstyled version of the component?
-import type { FormSubmitProps } from "../form/FormSubmit";
-import type { ButtonProps } from "../form/core/Button";
+import type { FormSubmitProps } from "../form/elements";
+import type { ButtonProps } from "../core/Button";
 import type { MutationButtonProps } from "../MutationButton";
 
 // datatable
@@ -53,8 +53,8 @@ import type { DatatableSelect } from "../Datatable/DatatableSelect";
 import type { DatatableSubmitSelected } from "../Datatable/DatatableSubmitSelected";
 import type { EditButton, EditForm } from "../Datatable/others/EditButton";
 import type { NewButton, NewForm } from "../Datatable/others/NewButton";
-import { DeleteButton } from "../Datatable/others/DeleteButton";
-import { BootstrapModal as Modal } from "../bootstrap/Modal";
+import type { DeleteButton } from "../Datatable/others/DeleteButton";
+import type { BootstrapModal as Modal } from "../bootstrap/Modal";
 // Cell
 import type { CardItemSwitcher } from "../cell/CardItem";
 import type {
@@ -74,6 +74,7 @@ import type { CardItemRelationHasOne } from "../cell/CardItemRelationHasOne";
 import type { CardItemString } from "../cell/CardItemString";
 import type { CardItemURL } from "../cell/CardItemURL";
 import type { ModalTrigger } from "../bootstrap/ModalTrigger";
+import type { FormOptionLabelProps } from "../form/inputs/FormOptionLabel";
 
 export interface PossibleCoreComponents {
   Loading: any;
@@ -146,7 +147,7 @@ export interface PossibleFormComponents {
   FormNestedItemLayout: any;
   FormNestedObjectLayout: any;
   FormNestedObject: any;
-  FormOptionLabel: any;
+  FormOptionLabel: React.ComponentType<FormOptionLabelProps>;
   // Form
   Form: any;
   SmartForm: any;

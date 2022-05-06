@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { DocumentNode } from "@apollo/client";
-import gql from "graphql-tag";
+import type { DocumentNode } from "@apollo/client";
+//import gql from "graphql-tag";
 import { useQuery } from "@apollo/client";
 import moment from "moment";
 import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "../VulcanComponents";
-import { getFieldType } from "../form/modules/utils";
+import { getFieldType } from "../form/utils/utils";
 
 const getCount = (columnFilters) => {
   if (!columnFilters) {

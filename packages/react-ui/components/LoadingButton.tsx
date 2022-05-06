@@ -1,5 +1,5 @@
 import React, { CSSProperties } from "react";
-import type { ButtonProps } from "./form/core/Button";
+import type { ButtonProps } from "./core/Button";
 import { useVulcanComponents } from "./VulcanComponents/Consumer";
 export interface LoadingButtonProps extends ButtonProps {
   loading?: boolean;

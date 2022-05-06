@@ -48,5 +48,10 @@ export const whitelistInputProps = (
     "disabled",
     "placeholder",
   ];
-  return pick(props, whitelist);
+  const value = props.value;
+  let safeValue;
+  // No null values in HTML inputs
+  if (value === null) safeValue = undefined;
+  // if value is null, return undefined
+  return { ...pick(props, whitelist), value: safeValue };
 };

@@ -3,8 +3,8 @@ import React from "react";
 // import getContext from 'recompose/getContext';
 // import { Components, registerComponent } from 'meteor/vulcan:core';
 import get from "lodash/get.js";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
-import { useFormContext } from "./FormContext";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
+import { useFormContext } from "../core/FormContext";
 
 export const FormError = ({ error, errorContext }) => {
   const VulcanComponents = useVulcanComponents();

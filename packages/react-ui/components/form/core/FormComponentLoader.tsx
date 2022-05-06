@@ -9,7 +9,7 @@ import React, { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import isEmpty from "lodash/isEmpty.js";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
 export interface FormComponentLoaderProps {
   query: string | (({ value: any }) => string);

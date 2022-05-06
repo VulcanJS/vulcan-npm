@@ -1,42 +1,46 @@
 import type { PossibleFormComponents } from "../typings";
-import { FormError } from "../../form/FormError";
+import {
+  FormError,
+  FormErrors,
+  FormSubmit,
+  FormLayout,
+  FormElement,
+  FieldErrors,
+} from "../../form/elements";
 // TODO: currently we need the default export because we pass components manually
-import FormComponent from "../../form/FormComponent";
-import { FormComponentInner } from "../../form/FormComponentInner";
-import { FormComponentLoader } from "../../form/FormComponentLoader";
-import { FormElement } from "../../form/FormElement";
+import {
+  FormContainer,
+  FormComponent,
+  FormComponentInner,
+  FormComponentLoader,
+} from "../../form/core/index";
+import { Form } from "../../form/core/Form";
 import {
   FormGroup,
   FormGroupLayout,
   FormGroupHeader,
-} from "../../form/FormGroup";
+} from "../../form/core/FormGroup";
 import {
   FormIntl,
   FormIntlItemLayout,
   FormIntlLayout,
-} from "../../form/FormIntl";
-import { FormErrors } from "../../form/FormErrors";
-import { FormSubmit } from "../../form/FormSubmit";
-import { FormLayout } from "../../form/FormLayout";
+} from "../../form/intl/FormIntl";
 import {
   FormNestedArray,
   FormNestedArrayInnerLayout,
   IconAdd,
   IconRemove,
-} from "../../form/FormNestedArray";
-import { FormNestedArrayLayout } from "../../form/FormNestedArrayLayout";
-import {
+  //
+  FormNestedDivider,
+  //
+  FormNestedArrayLayout,
+  //
   FormNestedItem,
   FormNestedItemLayout,
-} from "../../form/FormNestedItem";
-import { FormNestedDivider } from "../../form/FormNestedDivider";
-import { FieldErrors } from "../../form/FieldErrors";
-import {
+  //
   FormNestedObject,
   FormNestedObjectLayout,
-} from "../../form/FormNestedObject";
-import { FormOptionLabel } from "../../form/FormOptionLabel";
-import { Form } from "../../form/Form";
+} from "../../form/nested";
 
 import {
   FormComponentDefault,
@@ -53,15 +57,15 @@ import {
   FormComponentTime,
   FormComponentStaticText,
   FormComponentLikert,
-  // used by ui-bootstrap and ui-material
-  FormItem,
   FormComponentAutocomplete,
   FormComponentCheckboxGroup,
   FormComponentRadioGroup,
+  // input utilities
+  FormItem,
+  FormOptionLabel,
+  //
+  AutocompleteMultiple,
 } from "../../form/inputs";
-
-import { FormContainer } from "../../form";
-import { AutocompleteMultiple } from "../../form/inputs/AutocompleteMultiple";
 
 export const defaultFormComponents: PossibleFormComponents = {
   FormError, // used by: FieldErrors

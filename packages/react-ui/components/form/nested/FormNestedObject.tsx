@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _omit from "lodash/omit.js";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
-import { useFormContext } from "./FormContext";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
+import { useFormContext } from "../core/FormContext";
 
 // Replaceable layout
 export const FormNestedObjectLayout = ({ hasErrors, label, content }) => (

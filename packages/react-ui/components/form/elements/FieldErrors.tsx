@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
 // Track dependencies, not used yet
-export const formComponentsDependencies = ["FormError"];
+const formComponentsDependencies = ["FormError"];
 
 /**
  * Errors for one specif fields

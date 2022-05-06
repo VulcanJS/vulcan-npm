@@ -1,7 +1,7 @@
 import { createGraphqlModel } from "@vulcanjs/graphql";
 import { print } from "graphql/language/printer";
 
-import getFormFragments from "../modules/formFragments";
+import getFormFragments from "../utils/formFragments";
 const test = it;
 
 // allow to easily test regex on a graphql string

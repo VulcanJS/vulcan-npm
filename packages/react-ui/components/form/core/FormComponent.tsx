@@ -8,19 +8,19 @@
 import React, { ComponentType, useEffect, useState } from "react";
 import get from "lodash/get.js";
 import SimpleSchema from "simpl-schema";
-import { isEmptyValue, getNullValue } from "./modules/utils";
+import { isEmptyValue, getNullValue } from "../utils/utils";
 import type {
   PossibleFormComponents,
   PossibleVulcanComponents,
-} from "../VulcanComponents/typings";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
-import { FormField } from "./typings";
+} from "../../VulcanComponents/typings";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
+import { FormField } from "../typings";
 import {
   VulcanFieldSchema,
   VulcanFieldInput,
   VulcanFieldType,
 } from "@vulcanjs/schema";
-import { getAutoInputFromType } from "./inputs/consts";
+import { getAutoInputFromType } from "../inputs/consts";
 import { useFormContext } from "./FormContext";
 
 const getCharacterCounts = (value: any, max: number) => {
@@ -181,12 +181,12 @@ ComponentType => {
   }
 };
 
-type Options<TField = any> = Array<{
+export type FormOption<TField = any> = {
   label: string;
   value: TField;
   /** Can force a default value */
   checked?: boolean;
-}>;
+};
 
 export interface FormComponentProps<TField = any>
   extends Omit<FormField, "type"> {
@@ -208,7 +208,7 @@ export interface FormComponentProps<TField = any>
   nestedInput?: boolean;
   /** Graphql query you can pass to fetch the options asynchronously */
   query?: string;
-  options?: Options | ((fciProps?: any) => Options);
+  options?: Array<FormOption> | ((fciProps?: any) => Array<FormOption>);
   vulcanComponents?: PossibleVulcanComponents;
 }
 /**

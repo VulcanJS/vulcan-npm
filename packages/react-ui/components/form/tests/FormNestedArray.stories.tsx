@@ -4,8 +4,11 @@ import { VulcanComponentsProvider } from "../../VulcanComponents/Provider";
 import { IntlProvider } from "@vulcanjs/react-i18n";
 import { makeStringsRegistry } from "@vulcanjs/i18n";
 import { action, actions } from "@storybook/addon-actions";
-import { FormNestedArray, FormNestedArrayProps } from "../FormNestedArray";
-import { FormContext } from "../FormContext";
+import {
+  FormNestedArray,
+  FormNestedArrayProps,
+} from "../nested/FormNestedArray";
+import { FormContext } from "../core/FormContext";
 
 // TODO: instead, compose with Form stories
 const defaultFormProps = {

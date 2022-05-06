@@ -5,7 +5,7 @@ import {
   graphqlQueryStubsToMsw,
 } from "@vulcanjs/graphql/testing";
 import { Story, Meta } from "@storybook/react";
-import { SmartForm, SmartFormProps } from "../FormContainer";
+import { SmartForm, SmartFormProps } from "../core/FormContainer";
 
 // Mocking graphql
 import { VulcanComponentsProvider } from "../../VulcanComponents/Provider";

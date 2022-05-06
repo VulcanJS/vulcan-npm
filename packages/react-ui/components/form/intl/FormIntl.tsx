@@ -1,7 +1,7 @@
 import React from "react";
 import omit from "lodash/omit.js";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
-import { useFormContext } from "./FormContext";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
+import { useFormContext } from "../core/FormContext";
 //import type { LocaleType } from "@vulcanjs/i18n";
 
 // const Locales: Array<{ id: string }> = []; // ?? might need to get this from context

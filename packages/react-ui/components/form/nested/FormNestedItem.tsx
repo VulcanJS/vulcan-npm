@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { intlShape } from "@vulcanjs/react-i18n";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 import { useIntlContext } from "@vulcanjs/react-i18n";
 
 export const FormNestedItemLayout = ({ content, removeButton }) => (

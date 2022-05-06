@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from "react";
 import { useIntlContext } from "@vulcanjs/react-i18n";
-import { whitelistInputProps } from "./ui_utils";
+import { whitelistInputProps } from "../utils/ui_utils";
 import { FormComponentProps } from "./FormComponent";
 /*
 import {
@@ -10,9 +10,9 @@ import {
 */
 import classNames from "classnames";
 import { VulcanCoreInput } from "@vulcanjs/schema";
-import { PossibleVulcanComponents } from "../VulcanComponents/typings";
-import { clearableInputs } from "./inputs/consts";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { PossibleVulcanComponents } from "../../VulcanComponents/typings";
+import { clearableInputs } from "../inputs/consts";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
 export interface FormComponentInnerProps extends FormComponentProps {
   inputType: VulcanCoreInput;

@@ -14,8 +14,8 @@ import React, { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import { useVulcanComponents } from "../../VulcanComponents/Consumer";
-import { FormInputProps } from "../FormComponentInner";
-import { useFormContext } from "../FormContext";
+import type { FormInputProps } from "../core/FormComponentInner";
+import { useFormContext } from "../core/FormContext";
 
 export interface AutocompleteMultipleProps extends FormInputProps {}
 export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {

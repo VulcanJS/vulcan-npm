@@ -1,5 +1,5 @@
 import React, { HTMLAttributes, PropsWithChildren } from "react";
-import { useFormContext } from "./FormContext";
+import { useFormContext } from "../core/FormContext";
 
 export type FormElementProps = HTMLAttributes<HTMLFormElement>;
 /**

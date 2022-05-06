@@ -3,7 +3,7 @@ import { VulcanModel } from "@vulcanjs/model";
 import { VulcanDocument } from "@vulcanjs/schema";
 import React from "react";
 import type { SmartFormProps } from "../../form";
-import type { ButtonProps } from "../../form/core/Button";
+import type { ButtonProps } from "../../core/Button";
 import { useVulcanComponents } from "../../VulcanComponents";
 
 export const NewButton = ({

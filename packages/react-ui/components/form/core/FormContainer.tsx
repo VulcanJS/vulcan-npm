@@ -45,7 +45,7 @@ import React, { useRef } from "react";
 import { DocumentNode } from "@apollo/client";
 import gql from "graphql-tag";
 
-import getFormFragments from "./modules/formFragments";
+import getFormFragments from "../utils/formFragments";
 // import { VulcanModel } from "@vulcanjs/model";
 import { VulcanGraphqlModel, getFragmentName } from "@vulcanjs/graphql";
 import type {
@@ -61,11 +61,11 @@ import {
   useDelete,
   UseSingleOptions,
 } from "@vulcanjs/react-hooks";
-import { useVulcanComponents } from "../VulcanComponents/Consumer";
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 import { FetchResult } from "@apollo/client";
 // import { FormType } from "./typings";
 import { debugVulcan } from "@vulcanjs/utils";
-import { useVulcanCurrentUser } from "../VulcanCurrentUser/Consumer";
+import { useVulcanCurrentUser } from "../../VulcanCurrentUser/Consumer";
 import { VulcanUser } from "@vulcanjs/permissions";
 import { PassedDownFormProps } from "./Form/typings";
 const debugForm = debugVulcan("form");
