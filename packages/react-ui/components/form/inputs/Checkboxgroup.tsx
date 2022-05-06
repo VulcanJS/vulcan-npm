@@ -157,7 +157,7 @@ export const FormComponentCheckboxGroup = (props: FormInputProps) => {
               : "form-check-unchecked"
             : "";
           return (
-            <>
+            <div className="form-item-option">
               <Components.FormOptionLabel option={option} name={name} />
               <input
                 type="checkbox"
@@ -182,7 +182,7 @@ export const FormComponentCheckboxGroup = (props: FormInputProps) => {
                 }}
                 className={checkClass}
               />
-            </>
+            </div>
           );
         })}
         {itemProperties.showOther && (
