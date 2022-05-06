@@ -11,7 +11,7 @@ Learn more about [Remix Stacks](https://remix.run/stacks).
 npx create-remix --template VulcanJS/eurodance-stack
 ```
 
-**NOTE: if you don't use "create-remix"**, for instance when cloning vulcan-npm as a contributor, you will need to run `yarn remix init` manually.
+**NOTE: if you clone this repo directly, and don't use `create-remix`, you will need to run `yarn remix init` manually!**
 
 ## What's in the stack
 

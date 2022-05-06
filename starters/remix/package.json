@@ -6,10 +6,11 @@
   "sideEffects": false,
   "scripts": {
     "postinstall": "remix setup node",
-    "build": "run-s build:*",
+    "//build-run-s": "run-s npm:build:*",
+    "build": "npm run build:css && npm run build:remix",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
-    "dev": "run-p dev:*",
+    "dev": "concurrently npm:dev:*",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
@@ -23,7 +24,8 @@
     "pretest:e2e:run": "npm run build",
     "test:e2e:run": "cross-env PORT=8811 start-server-and-test start:mocks http://localhost:8811 \"cypress run\"",
     "typecheck": "tsc -b && tsc -b cypress",
-    "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
+    "//validate-run-p": "run-p \"test -- --run\" lint typecheck test:e2e:run",
+    "validate": "concurrently \"npm:test -- --run\" npm:lint npm:typecheck npm:test:e2e:run"
   },
   "prettier": {},
   "eslintIgnore": [
@@ -62,6 +64,7 @@
     "autoprefixer": "^10.4.4",
     "binode": "^1.0.5",
     "c8": "^7.11.0",
+    "concurrently": "^7.1.0",
     "cross-env": "^7.0.3",
     "cypress": "^9.5.3",
     "eslint": "^8.12.0",
