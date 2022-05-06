@@ -46,7 +46,6 @@ import {
   FormComponentEmail,
   FormComponentTextarea,
   FormComponentCheckbox,
-  FormComponentCheckboxGroup,
   FormComponentRadioGroup,
   FormComponentSelect,
   FormComponentSelectMultiple,
@@ -59,6 +58,7 @@ import {
   FormItem,
   FormComponentAutocomplete,
 } from "../../form/inputs/BasicInputs";
+import { FormComponentCheckboxGroup } from "../../form/inputs/Checkboxgroup";
 
 import { FormContainer } from "../../form";
 import { AutocompleteMultiple } from "../../form/inputs/AutocompleteMultiple";

@@ -47,7 +47,12 @@ export const FormItem = (
 };
 
 const HTMLSelectAdapter = (props: FormInputProps) => {
-  const { multiple, inputProperties, options = [], itemProperties } = props;
+  const {
+    multiple,
+    inputProperties = {},
+    options = [],
+    itemProperties,
+  } = props;
   const { label, name } = inputProperties;
   if (!Array.isArray(options))
     throw new Error("HTMLSelectAdapater not yet supporting functional options");
@@ -92,13 +97,10 @@ export const FormComponentTextarea = (props: FormTextAreaProps) => {
   return <textarea {...inputProperties} />;
 };
 // TODO: at the moment we use a select instead
-export const FormComponentCheckbox = (props: FormInputProps) => (
-  <HTMLSelectAdapter type="checkbox" {...props} />
-);
-// TODO: atm we use a select multiple instead of checkboxes
-export const FormComponentCheckboxGroup = (props: FormInputProps) => (
-  <FormComponentSelectMultiple {...props} />
-);
+export const FormComponentCheckbox = (props: FormInputProps) => {
+  return <HTMLInputAdapter type="checkbox" {...props} />;
+  //<HTMLSelectAdapter type="checkbox" {...props} />
+};
 
 /**
  *

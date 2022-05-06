@@ -181,7 +181,12 @@ ComponentType => {
   }
 };
 
-type Options<TField = any> = Array<{ label: string; value: TField }>;
+type Options<TField = any> = Array<{
+  label: string;
+  value: TField;
+  /** Can force a default value */
+  checked?: boolean;
+}>;
 
 export interface FormComponentProps<TField = any>
   extends Omit<FormField, "type"> {
