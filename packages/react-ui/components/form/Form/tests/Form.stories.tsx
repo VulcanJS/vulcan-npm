@@ -150,14 +150,6 @@ const selectFieldsSchema = withDefaultFieldSchema({
       { label: "c", value: "c" },
     ],
   },
-  /* 
-  // TODO:
-  checkboxgroup: {},
-  select,
-  selectmultiple,
-  autocomplete,
-  multiautocomplete
-  */
 });
 
 export const SelectFieldsForm = FormTemplate.bind({});
@@ -165,6 +157,39 @@ SelectFieldsForm.args = {
   model: createModel({
     name: "Biography",
     schema: selectFieldsSchema,
+  }),
+};
+
+const selectMultipleFieldsSchema = withDefaultFieldSchema({
+  // multiple
+  "string-checkboxgroup": {
+    type: String,
+    input: "checkboxgroup",
+    options: [
+      { label: "a", value: "a" },
+      { label: "b", value: "b" },
+      { label: "c", value: "c" },
+    ],
+  },
+  "string-select-multiple": {
+    type: String,
+    input: "selectmultiple",
+    options: [
+      { label: "a", value: "a" },
+      { label: "b", value: "b" },
+      { label: "c", value: "c" },
+    ],
+  },
+  /* 
+  // TODO:
+  multiautocomplete
+  */
+});
+export const SelectMultipleFieldsForm = FormTemplate.bind({});
+SelectMultipleFieldsForm.args = {
+  model: createModel({
+    name: "Biography",
+    schema: selectMultipleFieldsSchema,
   }),
 };
 

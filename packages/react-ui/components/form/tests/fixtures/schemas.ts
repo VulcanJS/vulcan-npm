@@ -5,6 +5,7 @@ export const defaultFieldSchema = {
   canUpdate: ["guests"],
 };
 
+import { VulcanFieldSchema } from "@vulcanjs/schema";
 import fromPairs from "lodash/fromPairs.js";
 import mapValues from "lodash/mapValues.js";
 import SimpleSchema from "simpl-schema";
@@ -14,7 +15,9 @@ import SimpleSchema from "simpl-schema";
  * @param partialSchema
  * @returns
  */
-export const withDefaultFieldSchema = (partialSchema) =>
+export const withDefaultFieldSchema = (
+  partialSchema: Partial<VulcanFieldSchema>
+) =>
   mapValues(partialSchema, (fieldSchema) => ({
     ...defaultFieldSchema,
     ...fieldSchema,

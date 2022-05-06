@@ -47,7 +47,7 @@ export const FormItem = (
 };
 
 const HTMLSelectAdapter = (props: FormInputProps) => {
-  const { inputProperties, options = [], itemProperties } = props;
+  const { multiple, inputProperties, options = [], itemProperties } = props;
   const { label, name } = inputProperties;
   if (!Array.isArray(options))
     throw new Error("HTMLSelectAdapater not yet supporting functional options");
@@ -62,6 +62,7 @@ const HTMLSelectAdapter = (props: FormInputProps) => {
     >
       {/** TODO: whitelisting feature should be smarter to differentiate select and input */}
       <select
+        multiple={multiple}
         {...(inputProperties as unknown as React.HTMLProps<HTMLSelectElement>)}
       >
         {options.map(({ label, value }) => (
