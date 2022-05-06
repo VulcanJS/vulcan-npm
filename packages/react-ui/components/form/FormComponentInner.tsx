@@ -185,15 +185,15 @@ export const FormComponentInner = (props: FormComponentInnerProps) => {
   );
 };
 
-export interface FormInputProps extends FormComponentInnerProps {
+/**
+ * Props passed to Vulcan Smart Form input
+ * Use those props to define custom inputs
+ */
+export interface FormInputProps<TInput = HTMLInputElement>
+  extends FormComponentInnerProps {
   // TODO: note sure about this, there also seems to be label and other props that are not HTMLInput props per se
   // It may depend on the type of input as well, maybe the type is more an union
-  inputProperties: React.HTMLProps<HTMLInputElement>;
+  inputProperties: React.HTMLProps<TInput>;
   itemProperties: any; // TODO
 }
-export interface FormTextAreaProps extends FormComponentInnerProps {
-  // TODO: note sure about this, there also seems to be label and other props that are not HTMLInput props per se
-  // It may depend on the type of input as well, maybe the type is more an union
-  inputProperties: React.HTMLProps<HTMLTextAreaElement>;
-  itemProperties: any; // TODO
-}
+export type FormTextAreaProps = FormInputProps<HTMLTextAreaElement>;
