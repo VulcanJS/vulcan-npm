@@ -96,8 +96,20 @@ export const FormComponentEmail = (props: FormInputProps) => (
   <HTMLInputAdapter type="email" {...props} />
 );
 export const FormComponentTextarea = (props: FormTextAreaProps) => {
-  const { inputProperties, itemProperties } = props;
-  return <textarea {...inputProperties} />;
+  const Components = useVulcanComponents();
+  const { inputProperties = {}, itemProperties = {}, path } = props;
+  const { label, name, ...otherInputProperties } = inputProperties;
+  return (
+    <Components.FormItem
+      name={name}
+      path={path}
+      label={label}
+      inputProperties={inputProperties}
+      {...itemProperties}
+    >
+      <textarea {...inputProperties} />
+    </Components.FormItem>
+  );
 };
 // TODO: at the moment we use a select instead
 export const FormComponentCheckbox = (props: FormInputProps) => {
