@@ -4,9 +4,6 @@
 .npmrc
 .nyc_output
 .pnp.js
-.yarn/build-state.yml
-.yarn/cache
-.yarn/unplugged
 *.cache
 *.log
 /.changelog
@@ -30,7 +27,6 @@ node_modules
 package-lock.json
 .yalc
 .yalc.lock
-.yarn
 starters/express/yalc.lock
 starters/next/yalc.lock
 
@@ -43,3 +39,14 @@ generated/
 # Turborepo
 .turbo
 storybook-static/
+
+# Yarn 2
+# https://stackoverflow.com/questions/62456078/yarn-install-leads-to-cannot-find-module-yarn-berry-js
+.yarn/*
+.pnp.*
+# Keep those in the repo to have a share version
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
