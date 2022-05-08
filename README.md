@@ -22,7 +22,8 @@ corepack enable
 yarn set version stable
 ```
 
-- Install
+Plugins are already installed, since some parts of the ".yarn" folder are stored in the repo (Yarn executable, plugins etc.)
+
 - We replace Lerna commands either by "yarn workspace" or "lerna-lite" commands
 - Use "\*" as the version dependency to force Yarn to install local versions when the package is not yet published: https://blog.charlesloubao.com/one-line-javascript-tip-1-how-to-install-a-local/
 - If necessary, go back to "classic" with "yarn set classic"
