@@ -1,4 +1,7 @@
-import type { PossibleFormComponents } from "@vulcanjs/react-ui";
+import {
+  defaultFormComponents,
+  PossibleFormComponents,
+} from "@vulcanjs/react-ui";
 import {
   FormComponentCheckboxGroup,
   FormComponentRadioGroup,
@@ -86,6 +89,7 @@ import {
 
 export const bootstrapFormComponents: Partial<PossibleFormComponents> = {
   // TODO: bootstrap is still incomplete so we also mix the more complete lite components
+  ...defaultFormComponents,
   ...liteFormComponents,
   FormComponentRadioGroup,
   FormComponentCheckboxGroup,
