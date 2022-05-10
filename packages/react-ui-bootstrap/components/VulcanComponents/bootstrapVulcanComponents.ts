@@ -37,16 +37,8 @@
 //import { FormOptionLabel } from "../FormOptionLabel";
 //import { Form } from "../Form";
 
-import { Button } from "../core/Button";
-import { TooltipTrigger } from "../core/TooltipTrigger";
-
-import { PossibleCoreComponents } from "@vulcanjs/react-ui";
+import { bootstrapCoreComponents } from "./bootstrapCoreComponents";
 import { bootstrapFormComponents } from "./bootstrapFormComponents";
-
-const bootstrapCoreComponents: Partial<PossibleCoreComponents> = {
-  Button,
-  TooltipTrigger,
-};
 
 /**
  * @deprecated Instead load each kind of component as you need them
