@@ -5,12 +5,12 @@ import {
   graphqlQueryStubsToMsw,
 } from "@vulcanjs/graphql/testing";
 import { Story, Meta } from "@storybook/react";
-import { SmartForm, SmartFormProps } from "../core/FormContainer";
+import { SmartForm, SmartFormProps } from "@vulcanjs/react-ui";
 
 // Mocking graphql
-import { VulcanComponentsProvider } from "../../VulcanComponents/Provider";
-import { ExpectedErrorBoundary } from "../../../testing/ExpectedErrorBoundary";
-import {} from "@vulcanjs/graphql";
+import { VulcanComponentsProvider } from "@vulcanjs/react-ui";
+//import { ExpectedErrorBoundary } from "@vulcanjs/react-ui/testing";
+import { } from "@vulcanjs/graphql";
 import {
   singleOperationName,
   createGraphqlModel,
@@ -18,7 +18,7 @@ import {
   updateOperationName,
 } from "@vulcanjs/graphql";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
-import { VulcanCurrentUserProvider } from "../../VulcanCurrentUser/Provider";
+import { VulcanCurrentUserProvider } from "@vulcanjs/react-ui";
 
 // dummy simplified model
 const singleMock: GraphqlMutationStub<{
@@ -150,8 +150,11 @@ const NotCreateableModel = createGraphqlModel({
   },
 });
 // it is expected to fail
+/*
+TODO: expose ExpectedErrorBoundary 
 export const NotCreateable = () => (
   <ExpectedErrorBoundary>
     <SmartFormTemplate model={NotCreateableModel} />
   </ExpectedErrorBoundary>
 );
+*/
