@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-ui",
-  "version": "0.6.6-y.13",
+  "version": "0.6.6-y.14",
   "description": "Vulcan UI components for React",
   "main": "./dist/index.js",
   "files": [
