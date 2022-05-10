@@ -1,6 +1,6 @@
 import { LoadingButton } from "../../core/LoadingButton";
 import { MutationButton } from "../../core/MutationButton";
-import { Form, FormContainer } from "../../form/core/index";
+import { Form, FormContainer } from "../../form/core";
 import { PossibleFormComponents } from "../typings";
 
 export const defaultFormComponents: Partial<PossibleFormComponents> = {
