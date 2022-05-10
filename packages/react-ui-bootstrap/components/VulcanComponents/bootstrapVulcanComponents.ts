@@ -40,79 +40,17 @@
 import { Button } from "../core/Button";
 import { TooltipTrigger } from "../core/TooltipTrigger";
 
-import {
-  PossibleCoreComponents,
-  PossibleFormComponents,
-} from "@vulcanjs/react-ui";
+import { PossibleCoreComponents } from "@vulcanjs/react-ui";
+import { bootstrapFormComponents } from "./bootstrapFormComponents";
 
 const bootstrapCoreComponents: Partial<PossibleCoreComponents> = {
   Button,
   TooltipTrigger,
 };
-const bootstrapFormComponents: Partial<PossibleFormComponents> = {
-  //FormError, // used by: FieldErrors
-  // To be defined by the UI framework
-  // TODO: add defaults in React components
-  /*
-  FormComponentPassword,
-  FormComponentNumber,
-  FormComponentUrl,
-  FormComponentEmail,
-  FormComponentTextarea,
-  FormComponentCheckbox,
-  FormComponentCheckboxGroup,
-  FormComponentRadioGroup,
-  FormComponentSelectMultiple,
-  FormComponentDateTime,
-  FormComponentDate,
-  */
-  // //FormComponentDate2,
-  /*
-  FormComponentTime,
-  FormComponentStaticText,
-  FormComponentLikert,
-  FormComponentAutocomplete,
-  FormComponentMultiAutocomplete,
-  */
-  // Components defined in default vulcan/forms
-  /*
-  FormComponent,
-  FormComponentInner,
-  FormComponentLoader,
-  FormElement,
-  FormGroup,
-  FormGroupLayout,
-  FormGroupHeader,
-  FormIntl,
-  FormIntlItemLayout,
-  FormIntlLayout,
-  */
-  // Layout
-  /*
-  FieldErrors,
-  FormErrors,
-  FormSubmit,
-  FormLayout,
 
-  FormNestedArray,
-  FormNestedArrayInnerLayout,
-  FormNestedArrayLayout,
-  FormNestedItem,
-  IconAdd,
-  IconRemove,
-  FormNestedDivider,
-  */
-  // nested item
-  /*
-  FormNestedItemLayout,
-  FormNestedObjectLayout,
-  FormNestedObject,
-  FormOptionLabel,
-  */
-  //
-  //Form,
-};
-
+/**
+ * @deprecated Instead load each kind of component as you need them
+ */
 export const bootstrapVulcanComponents: any = {
   ...bootstrapCoreComponents,
   ...bootstrapFormComponents,
