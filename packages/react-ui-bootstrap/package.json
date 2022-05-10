@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-ui-bootstrap",
-  "version": "0.6.6-y.7",
+  "version": "0.6.6-y.9",
   "description": "Vulcan UI components for React - Written with React Bootstrap",
   "main": "./dist/index.js",
   "files": [
