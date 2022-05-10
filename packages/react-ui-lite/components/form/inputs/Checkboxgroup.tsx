@@ -6,7 +6,7 @@ import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "@vulcanjs/react-ui";
 import type { FormInputProps } from "../typings";
 
-import { useFormContext } from "..";
+import { useFormContext } from "@vulcanjs/react-ui";
 
 // this marker is used to identify "other" values
 export const otherMarker = "[other]";
