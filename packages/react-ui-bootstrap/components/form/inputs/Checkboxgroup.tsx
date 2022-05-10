@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import FormCheck from 'react-bootstrap/FormCheck';
+import { FormCheck } from "react-bootstrap"
 import without from 'lodash/without.js';
 import uniq from 'lodash/uniq.js';
 import isEmpty from 'lodash/isEmpty.js';

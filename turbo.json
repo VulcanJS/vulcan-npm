@@ -4,7 +4,7 @@
   "pipeline": {
     "prebuild": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": []
     },
     "build": {
       "dependsOn": ["^build", "^build:types", "prebuild"],

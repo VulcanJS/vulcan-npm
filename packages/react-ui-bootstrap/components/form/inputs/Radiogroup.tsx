@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import FormCheck from 'react-bootstrap/FormCheck';
+import { FormCheck } from 'react-bootstrap';
 import isEmpty from 'lodash/isEmpty.js';
 import { isOtherValue, removeOtherMarker, addOtherMarker } from './Checkboxgroup';
 import { FormInputProps, useFormContext, useVulcanComponents } from '@vulcanjs/react-ui';
