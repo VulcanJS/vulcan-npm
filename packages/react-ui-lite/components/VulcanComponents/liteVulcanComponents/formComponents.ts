@@ -67,7 +67,7 @@ import {
   AutocompleteMultiple,
 } from "../../form/inputs";
 
-export const liteFormComponents: PossibleFormComponents = {
+export const liteFormComponents: Partial<PossibleFormComponents> = {
   // Reexpose defaults provided by react-ui
   ...defaultFormComponents,
   // Specific implementations

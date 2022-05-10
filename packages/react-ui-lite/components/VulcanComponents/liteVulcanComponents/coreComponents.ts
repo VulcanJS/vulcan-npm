@@ -18,7 +18,7 @@ import { ModalTrigger } from "../../bootstrap/ModalTrigger";
 /**
  * Minimal set of components, mandatory to operate Vulcan React UI
  */
-export const liteCoreComponents: PossibleCoreComponents = {
+export const liteCoreComponents: Partial<PossibleCoreComponents> = {
   ...defaultCoreComponents,
   // core components taht were used in forms
   Loading,
