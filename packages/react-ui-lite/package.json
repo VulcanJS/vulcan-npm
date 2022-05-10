@@ -1,0 +1,39 @@
+{
+  "name": "@vulcanjs/react-ui-lite",
+  "version": "0.6.6-y.3",
+  "description": "Vulcan UI components for React - Written with the lightest libraries avaiable",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:tsup": "tsup",
+    "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json ",
+    "build": "yarn run build:tsup"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "classnames": "^2.3.1",
+    "debug": "^4.3.1",
+    "lodash": "^4.17.21"
+  },
+  "peerDependencies": {
+    "@vulcanjs/react-ui": "*",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.168"
+  },
+  "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f"
+}

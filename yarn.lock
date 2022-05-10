@@ -10274,6 +10274,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@vulcanjs/react-ui-lite@workspace:packages/react-ui-lite":
+  version: 0.0.0-use.local
+  resolution: "@vulcanjs/react-ui-lite@workspace:packages/react-ui-lite"
+  dependencies:
+    "@types/lodash": ^4.14.168
+    classnames: ^2.3.1
+    debug: ^4.3.1
+    lodash: ^4.17.21
+  peerDependencies:
+    "@vulcanjs/react-ui": "*"
+    react: ^17.0.1
+    react-dom: ^17.0.1
+  languageName: unknown
+  linkType: soft
+
 "@vulcanjs/react-ui-material@workspace:packages/react-ui-material":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui-material@workspace:packages/react-ui-material"
@@ -10312,7 +10327,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui@^0.6.6-y.1, @vulcanjs/react-ui@workspace:packages/react-ui":
+"@vulcanjs/react-ui@^0.6.6-y.3, @vulcanjs/react-ui@workspace:packages/react-ui":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui@workspace:packages/react-ui"
   dependencies:
@@ -36167,7 +36182,7 @@ __metadata:
     "@vulcanjs/mongo": ^0.6.4
     "@vulcanjs/mongo-apollo": ^0.6.6-alpha.4
     "@vulcanjs/react-hooks": ^0.6.6-alpha.4
-    "@vulcanjs/react-ui": ^0.6.6-y.1
+    "@vulcanjs/react-ui": ^0.6.6-y.3
     "@vulcanjs/schema": ^0.6.4
     apollo-datasource-mongodb: ^0.5.2
     apollo-server: ^3
