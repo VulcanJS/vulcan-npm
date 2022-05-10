@@ -10281,6 +10281,15 @@ __metadata:
   resolution: "@vulcanjs/react-ui-lite@workspace:packages/react-ui-lite"
   dependencies:
     "@types/lodash": ^4.14.168
+    "@vulcanjs/core": ^0.6.4
+    "@vulcanjs/graphql": ^0.6.6-alpha.4
+    "@vulcanjs/i18n": ^0.6.4
+    "@vulcanjs/model": ^0.6.4
+    "@vulcanjs/permissions": ^0.6.4
+    "@vulcanjs/react-hooks": ^0.6.6-alpha.4
+    "@vulcanjs/react-i18n": ^0.6.4
+    "@vulcanjs/schema": ^0.6.4
+    "@vulcanjs/utils": ^0.6.4
     classnames: ^2.3.1
     debug: ^4.3.1
     lodash: ^4.17.21
