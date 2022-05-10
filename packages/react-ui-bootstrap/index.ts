@@ -1,2 +1,2 @@
 //export * from "./components/form";
-export * from "./components/VulcanComponents/bootstrapVulcanComponents";
+export * from "./components/VulcanComponents";

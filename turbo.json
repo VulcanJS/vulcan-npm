@@ -3,8 +3,8 @@
   "baseBranch": "origin/main",
   "pipeline": {
     "prebuild": {
-      "dependsOn": ["^prebuild"],
-      "outputs": []
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"]
     },
     "build": {
       "dependsOn": ["^build", "^build:types", "prebuild"],
