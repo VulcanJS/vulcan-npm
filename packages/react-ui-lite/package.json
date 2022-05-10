@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-ui-lite",
-  "version": "0.6.6-y.6",
+  "version": "0.6.6-y.8",
   "description": "Vulcan UI components for React - Written with the lightest libraries avaiable",
   "main": "./dist/index.js",
   "files": [
