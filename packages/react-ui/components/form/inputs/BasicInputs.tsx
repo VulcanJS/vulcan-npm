@@ -1,5 +1,5 @@
 import React from "react";
-import { FormInputProps, FormTextAreaProps } from "../core/FormComponentInner";
+import { FormInputProps, FormTextAreaProps } from "../typings";
 import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 
 /**

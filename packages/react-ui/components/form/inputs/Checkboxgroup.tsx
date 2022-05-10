@@ -4,7 +4,8 @@ import omit from "lodash/omit.js";
 import uniq from "lodash/uniq.js";
 import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "../../VulcanComponents";
-import { FormInputProps } from "../core/FormComponentInner";
+import type { FormInputProps } from "../typings";
+
 import { useFormContext } from "..";
 
 // this marker is used to identify "other" values
@@ -122,10 +123,10 @@ export const FormComponentCheckboxGroup = (props: FormInputProps) => {
   // (unless they have the "other" marker)
   const value: Array<string | number | null> = valueFromProps
     ? uniq(
-        valueFromProps.filter(
-          (v) => isOtherValue(v) || options.map((o) => o.value).includes(v)
-        )
+      valueFromProps.filter(
+        (v) => isOtherValue(v) || options.map((o) => o.value).includes(v)
       )
+    )
     : [];
 
   const hasValue = value.length > 0;

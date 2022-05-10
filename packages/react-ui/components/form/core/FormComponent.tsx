@@ -11,10 +11,8 @@ import SimpleSchema from "simpl-schema";
 import { isEmptyValue, getNullValue } from "../utils/utils";
 import type {
   PossibleFormComponents,
-  PossibleVulcanComponents,
 } from "../../VulcanComponents/typings";
 import { useVulcanComponents } from "../../VulcanComponents/Consumer";
-import { FormField } from "../typings";
 import {
   VulcanFieldSchema,
   VulcanFieldInput,
@@ -22,6 +20,7 @@ import {
 } from "@vulcanjs/schema";
 import { getAutoInputFromType } from "../inputs/consts";
 import { useFormContext } from "./FormContext";
+import { FormComponentProps } from "../typings";
 
 const getCharacterCounts = (value: any, max: number) => {
   const characterCount: number = value && value.length ? value.length : 0;
@@ -105,7 +104,7 @@ const getFormInput = ({
   input: VulcanFieldInput;
   FormComponents: PossibleFormComponents;
 }): // TODO: we could type the props here, it's an InputComponent to be more precise
-ComponentType => {
+  ComponentType => {
   // if input is a React component, use it
   // NOTE: does it work with class components?
   if (typeof input === "function") {
@@ -181,36 +180,7 @@ ComponentType => {
   }
 };
 
-export type FormOption<TField = any> = {
-  label: string;
-  value: TField;
-  /** Can force a default value */
-  checked?: boolean;
-};
 
-export interface FormComponentProps<TField = any>
-  extends Omit<FormField, "type"> {
-  document: any;
-  datatype: VulcanFieldType; // TODO: type of the field, replace this by a cleaner value like we do in graphql to get the field type
-  disabled: boolean;
-  errors: Array<any>;
-  /** Help text for the form */
-  help?: string;
-  /** Path of the field if nested */
-  path: string;
-  defaultValue?: TField;
-  max?: number;
-  locale?: string;
-  /** Input for this field */
-  input?: VulcanFieldInput | string | React.Component;
-  formType: "new" | "edit"; // new or edit
-  intlInput?: boolean;
-  nestedInput?: boolean;
-  /** Graphql query you can pass to fetch the options asynchronously */
-  query?: string;
-  options?: Array<FormOption> | ((fciProps?: any) => Array<FormOption>);
-  vulcanComponents?: PossibleVulcanComponents;
-}
 /**
  * Component for the display of any field of the form
  */

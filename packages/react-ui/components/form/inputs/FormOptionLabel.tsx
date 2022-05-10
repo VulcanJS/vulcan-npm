@@ -1,5 +1,5 @@
 import React from "react";
-import type { FormOption } from "../core/FormComponent";
+import type { FormOption } from "../typings";
 
 export interface FormOptionLabelProps
   extends React.HTMLProps<HTMLLabelElement> {

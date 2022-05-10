@@ -1,5 +1,6 @@
 import React from "react";
-import { FormInputProps } from "../core/FormComponentInner";
+import { FormInputProps } from "../typings";
+
 
 // TODO: might need some sanitization
 // For consistency with Vulcan Meteor ui bootstrap and ui material

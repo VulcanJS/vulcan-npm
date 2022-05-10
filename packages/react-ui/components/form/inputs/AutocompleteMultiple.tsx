@@ -14,10 +14,10 @@ import React, { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import { useVulcanComponents } from "../../VulcanComponents/Consumer";
-import type { FormInputProps } from "../core/FormComponentInner";
+import type { FormInputProps } from "../typings";
 import { useFormContext } from "../core/FormContext";
 
-export interface AutocompleteMultipleProps extends FormInputProps {}
+export interface AutocompleteMultipleProps extends FormInputProps { }
 export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
   // TODO: some props are now comming from the context
   const {

@@ -3,4 +3,4 @@ export * from "./core/Form";
 
 export * from "./core/FormContext";
 
-export type { FormInputProps } from "./core/FormComponentInner";
+export type { FormInputProps } from "./typings";
