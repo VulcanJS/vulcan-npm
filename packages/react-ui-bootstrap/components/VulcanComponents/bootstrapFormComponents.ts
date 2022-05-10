@@ -4,7 +4,17 @@ import {
   FormComponentRadioGroup,
   AutocompleteMultiple,
   FormComponentAutocomplete,
+  FormComponentDefault,
+  FormComponentEmail,
+  FormComponentNumber,
+  FormComponentPassword,
+  FormComponentSelect,
+  FormComponentSelectMultiple,
+  FormComponentUrl,
+  FormComponentStaticText,
 } from "../form/inputs";
+import { FormElement, FormDescription } from "../form/elements/index";
+import { liteFormComponents } from "@vulcanjs/react-ui-lite";
 /*
 import {
   FormError,
@@ -75,6 +85,8 @@ import {
 } from "../../form/inputs";*/
 
 export const bootstrapFormComponents: Partial<PossibleFormComponents> = {
+  // TODO: bootstrap is still incomplete so we also mix the more complete lite components
+  ...liteFormComponents,
   FormComponentRadioGroup,
   FormComponentCheckboxGroup,
   /*
@@ -141,4 +153,15 @@ export const bootstrapFormComponents: Partial<PossibleFormComponents> = {
 
   FormComponentAutocomplete,
   FormComponentMultiAutocomplete: AutocompleteMultiple,
+
+  FormComponentDefault,
+  FormComponentText: FormComponentDefault,
+  FormComponentEmail,
+  FormComponentNumber,
+  FormComponentPassword,
+  FormComponentSelect,
+  FormComponentSelectMultiple,
+  FormComponentUrl,
+  FormComponentStaticText,
+  FormElement,
 };

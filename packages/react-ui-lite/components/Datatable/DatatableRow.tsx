@@ -1,7 +1,8 @@
 import React, { memo } from "react";
 import _isFunction from "lodash/isFunction.js";
 import { useVulcanComponents } from "@vulcanjs/react-ui";
-import { VulcanGraphqlModel } from "@vulcanjs/graphql";
+import type { VulcanGraphqlModel } from "@vulcanjs/graphql";
+
 import { isAdmin, permissionCheck, VulcanUser } from "@vulcanjs/permissions";
 import { VulcanDocument } from "@vulcanjs/schema";
 

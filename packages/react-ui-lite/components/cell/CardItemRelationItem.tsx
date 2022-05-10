@@ -1,4 +1,5 @@
-import { VulcanGraphqlModel } from "@vulcanjs/graphql";
+import type { VulcanGraphqlModel } from "@vulcanjs/graphql";
+
 import { VulcanDocument } from "@vulcanjs/schema";
 import React from "react";
 // import { Link } from "react-router-dom";

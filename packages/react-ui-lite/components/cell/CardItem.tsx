@@ -1,4 +1,5 @@
-import { VulcanGraphqlModel } from "@vulcanjs/graphql";
+import type { VulcanGraphqlModel } from "@vulcanjs/graphql";
+
 import { VulcanFieldSchema } from "@vulcanjs/schema";
 import { VulcanDocument } from "@vulcanjs/schema";
 import React from "react";

@@ -1,4 +1,5 @@
-import { VulcanGraphqlModel } from "@vulcanjs/graphql";
+import type { VulcanGraphqlModel } from "@vulcanjs/graphql";
+
 import { VulcanUser } from "@vulcanjs/permissions";
 import { useDelete } from "@vulcanjs/react-hooks";
 import { DocumentNode } from "graphql";
