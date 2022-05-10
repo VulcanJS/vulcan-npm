@@ -56,7 +56,7 @@ import {
   UpdateDocumentResult,
 } from "./typings";
 import { MutationResult } from "@apollo/client";
-import { useVulcanComponents } from "../../../VulcanComponents";
+import { useVulcanComponents } from "../../../VulcanComponents/Consumer";
 
 // props that should trigger a form reset
 const RESET_PROPS = [

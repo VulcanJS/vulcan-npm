@@ -66,7 +66,8 @@ import { FetchResult } from "@apollo/client";
 import { debugVulcan } from "@vulcanjs/utils";
 import { VulcanUser } from "@vulcanjs/permissions";
 import { PassedDownFormProps } from "./Form/typings";
-import { useVulcanComponents } from "../../VulcanComponents";
+// Be careful to import from the Consumer!
+import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 import { useVulcanCurrentUser } from "../../VulcanCurrentUser";
 const debugForm = debugVulcan("form");
 
