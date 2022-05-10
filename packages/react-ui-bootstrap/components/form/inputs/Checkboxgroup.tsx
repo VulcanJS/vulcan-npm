@@ -94,7 +94,7 @@ export const FormComponentCheckboxGroup = ({
   const Components = useVulcanComponents()
 
   // @ts-expect-error
-  const { options = [], name } = inputProperties;
+  const { options = [], name, ...otherInputProperties } = inputProperties;
 
   // get rid of duplicate values; or any values that are not included in the options provided
   // (unless they have the "other" marker)
@@ -119,7 +119,7 @@ export const FormComponentCheckboxGroup = ({
           return (
             // @ts-expect-error
             <Form.Check
-              {...inputProperties}
+              {...otherInputProperties}
               name={name}
               layout="elementOnly"
               key={i}
