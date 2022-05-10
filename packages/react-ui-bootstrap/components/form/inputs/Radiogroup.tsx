@@ -84,6 +84,7 @@ export const FormComponentRadioGroup = ({
             key={i}
             layout="elementOnly"
             type="radio"
+            // @ts-ignore
             label={<Components.FormOptionLabel option={option} />}
             value={option.value}
             name={path}

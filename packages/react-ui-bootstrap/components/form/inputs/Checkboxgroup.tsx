@@ -123,6 +123,7 @@ export const FormComponentCheckboxGroup = ({
               name={name}
               layout="elementOnly"
               key={i}
+              // @ts-ignore
               label={<Components.FormOptionLabel option={option} name={name} />}
               value={isChecked}
               checked={isChecked}
