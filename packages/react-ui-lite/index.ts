@@ -3,4 +3,4 @@
 // Before doing that, we must have a clearer vision of the
 // typings and generic hooks that should stay in "react-ui"
 // VS purely visual elements that should come to "react-ui-lite"
-export const WIP = "WIP";
+export * from "./components/VulcanComponents/liteVulcanComponents";

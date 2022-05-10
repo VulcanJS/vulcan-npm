@@ -61,13 +61,13 @@ import {
   useDelete,
   UseSingleOptions,
 } from "@vulcanjs/react-hooks";
-import { useVulcanComponents } from "../../VulcanComponents/Consumer";
 import { FetchResult } from "@apollo/client";
 // import { FormType } from "./typings";
 import { debugVulcan } from "@vulcanjs/utils";
-import { useVulcanCurrentUser } from "../../VulcanCurrentUser/Consumer";
 import { VulcanUser } from "@vulcanjs/permissions";
 import { PassedDownFormProps } from "./Form/typings";
+import { useVulcanComponents } from "../../VulcanComponents";
+import { useVulcanCurrentUser } from "../../VulcanCurrentUser";
 const debugForm = debugVulcan("form");
 
 // Mutation that yield a success result

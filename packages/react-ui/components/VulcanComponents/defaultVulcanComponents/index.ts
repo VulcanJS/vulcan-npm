@@ -1,22 +1,16 @@
-export { defaultFormComponents } from "./formComponents";
-export { defaultDatatableComponents } from "./datatableComponents";
-export { defaultCellComponents } from "./cellComponents";
-export { defaultCoreComponents } from "./coreComponents";
+import { LoadingButton } from "../../core/LoadingButton";
+import { MutationButton } from "../../core/MutationButton";
+import { Form, FormContainer } from "../../form/core/index";
+import { PossibleFormComponents } from "../typings";
 
-import { defaultFormComponents } from "./formComponents";
-import { defaultDatatableComponents } from "./datatableComponents";
-import { defaultCellComponents } from "./cellComponents";
-import { defaultCoreComponents } from "./coreComponents";
-
-/**
- * @deprecated 0.6.1
- * Use each type of components instead of loading all of them at once
- * This will avoid loading form and datatable components, that are very heavy, on every page
- * even when they are anot actually used
- */
-export const defaultVulcanComponents = {
-  ...defaultDatatableComponents,
-  ...defaultCellComponents,
-  ...defaultCoreComponents,
-  ...defaultFormComponents,
+export const defaultFormComponents: Partial<PossibleFormComponents> = {
+  Form,
+  SmartForm: FormContainer,
+};
+// All those components are defined in each relevant package instead
+export const defaultDatatableComponents = {};
+export const defaultCellComponents = {};
+export const defaultCoreComponents = {
+  MutationButton,
+  LoadingButton,
 };

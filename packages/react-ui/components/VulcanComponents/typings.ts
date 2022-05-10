@@ -1,11 +1,20 @@
 import React from "react";
-// Load only the type, to define the API for each component
-// TODO: maybe do the reverse, define the props here and an unstyled version of the component?
-import type { FormSubmitProps } from "../form/elements";
-import type { ButtonProps } from "../core/Button";
-import type { MutationButtonProps } from "../MutationButton";
 
+// Creating a dependency with the raw
+// implemention is actually a bad idea
+// An "any" type is acceptable as long as we
+// do expose reusable hooks and
+// enough typings for common things, such as
+// "FormInputProps" or useFormContext, typings for some events and so on
+/*
+ import type { FormSubmitProps } from "../form/elements";
+ import type { ButtonProps } from "../core/Button";
+ */
+// We keep this import because it barely have any HTML, you are
+// not supposed to restyle it in each package
+// import type { MutationButtonProps } from "../MutationButton";
 // datatable
+/*
 import type {
   Datatable,
   DatatableAbove,
@@ -54,8 +63,10 @@ import type { DatatableSubmitSelected } from "../Datatable/DatatableSubmitSelect
 import type { EditButton, EditForm } from "../Datatable/others/EditButton";
 import type { NewButton, NewForm } from "../Datatable/others/NewButton";
 import type { DeleteButton } from "../Datatable/others/DeleteButton";
-import type { BootstrapModal as Modal } from "../bootstrap/Modal";
+*/
+//import type { BootstrapModal as Modal } from "../bootstrap/Modal";
 // Cell
+/*
 import type { CardItemSwitcher } from "../cell/CardItem";
 import type {
   CardItemRelationItem,
@@ -73,24 +84,25 @@ import type { CardItemRelationHasMany } from "../cell/CardItemRelationHasMany";
 import type { CardItemRelationHasOne } from "../cell/CardItemRelationHasOne";
 import type { CardItemString } from "../cell/CardItemString";
 import type { CardItemURL } from "../cell/CardItemURL";
-import type { ModalTrigger } from "../bootstrap/ModalTrigger";
-import type { FormOptionLabelProps } from "../form/inputs/FormOptionLabel";
+*/
+//import type { ModalTrigger } from "../bootstrap/ModalTrigger";
+//import type { FormOptionLabelProps } from "../form/inputs/FormOptionLabel";
 
 export interface PossibleCoreComponents {
   Loading: any;
   FormattedMessage: any;
   Alert: any;
-  Button: React.ComponentType<ButtonProps>;
+  Button: any; //React.ComponentType<ButtonProps>;
   Icon: any;
   // TODO: define props more precisely
-  MutationButton: React.ComponentType<MutationButtonProps>;
+  MutationButton: any; //React.ComponentType<MutationButtonProps>;
   LoadingButton: React.ComponentType<any>;
   HeadTags: React.ComponentType<any>;
   // Previously from Bootstrap and Mui
   TooltipTrigger: React.ComponentType<any>;
   Dropdown: React.ComponentType<any>;
-  Modal: typeof Modal;
-  ModalTrigger: typeof ModalTrigger;
+  Modal: any; // typeof  Modal;
+  ModalTrigger: any; // typeof  ModalTrigger;
 }
 // TODO: differentiate components that are provided out of the box and those that require a UI frameworK?
 export interface PossibleFormComponents {
@@ -131,7 +143,7 @@ export interface PossibleFormComponents {
   FormIntl: any;
   // Layout
   FormErrors: any;
-  FormSubmit: React.ComponentType<FormSubmitProps>;
+  FormSubmit: any; //React.ComponentType<FormSubmitProps>;
   FormLayout: any;
 
   // arrays and objects
@@ -147,7 +159,7 @@ export interface PossibleFormComponents {
   FormNestedItemLayout: any;
   FormNestedObjectLayout: any;
   FormNestedObject: any;
-  FormOptionLabel: React.ComponentType<FormOptionLabelProps>;
+  FormOptionLabel: any; //React.ComponentType<FormOptionLabelProps>;
   // Form
   Form: any;
   SmartForm: any;
@@ -158,73 +170,73 @@ export interface PossibleFormComponents {
 }
 
 export interface DatatableComponents {
-  Datatable: typeof Datatable;
-  // DatatableContents: typeof DatatableContents
-  DatatableAbove: typeof DatatableAbove;
-  DatatableAboveLayout: typeof DatatableAboveLayout;
-  DatatableAboveLeft: typeof DatatableAboveLeft;
-  DatatableAboveRight: typeof DatatableAboveRight;
-  DatatableAboveSearchInput: typeof DatatableAboveSearchInput;
-  DatatableLayout: typeof DatatableLayout;
+  Datatable: any; // typeof  Datatable;
+  // DatatableContents: any; // typeof  DatatableContents
+  DatatableAbove: any; // typeof  DatatableAbove;
+  DatatableAboveLayout: any; // typeof  DatatableAboveLayout;
+  DatatableAboveLeft: any; // typeof  DatatableAboveLeft;
+  DatatableAboveRight: any; // typeof  DatatableAboveRight;
+  DatatableAboveSearchInput: any; // typeof  DatatableAboveSearchInput;
+  DatatableLayout: any; // typeof  DatatableLayout;
   // Contents
-  DatatableContents: typeof DatatableContents;
-  DatatableContentsBodyLayout: typeof DatatableContentsBodyLayout;
-  DatatableContentsHeadLayout: typeof DatatableContentsHeadLayout;
-  DatatableContentsInnerLayout: typeof DatatableContentsInnerLayout;
-  DatatableContentsLayout: typeof DatatableContentsLayout;
-  DatatableContentsMoreLayout: typeof DatatableContentsMoreLayout;
-  DatatableEmpty: typeof DatatableEmpty;
-  DatatableLoadMoreButton: typeof DatatableLoadMoreButton;
-  DatatableTitle: typeof DatatableTitle;
+  DatatableContents: any; // typeof  DatatableContents;
+  DatatableContentsBodyLayout: any; // typeof  DatatableContentsBodyLayout;
+  DatatableContentsHeadLayout: any; // typeof  DatatableContentsHeadLayout;
+  DatatableContentsInnerLayout: any; // typeof  DatatableContentsInnerLayout;
+  DatatableContentsLayout: any; // typeof  DatatableContentsLayout;
+  DatatableContentsMoreLayout: any; // typeof  DatatableContentsMoreLayout;
+  DatatableEmpty: any; // typeof  DatatableEmpty;
+  DatatableLoadMoreButton: any; // typeof  DatatableLoadMoreButton;
+  DatatableTitle: any; // typeof  DatatableTitle;
   // Header
-  DatatableHeader: typeof DatatableHeader;
-  DatatableHeaderCellLayout: typeof DatatableHeaderCellLayout;
+  DatatableHeader: any; // typeof  DatatableHeader;
+  DatatableHeaderCellLayout: any; // typeof  DatatableHeaderCellLayout;
   // Row
-  DatatableRow: typeof DatatableRow;
-  DatatableRowLayout: typeof DatatableRowLayout;
+  DatatableRow: any; // typeof  DatatableRow;
+  DatatableRowLayout: any; // typeof  DatatableRowLayout;
   // Cell
-  DatatableCell: typeof DatatableCell;
-  DatatableCellLayout: typeof DatatableCellLayout;
-  DatatableDefaultCell: typeof DatatableDefaultCell;
+  DatatableCell: any; // typeof  DatatableCell;
+  DatatableCellLayout: any; // typeof  DatatableCellLayout;
+  DatatableDefaultCell: any; // typeof  DatatableDefaultCell;
   //  Filter
-  DatatableFilter: typeof DatatableFilter;
-  DatatableFilterBooleans: typeof DatatableFilterBooleans;
-  DatatableFilterCheckboxes: typeof DatatableFilterCheckboxes;
-  DatatableFilterContents: typeof DatatableFilterContents;
-  DatatableFilterContentsWithData: typeof DatatableFilterContentsWithData;
-  DatatableFilterDates: typeof DatatableFilterDates;
-  DatatableFilterNumbers: typeof DatatableFilterNumbers;
+  DatatableFilter: any; // typeof  DatatableFilter;
+  DatatableFilterBooleans: any; // typeof  DatatableFilterBooleans;
+  DatatableFilterCheckboxes: any; // typeof  DatatableFilterCheckboxes;
+  DatatableFilterContents: any; // typeof  DatatableFilterContents;
+  DatatableFilterContentsWithData: any; // typeof  DatatableFilterContentsWithData;
+  DatatableFilterDates: any; // typeof  DatatableFilterDates;
+  DatatableFilterNumbers: any; // typeof  DatatableFilterNumbers;
   // Sort
-  DatatableSorter: typeof DatatableSorter;
+  DatatableSorter: any; // typeof  DatatableSorter;
   // Select
-  DatatableSelect: typeof DatatableSelect;
+  DatatableSelect: any; // typeof  DatatableSelect;
   // SubmitSelect
-  DatatableSubmitSelected: typeof DatatableSubmitSelected;
+  DatatableSubmitSelected: any; // typeof  DatatableSubmitSelected;
   // Core
-  EditButton: typeof EditButton;
-  EditForm: typeof EditForm;
-  NewButton: typeof NewButton;
-  NewForm: typeof NewForm;
-  DeleteButton: typeof DeleteButton;
+  EditButton: any; // typeof  EditButton;
+  EditForm: any; // typeof  EditForm;
+  NewButton: any; // typeof  NewButton;
+  NewForm: any; // typeof  NewForm;
+  DeleteButton: any; // typeof  DeleteButton;
 }
 
 export interface CellComponents {
-  CardItemSwitcher: typeof CardItemSwitcher;
-  CardItem: typeof CardItemSwitcher;
-  DefaultCell: typeof DefaultCell;
-  UserCell: typeof UserCell;
-  CardItemArray: typeof CardItemArray;
-  CardItemDate: typeof CardItemDate;
-  CardItemDefault: typeof CardItemDefault;
-  CardItemHTML: typeof CardItemHTML;
-  CardItemImage: typeof CardItemImage;
-  CardItemNumber: typeof CardItemNumber;
-  CardItemObject: typeof CardItemObject;
-  CardItemRelationHasMany: typeof CardItemRelationHasMany;
-  CardItemRelationHasOne: typeof CardItemRelationHasOne;
-  CardItemRelationItem: typeof CardItemRelationItem;
-  CardItemString: typeof CardItemString;
-  CardItemURL: typeof CardItemURL;
+  CardItemSwitcher: any; // typeof  CardItemSwitcher;
+  CardItem: any; // any; // typeof   CardItemSwitcher;
+  DefaultCell: any; // typeof  DefaultCell;
+  UserCell: any; // typeof  UserCell;
+  CardItemArray: any; // typeof  CardItemArray;
+  CardItemDate: any; // typeof  CardItemDate;
+  CardItemDefault: any; // typeof  CardItemDefault;
+  CardItemHTML: any; // typeof  CardItemHTML;
+  CardItemImage: any; // typeof  CardItemImage;
+  CardItemNumber: any; // typeof  CardItemNumber;
+  CardItemObject: any; // typeof  CardItemObject;
+  CardItemRelationHasMany: any; // typeof  CardItemRelationHasMany;
+  CardItemRelationHasOne: any; // typeof  CardItemRelationHasOne;
+  CardItemRelationItem: any; // typeof  CardItemRelationItem;
+  CardItemString: any; // typeof  CardItemString;
+  CardItemURL: any; // typeof  CardItemURL;
 }
 
 export type PossibleVulcanComponents = PossibleCoreComponents &

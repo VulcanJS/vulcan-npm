@@ -1,6 +1,6 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
-import { MutationButton, MutationButtonProps } from "../MutationButton";
+import { MutationButton, MutationButtonProps } from "../core/MutationButton";
 import gql from "graphql-tag";
 import { VulcanComponentsProvider } from "../VulcanComponents";
 export default {

@@ -1,5 +1,5 @@
 import React from "react";
-export interface DummyProps {}
+export interface DummyProps { }
 
 export const Dummy = () => (
   <span>

@@ -32,8 +32,8 @@ import unset from "lodash/unset.js";
 import update from "lodash/update.js";
 import without from "lodash/without.js";
 import isEmpty from "lodash/isEmpty.js";
-import type { FormLayoutProps } from "../../elements/FormLayout";
-import type { FormSubmitProps } from "../../elements/FormSubmit";
+//import type { FormLayoutProps } from "../../elements/FormLayout";
+//import type { FormSubmitProps } from "../../elements/FormSubmit";
 
 import {
   convertSchema,
@@ -47,7 +47,6 @@ import { FormContext } from "../FormContext";
 import { getFieldGroups, getFieldNames, getLabel } from "./fields";
 import { isNotSameDocument } from "./utils";
 import { useWarnOnUnsaved } from "../../hooks/useWarnOnUnsaved";
-import { useVulcanComponents } from "../../../VulcanComponents/Consumer";
 
 import type { FormType } from "../../typings";
 import {
@@ -57,6 +56,7 @@ import {
   UpdateDocumentResult,
 } from "./typings";
 import { MutationResult } from "@apollo/client";
+import { useVulcanComponents } from "../../../VulcanComponents";
 
 // props that should trigger a form reset
 const RESET_PROPS = [
@@ -142,10 +142,10 @@ const getChildrenProps = (
   // TODO: that belongs to the context instead
   callbacks: { deleteDocument: Function }
 ): {
-  formLayoutProps: FormLayoutProps;
+  formLayoutProps: any;//FormLayoutProps;
   formGroupProps: Function;
   commonProps: any;
-  formSubmitProps: FormSubmitProps;
+  formSubmitProps: any;// FormSubmitProps;
 } => {
   const {
     currentUser,
