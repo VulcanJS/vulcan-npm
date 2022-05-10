@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Form from 'react-bootstrap/Form';
+import FormCheck from 'react-bootstrap/FormCheck';
 import without from 'lodash/without.js';
 import uniq from 'lodash/uniq.js';
 import isEmpty from 'lodash/isEmpty.js';
@@ -53,7 +53,7 @@ const OtherComponent = ({ value, path }) => {
 
   return (
     <div className="form-option-other">
-      <Form.Check
+      <FormCheck
         layout="elementOnly"
         label={'Other'}
         // @ts-expect-error

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Form from 'react-bootstrap/Form';
+import FormCheck from 'react-bootstrap/FormCheck';
 import isEmpty from 'lodash/isEmpty.js';
 import { isOtherValue, removeOtherMarker, addOtherMarker } from './Checkboxgroup';
 import { FormInputProps, useFormContext, useVulcanComponents } from '@vulcanjs/react-ui';
@@ -40,7 +40,7 @@ const OtherComponent = ({ value, path }: Pick<FormInputProps, "path" | "value">)
 
   return (
     <div className="form-option-other">
-      <Form.Check
+      <FormCheck
         name={path}
         // @ts-expect-error
         layout="elementOnly"

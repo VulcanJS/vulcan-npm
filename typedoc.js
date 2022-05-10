@@ -20,6 +20,7 @@ module.exports = {
     "packages/react-i18n/index.ts",
     "packages/react-ui/index.ts",
     "packages/react-ui-bootstrap/index.ts",
+    "packages/react-ui-lite/index.ts",
     "packages/react-ui-material/index.ts",
     "packages/remix-graphql/src/index.ts",
     "packages/schema/index.ts",
