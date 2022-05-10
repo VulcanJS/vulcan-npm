@@ -2,6 +2,8 @@ import type { PossibleFormComponents } from "@vulcanjs/react-ui";
 import {
   FormComponentCheckboxGroup,
   FormComponentRadioGroup,
+  AutocompleteMultiple,
+  FormComponentAutocomplete,
 } from "../form/inputs";
 /*
 import {
@@ -135,6 +137,8 @@ export const bootstrapFormComponents: Partial<PossibleFormComponents> = {
   //
   FormItem,
   FormComponentAutocomplete,
-  FormComponentMultiAutocomplete: AutocompleteMultiple,
   */
+
+  FormComponentAutocomplete,
+  FormComponentMultiAutocomplete: AutocompleteMultiple,
 };

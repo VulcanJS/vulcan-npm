@@ -64,7 +64,6 @@ import {
   FormItem,
   FormOptionLabel,
   //
-  AutocompleteMultiple,
 } from "../../form/inputs";
 
 export const liteFormComponents: Partial<PossibleFormComponents> = {
@@ -126,6 +125,4 @@ export const liteFormComponents: Partial<PossibleFormComponents> = {
   FormOptionLabel,
   //
   FormItem,
-  FormComponentAutocomplete,
-  FormComponentMultiAutocomplete: AutocompleteMultiple,
 };
