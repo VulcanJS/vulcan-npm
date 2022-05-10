@@ -118,7 +118,7 @@ export const FormComponentCheckboxGroup = ({
           const checkClass = hasValue ? (isChecked ? 'form-check-checked' : 'form-check-unchecked') : '';
           return (
             // @ts-expect-error
-            <Form.Check
+            <FormCheck
               {...otherInputProperties}
               name={name}
               layout="elementOnly"

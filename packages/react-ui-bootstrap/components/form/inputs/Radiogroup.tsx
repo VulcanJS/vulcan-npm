@@ -79,7 +79,7 @@ export const FormComponentRadioGroup = ({
         const checkClass = hasValue ? (isChecked ? 'form-check-checked' : 'form-check-unchecked') : '';
         return (
           // @ts-expect-error
-          <Form.Check
+          <FormCheck
             {...otherInputProperties}
             key={i}
             layout="elementOnly"
