@@ -1,21 +1,20 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 // TODO: we have to do this otherwise we end up with a circular dep...
-import { Form } from "../Form";
-import { FormProps } from "../typings";
+import { Form, FormProps } from "@vulcanjs/react-ui";
 import { createModel } from "@vulcanjs/model";
-import * as models from "../../../tests/fixtures/models";
+import * as models from "./fixtures/models";
 import {
   defaultFieldSchema,
   basicFieldsSchema,
   withDefaultFieldSchema,
-} from "../../../tests/fixtures/schemas";
-import { VulcanComponentsProvider } from "../../../../VulcanComponents/Provider";
+} from "./fixtures/schemas";
+import { VulcanComponentsProvider } from "@vulcanjs/react-ui";
 import { action } from "@storybook/addon-actions";
 
 export default {
   component: Form,
-  title: "Form", //TODO: why we need this?
+  title: "react-ui-lite/Form",
   decorators: [
     (Story) => (
       <VulcanComponentsProvider>
