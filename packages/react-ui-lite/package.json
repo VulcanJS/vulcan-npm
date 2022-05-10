@@ -34,6 +34,7 @@
   },
   "peerDependencies": {
     "@vulcanjs/react-ui": "*",
+    "@apollo/client": "^3.5.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
