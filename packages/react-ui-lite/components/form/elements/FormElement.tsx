@@ -1,5 +1,5 @@
 import React, { HTMLAttributes, PropsWithChildren } from "react";
-import { useFormContext } from "../core/FormContext";
+import { useFormContext } from "@vulcanjs/react-ui";
 
 export type FormElementProps = HTMLAttributes<HTMLFormElement>;
 /**

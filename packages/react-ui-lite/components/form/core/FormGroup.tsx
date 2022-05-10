@@ -4,7 +4,7 @@ import { VulcanUser, isAdmin } from "@vulcanjs/permissions";
 import { FieldGroup } from "@vulcanjs/schema";
 import { FormField } from "../typings";
 import { useVulcanComponents } from "@vulcanjs/react-ui";
-import { useFormContext } from "./FormContext";
+import { useFormContext } from "@vulcanjs/react-ui";
 
 export interface FormGroupProps {
   name: string;

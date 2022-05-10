@@ -4,7 +4,7 @@ import React from "react";
 // import { Components, registerComponent } from 'meteor/vulcan:core';
 import get from "lodash/get.js";
 import { useVulcanComponents } from "@vulcanjs/react-ui";
-import { useFormContext } from "../core/FormContext";
+import { useFormContext } from "@vulcanjs/react-ui";
 
 export const FormError = ({ error, errorContext }) => {
   const VulcanComponents = useVulcanComponents();

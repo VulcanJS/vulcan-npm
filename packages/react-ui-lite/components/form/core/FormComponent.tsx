@@ -19,7 +19,7 @@ import {
   VulcanFieldType,
 } from "@vulcanjs/schema";
 import { getAutoInputFromType } from "../inputs/consts";
-import { useFormContext } from "./FormContext";
+import { useFormContext } from "@vulcanjs/react-ui";
 import { FormComponentProps } from "../typings";
 
 const getCharacterCounts = (value: any, max: number) => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormContext } from "../core/FormContext";
+import { useFormContext } from "@vulcanjs/react-ui";
 import { useVulcanComponents } from "@vulcanjs/react-ui";
 
 /**

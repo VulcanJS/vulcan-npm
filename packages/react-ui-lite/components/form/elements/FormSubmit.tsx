@@ -6,7 +6,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { canDeleteDocument } from "@vulcanjs/permissions";
 import { useVulcanComponents } from "@vulcanjs/react-ui";
-import { useFormContext } from "../core/FormContext";
+import { useFormContext } from "@vulcanjs/react-ui";
 
 export interface FormSubmitProps {
   submitLabel: any;
