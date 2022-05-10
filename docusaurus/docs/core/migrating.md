@@ -1,14 +1,23 @@
 ---
 title: Migrate
 ---
+
 # Migration steps and significant changes for each version
 
 ## To version > v0.6.1
 
+- VulcanComponents context will no longer include default components
+  as a default:
+
+  - If you use heavy components like Datatable or SmartForm only
+    on certain page, you might want to load them only where appropriate.
+  - You can safely nest `VulcanComponentsProvider` accross the app,
+    components are merged from root to leaf. You may override existing components or define new one lower in the tree where appropriate.
+
 - i18n React components are now located in the separate package `@vulcanjs/react-i18n`
 - "connectors" are now defined in the "crud.connector" field
 - mutators are now reusable without requiring a full-fledged graphql context, instead simply pass the current user.
-Ensure model callbacks are not using "context" to get other models but instead imports them explicitely
+  Ensure model callbacks are not using "context" to get other models but instead imports them explicitely
 - mutators hook name is now the model "name" and not graphql "typeName" (since mutators do not depend on graphql)
 - Mutators are exported from `@vulcanjs/crud/server` instead of graphql
 - `@vulcanjs/graphql` no longer exports server code, use `@vulcanjs/graphql/server` where relevant

@@ -5,7 +5,6 @@
 // TODO: we might need to adapt the provider to merge its value with a potentially higher up context
 import React from "react";
 
-import { defaultVulcanComponents } from "./defaultVulcanComponents";
 import { PossibleVulcanComponents } from "./typings";
 import { VulcanComponentsContext } from "./Context";
 import { useVulcanComponents } from "./Consumer";
@@ -29,7 +28,6 @@ export const VulcanComponentsProvider = ({
     currentComponents.__not_initialized
   );
   const mergedComponents = {
-    ...defaultVulcanComponents,
     // merge with a parent Provider if needed
     ...(currentComponents?.__not_initialized ? {} : currentComponents || {}),
     ...(value || {}),
@@ -48,7 +46,9 @@ export const VulcanComponentsProvider = ({
   });
   return (
     <VulcanComponentsContext.Provider
-      value={mergedComponents} // merge provided components so the user can provide only a partial replacement
+      // We make the assumption that all components are there, user is responsible
+      // for adding them correctly in the context where necessary
+      value={mergedComponents as PossibleVulcanComponents} // merge provided components so the user can provide only a partial replacement
       {...props}
     />
   );
