@@ -9,7 +9,7 @@ import { SmartForm, SmartFormProps } from "@vulcanjs/react-ui";
 
 // Mocking graphql
 import { VulcanComponentsProvider } from "@vulcanjs/react-ui";
-//import { ExpectedErrorBoundary } from "@vulcanjs/react-ui/testing";
+import { ExpectedErrorBoundary } from "@vulcanjs/react-ui/testing";
 import { } from "@vulcanjs/graphql";
 import {
   singleOperationName,
@@ -150,11 +150,8 @@ const NotCreateableModel = createGraphqlModel({
   },
 });
 // it is expected to fail
-/*
-TODO: expose ExpectedErrorBoundary 
 export const NotCreateable = () => (
   <ExpectedErrorBoundary>
     <SmartFormTemplate model={NotCreateableModel} />
   </ExpectedErrorBoundary>
 );
-*/

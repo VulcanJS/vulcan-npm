@@ -54,9 +54,11 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
     }
   );
 
+  const [errorMsg, setErrorMsg] = useState<string | undefined>()
   if (error) {
     // TODO: probably not the best way to displat the error
-    throw new Error(error.message);
+    setErrorMsg(error.message)
+    console.error(error);
   }
   // apply options function to data to get suggestions in { value, label } pairs
   const autocompleteOptions = data && optionsFunction({ data });
@@ -80,6 +82,8 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
       {...itemProperties}
       name={path}
     >
+      {/** Inspired by "FormErrors" */}
+      {errorMsg && <Components.Alert className="flash-message" variant="danger">{errorMsg}</Components.Alert>}
       {/** @ts-ignore */}
       <AsyncTypeahead
         {...inputProperties}
