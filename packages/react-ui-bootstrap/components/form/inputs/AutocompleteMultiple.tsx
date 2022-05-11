@@ -101,6 +101,7 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
         inputProps={{ id: path }}
         ref={refFunction}
         onSearch={(queryString) => {
+          if (errorMsg) setErrorMsg(undefined)
           setQueryString(queryString);
           loadAutocompleteOptions();
         }}

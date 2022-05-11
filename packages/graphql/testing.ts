@@ -11,11 +11,11 @@ export const normalizeGraphQLSchema = (gqlSchema) =>
  */
 export interface GraphqlQueryStub<TData = any> {
   operationName: string; // name of the query to intercept
-  response: { data: TData }; // the response
+  response: { data: TData; errors?: Array<{ message?: string }> }; // the response
 }
 export interface GraphqlMutationStub<TData = any> {
   operationName: string; // name of the query to intercept
-  response: { data: TData }; // the response
+  response: { data: TData; errors?: Array<{ message?: string }> }; // the response
 }
 
 export const graphqlQueryStubsToMsw = (stubs: Array<GraphqlQueryStub>) => {
@@ -23,6 +23,7 @@ export const graphqlQueryStubsToMsw = (stubs: Array<GraphqlQueryStub>) => {
     const { operationName, response } = stub;
     console.log("Registering mock for", operationName);
     return graphql.query(operationName, (req, res, ctx) => {
+      if (response.errors) return res(ctx.errors(response.errors));
       return res(ctx.data(response.data));
     });
   });
@@ -33,6 +34,7 @@ export const graphqlMutationStubsToMsw = (
   return stubs.map((stub) => {
     const { operationName, response } = stub;
     return graphql.mutation(operationName, (req, res, ctx) => {
+      if (response.errors) return res(ctx.errors(response.errors));
       return res(ctx.data(response.data));
     });
   });

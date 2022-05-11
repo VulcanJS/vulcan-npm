@@ -9,12 +9,13 @@ import {
   fieldDynamicQueryName,
   autocompleteQueryName,
 } from "@vulcanjs/graphql";
-import { Form, FormProps } from "../../components/form";
+import { Form, FormProps } from "@vulcanjs/react-ui";
 import {
   GraphqlQueryStub,
   graphqlQueryStubsToMsw,
 } from "@vulcanjs/graphql/testing";
-import { VulcanComponentsProvider } from "../../components/VulcanComponents";
+import { VulcanComponentsProvider } from "@vulcanjs/react-ui";
+import { bootstrapCoreComponents, bootstrapFormComponents } from "../../components/VulcanComponents/index"
 
 const people = createGraphqlModel({
   name: "People",
@@ -88,6 +89,7 @@ const autocompleteModel = createGraphqlModel({
             }
           }
         `,
+        // TODO: People or Peoples?
         autocompleteQuery: () => /* GraphQL */ `
           query AutocompletePeopleQuery($queryString: String) {
             entities(tags: ["people"], name: { _like: $queryString }) {
@@ -109,17 +111,22 @@ const autocompleteModel = createGraphqlModel({
 });
 
 //import { AutocompleteDemo, AutocompleteDemoProps } from '../AutocompleteDemo'
-interface AutocompleteDemoProps extends FormProps {}
+interface AutocompleteDemoProps extends FormProps { }
 const AutocompleteDemo = (props: AutocompleteDemoProps) => {
   // TODO: create a model + smart form with autcomplete feature
   return <Form {...props} />;
 };
 export default {
   component: AutocompleteDemo,
-  title: "AutocompleteDemo",
+  title: "react-ui-bootstrap/AutocompleteDemo",
   decorators: [
     (Story) => (
-      <VulcanComponentsProvider>
+      <VulcanComponentsProvider
+        value={{
+          ...bootstrapFormComponents,
+          ...bootstrapCoreComponents
+        }}
+      >
         <Story />
       </VulcanComponentsProvider>
     ),
@@ -183,10 +190,12 @@ const projectAutocompleteQuery: GraphqlQueryStub = {
     },
   },
 };
+
 const queryMocks = graphqlQueryStubsToMsw([
   peopleAutocompleteQuery,
   projectAutocompleteQuery,
 ]);
+
 export const PlayAutocompleteDemo = AutocompleteDemoTemplate.bind({});
 PlayAutocompleteDemo.play = async () => {
   const projectInput = screen.getByLabelText("Project");
@@ -200,5 +209,25 @@ PlayAutocompleteDemo.play = async () => {
 PlayAutocompleteDemo.parameters = {
   msw: {
     handlers: [...queryMocks],
+  },
+};
+
+
+// Error case
+const projectErrorAutocompleteQuery: GraphqlQueryStub = {
+  operationName: autocompleteQueryName({ queryResolverName: "Projects" }),
+  response: {
+    data: {},
+    errors: [{ message: "Expected error during query, should display nicely" }]
+  }
+}
+export const PlayErrorAutocompleteDemo = AutocompleteDemoTemplate.bind({});
+PlayErrorAutocompleteDemo.play = async () => {
+  const projectInput = screen.getByLabelText("Project");
+  await userEvent.type(projectInput, "Vulcan Next");
+};
+PlayErrorAutocompleteDemo.parameters = {
+  msw: {
+    handlers: [...graphqlQueryStubsToMsw([projectErrorAutocompleteQuery])],
   },
 };
