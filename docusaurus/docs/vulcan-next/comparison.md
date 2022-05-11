@@ -9,7 +9,7 @@ The combination of middlewares and the data fetching methods provided by Next al
 
 Also, Next.js includes API routes, which makes it a full-stack framework. API routes are limited to a serverless approach. The only issue is when you need long running tasks such as cron jobs. In this scenario, you can always couple Next with a tiny satellite Express server. We are currently (03/2022) working on a Vulcan Express starter as well.
 
-##  Vulcan vs other Next.js frameworks
+## Vulcan vs other Next.js frameworks
 
 ### Blitz.js
 
@@ -32,11 +32,11 @@ Bison also relies on static code generation while we prefer a dynamic approach. 
 
 #### Boilerplate vs framework
 
-Bison is a boilerplate, it's basically a extremely well-written Next.js app. 
+Bison is a boilerplate, it's basically a extremely well-written Next.js app.
 Vulcan is a framework. It means that we provide a Next.js app too (I hope a well-written one :)), but also that a huge part of our code is actually usable outside of Next. Vulcan can work in any Express application for the backend or React application for the frontend.
 
 We have a long history of being stuck with Meteor before moving to Next.js, that's why we try to make most of our codebase framework-independant.
-  
+
 ### Next Right Now and other boilerplates
 
 There are plenty of Next.js boilerplates that use various technologies. I won't quote all of them, but [Next Right Now](https://github.com/UnlyEd/next-right-now) is definitely worth a try. It's one of the earliest and most mature Next.js boilerplate around.
@@ -44,34 +44,32 @@ There are plenty of Next.js boilerplates that use various technologies. I won't 
 ## Vulcan vs other non Next.js technologies
 
 - [Create React App](https://create-react-app.dev/): to achieve the same level of features than with Next.js, CRA should be coupled with a server and bundler like [Vite](https://vitejs.dev/). This makes it a lower-level tool, while we like the turnkey approach of Next.js.
-  
-- [RedwoodJS](https://redwoodjs.com/): An excellent full-stack framework! 
-The only issue I could find is that prerendering is still limited to public content. 
-This limitation is also shared by other technologies at the time of writing (early 2022): SvelteKit, Gatsby.js...
+- [RedwoodJS](https://redwoodjs.com/): An excellent full-stack framework!
+  The only issue I could find is that prerendering is still limited to public content.
+  This limitation is also shared by other technologies at the time of writing (early 2022): SvelteKit, Gatsby.js...
 
 Next/Vulcan Next are able to handle multi-tenancy, i18n, A/B testing... more elegantly when it comes to static rendering.
 
 In terms of philosophy, Vulcan is a cross-point between various technologies maintained by many different people: Next, Express, React, Storybook, Jest, Apollo, GraphQL... We don't really aim to invent a lot of "new things", but instead we gather the best ideas around the world and mix them in a single project.
 
-- [Meteor](https://www.meteor.com/developers/): Meteor is one of the first mature fullstack JavaScript framework ever. 
-The first version of Vulcan was based on Meteor. Meteor and Vulcan brought many innovations: structuring the code as a monorepo of reusable packages, making it easy to share code between the client and the server, having a schema-based client/server communication layer...
+- [Meteor](https://www.meteor.com/developers/): Meteor is one of the first mature fullstack JavaScript framework ever.
+  The first version of Vulcan was based on Meteor. Meteor and Vulcan brought many innovations: structuring the code as a monorepo of reusable packages, making it easy to share code between the client and the server, having a schema-based client/server communication layer...
 
 However, Meteor development underwent a hiatus between 2016-2019 as the focus shifted on coding Apollo.
 It was later bought by Tiny and now regains a new wave of attention, however we already moved out by that time. Meteor is still an excellent framework for medium-sized apps.
 
 ## Why no static code generation?
 
-Using Vulcan, you might notice that we *dynamically* generate the GraphQL "Type Definitions" (the GraphQL schema as a) and "resolvers" (the function that powers this schema).
+Using Vulcan, you might notice that we _dynamically_ generate the GraphQL "Type Definitions" (the GraphQL schema as a) and "resolvers" (the function that powers this schema).
 
-Many modern frameworks prefer *static* generation for both, meaning they will litterally produce pieces of code you can edit later on.
-
+Many modern frameworks prefer _static_ generation for both, meaning they will litterally produce pieces of code you can edit later on.
 
 - Static code generation is awesome when you need to customize the code later on. However,
-it also mean that you need to manage a lot of additional files in your codebase.
+  it also mean that you need to manage a lot of additional files in your codebase.
 
-- Dynamic generation won't generate any code. Customization is done either via the Vulcan Model object, or by [creating your custom resolvers as depicted in our GraphQL engine documentation](../vulcan-artemis/customResolvers.md).
-  
-Actually, both patterns are perfectly compatible! 
+- Dynamic generation won't generate any code. Customization is done either via the Vulcan Model object, or by [creating your custom resolvers as depicted in our GraphQL engine documentation](../vulcan-fire/customResolvers.md).
+
+Actually, both patterns are perfectly compatible!
 
 For instance, you can use the generic, dynamic `useMulti` React hook from Vulcan to fetch data, but also generate some specific, static hooks using tools like [Wundergraph](https://wundergraph.com/).
 

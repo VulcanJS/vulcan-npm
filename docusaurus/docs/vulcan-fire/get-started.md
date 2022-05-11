@@ -3,7 +3,7 @@ title: "Get started"
 sidebar_position: 2
 ---
 
-**Vulcan Artemis is already included in [Vulcan Next](../vulcan-next) and is production-ready.**
+**Vulcan Fire is already included in [Vulcan Next](../vulcan-next) and is production-ready.**
 
 **Documentation in progress.**
 
@@ -11,21 +11,21 @@ sidebar_position: 2
 
 ## In a nutshell
 
-In greek mythology, Artemis is Apollo's twin sister. 
-That's why *Vulcan Artemis* completes *Apollo GraphQL* so well!
+In greek mythology, Fire is Apollo's twin sister.
+That's why _Vulcan Fire_ completes _Apollo GraphQL_ so well!
 
 [Apollo GraphQL](https://www.apollographql.com/) provides a way to easily setup GraphQL in JavaScript applications, server-side and client-side.
 
-**Vulcan Artemis** is a toolkit to be more productive with Apollo.
+**Vulcan Fire** is a toolkit to be more productive with Apollo.
 
-## Vulcan Artemis makes CRUD operations easy
+## Vulcan Fire makes CRUD operations easy
 
 When coding your application, you might notice that some operations are always the same for any kind of data:
 
 - you need to Create, Update or Delete data
 - you need to Read data, either a single document, or a list of items
 
-This is what we call "CRUD" operations. 
+This is what we call "CRUD" operations.
 
 In your Apollo server setup, this means that you need
 to code at least 4 resolvers for each kind of data. A blog with Authors, Articles and Comments already needs 12 resolvers!
@@ -38,7 +38,7 @@ Yet, all your code will look vaguely the same: you check permissions, you update
 
 ## Free CRUD resolvers for your data model
 
-**Vulcan Artemis provides:**
+**Vulcan Fire provides:**
 
 - 📡 Server-side, an engine to automatically generate your GraphQL schema based on a simple JavaScript object that describes your data
 - 📡 Server-side, 5 default resolvers that can either mutate data (create, update, delete) or fetch data from your database (getting a single specific item, or a list of multiple items)
@@ -48,18 +48,18 @@ Yet, all your code will look vaguely the same: you check permissions, you update
 
 ## It works for any database
 
-Artemis can plug to any database, as long as you can implement the basic CRUD operations to build what we call a "Connector".
+Fire can plug to any database, as long as you can implement the basic CRUD operations to build what we call a "Connector".
 
 We provide a Mongoose connector out-of-the-box.
 
 ## There is no lock-in
 
-Vulcan Artemis makes you productive in the early stages of your application development, or even later on.
+Vulcan Fire makes you productive in the early stages of your application development, or even later on.
 
-However, if you start needing very custom and complexe code, there is absolutely no-restriction. You can still write normal Apollo GraphQL resolvers as you would do without Artemis.
+However, if you start needing very custom and complexe code, there is absolutely no-restriction. You can still write normal Apollo GraphQL resolvers as you would do without Fire.
 
-There is also no obligation to use Artemis hooks client-side. Or to use React. Or even to client-side GraphQL, thanks to tools such as [Wundergraph](https://wundergraph.com/). If you need only a backend, you might like our [Vulcan Express starter](../vulcan-express/).
+There is also no obligation to use Fire hooks client-side. Or to use React. Or even to client-side GraphQL, thanks to tools such as [Wundergraph](https://wundergraph.com/). If you need only a backend, you might like our [Vulcan Express starter](../vulcan-express/).
 
 ## Give it a try!
 
-The easiest way to start with Artemis, is to discover either our [Next.js starter](../vulcan-next) or our [Express starter](../vulcan-express).
+The easiest way to start with Fire, is to discover either our [Next.js starter](../vulcan-next) or our [Express starter](../vulcan-express).

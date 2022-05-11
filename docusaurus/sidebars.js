@@ -58,12 +58,12 @@ const sidebars = {
     },
     {
       type: "category",
-      label: "Artemis GraphQL",
-      link: { type: "doc", id: "vulcan-artemis/index" },
+      label: "Fire GraphQL",
+      link: { type: "doc", id: "vulcan-fire/index" },
       items: [
-        "vulcan-artemis/get-started",
-        "vulcan-artemis/customResolvers",
-        "vulcan-artemis/outsideGraphql",
+        "vulcan-fire/get-started",
+        "vulcan-fire/customResolvers",
+        "vulcan-fire/outsideGraphql",
       ],
     },
     {

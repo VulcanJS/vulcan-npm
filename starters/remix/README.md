@@ -1,7 +1,7 @@
 # Vulcan Eurodance Stack
 
 The Remix Eurodance Stack 🇪🇺 🐸 🛵
-*Based on Remix [Indie Stack](https://github.com/remix-run/indie-stack)*
+_Based on Remix [Indie Stack](https://github.com/remix-run/indie-stack)_
 
 <!--![The Remix Eurodance Stack](https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf)-->
 
@@ -25,7 +25,7 @@ npx create-remix --template VulcanJS/eurodance-stack
 
 - Invisible GraphQL: work transparently with GraphQL, without ever depending client-side
 - A GraphQL resource route with [GraphQL Yoga](https://www.graphql-yoga.com/)
-- Vulcan Artemis Engine
+- Vulcan Fire Engine
 
 **MongoDB supports (via Prisma)**
 
@@ -38,6 +38,7 @@ Remix stacks hosts on Fly out-of-the-box.
 For historical reasons Vulcan prefers Vercel, but you can deploy your Remix app almost anywhere very easily.
 
 ### From Remix indie stack:
+
 - [Fly app deployment](https://fly.io) with [Docker](https://www.docker.com/)
 - Production-ready [SQLite Database](https://sqlite.org)
 - Healthcheck endpoint for [Fly backups region fallbacks](https://fly.io/docs/reference/configuration/#services-http_checks)
