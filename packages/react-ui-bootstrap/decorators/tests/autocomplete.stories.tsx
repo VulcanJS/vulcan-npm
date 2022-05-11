@@ -16,6 +16,8 @@ import {
 } from "@vulcanjs/graphql/testing";
 import { VulcanComponentsProvider } from "@vulcanjs/react-ui";
 import { bootstrapCoreComponents, bootstrapFormComponents } from "../../components/VulcanComponents/index"
+import { liteCoreComponents, liteFormComponents } from "@vulcanjs/react-ui-lite";
+
 
 const people = createGraphqlModel({
   name: "People",
@@ -123,10 +125,21 @@ export default {
     (Story) => (
       <VulcanComponentsProvider
         value={{
+          ...liteCoreComponents,
+          ...liteFormComponents,
           ...bootstrapFormComponents,
           ...bootstrapCoreComponents
         }}
       >
+        {/** Hacky solution to get styling, until Storybook
+         * can load a config per package
+         */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+          crossOrigin="anonymous"
+        />
         <Story />
       </VulcanComponentsProvider>
     ),

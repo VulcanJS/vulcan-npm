@@ -1,3 +1,4 @@
+import { Alert } from "../core";
 import { Button } from "../core/Button";
 import { TooltipTrigger } from "../core/TooltipTrigger";
 import {
@@ -16,6 +17,7 @@ export const bootstrapCoreComponents: Partial<PossibleCoreComponents> = {
   // TODO: boostrap doesn't include all components so we also
   // include the lite versio
   ...liteCoreComponents,
+  Alert,
   Button,
   TooltipTrigger,
   Dropdown,

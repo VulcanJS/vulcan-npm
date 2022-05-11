@@ -5,9 +5,12 @@
  *
  * Ideally for such a rich component we should also expose
  * hooks and internal logic so users can build their own
+ * 
+ * 
+ * NOTE: currently we don't load react-boostrap css
  */
 import { AsyncTypeahead } from "react-bootstrap-typeahead"; // ES2015
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // We don't auto-expand queries in Vulcan NPM, since we don't use the registry pattern
 // anymore. Instead, provide the right fragments directly, using composition with string templates.
 //import { expandQueryFragments } from "meteor/vulcan:core";
@@ -54,12 +57,6 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
     }
   );
 
-  const [errorMsg, setErrorMsg] = useState<string | undefined>()
-  if (error) {
-    // TODO: probably not the best way to displat the error
-    setErrorMsg(error.message)
-    console.error(error);
-  }
   // apply options function to data to get suggestions in { value, label } pairs
   const autocompleteOptions = data && optionsFunction({ data });
 
@@ -83,7 +80,7 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
       name={path}
     >
       {/** Inspired by "FormErrors" */}
-      {errorMsg && <Components.Alert className="flash-message" variant="danger">{errorMsg}</Components.Alert>}
+      {error && error.message && <Components.Alert className="flash-message" variant="danger">{error.message}</Components.Alert>}
       {/** @ts-ignore */}
       <AsyncTypeahead
         {...inputProperties}
@@ -101,7 +98,6 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
         inputProps={{ id: path }}
         ref={refFunction}
         onSearch={(queryString) => {
-          if (errorMsg) setErrorMsg(undefined)
           setQueryString(queryString);
           loadAutocompleteOptions();
         }}
