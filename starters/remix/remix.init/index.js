@@ -17,6 +17,11 @@ function getRandomString(length) {
 }
 
 async function main({ rootDirectory }) {
+  const isVulcanNpmRepo = !!rootDirectory.match(/vulcan-npm/);
+  if (isVulcanNpmRepo)
+    console.log(
+      "Running init in Vulcan NPM monorepo for development, will skip some init steps."
+    );
   const README_PATH = path.join(rootDirectory, "README.md");
   const FLY_TOML_PATH = path.join(rootDirectory, "fly.toml");
   const EXAMPLE_ENV_PATH = path.join(rootDirectory, ".env.example");
@@ -58,12 +63,19 @@ async function main({ rootDirectory }) {
     APP_NAME
   );
 
-  const newPackageJson =
-    JSON.stringify(
-      sort({ ...JSON.parse(packageJson), name: APP_NAME }),
-      null,
-      2
-    ) + "\n";
+  const newPackageJson = isVulcanNpmRepo
+    ? // Leave it alone in dev mode
+      packageJson
+    : // Change the app name to a random name =>
+      // except if we are in the Vulcan Monorepo during dev
+      JSON.stringify(
+        sort({
+          ...JSON.parse(packageJson),
+          name: APP_NAME,
+        }),
+        null,
+        2
+      ) + "\n";
 
   await Promise.all([
     fs.writeFile(FLY_TOML_PATH, toml.stringify(prodToml)),
