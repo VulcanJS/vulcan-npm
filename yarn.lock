@@ -3392,6 +3392,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/merge@npm:8.2.11":
+  version: 8.2.11
+  resolution: "@graphql-tools/merge@npm:8.2.11"
+  dependencies:
+    "@graphql-tools/utils": 8.6.10
+    tslib: ~2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: cfc77d6d8bb426a1deb0b7763d58d183827a7f1727d0778c829f0824f2b36192543ef7190a5a5620f9e6e8f5627082688ac243884fcb6c570f664a4016435a16
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/mock@npm:^8.1.2":
   version: 8.6.8
   resolution: "@graphql-tools/mock@npm:8.6.8"
@@ -3417,6 +3429,31 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
   checksum: 8b225f4ae87d3f1d8d9772df605a27dfde069a2372f2af0a1459859c4310c5fef8243c1276c1959e316420f1584d739b9f52c55dd230d2ad177cde1019155b81
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/schema@npm:^8.3.11":
+  version: 8.3.11
+  resolution: "@graphql-tools/schema@npm:8.3.11"
+  dependencies:
+    "@graphql-tools/merge": 8.2.11
+    "@graphql-tools/utils": 8.6.10
+    tslib: ~2.4.0
+    value-or-promise: 1.0.11
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: b57e673bacdc25d93bae2bc4378709daeeae9738f51d96194ebe88eabb993dd1c14d85ca3828fcddf8a3937fdddfdcb8f41ff6eced504ebb306350aba2668bed
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/utils@npm:8.6.10":
+  version: 8.6.10
+  resolution: "@graphql-tools/utils@npm:8.6.10"
+  dependencies:
+    tslib: ~2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: fd020ef2efe98436e86335af37b9d703b2ca937179ce5d4988853c233824bd69ae01b3e2414586edd132501c042c0c582f63f6e3853ad91a59194483c248f416
   languageName: node
   linkType: hard
 
@@ -34778,7 +34815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1, tslib@npm:~2.4.0":
   version: 2.4.0
   resolution: "tslib@npm:2.4.0"
   checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
@@ -36258,6 +36295,7 @@ __metadata:
     "@emotion/react": ^11.4.1
     "@emotion/server": ^11.4.0
     "@emotion/styled": ^11.3.0
+    "@graphql-tools/schema": ^8.3.11
     "@hapi/iron": 6.0.0
     "@istanbuljs/nyc-config-typescript": ^1.0.1
     "@mdx-js/loader": ^2.1.1
