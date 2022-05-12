@@ -36,7 +36,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout
       title={`${siteConfig.title} Docs`}
-      description="Documentation of VulcanJS - The fullstack JavaScript framework"
+      description="Documentation of VulcanJS - The full-stack JavaScript toolkit"
     >
       <HomepageHeader />
       <main className={styles.logoWrapper}>

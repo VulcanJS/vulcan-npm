@@ -40,7 +40,7 @@ yarn build:storybook
 yarn test
 # Update typedoc
 yarn typedoc && npx serve generated/docs
-# Test built docusaurus
+# Test built docusaurus (already built during "yarn build" stage)
 yarn serve:doc
 
 # Deploy (Lerna will prompt questions for versionning)

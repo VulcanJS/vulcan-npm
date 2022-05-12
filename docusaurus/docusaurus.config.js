@@ -7,7 +7,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Vulcan",
-  tagline: "The fullstack JavaScript framework",
+  tagline: "The full-stack JavaScript toolkit",
   url: "https://vulcan-docs.vercel.app",
   baseUrl: "/",
   onBrokenLinks: "warn",
