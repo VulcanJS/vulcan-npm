@@ -29,6 +29,7 @@ import {
 import * as relations from "./resolvers/relationResolvers";
 import { withFieldPermissionCheckResolver } from "./resolvers/fieldResolver";
 import { ResolveAsDefinition } from "./typings";
+import type { VulcanGraphqlFieldSchema } from "../typings";
 
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (
@@ -58,8 +59,8 @@ interface ResolveAsRelation extends ResolveAsDefinition {}
 interface ResolveAsCustom extends ResolveAsDefinition {}
 type ResolveAs = ResolveAsCustom | ResolveAsRelation;
 
-interface ResolveAsField extends VulcanFieldSchema {
-  resolveAs: Array<ResolveAs> | ResolveAs;
+interface ResolveAsField extends VulcanGraphqlFieldSchema {
+  /*VulcanFieldSchema*/ resolveAs: Array<ResolveAs> | ResolveAs;
 }
 
 /** Parsed ResolveAs definition? */
@@ -155,7 +156,10 @@ export const parseFieldResolvers = ({
       //description: resolveAs.description,
       name: resolverName,
       //args: resolveAs.arguments,
-      type: relation.typeName, //,
+      type:
+        "model" in relation
+          ? relation.model.graphql.typeName
+          : relation.typeName, //,
       //type: fieldGraphQLType,
     });
     // resolveAs with custom resolution(s)
