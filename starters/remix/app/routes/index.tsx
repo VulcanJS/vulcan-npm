@@ -31,6 +31,16 @@ export default function Index() {
                 project deployed.
               </p>
               <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
+                <h2>GraphQL with a remote API</h2>
+                <Link
+                  className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
+                  to="/distant-api/query">Query a distant API</Link>
+                <Link
+                  className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
+                  to="/distant-api/mutation">Send mutations to a distant API</Link>
+                <h2>GraphQL with a local API</h2>
+                <p>Work in progress...</p>
+                <h2>Indie stack demoes</h2>
                 {user ? (
                   <Link
                     to="/notes"

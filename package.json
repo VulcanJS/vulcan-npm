@@ -10,7 +10,7 @@
     "publish:local": "yarn workspaces run yalc push # then, use 'yalc link <package-name>' in your project",
     "link-yarn-legacy": "yarn workspaces foreach yarn link && ./scripts/link-duplicates.sh # deprecated, symlink creates issue with React, Webpack...",
     "unlink-yarn-legacy": "yarn workspaces foreach yarn unlink",
-    "clean": "rm -Rf ./node_modules ./packages/*/node_modules && yarn run clean:build",
+    "clean": "rm -Rf ./node_modules ./packages/*/node_modules ./starters/*/node_modules && yarn run clean:build",
     "clean:build": "rm -Rf ./packages/*/dist",
     "test": "jest",
     "typecheck": "tsc --noEmit",
@@ -115,6 +115,7 @@
   "resolutions": {
     "@types/react": "^17.0.16",
     "@types/react-dom": "^17.0.16",
-    "@storybook/{app}/webpack": "^5"
+    "@storybook/{app}/webpack": "^5",
+    "graphql": "^15.6.2"
   }
 }

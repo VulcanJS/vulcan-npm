@@ -115,7 +115,6 @@ export const Repository = createGraphqlModelServer({
         fieldName: "contributor",
         kind: "hasOne",
         model: Contributor,
-        typeName: "Contributor",
       },
       canRead: ["guests"],
       canCreate: ["guests"],

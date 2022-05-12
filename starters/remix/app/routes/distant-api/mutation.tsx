@@ -1,9 +1,7 @@
 import type { ActionFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";
 
-import { requireUserId } from "~/session.server";
 
 import {
   // When using a local executable shema (avoids an HTTP roundtrip)
@@ -14,8 +12,7 @@ import {
 
 type ActionData = {
   errors?: {
-    title?: string;
-    body?: string;
+    name?: string;
   };
 };
 
@@ -30,14 +27,61 @@ mutation Insert_users($objects: [users_insert_input!]!) {
 }
 `;
 
+// TODO: check how we can pick the mutation depending on the "update" or "create" scenario
+/**
+/*
+{
+"where": {
+  "id": {
+    "_eq": "e77584bb-3301-42b6-b952-297170cb8bc8"
+  }
+},
+"set": {
+  "name": "Eric Burel v2"
+}
+}*/
+const UPDATE_USER_MUTATION = /* GraphQL */ `
+  mutation Update_users($where: users_bool_exp!, $set: users_set_input) {
+  update_users(where: $where, _set: $set) {
+    returning {
+      id
+      name
+    }
+  }
+}
+`
+
+/**
+ * {
+  "deleteUsersWhere": {
+    "id": {
+      "_eq": ""
+    }
+  }
+}
+ */
+const DELETE_USER_MUTATION = /* GraphQL */ `
+mutation Delete_users($deleteUsersWhere: users_bool_exp!) {
+  delete_users(where: $deleteUsersWhere) {
+    returning {
+      name
+    }
+  }
+}
+`
+
+
 // The `processRequestWithGraphQL` function can be used for both loaders and
 // actions!
-export const action: ActionFunction = (args) =>
+export const action: ActionFunction = (args: any) =>
+  // TODO: how to handle multiple actions?
+  // if (update)
   sendGraphQLRequest({
     args,
     // Space X API is one of the few to allow mutations
     // @see https://studio.apollographql.com/public/SpaceX-pxxbxen/home?variant=current
     endpoint: "https://api.spacex.land/graphql/",
+    // TODO: get from args?
     variables: {
       "objects": [
         { "name": "Eric Burel" }
@@ -46,88 +90,9 @@ export const action: ActionFunction = (args) =>
     //schema, 
     query: INSERT_USER_MUTATION
   });
+// else
 
-export default function NewNotePage() {
-  const actionData = useActionData() as ActionData;
-  const titleRef = React.useRef<HTMLInputElement>(null);
-  const bodyRef = React.useRef<HTMLTextAreaElement>(null);
-
-  React.useEffect(() => {
-    if (actionData?.errors?.title) {
-      titleRef.current?.focus();
-    } else if (actionData?.errors?.body) {
-      bodyRef.current?.focus();
-    }
-  }, [actionData]);
-
-  return (
-    <Form
-      method="post"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        width: "100%",
-      }}
-    >
-      <div>
-        <label className="flex w-full flex-col gap-1">
-          <span>Title: </span>
-          <input
-            ref={titleRef}
-            name="title"
-            className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-            aria-invalid={actionData?.errors?.title ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.title ? "title-error" : undefined
-            }
-          />
-        </label>
-        {actionData?.errors?.title && (
-          <div className="pt-1 text-red-700" id="title-error">
-            {actionData.errors.title}
-          </div>
-        )}
-      </div>
-
-      <div>
-        <label className="flex w-full flex-col gap-1">
-          <span>Body: </span>
-          <textarea
-            ref={bodyRef}
-            name="body"
-            rows={8}
-            className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
-            aria-invalid={actionData?.errors?.body ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.body ? "body-error" : undefined
-            }
-          />
-        </label>
-        {actionData?.errors?.body && (
-          <div className="pt-1 text-red-700" id="body-error">
-            {actionData.errors.body}
-          </div>
-        )}
-      </div>
-
-      <div className="text-right">
-        <button
-          type="submit"
-          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Save
-        </button>
-      </div>
-    </Form>
-  );
-}
-
-
-
-
-
-export default function IndexRoute() {
+export default function DistantApiMutationRoute() {
   // TODO: it would be more interesting to demo loading users
   // + updating them
   // const { data } = useLoaderData<LoaderData>();
@@ -135,26 +100,35 @@ export default function IndexRoute() {
   //   return "Ooops, something went wrong :(";
   // }
   const data: any = { posts: [] }
+  const actionData = useActionData() as ActionData;
+  const nameRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (actionData?.errors?.name) {
+      nameRef.current?.focus();
+    }
+  }, [actionData]);
 
   return (
     <main>
-      <h1>Blog Posts</h1>
-      <ul>
-        {data.posts.map((post: any) => (
-          <li key={post.id}>
-            {post.title} (by {post.author.name})
-            <br />
-            {post.likes} Likes
-            <Form method="post">
-              {/* `remix-graphql` will automatically transform all posted 
+      <h1>Create a SpaceX user</h1>
+      <Form method="post" name="create">
+        {/* `remix-graphql` will automatically transform all posted 
                   form data into variables of the same name for the GraphQL
                   operation */}
-              <input hidden name="id" value={post.id} />
-              <button type="submit">Like</button>
-            </Form>
-          </li>
-        ))
-      </ul>
+        <input ref={nameRef} name="name"
+          aria-invalid={actionData?.errors?.name ? true : undefined}
+          aria-errormessage={
+            actionData?.errors?.name ? "name-error" : undefined
+          }
+        />
+        {actionData?.errors?.name && (
+          <div className="pt-1 text-red-700" id="title-error">
+            {actionData.errors.name}
+          </div>
+        )}
+        <button type="submit">Submite</button>
+      </Form>
     </main>
   );
 }

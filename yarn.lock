@@ -17860,8 +17860,8 @@ __metadata:
 
 "eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal::locator=root%40workspace%3A.":
   version: 1.0.0
-  resolution: "eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal#./packages/eslint-vulcan-internal::hash=43a088&locator=root%40workspace%3A."
-  checksum: 10e41c675566a5d6d0311f5ac398cff7f7dff14b1b4708bb018428318d50f0234a04748e285e9ee74efcd7d1643662d3cf122ffedd8c01ecee8a3db3dcef59ea
+  resolution: "eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal#./packages/eslint-vulcan-internal::hash=74e503&locator=root%40workspace%3A."
+  checksum: 2a412d4afb6628b172e7a7934421711645a2c0965706ec971c2a2670744aa4a5504a9b0a78c461cf5278e9a34d01d121e22e36d02cb18147ba69f3a98ccc4270
   languageName: node
   linkType: hard
 
@@ -20266,24 +20266,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:15.4.0":
-  version: 15.4.0
-  resolution: "graphql@npm:15.4.0"
-  checksum: 6b3240e5518dc2e7b2ba95fa251594e1a3c2f421b457759093c918986d218077c72117222bc2571be2cbd50b659793ae50e9e0eb2729c5858e6c2894e86011c1
-  languageName: node
-  linkType: hard
-
-"graphql@npm:^15.5.0, graphql@npm:^15.5.1":
+"graphql@npm:^15.6.2":
   version: 15.8.0
   resolution: "graphql@npm:15.8.0"
   checksum: 423325271db8858428641b9aca01699283d1fe5b40ef6d4ac622569ecca927019fce8196208b91dd1d8eb8114f00263fe661d241d0eb40c10e5bfd650f86ec5e
-  languageName: node
-  linkType: hard
-
-"graphql@npm:^16.3.0, graphql@npm:^16.4.0":
-  version: 16.5.0
-  resolution: "graphql@npm:16.5.0"
-  checksum: a82a926d085818934d04fdf303a269af170e79de943678bd2726370a96194f9454ade9d6d76c2de69afbd7b9f0b4f8061619baecbbddbe82125860e675ac219e
   languageName: node
   linkType: hard
 
