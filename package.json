@@ -5,6 +5,8 @@
     "postinstall": "node ./scripts/fix-apollo.js",
     "prebuild": "yarn run clean:build",
     "build": "turbo run build build:types",
+    "//build:pkg": "# Builds only packages, useful when running starters in dev mode",
+    "build:pkg": "yarn run build '--filter=./packages/*'",
     "publish:local": "yarn workspaces run yalc push # then, use 'yalc link <package-name>' in your project",
     "link-yarn-legacy": "yarn workspaces foreach yarn link && ./scripts/link-duplicates.sh # deprecated, symlink creates issue with React, Webpack...",
     "unlink-yarn-legacy": "yarn workspaces foreach yarn unlink",

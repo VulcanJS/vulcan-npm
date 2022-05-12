@@ -30,6 +30,7 @@
     "@apollo/client": "^3.5.5",
     "@vulcanjs/react-ui": "*",
     "@vulcanjs/react-ui-lite": "*",
+    "graphql": "^15.5.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
@@ -41,8 +42,7 @@
     "@types/underscore": "^1.11.1",
     "@vulcanjs/graphql": "*",
     "@vulcanjs/model": "*",
-    "@vulcanjs/schema": "*",
-    "graphql": "^15.5.0"
+    "@vulcanjs/schema": "*"
   },
   "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f"
 }
