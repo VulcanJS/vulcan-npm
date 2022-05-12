@@ -19,6 +19,7 @@ module.exports = {
     "packages/react-hooks/index.ts",
     "packages/react-i18n/index.ts",
     "packages/react-ui/index.ts",
+    "packages/react-ui/testing.ts",
     "packages/react-ui-bootstrap/index.ts",
     "packages/react-ui-lite/index.ts",
     "packages/react-ui-material/index.ts",
