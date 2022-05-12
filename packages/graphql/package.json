@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/graphql",
-  "version": "0.6.6-y.15",
+  "version": "0.6.6",
   "main": "./dist/index.js",
   "files": [
     "dist/"
@@ -27,7 +27,7 @@
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/crud": "^0.6.4",
+    "@vulcanjs/crud": "^0.6.6",
     "@vulcanjs/i18n": "^0.6.4",
     "@vulcanjs/model": "^0.6.4",
     "@vulcanjs/permissions": "^0.6.4",
