@@ -49,6 +49,7 @@
     "cross-fetch": "^3.1.4",
     "depcheck": "^1.4.1",
     "esbuild": "^0.14.10",
+    "eslint-plugin-vulcan-internal": "./packages/eslint-vulcan-internal",
     "jest": "28",
     "jest-environment-jsdom": "^28.0.2",
     "mock-apollo-client": "^1.1.0",

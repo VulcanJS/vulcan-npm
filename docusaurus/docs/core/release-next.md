@@ -1,6 +1,7 @@
 ---
 title: Release Next.js starter
 ---
+
 # Release process
 
 ## Create a release branch
@@ -9,7 +10,8 @@ title: Release Next.js starter
 # No need to clean node_modules, yarn will do it for you on install
 # rm -Rf node_modules
 yarn install # no missing module surprise
-yarn upgrade:vulcan # update versions to latest Vulcan NPM release
+# Seems obsolete now that Next belongs to the Monorepo
+# yarn upgrade:vulcan # update versions to latest Vulcan NPM release
 # yarn up # Optionnaly upgrade all packages to latest version (may produce breaking changes!)
 ```
 

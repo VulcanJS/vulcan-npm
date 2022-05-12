@@ -7288,6 +7288,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@storybook/csf@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@storybook/csf@npm:0.0.1"
+  dependencies:
+    lodash: ^4.17.15
+  checksum: fb57fa028b08a51edf44e1a2bf4be40a4607f5c6ccb58aae8924f476a42b9bbd61a0ad521cfc82196f23e6a912caae0a615e70a755e6800b284c91c509fd2de6
+  languageName: node
+  linkType: hard
+
 "@storybook/docs-tools@npm:6.5.0-beta.2":
   version: 6.5.0-beta.2
   resolution: "@storybook/docs-tools@npm:6.5.0-beta.2"
@@ -9803,6 +9812,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/experimental-utils@npm:^5.3.0":
+  version: 5.23.0
+  resolution: "@typescript-eslint/experimental-utils@npm:5.23.0"
+  dependencies:
+    "@typescript-eslint/utils": 5.23.0
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+  checksum: 7db18b7d21cd41c4b8e846d6123803e6612f66acaf5853467cd356fc9a4413ccb1772cd1ddd12241cecdfffc42bba797c3684e6a1fc300284409f65a9035b98f
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/parser@npm:^4.20.0":
   version: 4.33.0
   resolution: "@typescript-eslint/parser@npm:4.33.0"
@@ -9857,6 +9877,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/scope-manager@npm:5.23.0":
+  version: 5.23.0
+  resolution: "@typescript-eslint/scope-manager@npm:5.23.0"
+  dependencies:
+    "@typescript-eslint/types": 5.23.0
+    "@typescript-eslint/visitor-keys": 5.23.0
+  checksum: cd3dda0b18d6730e34784fc63135fc9fe31673898d3e0868cd765ad78855351f285fe577297193cf179b3ce918c3d44453de85159a925f5c02d12a5626e787d8
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/type-utils@npm:5.22.0":
   version: 5.22.0
   resolution: "@typescript-eslint/type-utils@npm:5.22.0"
@@ -9884,6 +9914,13 @@ __metadata:
   version: 5.22.0
   resolution: "@typescript-eslint/types@npm:5.22.0"
   checksum: 74f822c5a3b96bba05229eea4ed370c4bd48b17f475c37f08d6ba708adf65c3aa026bb544f1d0308c96e043b30015e396fd53b1e8e4e9fbb6dc9c92d2ccc0a15
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/types@npm:5.23.0":
+  version: 5.23.0
+  resolution: "@typescript-eslint/types@npm:5.23.0"
+  checksum: 96ae3e80cfae7b34f2846db692c31fb1804bf9651bce1d29f2eb8ae4c763d22f3283adc02dedeebd7cf70e4d8be54ec7f6ca593e03cdca26c791207e7556c2c1
   languageName: node
   linkType: hard
 
@@ -9923,6 +9960,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/typescript-estree@npm:5.23.0":
+  version: 5.23.0
+  resolution: "@typescript-eslint/typescript-estree@npm:5.23.0"
+  dependencies:
+    "@typescript-eslint/types": 5.23.0
+    "@typescript-eslint/visitor-keys": 5.23.0
+    debug: ^4.3.2
+    globby: ^11.0.4
+    is-glob: ^4.0.3
+    semver: ^7.3.5
+    tsutils: ^3.21.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 8d85bb1cd777e93cc7322ae8fea25f9b924def02494cdb8395c1d5d17b5fd3ac9bc969418a1d20a5dc28c2cdd85da20e13527e28b595c06ff6f84cd22a78d73f
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/utils@npm:5.22.0, @typescript-eslint/utils@npm:^5.10.0, @typescript-eslint/utils@npm:^5.13.0":
   version: 5.22.0
   resolution: "@typescript-eslint/utils@npm:5.22.0"
@@ -9936,6 +9991,22 @@ __metadata:
   peerDependencies:
     eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
   checksum: 5019485e76d754a7a60c042545fd884dc666fddf9d4223ff706bbf0c275f19ea25a6b210fb5cf7ed368b019fe538fd854a925e9c6f12007d51b1731a29d95cc1
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/utils@npm:5.23.0":
+  version: 5.23.0
+  resolution: "@typescript-eslint/utils@npm:5.23.0"
+  dependencies:
+    "@types/json-schema": ^7.0.9
+    "@typescript-eslint/scope-manager": 5.23.0
+    "@typescript-eslint/types": 5.23.0
+    "@typescript-eslint/typescript-estree": 5.23.0
+    eslint-scope: ^5.1.1
+    eslint-utils: ^3.0.0
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+  checksum: 72207399f29856b601148fe1aff07049021fad8e780ee6e896279d2291806d4608f1c28ddc5c3c5616ce94f25dcbcd26f295669e524fc1c4b4db810569c90f85
   languageName: node
   linkType: hard
 
@@ -9956,6 +10027,16 @@ __metadata:
     "@typescript-eslint/types": 5.22.0
     eslint-visitor-keys: ^3.0.0
   checksum: d30dfa98dcce75da49a6a204a0132d42e63228c35681cb9b3643e47a0a24a633e259832d48d101265bd85b8eb5a9f2b4858f9447646c1d3df6a2ac54258dfe8f
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/visitor-keys@npm:5.23.0":
+  version: 5.23.0
+  resolution: "@typescript-eslint/visitor-keys@npm:5.23.0"
+  dependencies:
+    "@typescript-eslint/types": 5.23.0
+    eslint-visitor-keys: ^3.0.0
+  checksum: 322e10d52a985e8a90d3612bb9d09a87dc64fc4cb1248484f1a9a7a98f65d3ef65a465ce868773a4939e35fa3b726ad609dac5a168efd7eaca4b06df33e965e3
   languageName: node
   linkType: hard
 
@@ -10066,7 +10147,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/crud@^0.6.4, @vulcanjs/crud@workspace:packages/crud":
+"@vulcanjs/crud@^0.6.6, @vulcanjs/crud@workspace:packages/crud":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/crud@workspace:packages/crud"
   dependencies:
@@ -10101,11 +10182,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/graphql@^0.6.6-y.15, @vulcanjs/graphql@workspace:packages/graphql":
+"@vulcanjs/graphql@*, @vulcanjs/graphql@^0.6.6, @vulcanjs/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/graphql@workspace:packages/graphql"
   dependencies:
-    "@vulcanjs/crud": ^0.6.4
+    "@vulcanjs/crud": ^0.6.6
     "@vulcanjs/i18n": ^0.6.4
     "@vulcanjs/model": ^0.6.4
     "@vulcanjs/permissions": ^0.6.4
@@ -10129,37 +10210,6 @@ __metadata:
       optional: true
   languageName: unknown
   linkType: soft
-
-"@vulcanjs/graphql@npm:*":
-  version: 0.6.4
-  resolution: "@vulcanjs/graphql@npm:0.6.4"
-  dependencies:
-    "@vulcanjs/core": ^0.6.4
-    "@vulcanjs/crud": ^0.6.4
-    "@vulcanjs/i18n": ^0.6.4
-    "@vulcanjs/model": ^0.6.4
-    "@vulcanjs/permissions": ^0.6.4
-    "@vulcanjs/schema": ^0.6.4
-    "@vulcanjs/utils": ^0.6.4
-    apollo-datasource: ^3.3.1
-    debug: ^4.3.1
-    deepmerge: ^4.2.2
-    graphql-date: ^1.0.3
-    graphql-type-json: ^0.3.2
-    lodash: ^4.17.21
-    moment-timezone: ^0.5.33
-    msw: ^0.35.0
-  peerDependencies:
-    "@apollo/client": ^3.5.5
-    apollo-server: ^2.18.2
-    graphql: ^15.5.0
-    react: ^17.0.1
-  dependenciesMeta:
-    msw:
-      optional: true
-  checksum: 3343d8f14e32f6ec9ead86b45070c67bf46e9ef516799bced81be522eb9af95d48337a24bd979e902e90704b03003edbb66cfaf528674bcacbd753df522007b6
-  languageName: node
-  linkType: hard
 
 "@vulcanjs/i18n@^0.6.4, @vulcanjs/i18n@workspace:packages/i18n":
   version: 0.0.0-use.local
@@ -10180,11 +10230,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/meteor-legacy@^0.6.6-y.15, @vulcanjs/meteor-legacy@workspace:packages/meteor-legacy":
+"@vulcanjs/meteor-legacy@^0.6.6, @vulcanjs/meteor-legacy@workspace:packages/meteor-legacy":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/meteor-legacy@workspace:packages/meteor-legacy"
   dependencies:
-    "@vulcanjs/graphql": ^0.6.6-y.15
+    "@vulcanjs/graphql": ^0.6.6
     lodash: ^4.17.21
   peerDependencies:
     "@apollo/client": ">= 3.2.0"
@@ -10201,13 +10251,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/mongo-apollo@^0.6.6-y.15, @vulcanjs/mongo-apollo@workspace:packages/mongo-apollo":
+"@vulcanjs/mongo-apollo@^0.6.6, @vulcanjs/mongo-apollo@workspace:packages/mongo-apollo":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/mongo-apollo@workspace:packages/mongo-apollo"
   dependencies:
-    "@vulcanjs/crud": ^0.6.4
-    "@vulcanjs/graphql": ^0.6.6-y.15
-    "@vulcanjs/mongo": ^0.6.4
+    "@vulcanjs/crud": ^0.6.6
+    "@vulcanjs/graphql": ^0.6.6
+    "@vulcanjs/mongo": ^0.6.6
     "@vulcanjs/utils": ^0.6.4
     apollo-datasource-mongodb: ^0.5.2
   peerDependencies:
@@ -10216,11 +10266,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/mongo@^0.6.4, @vulcanjs/mongo@workspace:packages/mongo":
+"@vulcanjs/mongo@^0.6.6, @vulcanjs/mongo@workspace:packages/mongo":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/mongo@workspace:packages/mongo"
   dependencies:
-    "@vulcanjs/crud": ^0.6.4
+    "@vulcanjs/crud": ^0.6.6
     "@vulcanjs/model": ^0.6.4
     "@vulcanjs/permissions": "*"
     "@vulcanjs/schema": ^0.6.4
@@ -10250,14 +10300,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-hooks@^0.6.6-y.15, @vulcanjs/react-hooks@workspace:packages/react-hooks":
+"@vulcanjs/react-hooks@^0.6.6, @vulcanjs/react-hooks@workspace:packages/react-hooks":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-hooks@workspace:packages/react-hooks"
   dependencies:
     "@testing-library/react-hooks": ^3.4.1
-    "@vulcanjs/crud": ^0.6.4
-    "@vulcanjs/graphql": ^0.6.6-y.15
-    "@vulcanjs/mongo": ^0.6.4
+    "@vulcanjs/crud": ^0.6.6
+    "@vulcanjs/graphql": ^0.6.6
+    "@vulcanjs/mongo": ^0.6.6
     "@vulcanjs/schema": ^0.6.4
     debug: ^4.3.1
     lodash: ^4.17.20
@@ -10309,16 +10359,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui-lite@^0.6.6-y.16, @vulcanjs/react-ui-lite@workspace:packages/react-ui-lite":
+"@vulcanjs/react-ui-lite@^0.6.6, @vulcanjs/react-ui-lite@workspace:packages/react-ui-lite":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui-lite@workspace:packages/react-ui-lite"
   dependencies:
     "@types/lodash": ^4.14.168
-    "@vulcanjs/graphql": ^0.6.6-y.15
+    "@vulcanjs/graphql": ^0.6.6
     "@vulcanjs/i18n": ^0.6.4
     "@vulcanjs/model": ^0.6.4
     "@vulcanjs/permissions": ^0.6.4
-    "@vulcanjs/react-hooks": ^0.6.6-y.15
+    "@vulcanjs/react-hooks": ^0.6.6
     "@vulcanjs/react-i18n": ^0.6.4
     "@vulcanjs/schema": ^0.6.4
     "@vulcanjs/utils": ^0.6.4
@@ -10347,10 +10397,10 @@ __metadata:
     "@types/lodash": ^4.14.168
     "@types/underscore": ^1.11.1
     "@vulcanjs/core": ^0.6.4
-    "@vulcanjs/graphql": ^0.6.6-y.15
+    "@vulcanjs/graphql": ^0.6.6
     "@vulcanjs/model": ^0.6.4
     "@vulcanjs/permissions": ^0.6.4
-    "@vulcanjs/react-hooks": ^0.6.6-y.15
+    "@vulcanjs/react-hooks": ^0.6.6
     "@vulcanjs/react-i18n": ^0.6.4
     "@vulcanjs/schema": ^0.6.4
     "@vulcanjs/utils": ^0.6.4
@@ -10372,18 +10422,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui@^0.6.6-y.15, @vulcanjs/react-ui@workspace:packages/react-ui":
+"@vulcanjs/react-ui@^0.6.6, @vulcanjs/react-ui@workspace:packages/react-ui":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui@workspace:packages/react-ui"
   dependencies:
     "@types/lodash": ^4.14.168
     "@types/underscore": ^1.11.1
     "@vulcanjs/core": ^0.6.4
-    "@vulcanjs/graphql": ^0.6.6-y.15
+    "@vulcanjs/graphql": ^0.6.6
     "@vulcanjs/i18n": ^0.6.4
     "@vulcanjs/model": ^0.6.4
     "@vulcanjs/permissions": ^0.6.4
-    "@vulcanjs/react-hooks": ^0.6.6-y.15
+    "@vulcanjs/react-hooks": ^0.6.6
     "@vulcanjs/react-i18n": ^0.6.4
     "@vulcanjs/schema": ^0.6.4
     "@vulcanjs/utils": ^0.6.4
@@ -17784,6 +17834,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-storybook@npm:^0.5.11":
+  version: 0.5.11
+  resolution: "eslint-plugin-storybook@npm:0.5.11"
+  dependencies:
+    "@storybook/csf": ^0.0.1
+    "@typescript-eslint/experimental-utils": ^5.3.0
+    requireindex: ^1.1.0
+  peerDependencies:
+    eslint: ">=6"
+  checksum: 8a3c8913dbf0f7063046f3eadeab64958679e175448d3a155eb2928fa227c6f5b67e0fb5ea4f0fb4c6578d06350c501808085332126986b8e4f9def614cc3357
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-testing-library@npm:^5.0.5":
   version: 5.3.1
   resolution: "eslint-plugin-testing-library@npm:5.3.1"
@@ -17794,6 +17857,19 @@ __metadata:
   checksum: 39b11c5a412ddba994bc8e0734f6e6ba23ef88c99995d6a0e9e9e7c572c6d71f19589fe4d1bbafd8589cf7438d35559aeca6227e885d2b5f6d8baf8d7304e31e
   languageName: node
   linkType: hard
+
+"eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal::locator=root%40workspace%3A.":
+  version: 1.0.0
+  resolution: "eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal#./packages/eslint-vulcan-internal::hash=74e503&locator=root%40workspace%3A."
+  checksum: 2a412d4afb6628b172e7a7934421711645a2c0965706ec971c2a2670744aa4a5504a9b0a78c461cf5278e9a34d01d121e22e36d02cb18147ba69f3a98ccc4270
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-vulcan-internal@workspace:packages/eslint-vulcan-internal":
+  version: 0.0.0-use.local
+  resolution: "eslint-plugin-vulcan-internal@workspace:packages/eslint-vulcan-internal"
+  languageName: unknown
+  linkType: soft
 
 "eslint-scope@npm:5.1.1, eslint-scope@npm:^5.1.1":
   version: 5.1.1
@@ -31306,7 +31382,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"requireindex@npm:^1.2.0":
+"requireindex@npm:^1.1.0, requireindex@npm:^1.2.0":
   version: 1.2.0
   resolution: "requireindex@npm:1.2.0"
   checksum: 50d8b10a1ff1fdf6aea7a1870bc7bd238b0fb1917d8d7ca17fd03afc38a65dcd7a8a4eddd031f89128b5f0065833d5c92c4fef67f2c04e8624057fe626c9cf94
@@ -31657,6 +31733,7 @@ __metadata:
     cross-fetch: ^3.1.4
     depcheck: ^1.4.1
     esbuild: ^0.14.10
+    eslint-plugin-vulcan-internal: ./packages/eslint-vulcan-internal
     express: ^4.17.1
     graphql-tools: ^8.2.0
     jest: 28
@@ -36159,9 +36236,9 @@ __metadata:
   resolution: "vulcan-express@workspace:starters/express"
   dependencies:
     "@graphql-tools/schema": ^8.3.2
-    "@vulcanjs/graphql": ^0.6.6-y.15
-    "@vulcanjs/mongo": ^0.6.4
-    "@vulcanjs/mongo-apollo": ^0.6.6-y.15
+    "@vulcanjs/graphql": ^0.6.6
+    "@vulcanjs/mongo": ^0.6.6
+    "@vulcanjs/mongo-apollo": ^0.6.6
     apollo-server-express: ^3.6.4
     express: ^4.17.3
     mongodb-memory-server: ^8.4.0
@@ -36217,16 +36294,16 @@ __metadata:
     "@types/react-dom": ^17
     "@types/shelljs": ^0.8.8
     "@vercel/ncc": ^0.30.0
-    "@vulcanjs/crud": ^0.6.4
-    "@vulcanjs/graphql": ^0.6.6-y.15
+    "@vulcanjs/crud": ^0.6.6
+    "@vulcanjs/graphql": ^0.6.6
     "@vulcanjs/mdx": ^0.6.4
-    "@vulcanjs/meteor-legacy": ^0.6.6-y.15
+    "@vulcanjs/meteor-legacy": ^0.6.6
     "@vulcanjs/model": ^0.6.4
-    "@vulcanjs/mongo": ^0.6.4
-    "@vulcanjs/mongo-apollo": ^0.6.6-y.15
-    "@vulcanjs/react-hooks": ^0.6.6-y.15
-    "@vulcanjs/react-ui": ^0.6.6-y.15
-    "@vulcanjs/react-ui-lite": ^0.6.6-y.16
+    "@vulcanjs/mongo": ^0.6.6
+    "@vulcanjs/mongo-apollo": ^0.6.6
+    "@vulcanjs/react-hooks": ^0.6.6
+    "@vulcanjs/react-ui": ^0.6.6
+    "@vulcanjs/react-ui-lite": ^0.6.6
     "@vulcanjs/schema": ^0.6.4
     apollo-datasource-mongodb: ^0.5.2
     apollo-server: ^3
@@ -36248,6 +36325,7 @@ __metadata:
     eslint: ^7.32.0
     eslint-config-next: ^11.1.0
     eslint-plugin-cypress: 2.11.1
+    eslint-plugin-storybook: ^0.5.11
     express: 4.17.1
     graphql: 15.4.0
     graphql-tag: 2.10.3
@@ -36348,6 +36426,8 @@ __metadata:
     eslint-config-next:
       optional: true
     eslint-plugin-cypress:
+      optional: true
+    eslint-plugin-storybook:
       optional: true
     jest:
       optional: true
