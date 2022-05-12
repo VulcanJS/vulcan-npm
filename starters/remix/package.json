@@ -6,11 +6,11 @@
   "sideEffects": false,
   "scripts": {
     "postinstall": "remix setup node",
-    "//build-run-s": "run-s npm:build:*",
+    "//build-run-s": "run-s 'npm:build:*",
     "build": "npm run build:css && npm run build:remix",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
-    "dev": "concurrently npm:dev:*",
+    "dev": "concurrently 'npm:dev:*'",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
