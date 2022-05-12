@@ -27,7 +27,6 @@
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/core": "^0.6.4",
     "@vulcanjs/crud": "^0.6.4",
     "@vulcanjs/i18n": "^0.6.4",
     "@vulcanjs/model": "^0.6.4",

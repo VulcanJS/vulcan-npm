@@ -8,7 +8,8 @@
 import React, { ComponentType, useEffect, useState } from "react";
 import get from "lodash/get.js";
 import SimpleSchema from "simpl-schema";
-import { isEmptyValue, getNullValue } from "../utils/utils";
+import { utils } from "@vulcanjs/react-ui";
+const { isEmptyValue, getNullValue } = utils
 import type {
   PossibleFormComponents,
 } from "@vulcanjs/react-ui";
