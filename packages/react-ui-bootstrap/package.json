@@ -39,10 +39,10 @@
   "devDependencies": {
     "@types/lodash": "^4.14.168",
     "@types/underscore": "^1.11.1",
-    "graphql": "^15.5.0",
     "@vulcanjs/graphql": "*",
     "@vulcanjs/model": "*",
-    "@vulcanjs/schema": "*"
+    "@vulcanjs/schema": "*",
+    "graphql": "^15.5.0"
   },
   "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f"
 }

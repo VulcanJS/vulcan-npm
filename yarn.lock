@@ -10130,6 +10130,37 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@vulcanjs/graphql@npm:*":
+  version: 0.6.4
+  resolution: "@vulcanjs/graphql@npm:0.6.4"
+  dependencies:
+    "@vulcanjs/core": ^0.6.4
+    "@vulcanjs/crud": ^0.6.4
+    "@vulcanjs/i18n": ^0.6.4
+    "@vulcanjs/model": ^0.6.4
+    "@vulcanjs/permissions": ^0.6.4
+    "@vulcanjs/schema": ^0.6.4
+    "@vulcanjs/utils": ^0.6.4
+    apollo-datasource: ^3.3.1
+    debug: ^4.3.1
+    deepmerge: ^4.2.2
+    graphql-date: ^1.0.3
+    graphql-type-json: ^0.3.2
+    lodash: ^4.17.21
+    moment-timezone: ^0.5.33
+    msw: ^0.35.0
+  peerDependencies:
+    "@apollo/client": ^3.5.5
+    apollo-server: ^2.18.2
+    graphql: ^15.5.0
+    react: ^17.0.1
+  dependenciesMeta:
+    msw:
+      optional: true
+  checksum: 3343d8f14e32f6ec9ead86b45070c67bf46e9ef516799bced81be522eb9af95d48337a24bd979e902e90704b03003edbb66cfaf528674bcacbd753df522007b6
+  languageName: node
+  linkType: hard
+
 "@vulcanjs/i18n@^0.6.4, @vulcanjs/i18n@workspace:packages/i18n":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/i18n@workspace:packages/i18n"
@@ -10161,7 +10192,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/model@^0.6.4, @vulcanjs/model@workspace:packages/model":
+"@vulcanjs/model@*, @vulcanjs/model@^0.6.4, @vulcanjs/model@workspace:packages/model":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/model@workspace:packages/model"
   dependencies:
@@ -10260,6 +10291,9 @@ __metadata:
   dependencies:
     "@types/lodash": ^4.14.168
     "@types/underscore": ^1.11.1
+    "@vulcanjs/graphql": "*"
+    "@vulcanjs/model": "*"
+    "@vulcanjs/schema": "*"
     classnames: ^2.3.1
     debug: ^4.3.1
     graphql: ^15.5.0
@@ -10396,7 +10430,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/schema@^0.6.4, @vulcanjs/schema@workspace:packages/schema":
+"@vulcanjs/schema@*, @vulcanjs/schema@^0.6.4, @vulcanjs/schema@workspace:packages/schema":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/schema@workspace:packages/schema"
   dependencies:

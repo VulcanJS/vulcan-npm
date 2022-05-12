@@ -1,6 +1,7 @@
 ---
 title: Release packages
 ---
+
 # Release
 
 Work in progress
@@ -52,9 +53,13 @@ yarn run auto-changelog
 git commit -am "bump version"
 git push
 git push --tags
+```
 
-# Publish starters on GitHub
+## Publish starters on GitHub
 
+[Check Next release doc](./release-next)
+
+```sh
 # /!\ Follow each specific starter release guide before publishing
 node ./scripts/push-starters.mjs
 ```
