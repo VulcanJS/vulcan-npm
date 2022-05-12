@@ -116,18 +116,21 @@ export default function DistantApiMutationRoute() {
         {/* `remix-graphql` will automatically transform all posted 
                   form data into variables of the same name for the GraphQL
                   operation */}
-        <input ref={nameRef} name="name"
-          aria-invalid={actionData?.errors?.name ? true : undefined}
-          aria-errormessage={
-            actionData?.errors?.name ? "name-error" : undefined
-          }
-        />
+        <div>
+          <label htmlFor="name">Name:</label>
+          <input ref={nameRef} name="name"
+            aria-invalid={actionData?.errors?.name ? true : undefined}
+            aria-errormessage={
+              actionData?.errors?.name ? "name-error" : undefined
+            }
+          />
+        </div>
         {actionData?.errors?.name && (
           <div className="pt-1 text-red-700" id="title-error">
             {actionData.errors.name}
           </div>
         )}
-        <button type="submit">Submite</button>
+        <button className="border rounded p-4" type="submit">Submit</button>
       </Form>
     </main>
   );
