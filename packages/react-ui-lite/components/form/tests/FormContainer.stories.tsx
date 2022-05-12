@@ -5,7 +5,7 @@ import {
   graphqlQueryStubsToMsw,
 } from "@vulcanjs/graphql/testing";
 import { Story, Meta } from "@storybook/react";
-import { SmartForm, SmartFormProps } from "@vulcanjs/react-ui";
+import { defaultCoreComponents, defaultFormComponents, SmartForm, SmartFormProps } from "@vulcanjs/react-ui";
 
 // Mocking graphql
 import { VulcanComponentsProvider } from "@vulcanjs/react-ui";
@@ -19,6 +19,8 @@ import {
 } from "@vulcanjs/graphql";
 import { OneFieldGraphql, OneFieldType } from "./fixtures/graphqlModels";
 import { VulcanCurrentUserProvider } from "@vulcanjs/react-ui";
+import { liteCoreComponents } from "../../..";
+import { liteFormComponents } from "../../..";
 
 // dummy simplified model
 const singleMock: GraphqlMutationStub<{
@@ -61,7 +63,14 @@ export default {
   title: "SmartForm",
   decorators: [
     (Story) => (
-      <VulcanComponentsProvider>
+      <VulcanComponentsProvider
+        value={{
+          ...defaultCoreComponents,
+          ...defaultFormComponents,
+          ...liteCoreComponents,
+          ...liteFormComponents
+        }}
+      >
         <Story />
       </VulcanComponentsProvider>
     ),
