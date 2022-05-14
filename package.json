@@ -35,7 +35,6 @@
     "@babel/preset-typescript": "^7.10.4",
     "@lerna-lite/cli": "^1.1.1",
     "@lerna-lite/exec": "^1.1.1",
-    "@mdx-js/react": "^2.1.1",
     "@swc/cli": "^0.1.55",
     "@swc/core": "^1.2.126",
     "@testing-library/jest-dom": "^5.14.1",

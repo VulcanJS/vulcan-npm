@@ -10414,6 +10414,7 @@ __metadata:
     "@vulcanjs/permissions": ^0.6.7
     "@vulcanjs/react-hooks": ^0.6.7
     "@vulcanjs/react-i18n": ^0.6.7
+    "@vulcanjs/react-ui": "*"
     "@vulcanjs/schema": ^0.6.7
     "@vulcanjs/utils": ^0.6.7
     classnames: ^2.3.1
@@ -10421,7 +10422,6 @@ __metadata:
     lodash: ^4.17.21
   peerDependencies:
     "@apollo/client": ^3.5.5
-    "@vulcanjs/react-ui": "*"
     moment: ^2.29.1
     react: ^17.0.1
     react-dom: ^17.0.1
@@ -10466,7 +10466,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui@^0.6.7, @vulcanjs/react-ui@workspace:packages/react-ui":
+"@vulcanjs/react-ui@*, @vulcanjs/react-ui@^0.6.7, @vulcanjs/react-ui@workspace:packages/react-ui":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui@workspace:packages/react-ui"
   dependencies:
@@ -17960,8 +17960,8 @@ __metadata:
 
 "eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal::locator=root%40workspace%3A.":
   version: 0.6.7
-  resolution: "eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal#./packages/eslint-vulcan-internal::hash=71109f&locator=root%40workspace%3A."
-  checksum: 86243e49bc70be901075b77f0dd8d8805ad9367b7238bccaaaca481cad3bf9edabec535607c43f0ce28c8dff07919e8507c04787fb2cee23580e45051ab2a2f4
+  resolution: "eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal#./packages/eslint-vulcan-internal::hash=496a72&locator=root%40workspace%3A."
+  checksum: f60e73bcc7a31b2df55d42304817422f9b7df249d7b1bbbc548803b4c9402cafff8cff16de383fd9f7c99e885315d7368b279674fafbe65a5b9d1122f8be72bd
   languageName: node
   linkType: hard
 
@@ -31790,7 +31790,6 @@ __metadata:
     "@babel/preset-typescript": ^7.10.4
     "@lerna-lite/cli": ^1.1.1
     "@lerna-lite/exec": ^1.1.1
-    "@mdx-js/react": ^2.1.1
     "@storybook/addon-actions": ^6.4.22
     "@storybook/addon-docs": ^6.4.22
     "@storybook/addon-essentials": ^6.4.22

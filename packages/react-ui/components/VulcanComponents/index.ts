@@ -3,4 +3,4 @@ export * from "./Context";
 export * from "./Consumer";
 export * from "./typings";
 
-export * from "./defaultVulcanComponents/index";
+export * from "./defaultVulcanComponents";

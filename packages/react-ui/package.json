@@ -42,6 +42,10 @@
     "lodash": "^4.17.21",
     "simpl-schema": "^1.12.0"
   },
+  "devDependencies": {
+    "@types/lodash": "^4.14.168",
+    "@types/underscore": "^1.11.1"
+  },
   "peerDependencies": {
     "@apollo/client": "^3.5.5",
     "graphql": "^15.5.0",
@@ -50,10 +54,6 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.168",
-    "@types/underscore": "^1.11.1"
   },
   "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f"
 }
