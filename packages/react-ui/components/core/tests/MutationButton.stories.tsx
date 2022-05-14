@@ -24,6 +24,7 @@ export default {
             // If it doesn't work, you need to move the story into "react-ui-lite" instead
             Button: liteCoreComponents.Button,
             Loading: liteCoreComponents.Loading,
+            TooltipTrigger: liteCoreComponents.TooltipTrigger,
           }}
         >
           <Story />
