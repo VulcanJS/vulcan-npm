@@ -100,8 +100,8 @@
     "@graphql-tools/merge": "^8.2.11",
     "@graphql-tools/schema": "^8.3.11",
     "@hapi/iron": "6.0.0",
-    "@mdx-js/loader": "^1.6",
-    "@mdx-js/react": "^1.6",
+    "@mdx-js/loader": "^2.1.1",
+    "@mdx-js/react": "^2.1.1",
     "@mui/icons-material": "^5.0.0",
     "@mui/material": "^5.0.0",
     "@next/mdx": "^12.1.6",
@@ -155,6 +155,7 @@
     "react-hook-form": "4.9.8",
     "react-i18next": "^11.5.0",
     "react-spring": "^8.0.27",
+    "remark-gfm": "^3.0.1",
     "styled-jsx-plugin-postcss": "^3.0.2",
     "swr": "^0.4.0"
   },
@@ -226,7 +227,9 @@
   "resolutions": {
     "@types/react": "^17.0.16",
     "@types/react-dom": "^17.0.16",
-    "graphql": "15.4.0"
+    "graphql": "15.4.0",
+    "@storybook/addon-docs/@mdx-js/loader": "^2.1.1",
+    "@storybook/addon-docs/@mdx-js/react": "^2.1.1"
   },
   "installConfig": {
     "hoistingLimits": "dependencies"

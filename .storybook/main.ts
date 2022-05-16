@@ -1,4 +1,10 @@
 import { WebpackPluginInstance, Configuration } from "webpack";
+
+// @see https://www.npmjs.com/package/@storybook/addon-docs
+// Manual MD configuration gives us more control on mdx version
+// @see https://github.com/storybookjs/storybook/issues/17455
+const createCompiler = require("@storybook/addon-docs/mdx-compiler-plugin");
+
 module.exports = {
   core: {
     builder: "webpack5",
@@ -20,8 +26,33 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
+    "@storybook/addon-docs/register",
   ],
   webpackFinal: async (config: Configuration, { configType }) => {
+    // Custom MDX setup, because addon-docs is too restrictive
+    config.module.rules.push({
+      // 2a. Load `.stories.mdx` / `.story.mdx` files as CSF and generate
+      //     the docs page from the markdown
+      test: /\.(stories|story)\.mdx$/,
+      use: [
+        {
+          // Need to add babel-loader as dependency: `yarn add -D babel-loader`
+          loader: require.resolve("babel-loader"),
+          // may or may not need this line depending on your app's setup
+          options: {
+            plugins: ["@babel/plugin-transform-react-jsx"],
+          },
+        },
+        {
+          loader: "@mdx-js/loader",
+          /** @type {import('@mdx-js/loader').Options} */
+          options: {
+            providerImportSource: "@mdx-js/react",
+            compilers: [createCompiler({})],
+          },
+        },
+      ],
+    });
     // add magic imports and isomorphic imports to Storybook
     // Webpack4
     //withVulcan.node = { ...(withVulcan.node || {}), fs: "empty" };

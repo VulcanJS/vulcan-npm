@@ -9,6 +9,7 @@ const withMDX = require("@next/mdx")({
     jsxRuntime: "automatic",
   },
   // TODO: upgrade to v2 https://mdxjs.com/migrating/v2/
+  // @see https://github.com/storybookjs/storybook/issues/17455
   // Currently (05/2022) we are blocked by Storybook which
   // doesn't support mdx v2
 });
