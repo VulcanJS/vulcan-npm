@@ -12,6 +12,11 @@ Instead, discover our new, shiny framework: [Vulcan Next!](/docs/vulcan-next)
 Vulcan Next is a port of Vulcan, using a more modern framework: Next.js. It includes similar features,
 but with a modern and scalable architecture.
 
+## Transition from Vulcan Meteor
+
+If you were using Vulcan Meteor, check [VulcanJS/vulcan-meteor-next-transition](https://github.com/VulcanJS/vulcan-meteor-next-transition) for a demonstration of using Vulcan Next for the frontend
+and an existing Vulcan Meteor app for the backend.
+
 ## What's Vulcan?
 
 Vulcan is a framework that gives you a set of tools for quickly building React & GraphQL-based web applications. It can handle data loading, e-mail notifications, automatic form generation, and much more, out of the box. 
