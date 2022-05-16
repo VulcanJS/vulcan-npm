@@ -15,6 +15,8 @@ In an Express middleware:
   You'll need to pass the `currentUser`. If there is no current user, for instance if you use a mutator
   in a seed script, instead use the `asAdmin` option and the `validate` option.
 
+- Use Mongoose to get data
+
 You can optionnaly pass the GraphQL context to a mutator, though it should not be needed anymore:
 
 - Optionnaly generate the `context`. This is the same context that is used in GraphQL resolvers. This concept is less common outside of the GraphQL ecosystem, but still perfectly relevant.

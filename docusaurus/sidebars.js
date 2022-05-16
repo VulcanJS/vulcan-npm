@@ -80,7 +80,8 @@ const sidebars = {
       link: { type: "doc", id: "vulcan-fire/index" },
       items: [
         "vulcan-fire/get-started",
-        "vulcan-fire/customResolvers",
+        "vulcan-fire/customTopLevelResolvers",
+        "vulcan-fire/customFieldResolvers",
         "vulcan-fire/outsideGraphql",
       ],
     },

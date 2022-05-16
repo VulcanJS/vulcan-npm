@@ -67,7 +67,7 @@ Many modern frameworks prefer _static_ generation for both, meaning they will li
 - Static code generation is awesome when you need to customize the code later on. However,
   it also mean that you need to manage a lot of additional files in your codebase.
 
-- Dynamic generation won't generate any code. Customization is done either via the Vulcan Model object, or by [creating your custom resolvers as depicted in our GraphQL engine documentation](../vulcan-fire/customResolvers.md).
+- Dynamic generation won't generate any code. Customization is done either via the Vulcan Model object, or by [creating your custom resolvers as depicted in our GraphQL engine documentation](../vulcan-fire/customTopLevelResolvers.md).
 
 Actually, both patterns are perfectly compatible!
 
