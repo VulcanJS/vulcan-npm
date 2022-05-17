@@ -31,7 +31,6 @@ export const FormComponentSelect = ({
       name={inputProperties.name}
       {...itemProperties}
     >
-      /* @ts-ignpore */
       <FormControl
         // @ts-ignore
         as={"select" as ElementType}
