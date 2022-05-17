@@ -12,3 +12,4 @@ export { FormComponentSelect } from "./Select";
 export { FormComponentSelectMultiple } from "./SelectMultiple";
 export { FormComponentUrl } from "./Url";
 export { FormComponentStaticText } from "./StaticText";
+export { FormComponentTextarea } from "./Textarea";

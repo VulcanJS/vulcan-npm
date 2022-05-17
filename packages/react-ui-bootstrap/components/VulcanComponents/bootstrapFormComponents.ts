@@ -15,6 +15,7 @@ import {
   FormComponentSelectMultiple,
   FormComponentUrl,
   FormComponentStaticText,
+  FormComponentTextarea,
 } from "../form/inputs";
 import { FormElement, FormDescription } from "../form/elements";
 import { liteFormComponents } from "@vulcanjs/react-ui-lite";
@@ -167,5 +168,6 @@ export const bootstrapFormComponents: Partial<PossibleFormComponents> = {
   FormComponentSelectMultiple,
   FormComponentUrl,
   FormComponentStaticText,
+  FormComponentTextarea,
   FormElement,
 };
