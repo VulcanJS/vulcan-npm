@@ -11,6 +11,11 @@ import { deriveStatusCode as defaultDeriveStatusCode } from "./derive-status-cod
 
 type Variables = Record<string, unknown>;
 
+/**
+ * Transform FormData into JSON variables
+ * @param args
+ * @returns
+ */
 async function parseVariables(args: DataFunctionArgs): Promise<Variables> {
   const variables: Record<string, FormDataEntryValue | undefined> = args.params;
 
@@ -27,6 +32,13 @@ async function parseVariables(args: DataFunctionArgs): Promise<Variables> {
 
   return variables;
 }
+
+/**
+ * Converts formData from action loader args to JSON
+ * Useful when your mutation variables have
+ * a different structure than your form.
+ */
+export const formDataAsJson = parseVariables;
 
 export async function processRequestWithGraphQL({
   args,
@@ -113,10 +125,20 @@ export async function sendGraphQLRequest({
   query,
   variables: _variables,
 }: {
+  /**
+   * Mutation variables will be computed based on
+   * args.
+   *
+   * If you form input name do not match the variable name,
+   * set "variables" explicitely instead.
+   */
   args: DataFunctionArgs;
   endpoint: string;
   headers?: HeadersInit;
   query: string;
+  /**
+   * Optional explicit variables
+   */
   variables?: Variables;
 }): Promise<Response> {
   const headers = new Headers(headersInit);

@@ -1,3 +1,6 @@
+/**
+ * Basic mutation demo, based on SpaceX API
+ */
 import type { ActionFunction } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";
@@ -7,15 +10,20 @@ import {
   //processRequestWithGraphQL,
   // When using a remote endpoint
   sendGraphQLRequest,
+  formDataAsJson,
 } from "@vulcanjs/remix-graphql/index.server";
 
 type ActionData = {
   errors?: {
     name?: string;
   };
+  data?: {
+    insert_users?: {
+      returning?: Array<{ id: string; name: string }>;
+    };
+  };
 };
 
-const LIST_USER_QUERY =
 const INSERT_USER_MUTATION = /* GraphQL */ `
   mutation Insert_users($objects: [users_insert_input!]!) {
     insert_users(objects: $objects) {
@@ -27,82 +35,42 @@ const INSERT_USER_MUTATION = /* GraphQL */ `
   }
 `;
 
-// TODO: check how we can pick the mutation depending on the "update" or "create" scenario
-/**
-/*
-{
-"where": {
-  "id": {
-    "_eq": "e77584bb-3301-42b6-b952-297170cb8bc8"
-  }
-},
-"set": {
-  "name": "Eric Burel v2"
-}
-}*/
-const UPDATE_USER_MUTATION = /* GraphQL */ `
-  mutation Update_users($where: users_bool_exp!, $set: users_set_input) {
-    update_users(where: $where, _set: $set) {
-      returning {
-        id
-        name
-      }
-    }
-  }
-`;
-
-/**
- * {
-  "deleteUsersWhere": {
-    "id": {
-      "_eq": ""
-    }
-  }
-}
- */
-const DELETE_USER_MUTATION = /* GraphQL */ `
-  mutation Delete_users($deleteUsersWhere: users_bool_exp!) {
-    delete_users(where: $deleteUsersWhere) {
-      returning {
-        name
-      }
-    }
-  }
-`;
-
-// The `processRequestWithGraphQL` function can be used for both loaders and
-// actions!
-export const action: ActionFunction = (args: any) =>
-  // TODO: how to handle multiple actions?
-  // if (update)
-  sendGraphQLRequest({
+export const action: ActionFunction = async (args) => {
+  /**
+   * Args contain a request object, which in turns contains FormData
+   * We need those values as a POJO in order to define the variables correctly
+   *
+   * Note: if your form input names are 1:1 equal with variable names,
+   * you don't need to pass explicit variables, only "args" is necessary.
+   * But it's rarely the case.
+   */
+  const data = await formDataAsJson(args);
+  return sendGraphQLRequest({
     args,
     // Space X API is one of the few to allow mutations
     // @see https://studio.apollographql.com/public/SpaceX-pxxbxen/home?variant=current
     endpoint: "https://api.spacex.land/graphql/",
-    // TODO: get from args?
     variables: {
-      objects: [{ name: "Eric Burel" }],
+      objects: [{ name: data.name }],
     },
     //schema,
     query: INSERT_USER_MUTATION,
   });
+};
 // else
 
 export default function DistantApiMutationRoute() {
-  // TODO: it would be more interesting to demo loading users
-  // + updating them
-  // const { data } = useLoaderData<LoaderData>();
-  // if (!data) {
-  //   return "Ooops, something went wrong :(";
-  // }
-  const data: any = { posts: [] };
   const actionData = useActionData() as ActionData;
   const nameRef = React.useRef<HTMLInputElement>(null);
+  const formRef = React.useRef<HTMLFormElement>(null);
 
   React.useEffect(() => {
+    //console.debug("ActionData changed", actionData);
     if (actionData?.errors?.name) {
       nameRef.current?.focus();
+    }
+    if (actionData?.data?.insert_users?.returning?.[0]) {
+      formRef.current?.reset();
     }
   }, [actionData]);
 
@@ -111,7 +79,7 @@ export default function DistantApiMutationRoute() {
   return (
     <main className="container mx-auto max-w-7xl">
       <h1>Create a SpaceX user</h1>
-      <Form method="post" name="create">
+      <Form method="post" name="create" ref={formRef}>
         {/* `remix-graphql` will automatically transform all posted 
                   form data into variables of the same name for the GraphQL
                   operation */}
@@ -119,6 +87,7 @@ export default function DistantApiMutationRoute() {
           <label htmlFor="name">Name:</label>
           <input
             ref={nameRef}
+            id="name"
             name="name"
             aria-invalid={actionData?.errors?.name ? true : undefined}
             aria-errormessage={
@@ -129,7 +98,15 @@ export default function DistantApiMutationRoute() {
         </div>
         {actionData?.errors?.name && (
           <div className="pt-1 text-red-700" id="title-error">
-            {actionData.errors.name}
+            <p>{actionData.errors.name}</p>
+          </div>
+        )}
+        {actionData?.data?.insert_users?.returning?.[0] && (
+          <div className="pt-1 text-green-700" id="title-error">
+            <p>
+              Created new user with id{" "}
+              {actionData.data.insert_users.returning[0].id}
+            </p>
           </div>
         )}
         <button className="rounded border p-4" type="submit">
