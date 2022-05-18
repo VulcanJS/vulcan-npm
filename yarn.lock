@@ -5280,6 +5280,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@remix-run/vercel@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "@remix-run/vercel@npm:1.4.3"
+  dependencies:
+    "@remix-run/node": 1.4.3
+  peerDependencies:
+    "@vercel/node": ^1.8.3
+  checksum: c5f925c26f2a7a6040e3095186eb17f09cc8d4af4b5334ddfaf852daf85b639149028fd2cbd8f6d60b035c51ddcbdf157563ae8182fbc6a08a8b680d7ff8fe08
+  languageName: node
+  linkType: hard
+
 "@restart/hooks@npm:^0.3.26":
   version: 0.3.27
   resolution: "@restart/hooks@npm:0.3.27"
@@ -36428,6 +36439,7 @@ __metadata:
     "@remix-run/react": "*"
     "@remix-run/serve": "*"
     "@remix-run/server-runtime": "*"
+    "@remix-run/vercel": ^1.4.3
     "@testing-library/cypress": ^8.0.2
     "@testing-library/dom": ^8.12.0
     "@testing-library/jest-dom": ^5.16.3
