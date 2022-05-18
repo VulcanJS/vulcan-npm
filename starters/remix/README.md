@@ -90,7 +90,10 @@ This is a pretty simple note-taking app, but it's a good example of how you can 
 - user sessions, and verifying them [./app/session.server.ts](./app/session.server.ts)
 - creating, and deleting notes [./app/models/note.server.ts](./app/models/note.server.ts)
 
-## Deployment
+## Deployment with Fly
+
+**NOTE: in Eurodance stack we favour Vercel deployment. We have commented out Fly related setup.**
+**You can easily remove Vercel and reenable FLy.**
 
 This Remix Stack comes with two GitHub Actions that handle automatically deploying your app to production and staging environments.
 
