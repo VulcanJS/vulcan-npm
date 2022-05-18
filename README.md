@@ -60,3 +60,7 @@ See https://github.com/nodkz/mongodb-memory-server/issues/475
 ## Resources
 
 - [Babel monorepo](https://github.com/babel/babel), a great example of Lerna project
+
+---
+
+![Powered by Vercel](https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg)

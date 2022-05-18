@@ -80,6 +80,10 @@ const config = {
       },
       footer: {
         style: "dark",
+        logo: {
+          alt: "Vulcan Logo",
+          src: "theme/images/vulcan-logo-border.png",
+        },
         links: [
           {
             title: "Docs",
@@ -110,6 +114,10 @@ const config = {
                 href: "http://slack.vulcanjs.org/",
               },
               {
+                label: "Join our Discord",
+                href: "https://discord.gg/4dqeKSNv",
+              },
+              {
                 label: "Twitter",
                 href: "https://twitter.com/VulcanJS",
               },
@@ -125,6 +133,11 @@ const config = {
               {
                 label: "GitHub",
                 href: "https://github.com/VulcanJS/vulcan-next",
+              },
+              {
+                html: `<a href="https://vercel.com?utm_source=vulcanjs&utm_campaign=os" target="_blank" rel="noopener">
+              <img alt="Powered by Vercel" src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg"/>
+              </a>`,
               },
             ],
           },

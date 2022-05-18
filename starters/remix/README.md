@@ -239,3 +239,7 @@ They give time and share knowledge to support the project.
 ## Other cool stuff that inspires us
 
 - [remix-graphql](https://github.com/thomasheyenbrock/remix-graphql) served as a basis to setup GraphQL in Remix
+
+---
+
+![Powered by Vercel](https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg)

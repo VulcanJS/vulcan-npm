@@ -137,3 +137,7 @@ They give time and share knowledge to support the project.
 <a href="https://letter.so/" target="_blank" rel="noopener noreferrer">
 <img src="https://github.com/VulcanJS/vulcan-next/blob/devel/public/img/letter-96x96.png?raw=true" height="75" alt="lette.so" />
 </a>
+
+---
+
+![Powered by Vercel](https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg)
