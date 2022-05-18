@@ -2,7 +2,6 @@ import type { ActionFunction } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";
 
-
 import {
   // When using a local executable shema (avoids an HTTP roundtrip)
   //processRequestWithGraphQL,
@@ -16,15 +15,16 @@ type ActionData = {
   };
 };
 
+const LIST_USER_QUERY =
 const INSERT_USER_MUTATION = /* GraphQL */ `
-mutation Insert_users($objects: [users_insert_input!]!) {
-  insert_users(objects: $objects) {
-    returning {
-      id
-      name
+  mutation Insert_users($objects: [users_insert_input!]!) {
+    insert_users(objects: $objects) {
+      returning {
+        id
+        name
+      }
     }
   }
-}
 `;
 
 // TODO: check how we can pick the mutation depending on the "update" or "create" scenario
@@ -42,14 +42,14 @@ mutation Insert_users($objects: [users_insert_input!]!) {
 }*/
 const UPDATE_USER_MUTATION = /* GraphQL */ `
   mutation Update_users($where: users_bool_exp!, $set: users_set_input) {
-  update_users(where: $where, _set: $set) {
-    returning {
-      id
-      name
+    update_users(where: $where, _set: $set) {
+      returning {
+        id
+        name
+      }
     }
   }
-}
-`
+`;
 
 /**
  * {
@@ -61,15 +61,14 @@ const UPDATE_USER_MUTATION = /* GraphQL */ `
 }
  */
 const DELETE_USER_MUTATION = /* GraphQL */ `
-mutation Delete_users($deleteUsersWhere: users_bool_exp!) {
-  delete_users(where: $deleteUsersWhere) {
-    returning {
-      name
+  mutation Delete_users($deleteUsersWhere: users_bool_exp!) {
+    delete_users(where: $deleteUsersWhere) {
+      returning {
+        name
+      }
     }
   }
-}
-`
-
+`;
 
 // The `processRequestWithGraphQL` function can be used for both loaders and
 // actions!
@@ -83,12 +82,10 @@ export const action: ActionFunction = (args: any) =>
     endpoint: "https://api.spacex.land/graphql/",
     // TODO: get from args?
     variables: {
-      "objects": [
-        { "name": "Eric Burel" }
-      ]
+      objects: [{ name: "Eric Burel" }],
     },
-    //schema, 
-    query: INSERT_USER_MUTATION
+    //schema,
+    query: INSERT_USER_MUTATION,
   });
 // else
 
@@ -99,7 +96,7 @@ export default function DistantApiMutationRoute() {
   // if (!data) {
   //   return "Ooops, something went wrong :(";
   // }
-  const data: any = { posts: [] }
+  const data: any = { posts: [] };
   const actionData = useActionData() as ActionData;
   const nameRef = React.useRef<HTMLInputElement>(null);
 
@@ -109,8 +106,10 @@ export default function DistantApiMutationRoute() {
     }
   }, [actionData]);
 
+  const inputClass =
+    "flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose";
   return (
-    <main>
+    <main className="container mx-auto max-w-7xl">
       <h1>Create a SpaceX user</h1>
       <Form method="post" name="create">
         {/* `remix-graphql` will automatically transform all posted 
@@ -118,11 +117,14 @@ export default function DistantApiMutationRoute() {
                   operation */}
         <div>
           <label htmlFor="name">Name:</label>
-          <input ref={nameRef} name="name"
+          <input
+            ref={nameRef}
+            name="name"
             aria-invalid={actionData?.errors?.name ? true : undefined}
             aria-errormessage={
               actionData?.errors?.name ? "name-error" : undefined
             }
+            className={inputClass}
           />
         </div>
         {actionData?.errors?.name && (
@@ -130,7 +132,9 @@ export default function DistantApiMutationRoute() {
             {actionData.errors.name}
           </div>
         )}
-        <button className="border rounded p-4" type="submit">Submit</button>
+        <button className="rounded border p-4" type="submit">
+          Submit
+        </button>
       </Form>
     </main>
   );

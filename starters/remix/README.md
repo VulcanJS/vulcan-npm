@@ -1,6 +1,6 @@
 # Vulcan Eurodance Stack
 
-The Remix Eurodance Stack 🇪🇺 🐸 🛵
+![The Remix Eurodance Stack 🇪🇺 🐸 🛵](https://raw.githubusercontent.com/VulcanJS/vulcan-npm/main/docusaurus/static/img/remix/eurodance-banner.jpeg)
 _Based on Remix [Indie Stack](https://github.com/remix-run/indie-stack)_
 
 <!--![The Remix Eurodance Stack](https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf)-->
