@@ -8,6 +8,8 @@
     "postinstall": "remix setup node",
     "//build-run-s": "run-s 'npm:build:*",
     "build": "npm run build:css && npm run build:remix",
+    "//build:vercel": "# Simulate a Vercel environment locally",
+    "build:vercel": "VERCEL=1 npm run build:css && npm run build:remix",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
     "dev": "concurrently 'npm:dev:*'",

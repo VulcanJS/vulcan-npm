@@ -37,6 +37,15 @@ For historical reasons, Vulcan prefers Mongo, but you can switch very easily to 
 Remix stacks hosts on Fly out-of-the-box.
 For historical reasons Vulcan prefers Vercel, but you can deploy your Remix app almost anywhere very easily.
 
+- We already setup remix to run a specific "vercel.server.js" on Vercel
+- We already set a minimum vercel.json
+- Create a new project on Vercel or run Vercel CLI to setup the project: `vercel` (answer the questions)
+- IMPORTANT: add a `SESSION_SECRET` to your Vercel app secrets, to do this you can run the following commands:
+  ```sh
+  vercel env add SESSION_SECRET=$(openssl rand -hex 32)
+  ```
+  If you don't have openssl installed, you can also use [1password](https://1password.com/password-generator/) to generate a random secret, just replace `$(openssl rand -hex 32)` with the generated secret.
+
 ### From Remix indie stack:
 
 - [Fly app deployment](https://fly.io) with [Docker](https://www.docker.com/)
