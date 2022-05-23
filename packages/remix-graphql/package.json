@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/remix-graphql",
-  "version": "0.6.7",
+  "version": "0.6.8-alpha.4",
   "description": "Utilities for using GraphQL with a Remix app",
   "keywords": [
     "remix",
