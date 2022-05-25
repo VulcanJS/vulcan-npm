@@ -189,13 +189,14 @@ export default function Index() {
             ))}
           </div>
         </div>
-        <div>
+        <div className="my-4 text-center">
           <a
             href="https://vercel.com?utm_source=vulcan&utm_campaign=oss"
             target="_blank"
             rel="noopener noreferrer"
           >
             <img
+              className="inline-block"
               alt="Powered by Vercel"
               src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg"
             />
