@@ -4,7 +4,7 @@
  *
  * To update, run yarn add -D ./packages/eslint-vulcan-internal
  *
- * TODO: not yet used
+ * TODO: not yet used, we have problem when addig it as a dependency via a local file
  * We should add a rule to prevent packages self imports
  */
 module.exports.rules = {
