@@ -28,7 +28,7 @@ Even in a monolith like Meteor, cron jobs can raise issues if you run multiple i
 
 There are alternate patterns:
 
-- You may create an API route in Next that does what your cron job do, and call it from a GitHub Action or equivalent. See [Vercel docs](https://vercel.com/docs/concepts/solutions/cron-jobs?utm_source=vulcanjs&utm_campaign=oss)
+- You may create an API route in Next that does what your cron job do, and call it from a GitHub Action or equivalent. See [Vercel docs](https://vercel.com/docs/concepts/solutions/cron-jobs?utm_source=vulcan&utm_campaign=oss)
 - You may create a separate, long-lived "satellite" Express micro-server, just for those use cases
 - You can write scripts in TypeScript and build them with ncc, we have an example in the "/scripts" folder. It's however experimental. Then you can run the script and setup the cron job directly on a virtual machine somewhere.
  

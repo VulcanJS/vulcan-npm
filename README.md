@@ -63,4 +63,4 @@ See https://github.com/nodkz/mongodb-memory-server/issues/475
 
 ---
 
-![Powered by Vercel](https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg)
+[![Powered by Vercel](https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg)](https://vercel.com?utm_source=vulcan&utm_campaign=oss)

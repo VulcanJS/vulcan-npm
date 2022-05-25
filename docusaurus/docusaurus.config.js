@@ -135,7 +135,7 @@ const config = {
                 href: "https://github.com/VulcanJS/vulcan-next",
               },
               {
-                html: `<a href="https://vercel.com?utm_source=vulcanjs&utm_campaign=os" target="_blank" rel="noopener">
+                html: `<a href="https://vercel.com?utm_source=vulcan&utm_campaign=oss" target="_blank" rel="noopener">
               <img alt="Powered by Vercel" src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg"/>
               </a>`,
               },
