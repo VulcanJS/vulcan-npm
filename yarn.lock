@@ -31636,9 +31636,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^2.60.0":
-  version: 2.70.2
-  resolution: "rollup@npm:2.70.2"
+"rollup@npm:^2.74.1":
+  version: 2.74.1
+  resolution: "rollup@npm:2.74.1"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -31646,7 +31646,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: eb04eb9b87b30517308cb41018d57a23976f42b269c3229e4124746d3136a77aa16ba8b891a3fa571931dd72419eea40642a334835fe4f33161fea30d0b803f7
+  checksum: c34dc78317aa0a153010061e5954225b3e18f4013feb9c0476f6878dc3485ac765c28b7849441e4a2ab69c337892bc66399fb7d4b239b94f4758adfdb1f99440
   languageName: node
   linkType: hard
 
@@ -31702,7 +31702,7 @@ __metadata:
     operation-name-mock-link: ^0.0.6
     react: ^17.0.1
     react-dom: ^17.0.1
-    tsup: ^5.11.13
+    tsup: ^6.0.1
     turbo: ^1.1.5
     typedoc: ^0.21.4
     typescript: 4.6
@@ -32818,6 +32818,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"source-map@npm:0.8.0-beta.0, source-map@npm:~0.8.0-beta.0":
+  version: 0.8.0-beta.0
+  resolution: "source-map@npm:0.8.0-beta.0"
+  dependencies:
+    whatwg-url: ^7.0.0
+  checksum: e94169be6461ab0ac0913313ad1719a14c60d402bd22b0ad96f4a6cffd79130d91ab5df0a5336a326b04d2df131c1409f563c9dc0d21a6ca6239a44b6c8dbd92
+  languageName: node
+  linkType: hard
+
 "source-map@npm:^0.5.0, source-map@npm:^0.5.6, source-map@npm:^0.5.7, source-map@npm:~0.5.3":
   version: 0.5.7
   resolution: "source-map@npm:0.5.7"
@@ -32836,15 +32845,6 @@ __metadata:
   version: 0.7.3
   resolution: "source-map@npm:0.7.3"
   checksum: cd24efb3b8fa69b64bf28e3c1b1a500de77e84260c5b7f2b873f88284df17974157cc88d386ee9b6d081f08fdd8242f3fc05c953685a6ad81aad94c7393dedea
-  languageName: node
-  linkType: hard
-
-"source-map@npm:~0.8.0-beta.0":
-  version: 0.8.0-beta.0
-  resolution: "source-map@npm:0.8.0-beta.0"
-  dependencies:
-    whatwg-url: ^7.0.0
-  checksum: e94169be6461ab0ac0913313ad1719a14c60d402bd22b0ad96f4a6cffd79130d91ab5df0a5336a326b04d2df131c1409f563c9dc0d21a6ca6239a44b6c8dbd92
   languageName: node
   linkType: hard
 
@@ -34774,9 +34774,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsup@npm:^5.11.13, tsup@npm:^5.12.1, tsup@npm:^5.12.4":
-  version: 5.12.6
-  resolution: "tsup@npm:5.12.6"
+"tsup@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "tsup@npm:6.0.1"
   dependencies:
     bundle-require: ^3.0.2
     cac: ^6.7.12
@@ -34788,19 +34788,25 @@ __metadata:
     joycon: ^3.0.1
     postcss-load-config: ^3.0.1
     resolve-from: ^5.0.0
-    rollup: ^2.60.0
-    source-map: ^0.7.3
+    rollup: ^2.74.1
+    source-map: 0.8.0-beta.0
     sucrase: ^3.20.3
     tree-kill: ^1.2.2
   peerDependencies:
+    "@swc/core": ^1
+    postcss: ^8.4.12
     typescript: ^4.1.0
   peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    postcss:
+      optional: true
     typescript:
       optional: true
   bin:
     tsup: dist/cli-default.js
     tsup-node: dist/cli-node.js
-  checksum: 124d3a60194c487770cc103aa837624520a98d5fd8c74209df34e51de588204d8093977dd6b312e54b8d06e7fc60c041e8726dc293b16344269e56168c6c7fde
+  checksum: 4630409533213b3b1953204b29fad514bd93bdb8635b18c12f76101d0dae745982ab7fe47be052111c3b99e23ef356eebce19e77ebd9f72d3769fda43cf9af6f
   languageName: node
   linkType: hard
 
@@ -36210,7 +36216,7 @@ __metadata:
     mongodb-memory-server: ^8.4.0
     mongoose: ^6.2.5
     nodemon: ^2.0.15
-    tsup: ^5.12.1
+    tsup: ^6.0.1
     typescript: ^4.6.2
   languageName: unknown
   linkType: soft
@@ -36341,7 +36347,7 @@ __metadata:
     supertest: ^6.1.6
     swr: ^0.4.0
     ts-loader: ^7.0.5
-    tsup: ^5.12.4
+    tsup: ^6.0.1
     typescript: =4.3.5
     webpack: 5
     yalc: ^1.0.0-pre.53
