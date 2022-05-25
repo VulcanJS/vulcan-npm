@@ -17,20 +17,9 @@ npx create-remix --template VulcanJS/eurodance-stack
 
 ### From Vulcan (work in progress):
 
-**Development tools**
-
-- A Storybook based development workflow. Write a story, get unit and visual regression tests for free.
-
 **GraphQL**
 
 - Invisible GraphQL: work transparently with GraphQL, without ever depending client-side
-- A GraphQL resource route with [GraphQL Yoga](https://www.graphql-yoga.com/)
-- Vulcan Fire Engine
-
-**MongoDB supports (via Prisma)**
-
-Remix stacks works with Prisma out-of-the-box, and various databases.
-For historical reasons, Vulcan prefers Mongo, but you can switch very easily to any database.
 
 **Vercel deployment**
 
@@ -45,6 +34,26 @@ For historical reasons Vulcan prefers Vercel, but you can deploy your Remix app 
   vercel env add SESSION_SECRET=$(openssl rand -hex 32)
   ```
   If you don't have openssl installed, you can also use [1password](https://1password.com/password-generator/) to generate a random secret, just replace `$(openssl rand -hex 32)` with the generated secret.
+- If using SQLite, set `DATABASE_URL` to `file:./tmp/data/data.db?connection_limit=1`. **Important note: the data will not persist!**
+**This is only for demonstration purpose.** You should find an host that supports SQLite or wait until we introduce MongoDB in this stack.
+
+### Incoming
+
+**MongoDB supports (via Prisma)**
+
+Remix stacks works with Prisma out-of-the-box, and various databases.
+For historical reasons, Vulcan prefers Mongo, but you can switch very easily to any database.
+
+**Advnaced GraphQL**
+
+- A GraphQL resource route with [GraphQL Yoga](https://www.graphql-yoga.com/)
+- Vulcan Fire Engine
+
+**Development tools**
+
+- A Storybook based development workflow. Write a story, get unit and visual regression tests for free.
+
+[And many others, follow the umbrella ticket on GitHub to learn more about our roadmap.](https://github.com/VulcanJS/vulcan-npm/issues/117)
 
 ### From Remix indie stack:
 
