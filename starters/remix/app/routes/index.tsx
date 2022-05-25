@@ -2,12 +2,29 @@ import { Link } from "@remix-run/react";
 
 import { useOptionalUser } from "~/utils";
 
-
 export default function Index() {
   const user = useOptionalUser();
   return (
     <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
       <div className="relative sm:pb-16 sm:pt-8">
+        <div className="mx-auto flex max-w-7xl justify-center py-2 text-center sm:px-6 lg:px-8">
+          <iframe
+            src="https://ghbtns.com/github-btn.html?user=VulcanJS&repo=eurodance-stack&type=star&count=true&size=large"
+            frameBorder="0"
+            scrolling="0"
+            width="170"
+            height="30"
+            title="GitHub"
+          ></iframe>
+          <iframe
+            src="https://ghbtns.com/github-btn.html?user=VulcanJS&repo=eurodance-stack&type=fork&count=true&size=large"
+            frameBorder="0"
+            scrolling="0"
+            width="170"
+            height="30"
+            title="GitHub"
+          ></iframe>
+        </div>
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
             <div className="absolute inset-0">
@@ -66,15 +83,39 @@ export default function Index() {
           </div>
         </div>
         <div>
-          <div className="p-4 m-8 border">
+          <div className="m-8 border p-4">
             <h2 className="text-center text-3xl">GraphQL with a remote API</h2>
             <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
               <Link
                 className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-                to="/distant-api/query">Query a distant API</Link>
+                to="/distant-api/query"
+              >
+                Query a distant API
+              </Link>
               <Link
                 className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-                to="/distant-api/mutation">Send mutations to a distant API</Link>
+                to="/distant-api/mutation"
+              >
+                Send mutations to a distant API
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="m-8 border p-4 text-center">
+            <div className="my-2">
+              <a href="https://github.com/VulcanJS/eurodance-stack">
+                <button className="border px-4 py-3 text-3xl text-yellow-700 shadow-sm hover:bg-yellow-50">
+                  Click to use this stack for your own app
+                </button>
+              </a>
+            </div>
+            <div>
+              <a href="https://github.com/VulcanJS/vulcan-npm/issues/117">
+                <button className="border px-4 py-3 text-xl text-yellow-700 shadow-sm hover:bg-yellow-50">
+                  Contribute
+                </button>
+              </a>
             </div>
           </div>
         </div>
@@ -147,6 +188,18 @@ export default function Index() {
               </a>
             ))}
           </div>
+        </div>
+        <div>
+          <a
+            href="https://vercel.com?utm_source=vulcan&utm_campaign=oss"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              alt="Powered by Vercel"
+              src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg"
+            />
+          </a>
         </div>
       </div>
     </main>
