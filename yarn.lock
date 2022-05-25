@@ -17906,13 +17906,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal::locator=root%40workspace%3A.":
-  version: 0.6.7
-  resolution: "eslint-plugin-vulcan-internal@file:./packages/eslint-vulcan-internal#./packages/eslint-vulcan-internal::hash=496a72&locator=root%40workspace%3A."
-  checksum: f60e73bcc7a31b2df55d42304817422f9b7df249d7b1bbbc548803b4c9402cafff8cff16de383fd9f7c99e885315d7368b279674fafbe65a5b9d1122f8be72bd
-  languageName: node
-  linkType: hard
-
 "eslint-plugin-vulcan-internal@workspace:packages/eslint-vulcan-internal":
   version: 0.0.0-use.local
   resolution: "eslint-plugin-vulcan-internal@workspace:packages/eslint-vulcan-internal"
@@ -31697,7 +31690,6 @@ __metadata:
     cross-fetch: ^3.1.4
     depcheck: ^1.4.1
     esbuild: ^0.14.10
-    eslint-plugin-vulcan-internal: ./packages/eslint-vulcan-internal
     express: ^4.17.1
     graphql-tools: ^8.2.0
     jest: 28
