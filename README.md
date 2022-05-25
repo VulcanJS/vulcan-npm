@@ -1,14 +1,35 @@
 # Vulcan NPM
 
+## What is Vuclan
+
+Vulcan is an open source full-stack JavaScript toolkit.
+
+It brings everything you need to create modern web applications on top of modern frameworks.
+
+This monorepo is where all the development happens. Only contributor should need to clone it, if you want
+to create an app with Vulcan:
+
+- discover [Vulcan Next](https://vulcan-next.vercel.app/), the Next.js and GraphQL starter app based on Vulcan NPM package library.
+- Or you might prefer our [Remix "Eurodance" stack](https://eurodance-stack.vercel.app/).
+
+See Vulcan docs for detailed documentation: [https://vulcan-docs.vercel.app/](https://vulcan-docs.vercel.app/)
+
 ## Contribute
 
-Discover [Vulcan Next](https://github.com/VulcanJS/vulcan-next), the Next.js and GraphQL starter app based on Vulcan NPM package library.
+After you've read the README, also check [the contribution documentation](https://vulcan-docs.vercel.app/docs/core/contribute) for more information about contributions.
 
-After you've read the README, also check `./CONTRIBUTE.md` for more information about contributions.
+### Architecture of the monorepo
 
-See Vulcan Next for detailed documentation: [https://github.com/VulcanJS/vulcan-next](https://github.com/VulcanJS/vulcan-next)
+- Turborepo to run scripts efficiently
+- Yarn 3 workspaces
+- TypeScript
+- Tsup (Esbuild + Rollup) for bundling packages
+- Packages in `packages` and starter apps in `starters`
+- Storybook
+- Jest client and server tests
+- Docusaurus documentation
 
-## From Lerna to Yarn 2
+### From Lerna to Yarn 2
 
 RIP [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 
@@ -60,6 +81,7 @@ See https://github.com/nodkz/mongodb-memory-server/issues/475
 ## Resources
 
 - [Babel monorepo](https://github.com/babel/babel), a great example of Lerna project
+- [Lee Robinson (Vercel) take on monorepo](https://leerob.io/blog/turborepo-design-system-monorepo)
 
 ---
 
