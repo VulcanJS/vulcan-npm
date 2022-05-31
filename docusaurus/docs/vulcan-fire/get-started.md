@@ -9,15 +9,6 @@ sidebar_position: 2
 
 # Easy CRUD for GraphQL servers
 
-## In a nutshell
-
-In greek mythology, Fire is Apollo's twin sister.
-That's why _Vulcan Fire_ completes _Apollo GraphQL_ so well!
-
-[Apollo GraphQL](https://www.apollographql.com/) provides a way to easily setup GraphQL in JavaScript applications, server-side and client-side.
-
-**Vulcan Fire** is a toolkit to be more productive with Apollo.
-
 ## Vulcan Fire makes CRUD operations easy
 
 When coding your application, you might notice that some operations are always the same for any kind of data:
