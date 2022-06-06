@@ -118,7 +118,12 @@ export const initLocale =
     locale,
   }: {
     currentUser?: any;
+    /**
+     * Read the cookie directly
+     * @deprecated Pass the "locale" directly
+     */
     cookies?: { locale?: string };
+    /** Already known locale */
     locale?: any;
   }): LocaleType => {
     let userLocaleId = "";
