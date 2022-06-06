@@ -6,16 +6,31 @@ import { LocalesRegistry, StringsRegistry } from "../intl";
 
 //addGraphQLSchema(localeType);
 
+/**
+ * Reusable helper to avoid calling the "locale" API from graphql,
+ * during SSR
+ * @param registries
+ * @returns
+ */
+export const getLocaleFromRegistries =
+  (registries: {
+    LocalesRegistry: LocalesRegistry;
+    StringsRegistry: StringsRegistry;
+  }) =>
+  (localeId: string) => {
+    const locale = registries.LocalesRegistry.getLocale(localeId);
+    const strings = registries.StringsRegistry.getStrings(localeId);
+    const localeObject = { ...locale, strings };
+    return localeObject;
+  };
+
 const locale =
   (registries: {
     LocalesRegistry: LocalesRegistry;
     StringsRegistry: StringsRegistry;
   }) =>
   async (root, { localeId }, context) => {
-    const locale = registries.LocalesRegistry.getLocale(localeId);
-    const strings = registries.StringsRegistry.getStrings(localeId);
-    const localeObject = { ...locale, strings };
-    return localeObject;
+    return getLocaleFromRegistries(registries)(localeId);
   };
 
 const typeDefs = `type Locale {
