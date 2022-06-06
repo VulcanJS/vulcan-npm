@@ -33,6 +33,11 @@ const locale =
     return getLocaleFromRegistries(registries)(localeId);
   };
 
+/**
+ * TODO: I think the "dynamic" version is specific to State of surveys
+ * It is not currently used in Vulcan, as we load translation string in-app and not dynamically
+ * via a 3rd party API
+ */
 const typeDefs = `type Locale {
   id: String,
   label: String
@@ -46,6 +51,7 @@ type Query {
 `;
 const resolvers = (registries) => ({
   Query: {
+    // NOTE: you can override this resolver if you want to be able to load strings dynamically
     locale: locale(registries),
   },
 });
