@@ -10,6 +10,8 @@ export interface ResolveAsDefinition {
    * Resolved field name
    *
    * @example if field is "userId", resolved fieldName should be "user"
+   *
+   * TODO: it as not mandatory in earlier versions of Vulcan?
    **/
   fieldName: string;
   /**
