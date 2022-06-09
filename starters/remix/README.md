@@ -5,13 +5,17 @@ _Based on Remix [Indie Stack](https://github.com/remix-run/indie-stack)_
 
 <!--![The Remix Eurodance Stack](https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf)-->
 
+Eurodance Stack is the Remix stack for **GraphQL** developers.
+
 Learn more about [Remix Stacks](https://remix.run/stacks).
 
 ```
 npx create-remix --template VulcanJS/eurodance-stack
 ```
 
-**NOTE: if you clone this repo directly, and don't use `create-remix`, you will need to run `yarn remix init` manually!**
+You can also run Eurodance Stack on [CodeSandbox Projects](https://projects.codesandbox.io/). As it is currently in beta (06/2022), you need to ask for an early access, and then search for "VulcanJS/eurodance-stack" when creating your project.
+
+**NOTE: if you clone this repo directly, and don't use `create-remix`, you will need to run `yarn remix init` manually after the first install!**
 
 ## What's in the stack
 
@@ -37,6 +41,10 @@ For historical reasons Vulcan prefers Vercel, but you can deploy your Remix app 
 - If using SQLite, set `DATABASE_URL` to `file:./tmp/data/data.db?connection_limit=1`. **Important note: the data will not persist!**
 **This is only for demonstration purpose.** You should find an host that supports SQLite or wait until we introduce MongoDB in this stack.
 
+**CodeSandbox Projects**
+
+Eurodance supports being installed as a CodeSandbox Project (beta feature).
+
 ### Incoming
 
 **MongoDB supports (via Prisma)**
@@ -44,7 +52,7 @@ For historical reasons Vulcan prefers Vercel, but you can deploy your Remix app 
 Remix stacks works with Prisma out-of-the-box, and various databases.
 For historical reasons, Vulcan prefers Mongo, but you can switch very easily to any database.
 
-**Advnaced GraphQL**
+**Advanced GraphQL**
 
 - A GraphQL resource route with [GraphQL Yoga](https://www.graphql-yoga.com/)
 - Vulcan Fire Engine
@@ -55,7 +63,7 @@ For historical reasons, Vulcan prefers Mongo, but you can switch very easily to 
 
 [And many others, follow the umbrella ticket on GitHub to learn more about our roadmap.](https://github.com/VulcanJS/vulcan-npm/issues/117)
 
-### From Remix indie stack:
+### Features inherited from Remix Indie stack:
 
 - [Fly app deployment](https://fly.io) with [Docker](https://www.docker.com/)
 - Production-ready [SQLite Database](https://sqlite.org)
