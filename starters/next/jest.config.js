@@ -1,16 +1,26 @@
-// No need to use ts-jest https://github.com/vercel/next.js/discussions/13528#discussioncomment-22933
+const nextJest = require("next/jest");
 
-// configuration that must be set for each project but does not change
+const createJestConfig = nextJest({
+  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+  dir: "./",
+});
+
+/**
+ * Configuration that must be set for each project (server and client) but does not change
+ *
+ */
 const commonConfig = {
   // A map from regular expressions to paths to transformers
   // transform: undefined,
   transform: {
+    // Now we use SWC
     //"^.+\\.[jt]sx?$": "ts-jest",
+    /*
     "^.+\\.(js|jsx|ts|tsx|mjs)$": [
       "babel-jest",
       ,
       { configFile: "./Configuration/babel.config.jest.js" },
-    ],
+    ],*/
     // MDX support
     "^.+\\.(md|mdx)$": "jest-transformer-mdx",
   },
@@ -209,7 +219,7 @@ const commonConfig = {
   // watchman: true,
 };
 
-module.exports = {
+const fullConfig = {
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}",
@@ -267,3 +277,6 @@ module.exports = {
     },
   ],
 };
+
+// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
+module.exports = createJestConfig(fullConfig);

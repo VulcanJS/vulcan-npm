@@ -4,7 +4,7 @@ const debug = require("debug")("vns:next");
 const packageJSON = require("../../package.json");
 
 // fooBar => FOO_BAR
-const camelToTitle = (camelStr: string): string => {
+const camelToTitle = (camelStr /*: string*/) /*: string*/ => {
   return camelStr
     .replace(/[A-Z]/g, " $1") // fooBar => foo Bar
     .split(" ")
