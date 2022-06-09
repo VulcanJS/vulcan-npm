@@ -92,7 +92,7 @@ are actually just wrappers around mutator calls.
 // This is how we seed data in Vulcan
 // You can use mutators in scripts or in custom mutation resolvers
 import { createMutator } from "@vulcanjs/crud/server";
-import { User } from "~/models/user.server";
+import { User } from "~/account/models/user.server";
 
 const admin = {
   email: process.env.ADMIN_EMAIL,

@@ -11,7 +11,7 @@ module.exports.rules = {
   /*
 TODO: detect import { useTranslation } from "next-i18next" or
 import { useTranslation } from "react-i18next"
- and suggest importing from ~/lib/i18n instead
+ and suggest importing from ~/core/i18n instead
   "vulcan/i18n": (context) => ({
 
     VariableDeclarator: (node) => {

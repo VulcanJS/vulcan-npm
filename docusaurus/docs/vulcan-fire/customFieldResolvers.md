@@ -81,7 +81,7 @@ You can use the `resolveAs` field of a schema to create a custom field resolver 
 
 **/!\ You can only add custom field resolvers to server models! They should not exist client-side!**
 
-[Vulcan Next has a complete example of this setup.](https://github.dev/VulcanJS/vulcan-next/blob/main/src/models/sampleModel.server.ts)
+[Vulcan Next has a complete example of this setup.](https://github.dev/VulcanJS/vulcan-next/blob/main/src/vulcan-demo/models/sampleModel.server.ts)
 
 ### Method 3 - ...but use DataSources if possible
 

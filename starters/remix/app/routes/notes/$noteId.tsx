@@ -3,9 +3,9 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import type { Note } from "~/models/note.server";
-import { deleteNote } from "~/models/note.server";
-import { getNote } from "~/models/note.server";
+import type { Note } from "~/core/models/note.server";
+import { deleteNote } from "~/core/models/note.server";
+import { getNote } from "~/core/models/note.server";
 import { requireUserId } from "~/session.server";
 
 type LoaderData = {
