@@ -78,7 +78,6 @@ const extendSchemaServer = (
   // or as a resolveAs field, then add fieldFormatted to apiSchema
   // This code previously lived in "createSchema" function
   const extendedSchema = cloneDeep(schema);
-  const apiSchema: any = {};
   Object.keys(schema).forEach((fieldName) => {
     const field = schema[fieldName];
     const { arrayItem, type, canRead } = field;
@@ -91,30 +90,25 @@ const extendSchemaServer = (
       field?.resolveAs?.fieldName !== formattedFieldName
     ) {
       // TODO: apiSchema typing is slightly different from normal schema, we need to figure this out
-      apiSchema[formattedFieldName] = {
-        typeName: "String",
-        canRead,
-        arguments: 'format: String = "YYYY/MM/DD"',
-        resolver: formattedDateResolver(fieldName),
-      };
-    }
-  });
-  // if apiSchema contains fields, copy them over to main schema
-  // TODO: we could do it in one stap now
-  if (!isEmpty(apiSchema)) {
-    Object.keys(apiSchema).forEach((fieldName) => {
-      const field = apiSchema[fieldName];
       const { canRead = ["guests"], description, ...resolveAs } = field;
-      extendedSchema[fieldName] = {
-        type: Object,
+      extendedSchema[formattedFieldName] = {
+        type: String,
         optional: true,
+        // TODO: is apiOnly still needed?
         apiOnly: true,
         canRead,
         description,
-        resolveAs,
+        resolveAs: {
+          // TODO: why is fieldName mandatory in resolveAs typing?
+          // it should be the same as the field name as a default
+          fieldName: formattedFieldName,
+          typeName: "String",
+          arguments: 'format: String = "YYYY/MM/DD"',
+          resolver: formattedDateResolver(fieldName),
+        },
       };
-    });
-  }
+    }
+  });
   return extendedSchema;
 };
 
