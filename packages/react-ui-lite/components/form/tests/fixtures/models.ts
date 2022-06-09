@@ -8,9 +8,9 @@ const addressGroup = {
   order: 10,
 };
 const permissions = {
-  canRead: ["guests"],
+  canRead: ["guests", "anyone"],
   canUpdate: ["quests"],
-  canCreate: ["guests"],
+  canCreate: ["guests", "anyone"],
 };
 
 // just 1 input for state testing

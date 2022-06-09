@@ -20,11 +20,11 @@ describe("default fragment generation", () => {
     const model = FooModel({
       foo: {
         type: String,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
       bar: {
         type: String,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
     });
     const fragment = getDefaultFragmentText(model);
@@ -37,14 +37,14 @@ describe("default fragment generation", () => {
     const model = FooModel({
       foo: {
         type: String,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
       nestedField: {
-        canRead: ["guests"],
+        canRead: ["anyone"],
         type: {
           bar: {
             type: String,
-            canRead: ["guests"],
+            canRead: ["anyone"],
           },
         },
       },
@@ -59,10 +59,10 @@ describe("default fragment generation", () => {
     const model = FooModel({
       foo: {
         type: String,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
       object: {
-        canRead: ["guests"],
+        canRead: ["anyone"],
         type: Object,
       },
     });
@@ -115,15 +115,15 @@ describe("default fragment generation", () => {
     const model = FooModel({
       foo_intl: {
         type: Array,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
       "foo_intl.$": {
         type: String,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
       bar_intl: {
         type: Object,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
     });
     const fragment = getDefaultFragmentText(model);
@@ -137,18 +137,18 @@ describe("default fragment generation", () => {
     const model = FooModel({
       foo: {
         type: Array,
-        canRead: ["guests"],
+        canRead: ["anyone"],
         blackbox: true,
       },
       "foo.$": {
         type: {
           bar: {
             type: String,
-            canRead: ["guests"],
+            canRead: ["anyone"],
           },
         },
         blackbox: true,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
     });
     const fragment = getDefaultFragmentText(model);

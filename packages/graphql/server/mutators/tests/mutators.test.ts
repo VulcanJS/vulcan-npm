@@ -11,9 +11,9 @@ import { createGraphqlModelServer } from "../../../extendModel.server";
 
 const guestsPermissions = {
   type: String,
-  canCreate: ["guests"],
-  canUpdate: ["guests"],
-  canRead: ["guests"],
+  canCreate: ["anyone"],
+  canUpdate: ["anyone"],
+  canRead: ["anyone"],
 };
 const membersPermissions = {
   canCreate: ["members"],
@@ -23,7 +23,7 @@ const membersPermissions = {
 const schema = {
   _id: {
     type: String,
-    canRead: ["guests"],
+    canRead: ["anyone"],
     optional: true,
   },
   foo2: guestsPermissions,
@@ -33,9 +33,9 @@ const schema = {
   publicAuto: {
     optional: true,
     type: String,
-    canCreate: ["guests"],
-    canRead: ["guests"],
-    canUpdate: ["guests"],
+    canCreate: ["anyone"],
+    canRead: ["anyone"],
+    canUpdate: ["anyone"],
     onCreate: () => {
       return "CREATED";
     },
@@ -344,7 +344,7 @@ describe("graphql/resolvers/mutators", function () {
         },
         userId: {
           type: String,
-          canRead: ["guests"],
+          canRead: ["anyone"],
         },
       };
       const RawFoo = createGraphqlModelServer({

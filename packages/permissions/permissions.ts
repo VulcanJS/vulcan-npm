@@ -70,6 +70,8 @@ class Group {
 //
 /**
  * @summary get a list of a user's groups
+ *
+ * Will include Vulcan dynamic groups
  * @param {Object} user
  */
 export const getGroups = (
@@ -78,7 +80,7 @@ export const getGroups = (
 ): Array<GroupName> => {
   let userGroups = [
     "anyone",
-    // legacy
+    /** @deprecated */
     "guests",
   ];
 
@@ -98,6 +100,8 @@ export const getGroups = (
       // admin
       userGroups.push("admins");
     }
+  } else {
+    userGroups.push("visitors");
   }
 
   return userGroups;
@@ -215,7 +219,13 @@ export const canReadField = function (
     return (canRead as Function)(user, document); // TODO: we should not need the explicit case thanks to the typecguard
   } else if (typeof canRead === "string") {
     // if canRead is just a string, we assume it's the name of a group and pass it to isMemberOf
-    return canRead === "guests" || isMemberOf(user, canRead, document);
+    return (
+      // @deprecated
+      canRead === "guests" ||
+      // new name for "guests"
+      canRead === "anyone" ||
+      isMemberOf(user, canRead, document)
+    );
   } else if (Array.isArray(canRead) && canRead.length > 0) {
     // if canRead is an array, we do a recursion on every item and return true if one of the items return true
     return canRead.some((group) =>
@@ -533,7 +543,7 @@ export const canCreateDocument = (options: CanActionOnDocumentOptions) => {
   if (!check) {
     // eslint-disable-next-line no-console
     console.warn(
-      `Users.canCreate() was called but no [canCreate] permission was defined for model [${model.name}]`
+      `canCreateDocument() was called but no [canCreate] permission was defined for model [${model.name}]`
     );
   }
   return (
@@ -548,7 +558,7 @@ export const canUpdateDocument = (options: CanActionOnDocumentOptions) => {
   if (!check) {
     // eslint-disable-next-line no-console
     console.warn(
-      `Users.canUpdate() was called but no [canUpdate] permission was defined for model [${model.name}]`
+      `canUpdateDocument() was called but no [canUpdate] permission was defined for model [${model.name}]`
     );
   }
   return (
@@ -562,7 +572,7 @@ export const canDeleteDocument = (options: CanActionOnDocumentOptions) => {
   if (!check) {
     // eslint-disable-next-line no-console
     console.warn(
-      `Users.canDelete() was called but no [canDelete] permission was defined for model [${model.name}]`
+      `canDeleteDocument() was called but no [canDelete] permission was defined for model [${model.name}]`
     );
   }
   return (
@@ -579,9 +589,6 @@ export const canDeleteDocument = (options: CanActionOnDocumentOptions) => {
  * @summary initialize the 3 out-of-the-box groups
  */
 /*
-Users.createGroup("guests"); // non-logged-in users
-Users.createGroup("members"); // regular users
-
 const membersActions = [
   "user.create",
   "user.update.own",

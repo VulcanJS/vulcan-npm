@@ -58,15 +58,15 @@ const Foo = createModel({
   schema: {
     _id: {
       type: String,
-      canRead: ["guests"],
+      canRead: ["anyone"],
     },
     name: {
       type: String,
-      canRead: ["guests"],
+      canRead: ["anyone"],
     },
     length: {
       type: Number,
-      canRead: ["guests"],
+      canRead: ["anyone"],
     },
   },
 });

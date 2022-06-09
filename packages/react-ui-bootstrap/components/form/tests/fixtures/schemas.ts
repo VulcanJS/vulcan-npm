@@ -1,8 +1,8 @@
 export const defaultFieldSchema = {
   type: String,
-  canRead: ["guests"],
-  canCreate: ["guests"],
-  canUpdate: ["guests"],
+  canRead: ["guests", "anyone"],
+  canCreate: ["guests", "anyone"],
+  canUpdate: ["guests", "anyone"],
 };
 
 import { VulcanFieldSchema } from "@vulcanjs/schema";

@@ -12,7 +12,7 @@ const authorModel = createGraphqlModel({
   schema: {
     blogPostIds: {
       type: Array,
-      canRead: ["guests"],
+      canRead: ["anyone"],
     },
     "blogPostIds.$": {
       type: String,
@@ -28,11 +28,11 @@ const blogPostModel = createGraphqlModel({
   schema: {
     _id: {
       type: String,
-      canRead: ["guests"],
+      canRead: ["anyone"],
     },
     title: {
       type: String,
-      canRead: ["guests"],
+      canRead: ["anyone"],
     },
     privateInfo: {
       type: String,

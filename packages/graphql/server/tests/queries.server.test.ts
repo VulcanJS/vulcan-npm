@@ -123,7 +123,7 @@ describe("graphql/query resolvers", function () {
         },
         userId: {
           type: String,
-          canRead: ["guests"],
+          canRead: ["anyone"],
         },
       };
       const Dummy = createDummyModel(schema);
@@ -382,7 +382,7 @@ describe("graphql/query resolvers", function () {
               },
               userId: {
                 type: String,
-                canRead: ["guests"],
+                canRead: ["anyone"],
               },
             },
             results: {

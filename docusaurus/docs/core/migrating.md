@@ -6,6 +6,9 @@ title: Migrate
 
 ## To version > v0.6.1
 
+- "guests" permission group should become "anyone". We have also introduced "visitors".
+Visitors: will exclude connected members. Anyone: literally anyone.
+Guests was not clear enough whether it included members or not so we deprecate it.
 - VulcanComponents context will no longer include default components
   as a default:
 

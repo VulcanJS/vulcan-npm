@@ -20,24 +20,24 @@ export const Contributor = createGraphqlModelServer({
     _id: {
       type: String,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
       //canDelete: ["guests"],
     },
     name: {
       type: String,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
       //canDelete: ["guests"],
     },
     // Virtual field that queries the contributor itself
     // This is just a dumb demo for Apollo dataSources
     myselfVirtual: {
       type: String,
-      canRead: ["guests"],
+      canRead: ["guests", "anyone"],
       canCreate: [],
       canUpdate: [],
       resolveAs: {
@@ -84,8 +84,8 @@ export const Contributor = createGraphqlModelServer({
     },
   },
   permissions: {
-    canRead: ["guests"],
-    canCreate: ["guests"],
+    canRead: ["guests", "anyone"],
+    canCreate: ["guests", "anyone"],
   },
 });
 
@@ -95,17 +95,17 @@ export const Repository = createGraphqlModelServer({
     _id: {
       type: String,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
       //canDelete: ["guests"],
     },
     url: {
       type: String,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
       //canDelete: ["guests"],
     },
     contributorId: {
@@ -116,9 +116,9 @@ export const Repository = createGraphqlModelServer({
         kind: "hasOne",
         model: Contributor,
       },
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
     },
   },
   graphql: {
@@ -127,8 +127,8 @@ export const Repository = createGraphqlModelServer({
     typeName: "Repository",
   },
   permissions: {
-    canRead: ["guests"],
-    canCreate: ["guests"],
+    canRead: ["guests", "anyone"],
+    canCreate: ["guests", "anyone"],
   },
 });
 

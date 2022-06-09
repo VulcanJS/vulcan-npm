@@ -47,7 +47,7 @@ export const getGraphQLType = ({
    * name: {
    *   type: String,
    *   optional: false,
-   *   canRead: ['guests'],
+   *   canRead: ['anyone'],
    *   canCreate: ['admins'],
    *   intl: true,
    * },

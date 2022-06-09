@@ -89,8 +89,15 @@ const extendSchemaServer = (
       // TODO: will work only if resolveAs is not an array
       field?.resolveAs?.fieldName !== formattedFieldName
     ) {
-      // TODO: apiSchema typing is slightly different from normal schema, we need to figure this out
-      const { canRead = ["guests"], description, ...resolveAs } = field;
+      const {
+        canRead = [
+          // legacy
+          "guests",
+          "anyone",
+        ],
+        description,
+        ...resolveAs
+      } = field;
       extendedSchema[formattedFieldName] = {
         type: String,
         optional: true,

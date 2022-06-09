@@ -207,11 +207,11 @@ describe("vulcan:form/formFragments", function () {
     const schemaWithIds = {
       _id: {
         type: String,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
       userId: {
         type: String,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
     };
     const model = makeModel(schemaWithIds);
@@ -228,8 +228,8 @@ describe("vulcan:form/formFragments", function () {
     const schemaWithoutIds = {
       field: {
         type: String,
-        canRead: ["guests"],
-        canCreate: ["guests"],
+        canRead: ["anyone"],
+        canCreate: ["anyone"],
       },
     };
     const model = makeModel(schemaWithoutIds);

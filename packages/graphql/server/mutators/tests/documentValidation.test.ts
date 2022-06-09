@@ -8,8 +8,8 @@ describe("vulcan:lib/validation", () => {
   describe("validate document permissions per field (on creation and update)", () => {
     const guestsPermissions = {
       type: String,
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canCreate: ["anyone"],
+      canUpdate: ["anyone"],
     };
     const membersPermissions = {
       type: String,
@@ -77,8 +77,8 @@ describe("vulcan:lib/validation", () => {
               zed: Object.assign(membersPermissions, { optional: true }),
               bar: guestsPermissions,
             },
-            canCreate: ["guests"],
-            canUpdate: ["guests"],
+            canCreate: ["anyone"],
+            canUpdate: ["anyone"],
           },
         },
       });
@@ -118,8 +118,8 @@ describe("vulcan:lib/validation", () => {
         schema: {
           nested: {
             type: Array,
-            canCreate: ["guests"],
-            canUpdate: ["guests"],
+            canCreate: ["anyone"],
+            canUpdate: ["anyone"],
           },
           "nested.$": {
             type: {
@@ -164,8 +164,8 @@ describe("vulcan:lib/validation", () => {
               },
               zed: Object.assign(membersPermissions, { optional: true }),
             },
-            canCreate: ["guests"],
-            canUpdate: ["guests"],
+            canCreate: ["anyone"],
+            canUpdate: ["anyone"],
           },
         },
       });
@@ -209,8 +209,8 @@ describe("vulcan:lib/validation", () => {
               foo: membersPermissions,
             },
             blackbox: true,
-            canCreate: ["guests"],
-            canUpdate: ["guests"],
+            canCreate: ["anyone"],
+            canUpdate: ["anyone"],
           },
         },
       });
@@ -234,8 +234,8 @@ describe("vulcan:lib/validation", () => {
         schema: {
           array: {
             type: Array,
-            canCreate: ["guests"],
-            canUpdate: ["guests"],
+            canCreate: ["anyone"],
+            canUpdate: ["anyone"],
           },
           "array.$": {
             type: Number,

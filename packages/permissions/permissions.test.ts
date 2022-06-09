@@ -1,4 +1,5 @@
 import { createModel } from "@vulcanjs/model";
+import { isMemberOf } from "./permissions";
 import {
   checkFields,
   getDocumentBasedPermissionFieldNames,
@@ -7,13 +8,50 @@ import {
   owns,
 } from "../permissions/permissions";
 
+describe("isMemberOf", () => {
+  test("null user (visitor)", () => {
+    expect(isMemberOf(null, ["anyone"], null)).toBe(true);
+    expect(isMemberOf(null, ["guests"], null)).toBe(true);
+    expect(isMemberOf(null, ["visitors"], null)).toBe(true);
+    expect(isMemberOf(null, ["members"], null)).toBe(false);
+    expect(isMemberOf(null, ["customGroup"], null)).toBe(false);
+    expect(isMemberOf(null, ["admins"], null)).toBe(false);
+  });
+  test("logged in user (member)", () => {
+    const user = { _id: "42", groups: [] };
+    expect(isMemberOf(user, ["anyone"], null)).toBe(true);
+    expect(isMemberOf(user, ["guests"], null)).toBe(true);
+    expect(isMemberOf(user, ["visitors"], null)).toBe(false);
+    expect(isMemberOf(user, ["members"], null)).toBe(true);
+    expect(isMemberOf(user, ["customGroup"], null)).toBe(false);
+    expect(isMemberOf(user, ["admins"], null)).toBe(false);
+  });
+  test("admin", () => {
+    const user = { _id: "42", groups: [], isAdmin: true };
+    expect(isMemberOf(user, ["anyone"], null)).toBe(true);
+    expect(isMemberOf(user, ["guests"], null)).toBe(true);
+    expect(isMemberOf(user, ["visitors"], null)).toBe(false);
+    expect(isMemberOf(user, ["members"], null)).toBe(true);
+    expect(isMemberOf(user, ["customGroup"], null)).toBe(false);
+    expect(isMemberOf(user, ["admins"], null)).toBe(true);
+  });
+  test("custom group", () => {
+    const user = { _id: "42", groups: ["customGroup"] };
+    expect(isMemberOf(user, ["anyone"], null)).toBe(true);
+    expect(isMemberOf(user, ["guests"], null)).toBe(true);
+    expect(isMemberOf(user, ["visitors"], null)).toBe(false);
+    expect(isMemberOf(user, ["members"], null)).toBe(true);
+    expect(isMemberOf(user, ["customGroup"], null)).toBe(true);
+    expect(isMemberOf(user, ["admins"], null)).toBe(false);
+  });
+});
 describe("vulcan:users/permissions", () => {
   const Dummies = createModel({
     name: "Dummy",
     schema: {
       guestField: {
         type: String,
-        canRead: ["guests"],
+        canRead: ["anyone"],
       },
       adminField: {
         type: String,
@@ -77,11 +115,11 @@ describe("vulcan:users/permissions", () => {
           name: "Dummy",
           schema: {
             nested: {
-              canRead: ["guests"],
+              canRead: ["anyone"],
               type: {
                 ok: {
                   type: String,
-                  canRead: ["guests"],
+                  canRead: ["anyone"],
                 },
                 nok: {
                   type: String,
@@ -102,14 +140,14 @@ describe("vulcan:users/permissions", () => {
           schema: {
             array: {
               type: Array,
-              canRead: ["guests"],
+              canRead: ["anyone"],
             },
             "array.$": {
-              canRead: ["guests"],
+              canRead: ["anyone"],
               type: {
                 ok: {
                   type: String,
-                  canRead: ["guests"],
+                  canRead: ["anyone"],
                 },
                 nok: {
                   type: String,
@@ -129,7 +167,7 @@ describe("vulcan:users/permissions", () => {
           name: "Dummy",
           schema: {
             nested: {
-              canRead: ["guests"],
+              canRead: ["anyone"],
               type: {
                 ok: {
                   type: String,
