@@ -22,6 +22,7 @@
     "depcheck": "lerna exec --no-bail --stream -- depcheck --ignore-patterns='dist,tsup.config.ts' --ignores='@storybook/*,webpack-merge,@testing-library/*,operation-name-mock-link,tsup'",
     "typedoc": "typedoc",
     "publish": "lerna publish",
+    "publish:remix": "node ./scripts/push-remix.mjs",
     "start:doc": "yarn workspace @vulcanjs/docusaurus run start",
     "build:doc": "yarn workspace @vulcanjs/docusaurus run build",
     "serve:doc": "yarn workspace @vulcanjs/docusaurus run serve"
