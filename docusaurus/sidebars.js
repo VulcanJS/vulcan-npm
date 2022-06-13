@@ -33,6 +33,7 @@ const sidebars = {
       items: [
         //"vulcan-next/index",
         "vulcan-next/get-started",
+        "vulcan-next/codesandbox",
         {
           type: "category",
           label: "Features",
