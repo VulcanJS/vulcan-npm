@@ -97,5 +97,5 @@
   "prisma": {
     "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
   },
-  "version": "0.6.9-alpha.0"
+  "version": "0.6.9-alpha.2"
 }
