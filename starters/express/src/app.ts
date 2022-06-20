@@ -51,6 +51,8 @@ const startServer = async () => {
   // Define the server (using Express for easier middleware usage)
   const server = new ApolloServer({
     schema: vulcanSchema,
+    csrfPrevention: true,
+    cache: "bounded",
     context: async ({ req }) => ({
       // will generate context used by Vulcan default resolvers
       ...(await contextForModels(req as Request)),
@@ -62,7 +64,6 @@ const startServer = async () => {
       // add your own data sources here
     }),
     introspection: process.env.NODE_ENV === "development", //false,
-    //playground: false,
   });
   await server.start();
 

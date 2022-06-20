@@ -31,7 +31,8 @@
     "@vulcanjs/graphql": "^0.6.9-alpha.1",
     "@vulcanjs/mongo": "^0.6.7",
     "@vulcanjs/mongo-apollo": "^0.6.9-alpha.1",
-    "apollo-server-express": "^3.6.4",
+    "apollo-server": "3.9",
+    "apollo-server-express": "3.9",
     "express": "^4.17.3",
     "mongodb-memory-server": "^8.4.0",
     "mongoose": "^6.2.5"
