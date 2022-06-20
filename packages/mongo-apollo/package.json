@@ -32,7 +32,8 @@
     "@vulcanjs/graphql": "^0.6.9-alpha.1",
     "@vulcanjs/mongo": "^0.6.7",
     "@vulcanjs/utils": "^0.6.7",
-    "apollo-datasource-mongodb": "^0.5.2"
+    "apollo-datasource-mongodb": "^0.5.2",
+    "graphql-objectid-scalar": "^1.0.4"
   },
   "peerDependencies": {
     "mongodb": ">= 3.6.2",
