@@ -22,10 +22,12 @@ interface FormContextValue {
   submitForm: Function; //React.HTMLAttributes<HTMLFormElement>["onSubmit"];
   throwError: Function;
   updateCurrentValues: Function;
+  disabled: boolean;
 }
 
-export const FormContext =
-  React.createContext<FormContextValue | undefined>(undefined);
+export const FormContext = React.createContext<FormContextValue | undefined>(
+  undefined
+);
 
 export const useFormContext = () => {
   const formContext = useContext(FormContext);

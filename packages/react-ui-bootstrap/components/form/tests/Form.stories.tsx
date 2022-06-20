@@ -118,6 +118,15 @@ AllBasicFields.args = {
   }),
 };
 
+export const Disabled = FormTemplate.bind({});
+Disabled.args = {
+  model: createModel({
+    name: "Biography",
+    schema: basicFieldsSchema,
+  }),
+  disabled: true,
+};
+
 // SELECT
 const selectFieldsSchema = withDefaultFieldSchema({
   "boolean-select": {

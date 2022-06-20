@@ -41,7 +41,10 @@ export const makeLocalesRegistry = () => {
   };
 
   const getLocale = (localeId: string) => {
-    return Locales.find((locale) => locale.id === localeId);
+    // TODO: not very reliable, can't find per country when region is not exactly the same
+    return Locales.find(
+      (locale) => locale.id.toLowerCase() === localeId.toLowerCase()
+    );
   };
   return { registerLocale, getLocale, Locales };
 };
