@@ -4,8 +4,8 @@ import { GraphQLObjectId } from "graphql-objectid-scalar";
  * NOTE: the type is ObjectID to be consistent with GraphQL "ID" type
  * Be careful with the casing
  */
-export const mongoTypeDefs = `scalar ObjectId`;
+export const objectIdTypeDefs = `scalar ObjectId`;
 
-export const mongoResolvers = {
+export const objectIdResolvers = {
   ObjectId: GraphQLObjectId,
 };
