@@ -74,13 +74,14 @@ type SingleMovieInput {
 */
 export const singleInputType = (typeName, nonNull = false) =>
   `Single${typeName}Input${nonNull ? "!" : ""}`;
-export const singleInputTemplate = ({ typeName }) =>
+
+export const singleInputTemplate = ({ typeName, idTypeName = "String" }) =>
   `input ${singleInputType(typeName)} {
   # filtering
   filter: ${filterInputType(typeName)}
   sort: ${sortInputType(typeName)}
   search: String
-  id: String
+  id: ${idTypeName}
 
   # backwards-compatibility
   ${deprecated1}

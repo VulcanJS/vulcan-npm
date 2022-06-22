@@ -19,6 +19,7 @@ import { isEmptyOrUndefined } from "@vulcanjs/utils";
 import { VulcanModel } from "@vulcanjs/model";
 import { FilterQuery, QueryOptions } from "mongoose";
 import { FilterableInput } from "@vulcanjs/crud";
+import { VulcanCrudModelServer } from "@vulcanjs/crud/server";
 
 // import { getSetting } from "./settings.js";
 // convert GraphQL selector into Mongo-compatible selector
@@ -184,7 +185,10 @@ export const filterFunction = async (
           break;
 
         default:
-          const customFilters = model.options.customFilters;
+          // FIXME: typing is not really right, this function should only accept CrudServer models
+          // but in the app we may pass it raw VulcanModel (if we don't need custom filters for instance)
+          const customFilters = (model as VulcanCrudModelServer)?.crud
+            ?.customFilters;
           const customFilter =
             customFilters && customFilters.find((f) => f.name === fieldName);
           if (customFilter) {

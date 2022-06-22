@@ -19,10 +19,10 @@ export const makeApolloServer = async (models: Array<VulcanGraphqlModel>) => {
     typeDefs: mergeTypeDefs([objectIdTypeDefs, vulcanRawSchema.typeDefs]),
     resolvers: mergeResolvers([objectIdResolvers, vulcanRawSchema.resolvers]),
   };
-  await writeFile(
-    path.resolve(__dirname, "./typeDefs.gql"),
-    vulcanRawSchema.typeDefs
-  );
+  //await writeFile(
+  //  path.resolve(__dirname, "./typeDefs.gql"),
+  //  vulcanRawSchema.typeDefs
+  //);
 
   const vulcanSchema = makeExecutableSchema(mergedSchema);
 

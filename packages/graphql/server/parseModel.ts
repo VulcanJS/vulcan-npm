@@ -145,13 +145,14 @@ const generateTypeDefs = ({
     return schemaFragments; // return now
   }
 
-  schemaFragments.push(singleInputTemplate({ typeName }));
+  const idTypeName = model?.schema._id?.typeName || "String";
+  schemaFragments.push(singleInputTemplate({ typeName, idTypeName }));
   schemaFragments.push(multiInputTemplate({ typeName }));
   schemaFragments.push(singleOutputTemplate({ typeName }));
   schemaFragments.push(multiOutputTemplate({ typeName }));
   schemaFragments.push(mutationOutputTemplate({ typeName }));
 
-  schemaFragments.push(deleteInputTemplate({ typeName }));
+  schemaFragments.push(deleteInputTemplate({ typeName, idTypeName }));
 
   if (create.length) {
     schemaFragments.push(createInputTemplate({ typeName }));
@@ -159,17 +160,23 @@ const generateTypeDefs = ({
   }
 
   if (update.length) {
-    schemaFragments.push(updateInputTemplate({ typeName }));
-    schemaFragments.push(upsertInputTemplate({ typeName }));
+    schemaFragments.push(updateInputTemplate({ typeName, idTypeName }));
+    schemaFragments.push(upsertInputTemplate({ typeName, idTypeName }));
     schemaFragments.push(updateDataInputTemplate({ typeName, fields: update }));
   }
 
   if (filterable.length) {
     // TODO: reneable customFilters?
-    const customFilters = []; //collection.options.customFilters;
+    // FIXME: .crud exists only for server models, but here we accept both types
+    // We should enhance VulcanGraphqlModel to fix that somehow
+    const customFilters =
+      (model as VulcanGraphqlModelServer)?.crud?.customFilters || []; //collection.options.customFilters;
     schemaFragments.push(
       fieldFilterInputTemplate({ typeName, fields: filterable, customFilters })
     );
+    //console.log(
+    //  fieldFilterInputTemplate({ typeName, fields: filterable, customFilters })
+    //);
     if (customFilters?.length) {
       customFilters.forEach((filter) => {
         schemaFragments.push(customFilterTemplate({ typeName, filter }));

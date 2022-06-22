@@ -109,10 +109,10 @@ Note: selector is for backwards-compatibility
 
 */
 export const updateInputType = (typeName) => `Update${typeName}Input`;
-export const updateInputTemplate = ({ typeName }) =>
-  `input ${updateInputType(typeName)}{
+export const updateInputTemplate = ({ typeName, idTypeName = "String" }) =>
+  `input ${updateInputType(typeName)} {
   filter: ${filterInputType(typeName)}
-  id: String
+  id: ${idTypeName}
   data: ${updateDataInputType(typeName, true)}
   # An identifier to name the mutation's execution context
   contextName: String
@@ -133,10 +133,10 @@ Note: selector is for backwards-compatibility
 
 */
 export const upsertInputType = (typeName) => `Upsert${typeName}Input`;
-export const upsertInputTemplate = ({ typeName }) =>
-  `input ${upsertInputType(typeName)}{
+export const upsertInputTemplate = ({ typeName, idTypeName = "String" }) =>
+  `input ${upsertInputType(typeName)} {
   filter: ${filterInputType(typeName)}
-  id: String
+  id: ${idTypeName}
   data: ${updateDataInputType(typeName, true)}
   # An identifier to name the mutation's execution context
   contextName: String
@@ -154,10 +154,10 @@ Note: selector is for backwards-compatibility
 
 */
 export const deleteInputType = (typeName) => `Delete${typeName}Input`;
-export const deleteInputTemplate = ({ typeName }) =>
-  `input ${deleteInputType(typeName)}{
+export const deleteInputTemplate = ({ typeName, idTypeName = "String" }) =>
+  `input ${deleteInputType(typeName)} {
   filter: ${filterInputType(typeName)}
-  id: String
+  id: ${idTypeName}
 }`;
 
 /*

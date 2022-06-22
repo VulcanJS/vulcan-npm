@@ -31,6 +31,29 @@ import { withFieldPermissionCheckResolver } from "./resolvers/fieldResolver";
 import { ResolveAsDefinition } from "./typings";
 import type { VulcanGraphqlFieldSchema } from "../typings";
 
+/**
+ * Vulcan field types that support filtering
+ */
+
+/**
+ * Cleaner graphql type
+ * @param type
+ * @returns
+ */
+const getContentType = (graphqlType) =>
+  graphqlType.replace("[", "").replace("]", "").replace("!", "");
+/**
+ * Vulcan types that can be filtered
+ * (in previous versions of Vulcan, we would check the GraphQL
+ * type, but here we check the schema type => this allow handling custom graphql scalar such as ObjectId
+ * as long as they can be converted to a filterable graphql type)
+ */
+const supportedFieldTypes = [String, Number, Boolean, Date]; //["String", "Int", "Float", "Boolean", "Date"];
+const isSupportedFieldType = (
+  /** The Schema type type */
+  type
+) => supportedFieldTypes.includes(type);
+
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (
   typeName: string,
@@ -337,6 +360,15 @@ export const parseMutable = ({
   return fields;
 };
 
+const isSpecialUniqueField = (fieldName) =>
+  // database id
+  [
+    "_id",
+    // @deprecated Open CRUD backward compatibility
+    "documentId",
+    // human readable slug
+    "slug",
+  ].includes(fieldName);
 /**
  * Parse fields depending on whether they can be queried and how
  * @param param0
@@ -344,6 +376,9 @@ export const parseMutable = ({
 export const parseQueriable = ({
   field,
   fieldName,
+  /**
+   * GraphQL type
+   */
   fieldType,
   inputFieldType,
 }: //hasNesting = false,
@@ -358,28 +393,38 @@ GetPermissionFieldsInput): QueriableFieldsDefinitions => {
   const { canRead, selectable, unique, apiOnly } = field;
 
   // if field is readable, make it filterable/orderable too
-  if (canRead) {
+  if (!!canRead) {
     fields.readable.push({
       name: fieldName,
       type: fieldType,
     });
     // we can only filter based on fields that actually exist in the db
     if (!apiOnly) {
-      fields.filterable.push({
-        name: fieldName,
-        type: fieldType,
-      });
+      const { type } = field;
+      if (isSupportedFieldType(type)) {
+        // Build the right graphql type (respecting the field typename)
+        // = typeName_Selector
+        const contentType = getContentType(fieldType);
+        const isArrayField = type[0] === "[";
+        const filterFieldType = `${contentType}_${
+          isArrayField ? "Array_" : ""
+        }Selector`;
+        fields.filterable.push({
+          name: fieldName,
+          type: filterFieldType,
+        });
+      }
     }
   }
 
-  if (selectable) {
+  if (selectable || isSpecialUniqueField(fieldName)) {
     fields.selector.push({
       name: fieldName,
       type: inputFieldType,
     });
   }
 
-  if (selectable && unique) {
+  if ((selectable && unique) || isSpecialUniqueField(fieldName)) {
     fields.selectorUnique.push({
       name: fieldName,
       type: inputFieldType,
