@@ -3,7 +3,7 @@
  */
 // import cors from "cors";
 import mongoose from "mongoose";
-import { ApolloServer, gql } from "apollo-server-express";
+import { ObjectId } from "mongodb";
 // import { mergeSchemas } from "@graphql-tools/schema";
 import { multiQuery, MultiVariables } from "@vulcanjs/graphql";
 
@@ -45,7 +45,6 @@ const Contributor = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
-      typeName: GraphqlObjectId,
       optional: true,
       canRead: ["anyone"],
       canCreate: ["anyone"],
@@ -78,7 +77,6 @@ const Repository = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
-      typeName: GraphqlObjectId,
       optional: true,
       canRead: ["anyone"],
       canCreate: ["anyone"],
@@ -87,7 +85,6 @@ const Repository = createGraphqlModelServer({
     },
     userId: {
       type: String,
-      typeName: GraphqlObjectId,
       optional: true,
       canRead: ["anyone"],
     },
@@ -101,7 +98,6 @@ const Repository = createGraphqlModelServer({
     },
     contributorId: {
       type: String,
-      typeName: GraphqlObjectId,
       // You will be able to query the "contributor" field of any "repository" object
       relation: {
         fieldName: "contributor",
@@ -123,6 +119,7 @@ const Repository = createGraphqlModelServer({
   },
 });
 const contributorConnector = createMongooseConnector(Contributor);
+const contributorMongooseModel = contributorConnector.getRawCollection();
 Contributor.crud.connector = contributorConnector;
 const repositoryConnector = createMongooseConnector(Contributor);
 Repository.crud.connector = repositoryConnector;
@@ -141,8 +138,8 @@ const models = [Contributor, Repository];
 // Work in progress
 test("filter by id, using Mongo ObjectId", async () => {
   const server = await makeApolloServer(models);
-  const contributor = await contributorConnector.create({ name: "foobar" });
-  console.log("contrib", contributor._id);
+  const contributor = await contributorMongooseModel.create({ name: "John" });
+  expect(contributor._id).toBeInstanceOf(ObjectId);
   const res = await server.executeOperation({
     query: multiQuery({ model: Contributor }),
     variables: {
@@ -156,6 +153,6 @@ test("filter by id, using Mongo ObjectId", async () => {
     } as MultiVariables,
   });
   expect(res.data).toMatchObject({
-    createContributor: { data: { name: "John" } },
+    contributors: { results: [{ name: "John" }] },
   });
 });

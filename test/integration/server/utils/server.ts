@@ -3,12 +3,21 @@ import express, { Request } from "express";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { buildApolloSchema } from "@vulcanjs/graphql/server";
 import { contextFromReq } from "./context";
-import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
+
+import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
+import { objectIdTypeDefs, objectIdResolvers } from "@vulcanjs/mongo-apollo";
 
 // Demo Apollo server
 export const makeApolloServer = async (models: Array<VulcanGraphqlModel>) => {
   const vulcanRawSchema = buildApolloSchema(models);
-  const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
+  const mergedSchema = {
+    // order matters (Vulcan will use Mongo typedefs, and your custom typedefs might use Vulcan etc.)
+    typeDefs: mergeTypeDefs([objectIdTypeDefs, vulcanRawSchema.typeDefs]),
+    resolvers: mergeResolvers([objectIdResolvers, vulcanRawSchema.resolvers]),
+  };
+
+  const vulcanSchema = makeExecutableSchema(mergedSchema);
 
   // Define the server (using Express for easier middleware usage)
   const server = new ApolloServer({
