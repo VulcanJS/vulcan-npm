@@ -56,11 +56,11 @@ const conversionTable = {
   _lte: "$lte",
   _neq: "$ne",
   _nin: "$nin",
+  asc: 1,
+  desc: -1,
   _is_null: (value) => ({ $exists: !value }),
   _is: (value) => ({ $elemMatch: { $eq: value } }),
   _contains: (value) => ({ $elemMatch: { $eq: value } }),
-  asc: 1,
-  desc: -1,
   _like: (value) => ({
     $regex: value,
     $options: "i",

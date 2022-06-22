@@ -12,13 +12,12 @@ Differences with Vulcan Meteor:
 
 import { DocumentNode } from "graphql";
 import { useQuery, QueryResult, QueryHookOptions } from "@apollo/client";
-import gql from "graphql-tag";
 import { useState } from "react";
 import {
-  multiClientTemplate,
   VulcanGraphqlModel,
   MultiVariables,
   MultiInput,
+  multiQuery,
 } from "@vulcanjs/graphql";
 import merge from "lodash/merge.js";
 import get from "lodash/get.js";
@@ -30,29 +29,6 @@ const defaultInput = {
   enableCache: false,
 };
 
-interface BuildMultiQueryArgs {
-  model: VulcanGraphqlModel;
-  fragmentName?: string;
-  fragment?: string | DocumentNode;
-  extraQueries?: string;
-}
-export const buildMultiQuery = ({
-  model,
-  fragmentName = model.graphql.defaultFragmentName,
-  fragment = model.graphql.defaultFragment,
-  extraQueries,
-}: BuildMultiQueryArgs) => {
-  const { typeName, multiTypeName } = model.graphql;
-  return gql`
-    ${multiClientTemplate({
-      typeName,
-      multiTypeName,
-      fragmentName,
-      extraQueries,
-    })}
-    ${fragment}
-  `;
-};
 const getInitialPaginationInput = (options, props) => {
   // get initial limit from props, or else options, or else default value
   const limit =
@@ -259,7 +235,7 @@ export const useMulti = <TModel = any, TData = any>(
   const { multiResolverName: resolverName } = model.graphql;
 
   // build graphql query from options
-  const query = buildMultiQuery({
+  const query = multiQuery({
     model,
     fragmentName,
     extraQueries,
