@@ -21,8 +21,6 @@ export const createDataSources =
   (models: Array<VulcanGraphqlModelServer>) => (): ModelDataSources => {
     const dataSources = models.reduce((dataSources, model) => {
       // TODO: we should find a way to guarantee that all models have a default connector
-      /* const connector =
-        model.crud.connector || createMongooseConnector(model);*/
       if (!model.graphql.createDataSource)
         throw new Error(
           "GraphQL models must have a createDataSource function."
@@ -31,8 +29,7 @@ export const createDataSources =
         ...dataSources,
         // TODO: in context we use "model.graphql.typeName" but here we use "name"
         // The getters are robust to both, but we should clarify
-        [model.name]: model.graphql.createDataSource() /*||
-          createMongooseDataSource(model, connector),*/,
+        [model.name]: model.graphql.createDataSource(),
       };
     }, {});
     return dataSources;
