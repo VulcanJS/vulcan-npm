@@ -15,7 +15,7 @@ import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://githu
 import { buildDefaultQueryResolvers } from "@vulcanjs/graphql/server";
 import { createGraphqlModelServer } from "@vulcanjs/graphql/server";
 import { createMongooseConnector } from "@vulcanjs/mongo";
-import { GraphqlObjectId } from "../../../packages/mongo-apollo";
+import { MongoId } from "@vulcanjs/mongo-apollo";
 import { makeApolloServer } from "./utils/server";
 
 // Init an in-memory Mongo server
@@ -45,7 +45,7 @@ const Contributor = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
-      typeName: GraphqlObjectId,
+      typeName: MongoId,
       optional: true,
       canRead: ["anyone"],
       canCreate: ["anyone"],
@@ -78,7 +78,7 @@ const Repository = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
-      typeName: GraphqlObjectId,
+      typeName: MongoId,
       optional: true,
       canRead: ["anyone"],
       canCreate: ["anyone"],
@@ -87,6 +87,7 @@ const Repository = createGraphqlModelServer({
     },
     userId: {
       type: String,
+      typeName: MongoId,
       optional: true,
       canRead: ["anyone"],
     },
@@ -100,7 +101,7 @@ const Repository = createGraphqlModelServer({
     },
     contributorId: {
       type: String,
-      typeName: GraphqlObjectId,
+      typeName: MongoId,
       // You will be able to query the "contributor" field of any "repository" object
       relation: {
         fieldName: "contributor",

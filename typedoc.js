@@ -15,6 +15,7 @@ module.exports = {
     "packages/mongo/index.ts",
     "packages/mongo/client/index.ts",
     "packages/mongo-apollo/index.ts",
+    "packages/mongo-apollo/server/index.ts",
     "packages/permissions/index.ts",
     "packages/react-hooks/index.ts",
     "packages/react-i18n/index.ts",

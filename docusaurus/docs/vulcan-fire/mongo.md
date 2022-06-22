@@ -17,10 +17,16 @@ Vulcan Next already does it for you in the `api/graphql` API route.
 
 - Use `GraphqlObjectId` as the `typeName` for every unique identifier in your schemas.
 
+Server to client: this is not strictly needed when queriying document, because ObjectId will serialize to String anyway.
+Client to server: this is needed when filtering or when mutating document, the scalar will convert the string back to an `ObjectId`,
+which is necessary for your search queries or your mutations to work correctly
+
 **If you encounter issues with filtering**, you might have forgotten to add this `typeName`.
 
 Example:
 ```js
+import { GraphqlObjectId } from "@vulcanjs/mongo-apollo"
+...
   schema: {
     _id: {
       type: String,

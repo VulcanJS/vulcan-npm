@@ -9,7 +9,10 @@ import { contextFromReq } from "./context";
 import { ApolloServer } from "apollo-server-express";
 
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
-import { objectIdTypeDefs, objectIdResolvers } from "@vulcanjs/mongo-apollo";
+import {
+  objectIdTypeDefs,
+  objectIdResolvers,
+} from "@vulcanjs/mongo-apollo/server";
 
 // Demo Apollo server
 export const makeApolloServer = async (models: Array<VulcanGraphqlModel>) => {
