@@ -27,6 +27,28 @@ import isEqual from "lodash/isEqual.js";
 import { VulcanUser, GroupName } from "./typings";
 
 /**
+ * Any user, connected or not
+ */
+export const anyoneGroup = "anyone";
+/**
+ * Visitors that are NOT connected
+ */
+export const visitorsGroup = "visitors";
+/**
+ * Any connected user
+ */
+export const membersGroup = "members";
+/**
+ * Admins
+ */
+export const adminsGroup = "admins";
+/**
+ * User that owns the current document
+ * (document.userId is equal to currentUser._id)
+ */
+export const ownersGroup = "owners";
+
+/**
  * @summary Users.groups object
  */
 // Users.groups = {};
@@ -79,13 +101,13 @@ export const getGroups = (
   document?: VulcanDocument | null
 ): Array<GroupName> => {
   let userGroups = [
-    "anyone",
+    anyoneGroup,
     /** @deprecated */
     "guests",
   ];
 
   if (user) {
-    userGroups.push("members");
+    userGroups.push(membersGroup);
 
     if (document && owns(user, document)) {
       userGroups.push("owners");
@@ -98,10 +120,10 @@ export const getGroups = (
 
     if (isAdmin(user)) {
       // admin
-      userGroups.push("admins");
+      userGroups.push(adminsGroup);
     }
   } else {
-    userGroups.push("visitors");
+    userGroups.push(visitorsGroup);
   }
 
   return userGroups;

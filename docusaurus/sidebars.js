@@ -82,6 +82,7 @@ const sidebars = {
       items: [
         "vulcan-fire/get-started",
         "vulcan-fire/groups-permissions",
+        "vulcan-fire/mongo",
         "vulcan-fire/filtering",
         "vulcan-fire/customTopLevelResolvers",
         "vulcan-fire/customFieldResolvers",

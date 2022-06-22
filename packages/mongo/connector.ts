@@ -3,7 +3,7 @@ import { VulcanModel } from "@vulcanjs/model";
 import { filterFunction } from "./mongoParams";
 
 import mongoose, { QueryOptions, FilterQuery } from "mongoose";
-import { Connector, convertIdAndTransformToJSON } from "@vulcanjs/crud/server";
+import { Connector, convertToJSON } from "@vulcanjs/crud/server";
 import { debugVulcan } from "@vulcanjs/utils";
 const debugMongoose = debugVulcan("mongoose");
 
@@ -15,6 +15,11 @@ export type MongooseConnector<TModel = any> = Connector<
 >;
 
 export interface MongooseConnectorOptions {
+  /**
+   * Will automatically convert your Mongo document
+   * to serializable JSON documents, with string ids
+   */
+  useStringId?: Boolean;
   /** Force a mongoose model. Use if you need to customize the schema or options */
   mongooseModel?: mongoose.Model<any>;
   mongooseSchema?: mongoose.Schema;
@@ -35,9 +40,10 @@ export const createMongooseConnector = <TModel = any>(
     debugMongoose("Mongoose model", model.name, "not found, will create it.");
     // TODO: compute a Mongoose schema from a VulcanSchema automatically
     // TODO: remove the strict: false option! It bypassed Mongoose schema system until we are able to autocompute the Mongoose schema
+    const defaultSchema = options?.useStringId ? { _id: String } : {};
     const schema =
       options?.mongooseSchema ||
-      new mongooseInstance.Schema({}, { strict: false });
+      new mongooseInstance.Schema(defaultSchema, { strict: false });
     // TODO: get name from a custom "model.mongo" option, using the model extension system like for graphql
     MongooseModel = mongooseInstance.model(model.name, schema);
   }
@@ -49,16 +55,16 @@ export const createMongooseConnector = <TModel = any>(
         null,
         options
       ).exec();
-      return convertIdAndTransformToJSON<TModel>(found);
+      return convertToJSON<TModel>(found);
     },
     findOne: async (selector) => {
       const found = await MongooseModel.findOne(selector).exec();
-      const document = found && convertIdAndTransformToJSON<TModel>(found);
+      const document = found && convertToJSON<TModel>(found);
       return document;
     },
     findOneById: async (id) => {
       const found = await MongooseModel.findById(id).exec();
-      const document = found && convertIdAndTransformToJSON<TModel>(found);
+      const document = found && convertToJSON<TModel>(found);
       return document;
       //throw new Error("findOneById not yet implemented in Mongoose connector");
     },
@@ -69,7 +75,7 @@ export const createMongooseConnector = <TModel = any>(
     create: async (document) => {
       const mongooseDocument = new MongooseModel(document);
       const createdDocument = await mongooseDocument.save();
-      return convertIdAndTransformToJSON(createdDocument);
+      return convertToJSON(createdDocument);
     },
     update: async (selector, modifier, options) => {
       if (options) {
@@ -88,7 +94,7 @@ export const createMongooseConnector = <TModel = any>(
       // NOTE: update result is NOT the updated document but the number of updated docs
       // we need to fetch it again
       const updatedDocument = await MongooseModel.findOne(selector).exec();
-      return convertIdAndTransformToJSON(updatedDocument);
+      return convertToJSON(updatedDocument);
     },
     delete: async (selector) => {
       // NOTE: we don't return deleted document, as this is a deleteMany operation
