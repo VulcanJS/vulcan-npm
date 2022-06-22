@@ -45,6 +45,7 @@ const Contributor = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
+      typeName: GraphqlObjectId,
       optional: true,
       canRead: ["anyone"],
       canCreate: ["anyone"],
@@ -77,6 +78,7 @@ const Repository = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
+      typeName: GraphqlObjectId,
       optional: true,
       canRead: ["anyone"],
       canCreate: ["anyone"],
@@ -98,6 +100,7 @@ const Repository = createGraphqlModelServer({
     },
     contributorId: {
       type: String,
+      typeName: GraphqlObjectId,
       // You will be able to query the "contributor" field of any "repository" object
       relation: {
         fieldName: "contributor",

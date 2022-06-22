@@ -8,30 +8,68 @@ const FooModel = (schema: VulcanGraphqlSchemaServer) =>
     schema,
     name: "Foo",
     graphql: { multiTypeName: "Foos", typeName: "Foo" },
+    permissions: {
+      canRead: ["anyone"],
+      canCreate: ["anyone"],
+    },
   });
 
-describe("relation", () => {
-  describe("hasOne", () => {
-    test("generate a type for a field with an hasOne relation", () => {
-      const model = FooModel({
-        fieldId: {
-          type: String,
-          canRead: ["admins"],
-          relation: {
-            fieldName: "field",
-            typeName: "Bar",
-            kind: "hasOne",
-          },
+describe("hasOne", () => {
+  test("generate a type for a field with an hasOne relation", () => {
+    const model = FooModel({
+      fieldId: {
+        type: String,
+        canRead: ["admins"],
+        relation: {
+          fieldName: "field",
+          typeName: "Bar",
+          kind: "hasOne",
         },
-      });
-      const res = parseModel(model);
-      expect(res.typeDefs).toBeDefined();
-      // debug
-      //console.log(res.typeDefs);
-      const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
-      expect(normalizedSchema).toMatch(
-        "type Foo { fieldId: String field: Bar }"
-      );
+      },
     });
+    const res = parseModel(model);
+    expect(res.typeDefs).toBeDefined();
+    // debug
+    //console.log(res.typeDefs);
+    const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
+    expect(normalizedSchema).toMatch("type Foo { fieldId: String field: Bar }");
+  });
+  // FIXME: the models are not right, they don't generate "Create" types desite permissions being set correctly
+  test.skip("respect the typeName of the id", () => {
+    const BarModel = createGraphqlModelServer({
+      schema: {
+        name: { type: String, canRead: ["anyone"], canCreate: ["anyone"] },
+      },
+      name: "Bar",
+      graphql: { multiTypeName: "Bars", typeName: "Bar" },
+      permissions: {
+        canRead: ["anyone"],
+        canCreate: ["anyone"],
+      },
+    });
+    const model = FooModel({
+      fieldId: {
+        type: String,
+        typeName: "FieldIdTypeName",
+        canRead: ["admins"],
+        canCreate: ["anyone"],
+        relation: {
+          model: BarModel,
+          fieldName: "field",
+          kind: "hasOne",
+        },
+      },
+    });
+    const res = parseModel(model);
+    expect(res.typeDefs).toBeDefined();
+    // debug
+    //console.log(res.typeDefs);
+    const normalizedSchema = normalizeGraphQLSchema(res.typeDefs);
+    expect(normalizedSchema).toMatch(
+      "type Foo { fieldId: FieldIdTypeName field: Bar }"
+    );
+    expect(normalizedSchema).toMatch(
+      "CreateFooFilterInput { fieldId: FieldIdTypeName field: Bar }"
+    );
   });
 });

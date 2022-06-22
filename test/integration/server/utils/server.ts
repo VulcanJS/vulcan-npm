@@ -1,3 +1,6 @@
+import { promises } from "fs";
+import path from "path";
+const { writeFile } = promises;
 import { VulcanGraphqlModel } from "@vulcanjs/graphql";
 import express, { Request } from "express";
 import { makeExecutableSchema } from "@graphql-tools/schema";
@@ -16,6 +19,10 @@ export const makeApolloServer = async (models: Array<VulcanGraphqlModel>) => {
     typeDefs: mergeTypeDefs([objectIdTypeDefs, vulcanRawSchema.typeDefs]),
     resolvers: mergeResolvers([objectIdResolvers, vulcanRawSchema.resolvers]),
   };
+  await writeFile(
+    path.resolve(__dirname, "./typeDefs.gql"),
+    vulcanRawSchema.typeDefs
+  );
 
   const vulcanSchema = makeExecutableSchema(mergedSchema);
 

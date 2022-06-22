@@ -42,6 +42,8 @@ export const getNestedGraphQLType = (
   }`;
 
 const hasTypeName = (field: VulcanFieldSchema): boolean => !!field.typeName;
+const hasRelation = (field: VulcanFieldSchema): boolean => !!field.relation;
+const hasResolver = (field: VulcanFieldSchema): boolean => !!field.resolveAs;
 
 const hasPermissions = (field) =>
   field.canRead || field.canCreate || field.canUpdate;
@@ -135,6 +137,7 @@ export const parseFieldResolvers = ({
     const resolver = withFieldPermissionCheckResolver(field, relationResolver);
     // then build actual resolver object and pass it to addGraphQLResolvers
     const resolverName = relation.fieldName;
+    // { Person: { adress: hasOneResolver }}
     const resolverDefinition = {
       [typeName]: {
         [resolverName]: resolver,
@@ -235,6 +238,10 @@ interface GetPermissionFieldsInput {
   fieldName: string;
   fieldType: string;
   inputFieldType: any;
+  /**
+   * Whether the field is nested IN THE DATABASE
+   * (do not include resolved fields)
+   */
   hasNesting?: boolean;
 }
 // Parsed representation of a field
@@ -280,7 +287,7 @@ export const parseMutable = ({
   fieldName,
   fieldType,
   inputFieldType,
-  hasNesting = false,
+  hasNesting,
 }: GetPermissionFieldsInput): MutableFieldsDefinitions => {
   const fields: MutableFieldsDefinitions = {
     create: [],
@@ -295,6 +302,7 @@ export const parseMutable = ({
     : inputFieldType;
 
   if (canCreate) {
+    //console.log("canCreate", fieldName, createInputFieldType);
     fields.create.push({
       name: fieldName,
       type: createInputFieldType,
@@ -338,8 +346,8 @@ export const parseQueriable = ({
   fieldName,
   fieldType,
   inputFieldType,
-  hasNesting = false,
-}: GetPermissionFieldsInput): QueriableFieldsDefinitions => {
+}: //hasNesting = false,
+GetPermissionFieldsInput): QueriableFieldsDefinitions => {
   const fields: QueriableFieldsDefinitions = {
     selector: [],
     selectorUnique: [],
@@ -347,13 +355,7 @@ export const parseQueriable = ({
     readable: [],
     filterable: [],
   };
-  const { canRead, canCreate, canUpdate, selectable, unique, apiOnly } = field;
-  const createInputFieldType = hasNesting
-    ? suffixType(prefixType("Create", fieldType), "DataInput")
-    : inputFieldType;
-  const updateInputFieldType = hasNesting
-    ? suffixType(prefixType("Update", fieldType), "DataInput")
-    : inputFieldType;
+  const { canRead, selectable, unique, apiOnly } = field;
 
   // if field is readable, make it filterable/orderable too
   if (canRead) {
@@ -445,15 +447,17 @@ export const parseSchema = (
       hasNestedSchema(getArrayChild(fieldName, schema)) &&
       !isIntlField(field) &&
       !isIntlDataField(field);
-    const isReferencedObject = hasTypeName(field);
+
     const arrayChild = getArrayChild(fieldName, schema);
-    const isReferencedArray = arrayChild && hasTypeName(arrayChild);
-    const hasNesting =
-      !isBlackbox(field) &&
-      (isNestedArray ||
-        isNestedObject ||
-        isReferencedObject ||
-        isReferencedArray);
+
+    //const isReferencedObject = hasTypeName(field);
+    //const isReferencedArray = arrayChild && hasTypeName(arrayChild);
+
+    const hasNesting = !isBlackbox(field) && (isNestedArray || isNestedObject); //||
+    // FIXME: why did we introduce this in the first place?
+    // This seems to generate wrong types when using a custom type like "GraphqlObjectId" instead of "String" (tested 2022/06)
+    // isReferencedObject ||
+    // isReferencedArray);
 
     // only include fields that are viewable/insertable/editable and don't contain "$" in their name
     // note: insertable/editable fields must be included in main schema in case they're returned by a mutation
@@ -525,7 +529,6 @@ export const parseSchema = (
         fieldName,
         fieldType,
         inputFieldType,
-        hasNesting,
       });
       fields.create.push(...mutableDefinitions.create);
       fields.update.push(...mutableDefinitions.update);
