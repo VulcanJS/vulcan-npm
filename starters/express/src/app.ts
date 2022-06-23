@@ -12,7 +12,12 @@ import mongoose from "mongoose";
 import express, { Request } from "express";
 // import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "apollo-server-core";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 
 import {
   buildApolloSchema,
@@ -20,7 +25,11 @@ import {
   createDataSources,
 } from "@vulcanjs/graphql/server";
 
-import { addDefaultMongoConnector } from "@vulcanjs/mongo-apollo/server";
+import {
+  addDefaultMongoConnector,
+  objectIdTypeDefs,
+  objectIdResolvers,
+} from "@vulcanjs/mongo-apollo/server";
 
 import http from "http";
 
@@ -31,7 +40,18 @@ import { seedDemoDb } from "./seedDemoDb";
 // Graphql resolvers and typedefs
 const vulcanRawSchema = buildApolloSchema(models);
 // Executable graphq schema
-const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
+const vulcanSchema = makeExecutableSchema({
+  typeDefs: mergeTypeDefs([
+    objectIdTypeDefs,
+    vulcanRawSchema.typeDefs,
+    /** Add your custom resolvers here if needed */
+  ]),
+  resolvers: mergeResolvers([
+    objectIdResolvers,
+    vulcanRawSchema.resolvers,
+    /** Add your custom resolvers here if needed */
+  ]),
+});
 
 // Will add relevant data sources and connectors if necessary
 // Using Mongo as a default
@@ -67,6 +87,23 @@ const startServer = async () => {
       // add your own data sources here
     }),
     introspection: process.env.NODE_ENV === "development", //false,
+    plugins: [
+      // If you prefer Playground:
+      // @see https://www.apollographql.com/docs/apollo-server/api/plugin/landing-pages/
+      process.env.NODE_ENV === "production"
+        ? ApolloServerPluginLandingPageProductionDefault()
+        : ApolloServerPluginLandingPageLocalDefault({
+            includeCookies: true,
+            // Removed the need for a complex CORS/cookies configuration, Apollo Studio runs in localhost
+            embed: true,
+          }),
+    ],
+    formatError: (err) => {
+      // This function is mandatory to log error messages, even in development
+      // You may enhance this function, eg by plugging an error tracker like Sentry in production
+      console.error(err);
+      return err;
+    },
   });
   await server.start();
 
