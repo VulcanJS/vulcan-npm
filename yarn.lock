@@ -2327,7 +2327,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.13.16, @babel/runtime@npm:^7.13.17, @babel/runtime@npm:^7.13.8, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.15.3, @babel/runtime@npm:^7.16.0, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.2.0, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.13.16, @babel/runtime@npm:^7.13.17, @babel/runtime@npm:^7.13.8, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.15.3, @babel/runtime@npm:^7.16.0, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.2.0, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.17.9
   resolution: "@babel/runtime@npm:7.17.9"
   dependencies:
@@ -8522,32 +8522,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/cypress@npm:^6.0.0":
-  version: 6.0.1
-  resolution: "@testing-library/cypress@npm:6.0.1"
-  dependencies:
-    "@babel/runtime": ^7.11.2
-    "@testing-library/dom": ^7.22.2
-    "@types/testing-library__cypress": ^5.0.6
-  peerDependencies:
-    cypress: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
-  checksum: 9ddb779e37fb8aaa9420e77c99a0c1f7f319072be030549d2b12ba0fe48691a3b642f17f9843945c2a718a0d785f516a2c1e20aa17feb3f977db4b98db3c00f0
-  languageName: node
-  linkType: hard
-
-"@testing-library/cypress@npm:^8.0.2":
-  version: 8.0.2
-  resolution: "@testing-library/cypress@npm:8.0.2"
+"@testing-library/cypress@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "@testing-library/cypress@npm:8.0.3"
   dependencies:
     "@babel/runtime": ^7.14.6
     "@testing-library/dom": ^8.1.0
   peerDependencies:
-    cypress: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
-  checksum: 41561f68d3cb72348791734984510b5c3a5294ddb4d09f4f06be4c44cefccc67453de49c876de382794f3dd1232d2e8a7a44da198fa24e83902ad799bc7eac3b
+    cypress: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
+  checksum: 319f6c7297f85e5673882a71009b5d5b576006f986d87a6ca6f2f8c679d96d9779f3ddbc01654b5a943407fa91192814f250835ce01f153e33ef24818cf1bf20
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^7.11.0, @testing-library/dom@npm:^7.22.2, @testing-library/dom@npm:^7.22.3, @testing-library/dom@npm:^7.28.1":
+"@testing-library/dom@npm:^7.22.3, @testing-library/dom@npm:^7.28.1":
   version: 7.31.2
   resolution: "@testing-library/dom@npm:7.31.2"
   dependencies:
@@ -9680,16 +9667,6 @@ __metadata:
   version: 1.0.8
   resolution: "@types/tapable@npm:1.0.8"
   checksum: b4b754dd0822c407b8f29ef6b766490721c276880f9e976d92ee2b3ef915f11a05a2442ae36c8978bcd872ad6bc833b0a2c4d267f2d611590668a366bad50652
-  languageName: node
-  linkType: hard
-
-"@types/testing-library__cypress@npm:^5.0.6":
-  version: 5.0.9
-  resolution: "@types/testing-library__cypress@npm:5.0.9"
-  dependencies:
-    "@testing-library/dom": ^7.11.0
-    cypress: "*"
-  checksum: 4ae181532275e45cf209ee192bb80fed8025e4b6c46b95a7154e63a470ddb0ba2f6001badcf5f7ccec4191d686c5a0e98e125389c6d49f0b02831c315a94f0a1
   languageName: node
   linkType: hard
 
@@ -15694,7 +15671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:*, cypress@npm:^9, cypress@npm:^9.5.3":
+"cypress@npm:^9, cypress@npm:^9.5.3":
   version: 9.6.0
   resolution: "cypress@npm:9.6.0"
   dependencies:
@@ -36318,7 +36295,7 @@ __metadata:
     "@storybook/manager-webpack5": next
     "@storybook/react": ^6.5.0-beta.2
     "@storybook/testing-react": ^1.2.4
-    "@testing-library/cypress": ^6.0.0
+    "@testing-library/cypress": ^8.0.3
     "@testing-library/jest-dom": ^5.9.0
     "@testing-library/react": ^10.2.0
     "@testing-library/react-hooks": ^3.3.0
@@ -36499,7 +36476,7 @@ __metadata:
     "@remix-run/serve": "*"
     "@remix-run/server-runtime": "*"
     "@remix-run/vercel": ^1.4.3
-    "@testing-library/cypress": ^8.0.2
+    "@testing-library/cypress": ^8.0.3
     "@testing-library/dom": ^8.12.0
     "@testing-library/jest-dom": ^5.16.3
     "@testing-library/react": ^12.1.4
