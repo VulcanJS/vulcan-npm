@@ -1,4 +1,4 @@
-## Use another database
+# Mongo
 
 ## Handle ObjectId
 
@@ -84,3 +84,7 @@ _id: ObjectId().toString()
   
 We currently have no way to configure the MongoDB Node driver to use string _id systematically.
 You have to manually generate a string _id on document creation.
+
+## Use another database than Mongo
+
+You can define custom connectors in Vulcan. See how `@vulcanjs/mongo` is implemented.
