@@ -5,6 +5,7 @@ import { filterFunction } from "./mongoParams";
 import mongoose, { QueryOptions, FilterQuery } from "mongoose";
 import { Connector, convertToJSON } from "@vulcanjs/crud/server";
 import { debugVulcan } from "@vulcanjs/utils";
+import { deprecate } from "util";
 const debugMongoose = debugVulcan("mongoose");
 
 export type MongooseConnector<TModel = any> = Connector<
@@ -27,6 +28,9 @@ export interface MongooseConnectorOptions {
    * also useful during local development when not using Yalc) */
   mongooseInstance?: mongoose.Mongoose;
 }
+/**
+ * Will be deprecated @see https://github.com/VulcanJS/vulcan-npm/pull/129
+ */
 export const createMongooseConnector = <TModel = any>(
   model: VulcanModel,
   options?: MongooseConnectorOptions
