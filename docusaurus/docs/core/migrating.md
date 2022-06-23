@@ -4,6 +4,11 @@ title: Migrate
 
 # Migration steps and significant changes for each version
 
+## To version > v0.6.9
+
+- ObjectId are now correctly supported, see [the new Vulcan Fire doc about Mongo](https://vulcan-docs.vercel.app/docs/vulcan-fire/mongo)
+- The "useStringId" option will force Mongoose to prefer string ids
+
 ## To version > v0.6.1
 
 - "guests" permission group should become "anyone". We have also introduced "visitors".
