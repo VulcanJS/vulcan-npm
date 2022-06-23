@@ -1,6 +1,6 @@
 /**
  */
-import { parseSchema } from "./parseSchema";
+import { parseSchema, QueriableFieldsDefinitions } from "./parseSchema";
 import {
   selectorInputTemplate,
   mainTypeTemplate,
@@ -36,14 +36,14 @@ import {
   parseQueryResolvers,
 } from "./parseModelResolvers";
 
-interface Fields {
+interface Fields extends QueriableFieldsDefinitions {
   mainType: any;
   create: Array<any>;
   update: Array<any>;
-  selector: any;
-  selectorUnique: any;
-  readable: Array<any>;
-  filterable: Array<any>;
+  // selector: Array<any>;
+  // selectorUnique: Array<any>;
+  // readable: Array<any>;
+  // filterable: Array<any>;
   // enums: Array<{ allowedValues: Array<any>; typeName: string }>;
 }
 interface GenerateSchemaFragmentsInput {
@@ -146,7 +146,13 @@ const generateTypeDefs = ({
   }
 
   const idTypeName = model?.schema._id?.typeName || "String";
-  schemaFragments.push(singleInputTemplate({ typeName, idTypeName }));
+  schemaFragments.push(
+    singleInputTemplate({
+      typeName,
+      idTypeName,
+      hasSelector: !!selectorUnique.length,
+    })
+  );
   schemaFragments.push(multiInputTemplate({ typeName }));
   schemaFragments.push(singleOutputTemplate({ typeName }));
   schemaFragments.push(multiOutputTemplate({ typeName }));
@@ -195,11 +201,23 @@ const generateTypeDefs = ({
     // }
   }
 
-  schemaFragments.push(selectorInputTemplate({ typeName, fields: selector }));
+  if (selector.length) {
+    schemaFragments.push(selectorInputTemplate({ typeName, fields: selector }));
+  } else {
+    console.warn(
+      `No selectable field in your schema for model ${model?.name}, is _id correctly defined?`
+    );
+  }
 
-  schemaFragments.push(
-    selectorUniqueInputTemplate({ typeName, fields: selectorUnique })
-  );
+  if (selectorUnique.length) {
+    schemaFragments.push(
+      selectorUniqueInputTemplate({ typeName, fields: selectorUnique })
+    );
+  } else {
+    console.warn(
+      `No unique selectable field in your schema for model ${model?.name}, is _id correctly defined?`
+    );
+  }
 
   return schemaFragments;
 };

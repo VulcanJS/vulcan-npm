@@ -10220,25 +10220,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vulcanjs/core@^0.6.7, @vulcanjs/core@workspace:packages/core":
+"@vulcanjs/core@^0.6.9-alpha.4, @vulcanjs/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/core@workspace:packages/core"
   dependencies:
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     debug: ^4.3.1
     lodash: ^4.17.21
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/crud@^0.6.7, @vulcanjs/crud@workspace:packages/crud":
+"@vulcanjs/crud@^0.6.9-alpha.4, @vulcanjs/crud@workspace:packages/crud":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/crud@workspace:packages/crud"
   dependencies:
-    "@vulcanjs/core": ^0.6.7
-    "@vulcanjs/model": ^0.6.7
-    "@vulcanjs/permissions": ^0.6.7
+    "@vulcanjs/core": ^0.6.9-alpha.4
+    "@vulcanjs/model": ^0.6.9-alpha.4
+    "@vulcanjs/permissions": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     debug: ^4.3.1
     lodash: ^4.17.21
     msw: ^0.35.0
@@ -10265,16 +10265,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/graphql@^0.6.9-alpha.1, @vulcanjs/graphql@workspace:packages/graphql":
+"@vulcanjs/graphql@^0.6.9-alpha.4, @vulcanjs/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/graphql@workspace:packages/graphql"
   dependencies:
-    "@vulcanjs/crud": ^0.6.7
-    "@vulcanjs/i18n": ^0.6.9-alpha.0
-    "@vulcanjs/model": ^0.6.7
-    "@vulcanjs/permissions": ^0.6.7
+    "@vulcanjs/crud": ^0.6.9-alpha.4
+    "@vulcanjs/i18n": ^0.6.9-alpha.4
+    "@vulcanjs/model": ^0.6.9-alpha.4
+    "@vulcanjs/permissions": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     apollo-datasource: ^3.3.1
     debug: ^4.3.1
     deepmerge: ^4.2.2
@@ -10294,12 +10294,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/i18n@^0.6.9-alpha.0, @vulcanjs/i18n@workspace:packages/i18n":
+"@vulcanjs/i18n@^0.6.9-alpha.4, @vulcanjs/i18n@workspace:packages/i18n":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/i18n@workspace:packages/i18n"
   dependencies:
     "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     prop-types: ^15.7.2
     simpl-schema: ^1.12.0
   peerDependencies:
@@ -10313,11 +10313,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/meteor-legacy@^0.6.9-alpha.1, @vulcanjs/meteor-legacy@workspace:packages/meteor-legacy":
+"@vulcanjs/meteor-legacy@^0.6.9-alpha.4, @vulcanjs/meteor-legacy@workspace:packages/meteor-legacy":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/meteor-legacy@workspace:packages/meteor-legacy"
   dependencies:
-    "@vulcanjs/graphql": ^0.6.9-alpha.1
+    "@vulcanjs/graphql": ^0.6.9-alpha.4
     lodash: ^4.17.21
   peerDependencies:
     "@apollo/client": ">= 3.2.0"
@@ -10325,7 +10325,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/model@^0.6.7, @vulcanjs/model@workspace:packages/model":
+"@vulcanjs/model@^0.6.9-alpha.4, @vulcanjs/model@workspace:packages/model":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/model@workspace:packages/model"
   dependencies:
@@ -10334,14 +10334,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/mongo-apollo@^0.6.9-alpha.1, @vulcanjs/mongo-apollo@workspace:packages/mongo-apollo":
+"@vulcanjs/mongo-apollo@^0.6.9-alpha.4, @vulcanjs/mongo-apollo@workspace:packages/mongo-apollo":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/mongo-apollo@workspace:packages/mongo-apollo"
   dependencies:
-    "@vulcanjs/crud": ^0.6.7
-    "@vulcanjs/graphql": ^0.6.9-alpha.1
-    "@vulcanjs/mongo": ^0.6.7
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/crud": ^0.6.9-alpha.4
+    "@vulcanjs/graphql": ^0.6.9-alpha.4
+    "@vulcanjs/mongo": ^0.6.9-alpha.4
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     apollo-datasource-mongodb: ^0.5.2
     graphql-objectid-scalar: ^1.0.4
   peerDependencies:
@@ -10350,15 +10350,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/mongo@^0.6.7, @vulcanjs/mongo@workspace:packages/mongo":
+"@vulcanjs/mongo@^0.6.9-alpha.4, @vulcanjs/mongo@workspace:packages/mongo":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/mongo@workspace:packages/mongo"
   dependencies:
-    "@vulcanjs/crud": ^0.6.7
-    "@vulcanjs/model": ^0.6.7
-    "@vulcanjs/permissions": ^0.6.7
+    "@vulcanjs/crud": ^0.6.9-alpha.4
+    "@vulcanjs/model": ^0.6.9-alpha.4
+    "@vulcanjs/permissions": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     lodash: ^4.17.20
     mongodb-memory-server: ^8.4.0
   peerDependencies:
@@ -10370,12 +10370,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/permissions@^0.6.7, @vulcanjs/permissions@workspace:packages/permissions":
+"@vulcanjs/permissions@^0.6.9-alpha.4, @vulcanjs/permissions@workspace:packages/permissions":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/permissions@workspace:packages/permissions"
   dependencies:
     "@types/lodash": ^4.14.168
-    "@vulcanjs/model": ^0.6.7
+    "@vulcanjs/model": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
     lodash: ^4.17.21
   peerDependencies:
@@ -10384,14 +10384,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-hooks@^0.6.9-alpha.1, @vulcanjs/react-hooks@workspace:packages/react-hooks":
+"@vulcanjs/react-hooks@^0.6.9-alpha.4, @vulcanjs/react-hooks@workspace:packages/react-hooks":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-hooks@workspace:packages/react-hooks"
   dependencies:
     "@testing-library/react-hooks": ^3.4.1
-    "@vulcanjs/crud": ^0.6.7
-    "@vulcanjs/graphql": ^0.6.9-alpha.1
-    "@vulcanjs/mongo": ^0.6.7
+    "@vulcanjs/crud": ^0.6.9-alpha.4
+    "@vulcanjs/graphql": ^0.6.9-alpha.4
+    "@vulcanjs/mongo": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
     debug: ^4.3.1
     lodash: ^4.17.20
@@ -10406,12 +10406,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-i18n@^0.6.9-alpha.0, @vulcanjs/react-i18n@workspace:packages/react-i18n":
+"@vulcanjs/react-i18n@^0.6.9-alpha.4, @vulcanjs/react-i18n@workspace:packages/react-i18n":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-i18n@workspace:packages/react-i18n"
   dependencies:
-    "@vulcanjs/i18n": ^0.6.9-alpha.0
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/i18n": ^0.6.9-alpha.4
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     prop-types: ^15.7.2
   peerDependencies:
     "@apollo/client": ^3.5.5
@@ -10425,8 +10425,8 @@ __metadata:
   dependencies:
     "@types/lodash": ^4.14.168
     "@types/underscore": ^1.11.1
-    "@vulcanjs/graphql": ^0.6.9-alpha.1
-    "@vulcanjs/model": ^0.6.7
+    "@vulcanjs/graphql": ^0.6.9-alpha.4
+    "@vulcanjs/model": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
     classnames: ^2.3.1
     debug: ^4.3.1
@@ -10443,20 +10443,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui-lite@^0.6.9-alpha.1, @vulcanjs/react-ui-lite@workspace:packages/react-ui-lite":
+"@vulcanjs/react-ui-lite@^0.6.9-alpha.4, @vulcanjs/react-ui-lite@workspace:packages/react-ui-lite":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui-lite@workspace:packages/react-ui-lite"
   dependencies:
     "@types/lodash": ^4.14.168
-    "@vulcanjs/graphql": ^0.6.9-alpha.1
-    "@vulcanjs/i18n": ^0.6.9-alpha.0
-    "@vulcanjs/model": ^0.6.7
-    "@vulcanjs/permissions": ^0.6.7
-    "@vulcanjs/react-hooks": ^0.6.9-alpha.1
-    "@vulcanjs/react-i18n": ^0.6.9-alpha.0
-    "@vulcanjs/react-ui": ^0.6.9-alpha.1
+    "@vulcanjs/graphql": ^0.6.9-alpha.4
+    "@vulcanjs/i18n": ^0.6.9-alpha.4
+    "@vulcanjs/model": ^0.6.9-alpha.4
+    "@vulcanjs/permissions": ^0.6.9-alpha.4
+    "@vulcanjs/react-hooks": ^0.6.9-alpha.4
+    "@vulcanjs/react-i18n": ^0.6.9-alpha.4
+    "@vulcanjs/react-ui": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     classnames: ^2.3.1
     debug: ^4.3.1
     lodash: ^4.17.21
@@ -10480,14 +10480,14 @@ __metadata:
     "@mui/styles": ^5.2.1
     "@types/lodash": ^4.14.168
     "@types/underscore": ^1.11.1
-    "@vulcanjs/core": ^0.6.7
-    "@vulcanjs/graphql": ^0.6.9-alpha.1
-    "@vulcanjs/model": ^0.6.7
-    "@vulcanjs/permissions": ^0.6.7
-    "@vulcanjs/react-hooks": ^0.6.9-alpha.1
-    "@vulcanjs/react-i18n": ^0.6.9-alpha.0
+    "@vulcanjs/core": ^0.6.9-alpha.4
+    "@vulcanjs/graphql": ^0.6.9-alpha.4
+    "@vulcanjs/model": ^0.6.9-alpha.4
+    "@vulcanjs/permissions": ^0.6.9-alpha.4
+    "@vulcanjs/react-hooks": ^0.6.9-alpha.4
+    "@vulcanjs/react-i18n": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     autosuggest-highlight: ^3.2.0
     classnames: ^2.3.1
     create-react-class: ^15.7.0
@@ -10506,21 +10506,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui@^0.6.9-alpha.1, @vulcanjs/react-ui@workspace:packages/react-ui":
+"@vulcanjs/react-ui@^0.6.9-alpha.4, @vulcanjs/react-ui@workspace:packages/react-ui":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui@workspace:packages/react-ui"
   dependencies:
     "@types/lodash": ^4.14.168
     "@types/underscore": ^1.11.1
-    "@vulcanjs/core": ^0.6.7
-    "@vulcanjs/graphql": ^0.6.9-alpha.1
-    "@vulcanjs/i18n": ^0.6.9-alpha.0
-    "@vulcanjs/model": ^0.6.7
-    "@vulcanjs/permissions": ^0.6.7
-    "@vulcanjs/react-hooks": ^0.6.9-alpha.1
-    "@vulcanjs/react-i18n": ^0.6.9-alpha.0
+    "@vulcanjs/core": ^0.6.9-alpha.4
+    "@vulcanjs/graphql": ^0.6.9-alpha.4
+    "@vulcanjs/i18n": ^0.6.9-alpha.4
+    "@vulcanjs/model": ^0.6.9-alpha.4
+    "@vulcanjs/permissions": ^0.6.9-alpha.4
+    "@vulcanjs/react-hooks": ^0.6.9-alpha.4
+    "@vulcanjs/react-i18n": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.7
+    "@vulcanjs/utils": ^0.6.9-alpha.4
     classnames: ^2.3.1
     debug: ^4.3.1
     lodash: ^4.17.21
@@ -10573,11 +10573,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/utils@^0.6.7, @vulcanjs/utils@workspace:packages/utils":
+"@vulcanjs/utils@^0.6.9-alpha.4, @vulcanjs/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/utils@workspace:packages/utils"
   dependencies:
-    "@vulcanjs/model": ^0.6.7
+    "@vulcanjs/model": ^0.6.9-alpha.4
     debug: ^4.3.1
     lodash: ^4.17.21
     msw: ^0.35.0
@@ -36268,9 +36268,9 @@ __metadata:
   resolution: "vulcan-express@workspace:starters/express"
   dependencies:
     "@graphql-tools/schema": ^8.3.2
-    "@vulcanjs/graphql": ^0.6.9-alpha.1
-    "@vulcanjs/mongo": ^0.6.7
-    "@vulcanjs/mongo-apollo": ^0.6.9-alpha.1
+    "@vulcanjs/graphql": ^0.6.9-alpha.4
+    "@vulcanjs/mongo": ^0.6.9-alpha.4
+    "@vulcanjs/mongo-apollo": ^0.6.9-alpha.4
     apollo-server: 3.9
     apollo-server-express: 3.9
     express: ^4.17.3
@@ -36329,16 +36329,16 @@ __metadata:
     "@types/react-dom": ^17
     "@types/shelljs": ^0.8.8
     "@vercel/ncc": ^0.30.0
-    "@vulcanjs/crud": ^0.6.7
-    "@vulcanjs/graphql": ^0.6.9-alpha.1
+    "@vulcanjs/crud": ^0.6.9-alpha.4
+    "@vulcanjs/graphql": ^0.6.9-alpha.4
     "@vulcanjs/mdx": ^0.6.7
-    "@vulcanjs/meteor-legacy": ^0.6.9-alpha.1
-    "@vulcanjs/model": ^0.6.7
-    "@vulcanjs/mongo": ^0.6.7
-    "@vulcanjs/mongo-apollo": ^0.6.9-alpha.1
-    "@vulcanjs/react-hooks": ^0.6.9-alpha.1
-    "@vulcanjs/react-ui": ^0.6.9-alpha.1
-    "@vulcanjs/react-ui-lite": ^0.6.9-alpha.1
+    "@vulcanjs/meteor-legacy": ^0.6.9-alpha.4
+    "@vulcanjs/model": ^0.6.9-alpha.4
+    "@vulcanjs/mongo": ^0.6.9-alpha.4
+    "@vulcanjs/mongo-apollo": ^0.6.9-alpha.4
+    "@vulcanjs/react-hooks": ^0.6.9-alpha.4
+    "@vulcanjs/react-ui": ^0.6.9-alpha.4
+    "@vulcanjs/react-ui-lite": ^0.6.9-alpha.4
     "@vulcanjs/schema": ^0.6.7
     apollo-datasource-mongodb: ^0.5.2
     apollo-server: 3.9

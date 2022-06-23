@@ -36,11 +36,11 @@ updateMovie(input: UpdateMovieInput) : MovieOutput
 export const updateMutationType = (typeName) => `update${typeName}`;
 export const updateOperationName = (model: VulcanGraphqlModel) =>
   updateMutationType(model.graphql.typeName);
-export const updateMutationTemplate = ({ typeName }) =>
+export const updateMutationTemplate = ({ typeName, hasSelector }) =>
   `${updateMutationType(typeName)}(
   input: ${updateInputType(typeName)},
   ${deprecated}
-  selector: ${selectorUniqueInputType(typeName)},
+  ${`selector: ${hasSelector ? selectorUniqueInputType(typeName) : "JSON"}`},
   ${deprecated}
   data: ${updateDataInputType(typeName)}
 ) : ${mutationOutputType(typeName)}`;
@@ -53,11 +53,11 @@ upsertMovie(input: UpsertMovieInput) : MovieOutput
 
 */
 export const upsertMutationType = (typeName) => `upsert${typeName}`;
-export const upsertMutationTemplate = ({ typeName }) =>
+export const upsertMutationTemplate = ({ typeName, hasSelector }) =>
   `${upsertMutationType(typeName)}(
   input: ${upsertInputType(typeName)},
   ${deprecated}
-  selector: ${selectorUniqueInputType(typeName)},
+  ${`selector: ${hasSelector ? selectorUniqueInputType(typeName) : "JSON"}`},
   ${deprecated}
   data: ${updateDataInputType(typeName, false)}
 ) : ${mutationOutputType(typeName)}`;
@@ -70,11 +70,11 @@ deleteMovie(input: DeleteMovieInput) : MovieOutput
 
 */
 export const deleteMutationType = (typeName) => `delete${typeName}`;
-export const deleteMutationTemplate = ({ typeName }) =>
+export const deleteMutationTemplate = ({ typeName, hasSelector }) =>
   `${deleteMutationType(typeName)}(
   input: ${deleteInputType(typeName)},
   ${deprecated}
-  selector: ${selectorUniqueInputType(typeName)}
+  ${`selector: ${hasSelector ? selectorUniqueInputType(typeName) : "JSON"}`},
 ) : ${mutationOutputType(typeName)}`;
 
 /* ------------------------------------- Mutation Input Types ------------------------------------- */
@@ -256,12 +256,12 @@ mutation updateMovie($selector: MovieSelectorUniqueInput!, $data: UpdateMovieDat
 }
 
 */
-export const updateClientTemplate = ({ typeName, fragmentName }) =>
+export const updateClientTemplate = ({ typeName, fragmentName, hasSelector }) =>
   `mutation ${updateMutationType(typeName)}($input: ${updateInputType(
     typeName
-  )}, $selector: ${selectorUniqueInputType(
-    typeName
-  )}, $data: ${updateDataInputType(typeName, false)}) {
+  )}, $selector: ${
+    hasSelector ? selectorUniqueInputType(typeName) : "JSON"
+  }, $data: ${updateDataInputType(typeName, false)}) {
   ${updateMutationType(
     typeName
   )}(input: $input, selector: $selector, data: $data) {
@@ -287,12 +287,12 @@ mutation upsertMovie($selector: MovieSelectorUniqueInput!, $data: UpdateMovieDat
 }
 
 */
-export const upsertClientTemplate = ({ typeName, fragmentName }) =>
+export const upsertClientTemplate = ({ typeName, fragmentName, hasSelector }) =>
   `mutation ${upsertMutationType(typeName)}($input: ${upsertInputType(
     typeName
-  )}, $selector: ${selectorUniqueInputType(
-    typeName
-  )}, $data: ${updateDataInputType(typeName, false)}) {
+  )}, $selector: ${
+    hasSelector ? selectorUniqueInputType(typeName) : ""
+  }, $data: ${updateDataInputType(typeName, false)}) {
   ${upsertMutationType(
     typeName
   )}(input: $input, selector: $selector, data: $data) {
@@ -318,10 +318,10 @@ mutation deleteMovie($selector: MovieSelectorUniqueInput!) {
 }
 
 */
-export const deleteClientTemplate = ({ typeName, fragmentName }) =>
+export const deleteClientTemplate = ({ typeName, fragmentName, hasSelector }) =>
   `mutation ${deleteMutationType(typeName)}($input: ${deleteInputType(
     typeName
-  )}, $selector: ${selectorUniqueInputType(typeName)}) {
+  )}, $selector: ${hasSelector ? selectorUniqueInputType(typeName) : "JSON"}) {
   ${deleteMutationType(typeName)}(input: $input, selector: $selector) {
     ${mutationReturnProperty} {
       ...${fragmentName}
