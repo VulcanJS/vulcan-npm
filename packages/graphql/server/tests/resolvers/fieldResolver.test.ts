@@ -24,6 +24,12 @@ describe("permissions", () => {
     // so we can test multiple requests with a different user
     let currentUser = { isAdmin: false, groups: [] };
     const model = makeFooModel({
+      // Needed to get at least one unique field
+      _id: {
+        type: String,
+        optional: true,
+        canRead: ["anyone"],
+      },
       field: {
         type: String,
         optional: true,
