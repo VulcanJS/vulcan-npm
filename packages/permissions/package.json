@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/permissions",
-  "version": "0.6.7",
+  "version": "0.6.9",
   "description": "Vulcan permissions",
   "main": "./dist/index.js",
   "files": [

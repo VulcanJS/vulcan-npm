@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/crud",
-  "version": "0.6.7",
+  "version": "0.6.9",
   "main": "./dist/index.js",
   "files": [
     "dist/"
@@ -25,7 +25,7 @@
   "dependencies": {
     "@vulcanjs/core": "^0.6.7",
     "@vulcanjs/model": "^0.6.7",
-    "@vulcanjs/permissions": "^0.6.7",
+    "@vulcanjs/permissions": "^0.6.9",
     "@vulcanjs/schema": "^0.6.7",
     "@vulcanjs/utils": "^0.6.7",
     "debug": "^4.3.1",
