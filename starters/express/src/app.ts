@@ -20,7 +20,7 @@ import {
   createDataSources,
 } from "@vulcanjs/graphql/server";
 
-import { addDefaultMongoConnector } from "@vulcanjs/mongo-apollo";
+import { addDefaultMongoConnector } from "@vulcanjs/mongo-apollo/server";
 
 import http from "http";
 
@@ -36,7 +36,10 @@ const vulcanSchema = makeExecutableSchema(vulcanRawSchema);
 // Will add relevant data sources and connectors if necessary
 // Using Mongo as a default
 // /!\ Must be called before graphql context creation
-addDefaultMongoConnector(models, { mongooseInstance: mongoose });
+addDefaultMongoConnector(models, {
+  mongooseInstance: mongoose,
+  /* useStringId: true // uncomment to use string ids */
+});
 const contextForModels = createContext(models);
 const dataSourcesForModels = createDataSources(models);
 
@@ -51,6 +54,8 @@ const startServer = async () => {
   // Define the server (using Express for easier middleware usage)
   const server = new ApolloServer({
     schema: vulcanSchema,
+    csrfPrevention: true,
+    cache: "bounded",
     context: async ({ req }) => ({
       // will generate context used by Vulcan default resolvers
       ...(await contextForModels(req as Request)),
@@ -62,7 +67,6 @@ const startServer = async () => {
       // add your own data sources here
     }),
     introspection: process.env.NODE_ENV === "development", //false,
-    //playground: false,
   });
   await server.start();
 

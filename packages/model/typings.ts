@@ -58,5 +58,4 @@ export interface VulcanModel<TSchema = VulcanSchema> {
   description?: string;
   schema: TSchema; // NOTE: the right type might be "Evalutated Schema" if we use new SimpleSchema(mySchema)._schema to get it
   permissions: ModelPermissionsOptions;
-  options?: any; // TODO: used to add "customFilters", but to be improved, we should avoid generic option and have only options per extension (graphql, mongo, filtering...)
 }

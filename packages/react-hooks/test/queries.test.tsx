@@ -6,11 +6,14 @@ import { MockedProvider } from "@apollo/client/testing";
 //import { initComponentTest } from 'meteor/vulcan:test';
 import { useMulti, useSingle } from "../index";
 import { buildSingleQuery } from "../single";
-import { buildMultiQuery, buildMultiQueryOptions } from "../multi";
+import { buildMultiQueryOptions } from "../multi";
 import { renderHook, act } from "@testing-library/react-hooks";
 
-import { VulcanGraphqlModel } from "@vulcanjs/graphql";
-import { createGraphqlModel } from "@vulcanjs/graphql";
+import {
+  VulcanGraphqlModel,
+  multiQuery,
+  createGraphqlModel,
+} from "@vulcanjs/graphql";
 import { VulcanDocument } from "@vulcanjs/schema";
 
 import { createMockClient } from "mock-apollo-client";
@@ -108,7 +111,7 @@ describe("react-hooks/queries", function () {
     });
   });
   describe("useMulti", () => {
-    const defaultQuery = buildMultiQuery({
+    const defaultQuery = multiQuery({
       model: Foo,
     });
     const defaultVariables = buildMultiQueryOptions(

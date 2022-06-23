@@ -7,7 +7,10 @@ import {
 // but here we show how you can provide your own connector if necessary
 // (eg for supporting SQL)
 import { createMongooseConnector } from "@vulcanjs/mongo";
-import { createMongooseDataSource } from "@vulcanjs/mongo-apollo";
+import {
+  createMongooseDataSource,
+  MongoId,
+} from "@vulcanjs/mongo-apollo/server";
 
 /**
  * Demo model
@@ -19,6 +22,8 @@ export const Contributor = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
+      // Don't forget this typeName, in order to correctly handle Mongo ObjectId conversion
+      typeName: MongoId,
       optional: true,
       canRead: ["guests", "anyone"],
       canCreate: ["guests", "anyone"],
@@ -94,6 +99,7 @@ export const Repository = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
+      typeName: MongoId,
       optional: true,
       canRead: ["guests", "anyone"],
       canCreate: ["guests", "anyone"],
@@ -110,6 +116,7 @@ export const Repository = createGraphqlModelServer({
     },
     contributorId: {
       type: String,
+      typeName: MongoId,
       // You will be able to query the "contributor" field of any "repository" object
       relation: {
         fieldName: "contributor",

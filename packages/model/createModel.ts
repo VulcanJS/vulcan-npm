@@ -115,7 +115,8 @@ export const createModel = <TModelDefinition extends VulcanModel>(
     schema: createSchema(schema),
     name,
     permissions,
-    options,
+    // not used anymore
+    // options,
   };
 
   const extendedModel = extensions.reduce(

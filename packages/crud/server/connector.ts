@@ -36,13 +36,13 @@ export interface Connector<
   }>;
   // replaces collection.loader.load
   // @see https://github.com/GraphQLGuide/apollo-datasource-mongodb/#findonebyid
-  findOneById: (_id: string) => Promise<TModel | null>;
+  findOneById: (_id: string | any) => Promise<TModel | null>;
   // replaces get
   findOne: (selector?: TSelector, options?: TOptions) => Promise<TModel | null>;
   /**
    * Find data in the database
    */
-  find: (selector?: TSelector, options?: Object) => Promise<Array<TModel>>;
+  find: (selector?: TSelector, options?: TOptions) => Promise<Array<TModel>>;
   count: (selector?: TSelector) => Promise<number>;
   // TODO: should we keep supporting loader.load and get? or
   // Mutations

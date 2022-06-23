@@ -1,4 +1,4 @@
-import { convertIdAndTransformToJSON } from "@vulcanjs/crud/server";
+import { convertToJSON } from "@vulcanjs/crud/server";
 import { VulcanDocument } from "@vulcanjs/schema";
 import { RelationDefinition } from "../../typings";
 /*
@@ -49,7 +49,7 @@ export const hasOne =
       const rawDocument = await dt.findOneById(documentId);
       // DataSource will provide _id as an ObjectId, we want to conver them to string _id first
       if (rawDocument) {
-        relatedDocument = convertIdAndTransformToJSON(rawDocument);
+        relatedDocument = convertToJSON(rawDocument);
       }
     } catch (err) {
       console.warn(
@@ -92,7 +92,7 @@ export const hasMany =
       const dt = getModelDataSource(context, relatedModel);
       const rawDocuments = await dt.findManyByIds(documentIds);
       if (rawDocuments) {
-        relatedDocuments = convertIdAndTransformToJSON(rawDocuments);
+        relatedDocuments = convertToJSON(rawDocuments);
       }
     } catch (err) {
       console.warn(

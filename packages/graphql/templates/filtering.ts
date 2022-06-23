@@ -1,12 +1,6 @@
 import { convertToGraphQL } from "./types";
 import { capitalize } from "@vulcanjs/utils";
 
-// field types that support filtering
-const supportedFieldTypes = ["String", "Int", "Float", "Boolean", "Date"];
-const getContentType = (type) =>
-  type.replace("[", "").replace("]", "").replace("!", "");
-const isSupportedFieldType = (type) => supportedFieldTypes.includes(type);
-
 /* ------------------------------------- Selector Types ------------------------------------- */
 
 /*
@@ -44,9 +38,6 @@ export const selectorUniqueInputType = (typeName) =>
   `${typeName}SelectorUniqueInput`;
 export const selectorUniqueInputTemplate = ({ typeName, fields }) =>
   `input ${selectorUniqueInputType(typeName)} {
-  _id: String
-  documentId: String # OpenCRUD backwards compatibility
-  slug: String
 ${convertToGraphQL(fields, "  ")}
 }`;
 
@@ -82,15 +73,7 @@ ${customSorts.map(
 ${fields
   .map((field) => {
     const { name, type } = field;
-    const contentType = getContentType(type);
-    if (isSupportedFieldType(contentType)) {
-      const isArrayField = type[0] === "[";
-      return `  ${name}: ${contentType}_${
-        isArrayField ? "Array_" : ""
-      }Selector`;
-    } else {
-      return "";
-    }
+    return `${name}: ${type}`;
   })
   .join("\n")}
 }`;

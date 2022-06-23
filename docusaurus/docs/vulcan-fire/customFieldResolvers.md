@@ -89,6 +89,7 @@ The main difference between field resolvers and top-level resolvers is that, if 
 
 As a default, Fire will generate [Mongo DataSources](https://github.com/GraphQLGuide/apollo-datasource-mongodb) for each model.
 
-**Be careful with ObjectId from Mongo ddocuments!** You should convert them to string ids before responding to a GraphQL request, otherwise you may end up with unexpected issues. Vulcan Fire default relation resolvers and Mongoose connector will handle the conversion for you.
+**Be careful with ObjectId from Mongo documents!** Check our [Mongo documentation](./mongo.md) for more information on how to set up
+conversion between string and ObjectId via a GraphQL scalar.
 
-In your custom resolvers, you might need to use our `convertIdAndTransformToJSON` helper exported from `@vulcanjs/crud/server`, it works for a single document or an array of documents.
+In your custom resolvers, you might need to use our `convertToJSON` helper exported from `@vulcanjs/crud/server`, it works for a single document or an array of documents.

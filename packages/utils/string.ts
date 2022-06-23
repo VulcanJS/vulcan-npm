@@ -356,4 +356,6 @@ export const isEmptyOrUndefined = (value) =>
   typeof value === "undefined" ||
   value === null ||
   value === "" ||
-  (typeof value === "object" && isEmpty(value) && !(value instanceof Date));
+  (typeof value === "object" &&
+    isEmpty(value) &&
+    !String(value.constructor).match("Object()"));

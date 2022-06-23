@@ -6,7 +6,7 @@ import { ModelMutationPermissionsOptions } from "@vulcanjs/model";
 import { deprecate } from "@vulcanjs/utils";
 import { VulcanDocument } from "@vulcanjs/schema";
 import type { DefaultMutatorName } from "../../typings";
-import { isMemberOf } from "@vulcanjs/permissions";
+import { isMemberOf, permissionCheck } from "@vulcanjs/permissions";
 import type { VulcanCrudModelServer } from "../typings";
 import type { FilterableInput } from "../../typings";
 

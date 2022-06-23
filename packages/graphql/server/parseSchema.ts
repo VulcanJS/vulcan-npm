@@ -31,6 +31,29 @@ import { withFieldPermissionCheckResolver } from "./resolvers/fieldResolver";
 import { ResolveAsDefinition } from "./typings";
 import type { VulcanGraphqlFieldSchema } from "../typings";
 
+/**
+ * Vulcan field types that support filtering
+ */
+
+/**
+ * Cleaner graphql type
+ * @param type
+ * @returns
+ */
+const getContentType = (graphqlType) =>
+  graphqlType.replace("[", "").replace("]", "").replace("!", "");
+/**
+ * Vulcan types that can be filtered
+ * (in previous versions of Vulcan, we would check the GraphQL
+ * type, but here we check the schema type => this allow handling custom graphql scalar such as ObjectId
+ * as long as they can be converted to a filterable graphql type)
+ */
+const supportedFieldTypes = [String, Number, Boolean, Date]; //["String", "Int", "Float", "Boolean", "Date"];
+const isSupportedFieldType = (
+  /** The Schema type type */
+  type
+) => supportedFieldTypes.includes(type);
+
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (
   typeName: string,
@@ -42,6 +65,8 @@ export const getNestedGraphQLType = (
   }`;
 
 const hasTypeName = (field: VulcanFieldSchema): boolean => !!field.typeName;
+const hasRelation = (field: VulcanFieldSchema): boolean => !!field.relation;
+const hasResolver = (field: VulcanFieldSchema): boolean => !!field.resolveAs;
 
 const hasPermissions = (field) =>
   field.canRead || field.canCreate || field.canUpdate;
@@ -135,6 +160,7 @@ export const parseFieldResolvers = ({
     const resolver = withFieldPermissionCheckResolver(field, relationResolver);
     // then build actual resolver object and pass it to addGraphQLResolvers
     const resolverName = relation.fieldName;
+    // { Person: { adress: hasOneResolver }}
     const resolverDefinition = {
       [typeName]: {
         [resolverName]: resolver,
@@ -235,6 +261,10 @@ interface GetPermissionFieldsInput {
   fieldName: string;
   fieldType: string;
   inputFieldType: any;
+  /**
+   * Whether the field is nested IN THE DATABASE
+   * (do not include resolved fields)
+   */
   hasNesting?: boolean;
 }
 // Parsed representation of a field
@@ -280,7 +310,7 @@ export const parseMutable = ({
   fieldName,
   fieldType,
   inputFieldType,
-  hasNesting = false,
+  hasNesting,
 }: GetPermissionFieldsInput): MutableFieldsDefinitions => {
   const fields: MutableFieldsDefinitions = {
     create: [],
@@ -295,6 +325,7 @@ export const parseMutable = ({
     : inputFieldType;
 
   if (canCreate) {
+    //console.log("canCreate", fieldName, createInputFieldType);
     fields.create.push({
       name: fieldName,
       type: createInputFieldType,
@@ -329,6 +360,15 @@ export const parseMutable = ({
   return fields;
 };
 
+const isSpecialUniqueField = (fieldName) =>
+  // database id
+  [
+    "_id",
+    // @deprecated Open CRUD backward compatibility
+    "documentId",
+    // human readable slug
+    "slug",
+  ].includes(fieldName);
 /**
  * Parse fields depending on whether they can be queried and how
  * @param param0
@@ -336,10 +376,13 @@ export const parseMutable = ({
 export const parseQueriable = ({
   field,
   fieldName,
+  /**
+   * GraphQL type
+   */
   fieldType,
   inputFieldType,
-  hasNesting = false,
-}: GetPermissionFieldsInput): QueriableFieldsDefinitions => {
+}: //hasNesting = false,
+GetPermissionFieldsInput): QueriableFieldsDefinitions => {
   const fields: QueriableFieldsDefinitions = {
     selector: [],
     selectorUnique: [],
@@ -347,37 +390,41 @@ export const parseQueriable = ({
     readable: [],
     filterable: [],
   };
-  const { canRead, canCreate, canUpdate, selectable, unique, apiOnly } = field;
-  const createInputFieldType = hasNesting
-    ? suffixType(prefixType("Create", fieldType), "DataInput")
-    : inputFieldType;
-  const updateInputFieldType = hasNesting
-    ? suffixType(prefixType("Update", fieldType), "DataInput")
-    : inputFieldType;
+  const { canRead, selectable, unique, apiOnly } = field;
 
   // if field is readable, make it filterable/orderable too
-  if (canRead) {
+  if (!!canRead) {
     fields.readable.push({
       name: fieldName,
       type: fieldType,
     });
     // we can only filter based on fields that actually exist in the db
     if (!apiOnly) {
-      fields.filterable.push({
-        name: fieldName,
-        type: fieldType,
-      });
+      const { type } = field;
+      if (isSupportedFieldType(type)) {
+        // Build the right graphql type (respecting the field typename)
+        // = typeName_Selector
+        const contentType = getContentType(fieldType);
+        const isArrayField = type[0] === "[";
+        const filterFieldType = `${contentType}_${
+          isArrayField ? "Array_" : ""
+        }Selector`;
+        fields.filterable.push({
+          name: fieldName,
+          type: filterFieldType,
+        });
+      }
     }
   }
 
-  if (selectable) {
+  if (selectable || isSpecialUniqueField(fieldName)) {
     fields.selector.push({
       name: fieldName,
       type: inputFieldType,
     });
   }
 
-  if (selectable && unique) {
+  if ((selectable && unique) || isSpecialUniqueField(fieldName)) {
     fields.selectorUnique.push({
       name: fieldName,
       type: inputFieldType,
@@ -445,15 +492,17 @@ export const parseSchema = (
       hasNestedSchema(getArrayChild(fieldName, schema)) &&
       !isIntlField(field) &&
       !isIntlDataField(field);
-    const isReferencedObject = hasTypeName(field);
+
     const arrayChild = getArrayChild(fieldName, schema);
-    const isReferencedArray = arrayChild && hasTypeName(arrayChild);
-    const hasNesting =
-      !isBlackbox(field) &&
-      (isNestedArray ||
-        isNestedObject ||
-        isReferencedObject ||
-        isReferencedArray);
+
+    //const isReferencedObject = hasTypeName(field);
+    //const isReferencedArray = arrayChild && hasTypeName(arrayChild);
+
+    const hasNesting = !isBlackbox(field) && (isNestedArray || isNestedObject); //||
+    // FIXME: why did we introduce this in the first place?
+    // This seems to generate wrong types when using a custom type like "GraphqlObjectId" instead of "String" (tested 2022/06)
+    // isReferencedObject ||
+    // isReferencedArray);
 
     // only include fields that are viewable/insertable/editable and don't contain "$" in their name
     // note: insertable/editable fields must be included in main schema in case they're returned by a mutation
@@ -525,7 +574,6 @@ export const parseSchema = (
         fieldName,
         fieldType,
         inputFieldType,
-        hasNesting,
       });
       fields.create.push(...mutableDefinitions.create);
       fields.update.push(...mutableDefinitions.update);

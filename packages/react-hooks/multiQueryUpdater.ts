@@ -1,11 +1,10 @@
 // /**
 //  * Update cached list of data after a document creation
 //  */
-import { buildMultiQuery } from "./multi";
 import { getVariablesListFromCache } from "./cacheUpdate";
 // import { getApolloClient } from "@vulcanjs/next-apollo";
 import debug from "debug";
-import { Fragment, VulcanGraphqlModel } from "@vulcanjs/graphql";
+import { multiQuery, Fragment, VulcanGraphqlModel } from "@vulcanjs/graphql";
 const debugApollo = debug("vn:apollo");
 
 interface ComputeNewDataArgs {
@@ -34,7 +33,7 @@ export const multiQueryUpdater =
   }) => {
     // update multi queries
     const { multiResolverName } = model.graphql;
-    const multiQuery = buildMultiQuery({
+    const modelMultiQuery = multiQuery({
       model,
       fragmentName,
       fragment,
@@ -69,7 +68,7 @@ export const multiQueryUpdater =
           variablesList.map(async (variables) => {
             try {
               const queryResult = cache.readQuery({
-                query: multiQuery,
+                query: modelMultiQuery,
                 variables,
               });
               const newData = await computeNewData({
@@ -81,7 +80,7 @@ export const multiQueryUpdater =
               });
               // check if the document should be included in this query, given the query filters
               if (newData) {
-                return { query: multiQuery, variables, data: newData };
+                return { query: modelMultiQuery, variables, data: newData };
               }
               return null;
             } catch (err) {
