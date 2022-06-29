@@ -1,8 +1,9 @@
-import type { NextFetchEvent, NextRequest } from "next/server";
-import { NextResponse } from "next/server";
-import { encode } from "./megaparam-demo";
+import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
-export function middleware(req: NextRequest, event: NextFetchEvent) {
+import { encode } from "~/pages/vn/examples/[M]/megaparam-demo";
+export const megaparamMatcher = "/vn/examples/:M/megaparam-demo";
+// @see https://blog.vulcanjs.org/render-anything-statically-with-next-js-and-the-megaparam-4039e66ffde
+export function megaParamMiddleware(req: NextRequest, event: NextFetchEvent) {
   // get the current params from the cookies, eg theme
   // you can also get them from headers, url, route params...
   const theme = (req.cookies["theme"] || "light") as "light" | "dark";

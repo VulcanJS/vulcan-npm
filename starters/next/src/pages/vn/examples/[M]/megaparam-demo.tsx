@@ -1,3 +1,5 @@
+// NOTE: after Next 12.2 update, the corresponding middleware now lives in
+// src/vulcan-demo/edge-middlewares/megaparamMiddleware.ts
 import { GetStaticPaths } from "next";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useRouter } from "next/dist/client/router";
