@@ -18,5 +18,5 @@ export function middleware(req: NextRequest, event: NextFetchEvent) {
   }
 }
 export const config = {
-  matchers: [debugMatcher, megaparamMatcher],
+  matchers: [debugMatcher], //, megaparamMatcher],
 };

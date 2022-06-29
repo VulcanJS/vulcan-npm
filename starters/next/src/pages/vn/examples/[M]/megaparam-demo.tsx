@@ -2,7 +2,7 @@
 // src/vulcan-demo/edge-middlewares/megaparamMiddleware.ts
 import { GetStaticPaths } from "next";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { useRouter } from "next/dist/client/router";
+// import { useRouter } from "next/router";
 
 /**
  * Run the server and open
@@ -12,7 +12,7 @@ export const MegaparamDemo = ({
   params,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { theme, company } = params;
-  const router = useRouter();
+  //const router = useRouter();
   return (
     <div
       style={{
@@ -43,6 +43,11 @@ export const MegaparamDemo = ({
         </a>
       </p>
       <form
+        action="/api/vn/examples/megaparam-form"
+        // If you use a POST method, you won't be able to redirect back to the form using a edge API handler
+        //method="POST"
+        /*
+        Old JS version
         onSubmit={(evt) => {
           evt.preventDefault();
           const theme = evt.target["theme"]?.value;
@@ -50,7 +55,7 @@ export const MegaparamDemo = ({
           (window as any).cookieStore.set("company", company);
           (window as any).cookieStore.set("theme", theme);
           router.reload();
-        }}
+        }}*/
       >
         <label htmlFor="theme">Pick a theme:</label>
         <select id="theme" name="theme" defaultValue={theme}>
