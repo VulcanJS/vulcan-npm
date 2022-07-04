@@ -40,5 +40,5 @@ export const makeApolloServer = async (models: Array<VulcanGraphqlModel>) => {
   const app = express();
   // app.set("trust proxy", true);
   server.applyMiddleware({ app, path: "/api/graphql" });
-  return server;
+  return { server, app };
 };

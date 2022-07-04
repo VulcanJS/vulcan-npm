@@ -2,9 +2,9 @@
  * Inspired by existing Vulcan Next graphql API route
  */
 // import cors from "cors";
-import mongoose from "mongoose";
-import { ObjectId } from "mongodb";
 // import { mergeSchemas } from "@graphql-tools/schema";
+import mongoose from "mongoose";
+import fetch from "cross-fetch";
 import { multiQuery, MultiVariables } from "@vulcanjs/graphql";
 
 // import mongoConnection from "~/api/middlewares/mongoConnection";
@@ -16,7 +16,8 @@ import { buildDefaultQueryResolvers } from "@vulcanjs/graphql/server";
 import { createGraphqlModelServer } from "@vulcanjs/graphql/server";
 import { createMongooseConnector } from "@vulcanjs/mongo";
 import { MongoId } from "@vulcanjs/mongo-apollo";
-import { makeApolloServer } from "./utils/server";
+import { makeApolloServer } from "../server/utils/server";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 
 // Init an in-memory Mongo server
 let mongod;
@@ -139,43 +140,38 @@ afterEach(async () => {
 });
 
 const models = [Contributor, Repository];
-test("filter by id, using Mongo ObjectId", async () => {
-  const { server } = await makeApolloServer(models);
-  const contributor = await contributorMongooseModel.create({ name: "John" });
-  expect(contributor._id).toBeInstanceOf(ObjectId);
-  const res = await server.executeOperation({
-    query: multiQuery({ model: Contributor }),
-    variables: {
-      input: {
-        filter: {
-          _id: {
-            _in: [contributor._id],
-          },
-        },
-      },
-    } as MultiVariables,
-  });
-  expect(res.data).toMatchObject({
-    contributors: { results: [{ name: "John" }] },
-  });
-});
 test("filter by regex", async () => {
-  const { server } = await makeApolloServer(models);
+  const { server, app } = await makeApolloServer(models);
   const contributor = await contributorMongooseModel.create({ name: "John" });
   const contributor2 = await contributorMongooseModel.create({ name: "Jim" });
-  const res = await server.executeOperation({
-    query: multiQuery({ model: Contributor }),
-    variables: {
-      input: {
-        filter: {
-          name: {
-            _like: "John",
+
+  const httpServer = app.listen();
+  const gqlUri = `http://localhost:${
+    (httpServer.address() as any).port
+  }/api/graphql`;
+
+  try {
+    const client = new ApolloClient({
+      link: new HttpLink({ uri: gqlUri, fetch }),
+      uri: gqlUri,
+      cache: new InMemoryCache(),
+    });
+    const res = await client.query({
+      query: multiQuery({ model: Contributor }),
+      variables: {
+        input: {
+          filter: {
+            name: {
+              _like: "John",
+            },
           },
         },
-      },
-    } as MultiVariables,
-  });
-  expect(res.data).toMatchObject({
-    contributors: { results: [{ name: "John" }] },
-  });
+      } as MultiVariables,
+    });
+    expect(res.data).toMatchObject({
+      contributors: { results: [{ name: "John" }] },
+    });
+  } finally {
+    httpServer.close();
+  }
 });
