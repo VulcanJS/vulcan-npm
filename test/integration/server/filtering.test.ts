@@ -139,7 +139,6 @@ afterEach(async () => {
 });
 
 const models = [Contributor, Repository];
-// Work in progress
 test("filter by id, using Mongo ObjectId", async () => {
   const server = await makeApolloServer(models);
   const contributor = await contributorMongooseModel.create({ name: "John" });
@@ -151,6 +150,26 @@ test("filter by id, using Mongo ObjectId", async () => {
         filter: {
           _id: {
             _in: [contributor._id],
+          },
+        },
+      },
+    } as MultiVariables,
+  });
+  expect(res.data).toMatchObject({
+    contributors: { results: [{ name: "John" }] },
+  });
+});
+test("filter by regex", async () => {
+  const server = await makeApolloServer(models);
+  const contributor = await contributorMongooseModel.create({ name: "John" });
+  const contributor2 = await contributorMongooseModel.create({ name: "Jim" });
+  const res = await server.executeOperation({
+    query: multiQuery({ model: Contributor }),
+    variables: {
+      input: {
+        filter: {
+          name: {
+            _like: "John",
           },
         },
       },
