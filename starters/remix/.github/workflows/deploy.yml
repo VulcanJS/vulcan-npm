@@ -32,6 +32,12 @@ jobs:
 
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
+        # FIXME We should remove this, as "frozen-lockfile" is the best default
+        # But it doesn't work because the generated lockfile from the monorepo
+        # is not totally up to date
+        # @see https://github.com/yarnpkg/berry/issues/1223#issuecomment-1177250693
+        with:
+          install-command: yarn --silent
 
       - name: 🔬 Lint
         run: npm run lint
@@ -61,6 +67,12 @@ jobs:
 
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
+        # FIXME We should remove this, as "frozen-lockfile" is the best default
+        # But it doesn't work because the generated lockfile from the monorepo
+        # is not totally up to date
+        # @see https://github.com/yarnpkg/berry/issues/1223#issuecomment-1177250693
+        with:
+          install-command: yarn --silent
 
       - name: 🔎 Type check
         run: npm run typecheck --if-present
@@ -90,6 +102,12 @@ jobs:
 
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
+        # FIXME We should remove this, as "frozen-lockfile" is the best default
+        # But it doesn't work because the generated lockfile from the monorepo
+        # is not totally up to date
+        # @see https://github.com/yarnpkg/berry/issues/1223#issuecomment-1177250693
+        with:
+          install-command: yarn --silent
 
       - name: ⚡ Run vitest
         run: npm run test -- --coverage
@@ -122,6 +140,12 @@ jobs:
 
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
+        # FIXME We should remove this, as "frozen-lockfile" is the best default
+        # But it doesn't work because the generated lockfile from the monorepo
+        # is not totally up to date
+        # @see https://github.com/yarnpkg/berry/issues/1223#issuecomment-1177250693
+        with:
+          install-command: yarn --silent
 
       - name: 🛠 Setup Database
         run: npx prisma migrate reset --force
