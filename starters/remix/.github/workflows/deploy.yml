@@ -83,6 +83,14 @@ jobs:
       - name: 🏄 Copy test env vars
         run: cp .env.example .env
 
+      # We can't name this file yarn.lock in the monorepo, otherwise it disables package hoisting
+      # so we must rename it during CI
+      # @see https://github.com/yarnpkg/berry/issues/1223
+      # @see https://github.com/JanVoracek/yarn-plugin-entrypoint-lockfiles
+      # @see https://github.com/VulcanJS/vulcan-npm/tree/feature/starters-lockfiles
+      - name: "Rename yarn.remix.lock"
+        run: cp yarn.vulcan-remix.lock yarn.lock
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
