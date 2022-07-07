@@ -37,9 +37,24 @@ A similar documentation exists in Vulcan Next project.
 
 **/!\ Next 12 is known to have issues with Yalc + ESM @see https://github.com/vercel/next.js/issues/35110**
 
+## Yarn.lock for the starter apps
+
+You cannot have a "yarn.lock" in Yarn workspaces, otherwise they are considered as "isolated" and you cannot
+benefit from Yarn anymore, it won't hoist your packages at the root.
+
+Yet, you might want to generate a `yarn.lock` for starters app at publication time.
+
+We solve that using this plugin: []
+
+- Install via `yarn plugin import https://raw.githubusercontent.com/JanVoracek/yarn-plugin-entrypoint-lockfiles/main/bundles/%40yarnpkg/plugin-entrypoint-lockfiles.js`
+- Run `yarn`
+- Copy the generated `yarn.remix.lock` in relevant folders
+- In your CI, rename them to `yarn.lock`. In Remix you can do that during the init step for instance.
+In Next you might require user to do this manually, or at server startup in a script.
+
 ## Common issues
 
-## No index.d.ts in dist
+### No index.d.ts in dist
 
 You may end up with a build folder like this:
 ```
@@ -54,7 +69,7 @@ You mistakenly imported local code from another package, like importing from `..
 If your import are correct and you still have this issue, this also seems to unexpectedly affect "@vulcanjs/mongo/client" (client entrypoint) as well.
 In this case, set a false webpack alias for the faulty package (see react-hooks for instance)
 
-## Package self-referencing or leaking server code
+### Package self-referencing or leaking server code
 
 If `build:types` refuses to overwrite a file, you might have wrongly imported "dist" in your code ; have a package
 that references itself ; or leak some server code in a shared package.

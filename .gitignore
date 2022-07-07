@@ -50,3 +50,7 @@ storybook-static/
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+
+# Yarn yarn-plugin-entrypoint-lockfiles
+yarn.*.lock
+!starters/*/yarn.*.lock
