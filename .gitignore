@@ -54,3 +54,8 @@ storybook-static/
 # Yarn yarn-plugin-entrypoint-lockfiles
 yarn.*.lock
 !starters/*/yarn.*.lock
+
+# Express in Vercel
+# api folder is genertaed by copying dist
+# @see https://vercel.com/guides/using-express-with-vercel#standalone-express
+starters/express/api
