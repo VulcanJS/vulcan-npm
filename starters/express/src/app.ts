@@ -1,6 +1,10 @@
 /**
  * Inspired by existing Vulcan Next graphql API route
  *
+ * DONE
+ * - Setup a GraphQL endpoint with a fake Mongo db
+ * - Demo setup with Vercel serverless deployment (not recommended)
+ *
  * TODO 2022/04 to reach beta release:
  * - show how to setup the graphql context properly
  * - show how to setup permissions via currentUser context
@@ -135,3 +139,6 @@ start();
 
 process.on("SIGINT", closeMongo);
 process.on("exit", closeMongo);
+
+// Needed for Vercel deployment
+export default app;
