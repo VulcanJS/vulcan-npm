@@ -64,6 +64,13 @@ const contextForModels = createContext(models);
 const dataSourcesForModels = createDataSources(models);
 
 const app = express();
+
+// When running on Vercel, no need to setup a public folder in Express,
+// just having a public folder at the root works
+if (!process.env.VERCEL) {
+  app.use(express.static("public"));
+}
+
 // Redirection so the home page points to graphql directly
 app.get("/", (req, res) => {
   res.redirect("/api/graphql");
