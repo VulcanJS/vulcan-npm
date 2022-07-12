@@ -14,7 +14,7 @@
     "build:tsup": "tsup-node",
     "build": "yarn run build:tsup",
     "//build:vercel": "See https://vercel.com/guides/using-express-with-vercel#standalone-express",
-    "build:vercel": "yarn run build && mkdir api && cp dist/app.js api/index.js",
+    "build:vercel": "yarn run build && mkdir -p api && cp dist/app.js api/index.js",
     "mongo": "yarn run start:mogno",
     "//start:mongo": "### Will start or create & start the image + store data locally in .mongo folder + remove the container when stopped.",
     "start:mongo": "docker run --rm -p 27017:27017 -v \"$(pwd)/.mongo:/data/db\" --label vulcan-mongodb mongo:4.0.4 ",
