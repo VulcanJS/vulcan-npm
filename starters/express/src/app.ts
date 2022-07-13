@@ -11,6 +11,7 @@
  * - easy swap of the mongo database
  * - automatically add _id, userId, timestamps in models
  * - get rid of escape-string-regex issue
+ * - Support caching when connecting to Mongo (to allow serverless approach)
  */
 import mongoose from "mongoose";
 import express, { Request } from "express";
