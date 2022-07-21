@@ -28,7 +28,9 @@
     "test:e2e:run": "cross-env PORT=8811 start-server-and-test start:mocks http://localhost:8811 \"npx cypress run\"",
     "typecheck": "tsc -b && tsc -b cypress",
     "//validate-run-p": "run-p \"test -- --run\" lint typecheck test:e2e:run",
-    "validate": "concurrently \"npm:test -- --run\" npm:lint npm:typecheck npm:test:e2e:run"
+    "validate": "concurrently \"npm:test -- --run\" npm:lint npm:typecheck npm:test:e2e:run",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "prettier": {},
   "eslintIgnore": [
@@ -52,9 +54,19 @@
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.9",
     "@faker-js/faker": "^7.3.0",
+    "@mdx-js/react": "^1.6.22",
     "@remix-run/dev": "*",
     "@remix-run/eslint-config": "*",
+    "@storybook/addon-actions": "^6.5.9",
+    "@storybook/addon-docs": "^6.5.9",
+    "@storybook/addon-essentials": "^6.5.9",
+    "@storybook/addon-interactions": "^6.5.9",
+    "@storybook/addon-links": "^6.5.9",
+    "@storybook/builder-vite": "^0.2.0",
+    "@storybook/react": "^6.5.9",
+    "@storybook/testing-library": "^0.0.13",
     "@testing-library/cypress": "^8.0.3",
     "@testing-library/dom": "^8.16.0",
     "@testing-library/jest-dom": "^5.16.4",
@@ -67,6 +79,7 @@
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.0.0",
     "autoprefixer": "^10.4.7",
+    "babel-loader": "^8.2.5",
     "binode": "^1.0.5",
     "c8": "^7.11.3",
     "concurrently": "^7.1.0",
@@ -75,6 +88,7 @@
     "cypress": "^10.3.0",
     "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-storybook": "^0.6.1",
     "happy-dom": "^6.0.3",
     "msw": "^0.44.1",
     "npm-run-all": "^4.1.5",
