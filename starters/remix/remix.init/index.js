@@ -119,10 +119,10 @@ async function main({ rootDirectory, packageManager, isTypeScript }) {
       path.join(rootDirectory, "remix.init", "gitignore"),
       path.join(rootDirectory, ".gitignore")
     ),
-    fs.rm(path.join(rootDirectory, ".github/ISSUE_TEMPLATE"), {
+    /*fs.rm(path.join(rootDirectory, ".github/ISSUE_TEMPLATE"), {
       recursive: true,
     }),
-    fs.rm(path.join(rootDirectory, ".github/PULL_REQUEST_TEMPLATE.md")),
+    fs.rm(path.join(rootDirectory, ".github/PULL_REQUEST_TEMPLATE.md")),*/
   ]);
 
   execSync(`npm run setup`, { stdio: "inherit", cwd: rootDirectory });
