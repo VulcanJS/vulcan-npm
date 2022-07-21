@@ -81,10 +81,9 @@ async function main({ rootDirectory, packageManager, isTypeScript }) {
     saveDeploy = fs.writeFile(DEPLOY_YAML_PATH, YAML.stringify(deployConfig));
   }
 
-  const newPackageJson = 
-isVulcanNpmRepo
+  const newPackageJson = isVulcanNpmRepo
     ? // Leave it alone in dev mode
-      packageJson
+      JSON.stringify(packageJson)
     : // Change the app name to a random name =>
       // except if we are in the Vulcan Monorepo during dev
       JSON.stringify(
