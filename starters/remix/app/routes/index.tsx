@@ -2,29 +2,32 @@ import { Link } from "@remix-run/react";
 
 import { useOptionalUser } from "~/utils";
 
+const githubButtons = (
+  <div className="mx-auto flex max-w-7xl justify-center py-2 text-center sm:px-6 lg:px-8">
+    <iframe
+      src="https://ghbtns.com/github-btn.html?user=VulcanJS&repo=eurodance-stack&type=star&count=true&size=large"
+      frameBorder="0"
+      scrolling="0"
+      width="170"
+      height="30"
+      title="GitHub"
+    ></iframe>
+    <iframe
+      src="https://ghbtns.com/github-btn.html?user=VulcanJS&repo=eurodance-stack&type=fork&count=true&size=large"
+      frameBorder="0"
+      scrolling="0"
+      width="170"
+      height="30"
+      title="GitHub"
+    ></iframe>
+  </div>
+);
 export default function Index() {
   const user = useOptionalUser();
   return (
     <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
       <div className="relative sm:pb-16 sm:pt-8">
-        <div className="mx-auto flex max-w-7xl justify-center py-2 text-center sm:px-6 lg:px-8">
-          <iframe
-            src="https://ghbtns.com/github-btn.html?user=VulcanJS&repo=eurodance-stack&type=star&count=true&size=large"
-            frameBorder="0"
-            scrolling="0"
-            width="170"
-            height="30"
-            title="GitHub"
-          ></iframe>
-          <iframe
-            src="https://ghbtns.com/github-btn.html?user=VulcanJS&repo=eurodance-stack&type=fork&count=true&size=large"
-            frameBorder="0"
-            scrolling="0"
-            width="170"
-            height="30"
-            title="GitHub"
-          ></iframe>
-        </div>
+        {githubButtons}
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
             <div className="absolute inset-0">
@@ -33,11 +36,14 @@ export default function Index() {
                 src="https://user-images.githubusercontent.com/1500684/157774694-99820c51-8165-4908-a031-34fc371ac0d6.jpg"
                 alt="Sonic Youth On Stage"
               />*/}
-              <div className="absolute inset-0 bg-[color:#7a273c] mix-blend-multiply" />
+              <div className="absolute inset-0 bg-[color:#7a273c] bg-[url('/img/eurodance-bg-no-text.jpg')] bg-cover bg-center bg-no-repeat mix-blend-multiply" />
             </div>
-            <div className="lg:pb-18 relative px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pt-32">
+            <div className="lg:pb-18 relative bg-[rgba(0,0,0,0.3)] px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pt-32">
               <h1 className="text-center text-6xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
-                <span className="block uppercase text-yellow-500 drop-shadow-md">
+                <span
+                  style={{ "text-shadow": "2px 2px 5px #333333" }}
+                  className="block uppercase text-yellow-500 drop-shadow-md"
+                >
                   Vulcan Eurodance Stack
                   <br />
                   🇪🇺 🐸 🛵
