@@ -1,4 +1,4 @@
-import faker from "@faker-js/faker";
+import { faker } from "@faker-js/faker";
 
 describe("smoke tests", () => {
   afterEach(() => {
@@ -10,6 +10,7 @@ describe("smoke tests", () => {
       email: `${faker.internet.userName()}@example.com`,
       password: faker.internet.password(),
     };
+
     cy.then(() => ({ email: loginForm.email })).as("user");
 
     cy.visit("/");
