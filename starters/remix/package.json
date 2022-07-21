@@ -44,10 +44,10 @@
     "@remix-run/vercel": "^1.4.3",
     "@vulcanjs/remix-graphql": "0.6.6-alpha.2",
     "bcryptjs": "^2.4.3",
-    "isbot": "^3.5.0",
     "graphql": "^16.4.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "isbot": "^3.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
@@ -68,8 +68,8 @@
     "autoprefixer": "^10.4.7",
     "binode": "^1.0.5",
     "c8": "^7.11.3",
-    "cookie": "^0.5.0",
     "concurrently": "^7.1.0",
+    "cookie": "^0.5.0",
     "cross-env": "^7.0.3",
     "cypress": "^10.3.0",
     "eslint": "^8.19.0",
