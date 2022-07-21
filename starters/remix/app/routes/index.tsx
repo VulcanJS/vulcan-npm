@@ -1,27 +1,7 @@
 import { Link } from "@remix-run/react";
+import { GithubButtons } from "~/components/GithubButtons";
 
 import { useOptionalUser } from "~/utils";
-
-const githubButtons = (
-  <section className="mx-auto flex max-w-7xl justify-center py-2 text-center sm:px-6 lg:px-8">
-    <iframe
-      src="https://ghbtns.com/github-btn.html?user=VulcanJS&repo=eurodance-stack&type=star&count=true&size=large"
-      frameBorder="0"
-      scrolling="0"
-      width="170"
-      height="30"
-      title="GitHub"
-    ></iframe>
-    <iframe
-      src="https://ghbtns.com/github-btn.html?user=VulcanJS&repo=eurodance-stack&type=fork&count=true&size=large"
-      frameBorder="0"
-      scrolling="0"
-      width="170"
-      height="30"
-      title="GitHub"
-    ></iframe>
-  </section>
-);
 
 const graphqlSection = (
   <section>
@@ -99,7 +79,7 @@ export default function Index() {
   return (
     <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
       <div className="relative sm:pb-16 sm:pt-8">
-        {githubButtons}
+        <GithubButtons />
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
             <div className="absolute inset-0">
