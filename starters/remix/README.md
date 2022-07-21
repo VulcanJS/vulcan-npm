@@ -45,6 +45,17 @@ For historical reasons Vulcan prefers Vercel, but you can deploy your Remix app 
 
 Eurodance supports being installed as a CodeSandbox Project (beta feature).
 
+**Storybook**
+
+Basic setup with Vite, but also [@storybook/testing-react](https://storybook.js.org/addons/@storybook/testing-react). This brilliant addon let's you import your stories in unit tests.
+
+**Embrace Story Driven Development**:
+
+1. Develop components visually in isolation with Storybook
+2. Share with your designers and team mates to validate the behaviour
+3. Import your stories in a Vitest unit test
+4. Automate testing and prevent regression with React Testing Library
+
 ### Incoming
 
 **MongoDB supports (via Prisma)**
