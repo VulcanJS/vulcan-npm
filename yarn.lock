@@ -11744,14 +11744,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/remix-graphql@npm:0.6.6-alpha.2":
-  version: 0.6.6-alpha.2
-  resolution: "@vulcanjs/remix-graphql@npm:0.6.6-alpha.2"
+"@vulcanjs/remix-graphql@npm:latest":
+  version: 0.6.8-alpha.4
+  resolution: "@vulcanjs/remix-graphql@npm:0.6.8-alpha.4"
   dependencies:
     graphql-helix: ^1.11.0
   peerDependencies:
     graphql: ^16.2.0
-  checksum: 6717edec209c087e5b7464573c647167995cb6f258f85f3c022a5c32b32a7693830bd237d7e7c6fabb1a6cf88db10d84033dec68eb1222a5084c094255bb70ae
+  checksum: 51c4dceacd4633ecb14db61a57630505e2cb8bd1b515973fe0ae486043528028483538ff92f55f5b8f2c88c7afab059507a272ee1722d93c098ce462a8cf90be
   languageName: node
   linkType: hard
 
@@ -38287,7 +38287,7 @@ __metadata:
     "@types/react": ^18.0.15
     "@types/react-dom": ^18.0.6
     "@vitejs/plugin-react": ^2.0.0
-    "@vulcanjs/remix-graphql": 0.6.6-alpha.2
+    "@vulcanjs/remix-graphql": latest
     autoprefixer: ^10.4.7
     bcryptjs: ^2.4.3
     binode: ^1.0.5
