@@ -37687,6 +37687,8 @@ __metadata:
       optional: true
     eslint-plugin-cypress:
       optional: true
+    eslint-plugin-storybook:
+      optional: true
     jest:
       optional: true
     jest-transformer-mdx:
