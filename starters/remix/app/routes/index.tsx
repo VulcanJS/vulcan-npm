@@ -3,7 +3,7 @@ import { Link } from "@remix-run/react";
 import { useOptionalUser } from "~/utils";
 
 const githubButtons = (
-  <div className="mx-auto flex max-w-7xl justify-center py-2 text-center sm:px-6 lg:px-8">
+  <section className="mx-auto flex max-w-7xl justify-center py-2 text-center sm:px-6 lg:px-8">
     <iframe
       src="https://ghbtns.com/github-btn.html?user=VulcanJS&repo=eurodance-stack&type=star&count=true&size=large"
       frameBorder="0"
@@ -20,7 +20,79 @@ const githubButtons = (
       height="30"
       title="GitHub"
     ></iframe>
-  </div>
+  </section>
+);
+
+const graphqlSection = (
+  <section>
+    <div className="m-8 border p-4">
+      <h2 className="text-center text-3xl">GraphQL with a remote API</h2>
+      <div className="py-8">
+        <p>
+          The Eurodance stack demoes patterns to connect your Remix app with
+          your prefered GraphQL API.
+        </p>
+        <p>
+          <strong>There is no client-side GraphQL involved.</strong>{" "}
+        </p>
+        <p>
+          Remix let you define queries and mutations in a server-side, in a
+          loader : you can consume GraphQL APIs as usual, but you don't need to
+          bloat your client bundle with a massive GraphQL client!
+        </p>
+      </div>
+      <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
+        <Link
+          className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
+          to="/distant-api/query"
+        >
+          Query a distant API
+        </Link>
+        <Link
+          className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
+          to="/distant-api/mutation"
+        >
+          Send mutations to a distant API
+        </Link>
+      </div>
+      {/*<div>
+              <p>
+                The query example connects to the{" "}
+                <a
+                  href="https://rickandmortyapi.com/"
+                  target="_blank"
+                  rel="norefferer noreferrer"
+                >
+                  Rick and Morty API
+                </a>
+              </p>
+              <p>
+                The mutation example connects to the{" "}
+                <a href="https://api.spacex.land/graphql/">SpaceX API</a>.
+              </p>
+            </div>*/}
+    </div>
+  </section>
+);
+const contributeSection = (
+  <section>
+    <div className="m-8 border p-4 text-center">
+      <div className="my-2">
+        <a href="https://github.com/VulcanJS/eurodance-stack">
+          <button className="border px-4 py-3 text-3xl text-yellow-700 shadow-sm hover:bg-yellow-50">
+            Click to use this stack for your own app
+          </button>
+        </a>
+      </div>
+      <div>
+        <a href="https://github.com/VulcanJS/vulcan-npm/issues/117">
+          <button className="border px-4 py-3 text-xl text-yellow-700 shadow-sm hover:bg-yellow-50">
+            Contribute
+          </button>
+        </a>
+      </div>
+    </div>
+  </section>
 );
 export default function Index() {
   const user = useOptionalUser();
@@ -41,6 +113,7 @@ export default function Index() {
             <div className="lg:pb-18 relative bg-[rgba(0,0,0,0.3)] px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pt-32">
               <h1 className="text-center text-6xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
                 <span
+                  // @ts-ignore
                   style={{ "text-shadow": "2px 2px 5px #333333" }}
                   className="block uppercase text-yellow-500 drop-shadow-md"
                 >
@@ -88,43 +161,8 @@ export default function Index() {
             </div>
           </div>
         </div>
-        <div>
-          <div className="m-8 border p-4">
-            <h2 className="text-center text-3xl">GraphQL with a remote API</h2>
-            <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
-              <Link
-                className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-                to="/distant-api/query"
-              >
-                Query a distant API
-              </Link>
-              <Link
-                className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-                to="/distant-api/mutation"
-              >
-                Send mutations to a distant API
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className="m-8 border p-4 text-center">
-            <div className="my-2">
-              <a href="https://github.com/VulcanJS/eurodance-stack">
-                <button className="border px-4 py-3 text-3xl text-yellow-700 shadow-sm hover:bg-yellow-50">
-                  Click to use this stack for your own app
-                </button>
-              </a>
-            </div>
-            <div>
-              <a href="https://github.com/VulcanJS/vulcan-npm/issues/117">
-                <button className="border px-4 py-3 text-xl text-yellow-700 shadow-sm hover:bg-yellow-50">
-                  Contribute
-                </button>
-              </a>
-            </div>
-          </div>
-        </div>
+        {graphqlSection}
+        {contributeSection}
 
         <div className="mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8">
           <div className="mt-6 flex flex-wrap justify-center gap-8">
