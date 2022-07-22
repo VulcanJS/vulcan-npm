@@ -1,0 +1,7 @@
+# Prevent annoying unrealistic peer deps issues with new version of NPM
+# Now NPM will fail install if any peer dependency is not well configured,
+# this option uses the previous behaviour (warning only, no failure)
+# The best solution is always to update the underlying lib,
+# if not possible to add an NPM resolution/Yarn override, that's what we do for mdx+React 18
+# But this option is needed when none of this work/there are too many failing peer dependencies
+legacy-peer-deps=true

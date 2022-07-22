@@ -115,9 +115,15 @@ async function main({ rootDirectory, packageManager, isTypeScript }) {
     fs.writeFile(PACKAGE_JSON_PATH, newPackageJson),
     fs.writeFile(DOCKERFILE_PATH, newDockerfile),
     saveDeploy,
+    // generate .gitignore
     fs.copyFile(
       path.join(rootDirectory, "remix.init", "gitignore"),
       path.join(rootDirectory, ".gitignore")
+    ),
+    // generate .npmrc
+    fs.copyFile(
+      path.join(rootDirectory, "remix.init", "npmrc"),
+      path.join(rootDirectory, ".npmrc")
     ),
     /*fs.rm(path.join(rootDirectory, ".github/ISSUE_TEMPLATE"), {
       recursive: true,
