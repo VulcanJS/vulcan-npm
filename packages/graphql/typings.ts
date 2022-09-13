@@ -40,8 +40,30 @@ export type RelationDefinition =
       model: VulcanGraphqlModel;
     });
 
+export type ReversedRelationDefinition = {
+  model: VulcanGraphqlModel;
+  kind: "hasOne" | "hasMany";
+  /**
+   * Field name as it will appear in the GraphQL schema of the foreign model
+   */
+  foreignFieldName: String;
+};
 export interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
-  relation?: RelationDefinition; // define a relation to another model
+  /**
+   * Direct relation to another model, based on the field value
+   * Usually "fooId" in Bar will point to a "Foo" ; fooIds to a list of "Foos"
+   */
+  relation?: RelationDefinition;
+  /**
+   * A reversed relation is when "Bar" extends the schema of "Foo",
+   * so that "Foo" can resolve a "Bar"
+   *
+   * This is useful if "Bar" is an extension to "Foo", eg a new field
+   * that is only available for administration purpose but not part of the core model
+   *
+   * See Devographics "NormalizedResponse" (admin-only) vs "Response" (core + admin)
+   */
+  reversedRelation?: ReversedRelationDefinition;
   typeName?: string; // the GraphQL type to resolve the field with
 
   // TODO: not sure about the arguments in function mode
