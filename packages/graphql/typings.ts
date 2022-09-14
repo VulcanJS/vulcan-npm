@@ -40,8 +40,22 @@ export type RelationDefinition =
       model: VulcanGraphqlModel;
     });
 
+interface ReversedRelationDefinition {
+  model: VulcanGraphqlModel;
+  kind: "belongsToOne" | "belongsToMany";
+  /** Be cautious that field should not exist in the initial model */
+  foreignFieldName: string;
+}
 export interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
   relation?: RelationDefinition; // define a relation to another model
+  /**
+   * Adds a relation field on the foreign model
+   * => useful to extend a model based on another,
+   * eg add admin only field to a core model
+   *
+   * @see Devographics survey form Responses and NormalizedResponses relation
+   */
+  reversedRelation?: ReversedRelationDefinition;
   typeName?: string; // the GraphQL type to resolve the field with
 
   // TODO: not sure about the arguments in function mode
