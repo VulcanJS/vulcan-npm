@@ -1,6 +1,5 @@
 import { createGraphqlModelServer } from "../../../extendModel.server";
 import { normalizeGraphQLSchema } from "../../../testing";
-import { parseAllModels } from "../../parseAllModels";
 import { parseModel } from "../../parseModel";
 import { VulcanGraphqlSchemaServer } from "../../typings";
 
@@ -136,7 +135,7 @@ describe("belongsToOne", () => {
         canCreate: ["anyone"],
       },
     });
-    const res = parseAllModels([FooModel, BarModel]);
+    const res = parseModel(BarModel);
     expect(res.typeDefs).toBeDefined();
     // debug
     console.log(res.typeDefs);
@@ -146,8 +145,9 @@ describe("belongsToOne", () => {
     expect(normalizedSchema).toMatch(
       "type Bar { bar: String fooId: String foo: Foo }"
     );
-    expect(normalizedSchema).toMatch(
-      "type Foo { _id: String foo: String bar: Bar }"
-    );
+    expect(normalizedSchema).toMatch("extend type Foo { bar: Bar }");
+    //expect(normalizedSchema).toMatch(
+    //  "type Foo { _id: String foo: String bar: Bar }"
+    //);
   });
 });
