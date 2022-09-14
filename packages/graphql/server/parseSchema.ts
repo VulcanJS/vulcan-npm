@@ -22,7 +22,11 @@ import { capitalize } from "@vulcanjs/utils";
 import { AnyResolverMap, ResolverMap } from "./typings";
 // import { buildResolveAsResolver } from "./resolvers/resolveAsResolver";
 import { VulcanGraphqlFieldSchemaServer } from "./typings";
-import { parseFieldResolvers, ResolveAsField } from "./parseField";
+import {
+  parseFieldResolvers,
+  parseReversedRelation,
+  ResolveAsField,
+} from "./parseField";
 
 /**
  * Vulcan field types that support filtering
@@ -282,6 +286,10 @@ export interface ParseSchemaOutput {
   fields: GraphqlFieldsDefinitions;
   nestedFieldsList: Array<Partial<NestedFieldsOutput>>;
   resolvers: Array<ResolverMap>;
+  schemaExtensions: Array<{
+    typeDefs: string;
+    resolvers: AnyResolverMap;
+  }>;
 }
 // for a given schema, return main type fields, selector fields,
 // unique selector fields, sort fields, creatable fields, and updatable fields
@@ -290,7 +298,9 @@ export const parseSchema = (
   typeName: string
 ): ParseSchemaOutput => {
   if (!schema) throw new Error(`No schema for typeName ${typeName}`);
-  // result fields
+  /**
+   * Results of parsing all fields of the schema
+   */
   const fields: GraphqlFieldsDefinitions = {
     mainType: [],
     selector: [],
@@ -304,6 +314,14 @@ export const parseSchema = (
   };
   const nestedFieldsList: Array<Partial<NestedFieldsOutput>> = [];
   const resolvers: Array<AnyResolverMap> = [];
+  /**
+   * "reversedRelations" will generate schema extensions directly
+   * with typedefs and resolvers
+   */
+  const schemaExtensions: Array<{
+    typeDefs: string;
+    resolvers: AnyResolverMap;
+  }> = [];
 
   Object.keys(schema).forEach((fieldName) => {
     const field: VulcanGraphqlFieldSchemaServer = schema[fieldName]; // TODO: remove the need to call SimpleSchema
@@ -379,6 +397,9 @@ export const parseSchema = (
       }
 
       if (field.reversedRelation) {
+        schemaExtensions.push(
+          parseReversedRelation({ field, typeName, fieldName })
+        );
       }
 
       // Support for enums from allowedValues has been removed (counter-productive)
@@ -458,6 +479,7 @@ export const parseSchema = (
     fields,
     nestedFieldsList,
     resolvers,
+    schemaExtensions,
   };
 };
 

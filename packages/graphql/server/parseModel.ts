@@ -234,13 +234,6 @@ export const parseModel = (
 ): ParseModelOutput => {
   const typeDefs: Array<string> = [];
 
-  // const {
-  //   collectionName,
-  //   description,
-  //   interfaces = [],
-  //   resolvers,
-  //   mutations,
-  // } = getCollectionInfos(collection);
   const { schema, name: modelName } = model;
   const { typeName, multiTypeName } = model.graphql;
 
@@ -248,10 +241,10 @@ export const parseModel = (
     nestedFieldsList,
     fields,
     resolvers: schemaResolvers,
+    schemaExtensions,
   } = parseSchema(schema, typeName);
 
   const { mainType } = fields;
-
   if (!mainType.length) {
     // eslint-disable-next-line no-console
     console.warn(
@@ -259,6 +252,8 @@ export const parseModel = (
     );
     return { typeDefs: "" };
   }
+
+  // typedefs
   typeDefs.push(
     ...generateTypeDefs({
       model,
@@ -281,6 +276,12 @@ export const parseModel = (
         })
       );
     }
+  }
+  // extending other models
+  if (schemaExtensions.length) {
+    schemaExtensions.forEach((schemaExtension) => {
+      typeDefs.push(schemaExtension.typeDefs);
+    });
   }
 
   // resolvers

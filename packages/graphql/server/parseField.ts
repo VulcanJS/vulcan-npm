@@ -3,6 +3,7 @@ import {
   ResolveAsDefinition,
   QueryResolverDefinitions,
   AnyResolverMap,
+  VulcanGraphqlFieldSchemaServer,
 } from "./typings";
 // import { buildResolveAsResolver } from "./resolvers/resolveAsResolver";
 import * as relations from "./resolvers/relationResolvers";
@@ -168,4 +169,45 @@ export const parseFieldResolvers = ({
   return { fields, resolvers };
 };
 
-export const parseReversedRelation = () => {};
+export const parseReversedRelation = ({
+  field,
+  fieldName,
+  typeName,
+}: {
+  field: VulcanGraphqlFieldSchemaServer;
+  /** Fieldname of the CURRENT model */
+  fieldName: string;
+  /** TypeName of the CURRENT model */
+  typeName: string;
+}) => {
+  if (!field.reversedRelation)
+    throw new Error(
+      `Tried to parse a field with no reversed relation: ${field.typeName}`
+    );
+  const { reversedRelation } = field;
+  const { model, foreignFieldName } = reversedRelation;
+  // TODO: support "belongsToMany"
+  // currently only work for "belongsToOne"
+  // Typename of the EXTENDED model */
+  const foreignTypeName = model.graphql.typeName;
+  const resolveBelongsToOne = () => {
+    // find one Bar whose fooId is equal to current Foo id
+    // find one "typeName" whose "fieldName" is equal to "foreignTypeName"._id
+    throw new Error("belongsToOne resolver not yet implemented");
+  };
+  const resolvers = {
+    [foreignTypeName]: {
+      [foreignFieldName]: resolveBelongsToOne,
+    },
+  };
+  // TODO: centralize with other templates
+  const typeDefs = `
+  extend type ${foreignTypeName} {
+    ${foreignFieldName}: ${typeName}
+  }
+  `;
+  return {
+    typeDefs,
+    resolvers,
+  };
+};
