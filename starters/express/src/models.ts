@@ -123,6 +123,13 @@ export const Repository = createGraphqlModelServer({
         kind: "hasOne",
         model: Contributor,
       },
+      // will add a "repository" field to the contributor type
+      // (without having to extend the contributor model explicitely)
+      reversedRelation: {
+        model: Contributor,
+        kind: "belongsToOne",
+        foreignFieldName: "contributor",
+      },
       canRead: ["guests", "anyone"],
       canCreate: ["guests", "anyone"],
       canUpdate: ["guests", "anyone"],

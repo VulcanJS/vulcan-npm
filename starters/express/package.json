@@ -36,7 +36,7 @@
     "apollo-server": "3.9",
     "apollo-server-express": "3.9",
     "express": "^4.17.3",
-    "mongodb-memory-server": "^8.4.0",
+    "mongodb-memory-server": "^8.9.1",
     "mongoose": "^6.2.5"
   }
 }

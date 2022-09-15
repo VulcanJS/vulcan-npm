@@ -3557,7 +3557,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb-memory-server@npm:^8.4.0":
+"mongodb-memory-server@npm:8.5.1, mongodb-memory-server@npm:^8.4.0":
   version: 8.5.1
   resolution: "mongodb-memory-server@npm:8.5.1"
   dependencies:
@@ -5117,7 +5117,7 @@ __metadata:
     apollo-server: 3.9
     apollo-server-express: 3.9
     express: ^4.17.3
-    mongodb-memory-server: ^8.4.0
+    mongodb-memory-server: 8.5.1
     mongoose: ^6.2.5
     nodemon: ^2.0.15
     tsup: ^6.0.1

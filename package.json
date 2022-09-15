@@ -83,7 +83,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "graphql-tools": "^8.2.0",
-    "mongodb-memory-server": "^6.9.2",
+    "mongodb-memory-server": "^8.9.1",
     "msw": "^0.35.0",
     "msw-storybook-addon": "^1.6.3",
     "typedoc": "^0.21.4",
