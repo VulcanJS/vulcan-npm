@@ -86,6 +86,7 @@
     "mongodb-memory-server": "^8.9.1",
     "msw": "^0.35.0",
     "msw-storybook-addon": "^1.6.3",
+    "serve": "^14.0.1",
     "typedoc": "^0.21.4",
     "zx": "^6.0.7"
   },
