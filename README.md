@@ -78,6 +78,14 @@ Now `@vulcanjs/xxx` will be available in your own application.
 To use a testing database on windows, you could encounter an unexpected issue ; a solution is to download Visual C++ redistribuable.
 See https://github.com/nodkz/mongodb-memory-server/issues/475
 
+## Ubuntu updates
+
+- Mongo doesn't support Ubuntu (today 09/2022), see https://www.mongodb.com/community/forums/t/installing-mongodb-over-ubuntu-22-04/159931/43
+This leads to issue when running mongodb-server-inmemory for development.
+
+Best solution is to use a dockerized Mongo instead or stick to Ubuntu 20.
+
+
 ## Resources
 
 - [Babel monorepo](https://github.com/babel/babel), a great example of Lerna project
