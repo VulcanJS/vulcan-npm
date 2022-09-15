@@ -14,11 +14,11 @@ import {
 
 import { computeQueryVariables } from "./variables";
 import {
-  OperationVariables,
   useQuery,
   QueryResult,
   QueryHookOptions,
-} from "@apollo/client";
+} from "@apollo/client/react/index.js";
+import type { OperationVariables } from "@apollo/client/core/index.js";
 import gql from "graphql-tag";
 
 const defaultInput = {

@@ -26,7 +26,8 @@
 
 // */
 
-import { useMutation, MutationResult, FetchResult } from "@apollo/client";
+import { useMutation, MutationResult } from "@apollo/client/react/index.js";
+import type { FetchResult } from "@apollo/client/core/index.js";
 import gql from "graphql-tag";
 
 import { filterFunction } from "@vulcanjs/mongo/client";

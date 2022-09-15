@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react/index.js";
 import gql from "graphql-tag";
 import get from "lodash/get.js";
 

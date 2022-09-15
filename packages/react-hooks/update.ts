@@ -27,7 +27,8 @@
 
 // */
 
-import { useMutation, MutationResult, FetchResult } from "@apollo/client";
+import { useMutation, MutationResult } from "@apollo/client/react/index.js";
+import { FetchResult } from "@apollo/client/core/index.js";
 import gql from "graphql-tag";
 
 import {

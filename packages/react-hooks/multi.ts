@@ -11,7 +11,11 @@ Differences with Vulcan Meteor:
 */
 
 import { DocumentNode } from "graphql";
-import { useQuery, QueryResult, QueryHookOptions } from "@apollo/client";
+import {
+  useQuery,
+  QueryResult,
+  QueryHookOptions,
+} from "@apollo/client/react/index.js";
 import { useState } from "react";
 import {
   VulcanGraphqlModel,

@@ -1,4 +1,4 @@
-import { MutationHookOptions } from "@apollo/client";
+import type { MutationHookOptions } from "@apollo/client/react/index.js";
 import { Fragment, VulcanGraphqlModel } from "@vulcanjs/graphql";
 
 export interface VulcanMutationHookOptions<

@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "postinstall": "node ./scripts/fix-apollo.js && ./scripts/copy-yarn-lock.sh",
+    "postinstall": "./scripts/copy-yarn-lock.sh",
     "prebuild": "yarn run clean:build",
     "build": "turbo run build build:types",
     "//build:pkg": "# Builds only packages, useful when running starters in dev mode",

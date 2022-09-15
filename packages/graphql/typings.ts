@@ -1,5 +1,5 @@
 import { VulcanModel } from "@vulcanjs/model";
-import { OperationVariables } from "@apollo/client";
+import type { OperationVariables } from "@apollo/client/core/index.js";
 import { VulcanFieldSchema, VulcanSchema } from "@vulcanjs/schema";
 import type { FilterableInput /*, VulcanCrudModel*/ } from "@vulcanjs/crud";
 

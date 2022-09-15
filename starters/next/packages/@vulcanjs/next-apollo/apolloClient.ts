@@ -81,9 +81,9 @@ export function initializeApollo(
 }
 
 export function useApollo(initialState, options: CreateApolloClientOptions) {
-  const store = useMemo(() => initializeApollo(initialState, options), [
-    initialState,
-    options,
-  ]);
+  const store = useMemo(
+    () => initializeApollo(initialState, options),
+    [initialState, options]
+  );
   return store;
 }
