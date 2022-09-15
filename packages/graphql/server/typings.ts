@@ -77,11 +77,11 @@ export interface VulcanGraphqlModelServer //VulcanModel<VulcanGraphqlSchemaServe
 /**
  * @see https://graphql.org/learn/execution/#root-fields-resolvers
  */
-export type QueryResolver = (
+export type QueryResolver<TDocument = any> = (
   /**
    * The full document for your field resolver (unused for full document resolver)
    */
-  root: any,
+  root: TDocument,
   /** The variables of your resolverThe arguments provided to the field in the GraphQL query.
    * @example foo(var: string) FooResult
    * will give
@@ -124,6 +124,7 @@ export interface ModelResolverMap {
   Query?: QueryResolverMap;
   Mutation?: MutationResolverMap;
   // need to make ts happy, as Apollo is using an indexed type for resolvers
+  // useful for instance to extend types
   [other: string]: any;
 }
 export interface AnyResolverMap {

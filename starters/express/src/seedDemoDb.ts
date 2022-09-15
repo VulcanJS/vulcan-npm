@@ -16,14 +16,14 @@ export const seedDemoDb = async () => {
   const contributor = await contributorMongooseModel.create({
     name: "John Doe",
   });
-  console.log("Done seeding db with 1 contributor");
+  console.log("Done seeding db with 1 contributor", contributor._id);
   const repoMongooseModel = mongoose.models[Repository.name];
   await repoMongooseModel.deleteMany({});
-  await repoMongooseModel.create({
+  const repository = await repoMongooseModel.create({
     url: "https://github.com/VulcanJS/vulcan-npm",
     contributorId: contributor._id,
   });
-  console.log("Done seeding db with 1 repository");
+  console.log("Done seeding db with 1 repository", repository);
 };
 
 /**

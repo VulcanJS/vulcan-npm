@@ -26,7 +26,9 @@ import {
   parseFieldResolvers,
   parseReversedRelation,
   ResolveAsField,
+  GraphqlSchemaExtension,
 } from "./parseField";
+import { VulcanGraphqlModel } from "../typings";
 
 /**
  * Vulcan field types that support filtering
@@ -288,14 +290,20 @@ export interface ParseSchemaOutput {
   resolvers: Array<ResolverMap>;
   schemaExtensions: Array<{
     typeDefs: string;
-    resolvers: AnyResolverMap;
+    resolverMap: AnyResolverMap;
   }>;
 }
+
 // for a given schema, return main type fields, selector fields,
 // unique selector fields, sort fields, creatable fields, and updatable fields
 export const parseSchema = (
   schema: VulcanSchema,
-  typeName: string
+  typeName: string,
+  /**
+   * At this point needed only for reverse relation resolver,
+   * that must be triggered on the current model
+   */
+  currentModel?: VulcanGraphqlModel
 ): ParseSchemaOutput => {
   if (!schema) throw new Error(`No schema for typeName ${typeName}`);
   /**
@@ -318,10 +326,7 @@ export const parseSchema = (
    * "reversedRelations" will generate schema extensions directly
    * with typedefs and resolvers
    */
-  const schemaExtensions: Array<{
-    typeDefs: string;
-    resolvers: AnyResolverMap;
-  }> = [];
+  const schemaExtensions: Array<GraphqlSchemaExtension> = [];
 
   Object.keys(schema).forEach((fieldName) => {
     const field: VulcanGraphqlFieldSchemaServer = schema[fieldName]; // TODO: remove the need to call SimpleSchema
@@ -398,7 +403,12 @@ export const parseSchema = (
 
       if (field.reversedRelation) {
         schemaExtensions.push(
-          parseReversedRelation({ field, typeName, fieldName })
+          parseReversedRelation({
+            field,
+            typeName,
+            fieldName,
+            currentModel,
+          })
         );
       }
 

@@ -1,5 +1,5 @@
 ---
-title: "Custom field resolvers"
+title: "Custom field resolvers & relations"
 ---
 
 # Custom field resolvers
@@ -53,8 +53,42 @@ query getSamplesWithUser {
 
 Vulcan is in charge of resolving related data via its default "relation resolvers". It works for an unique id or an array of ids.
 
+## Method 2 - Assess if a reversed relation is enough for you (advanced)
 
-### Method 2 - Almost the same as top-level resolvers...
+Reversed relation are similar to relations, except that they are set on the *other* model.
+
+For instance, say you have `Response` and `JuryComment` models. Jury Comments are
+used only in the admin area, they comment the quality of the Response.
+
+`JuryComment` has a `responseId` field to keep track of the `Response` it comments.
+It can use a normal relation to resolve the response from a jury comment.
+
+However, `Response` has no field pointing to a a `JuryComment` in the database.
+You need a reversed relation to resolve the jury comment from the response.
+
+A reversed relation will create a virtual field, that exists only in GraphQL, so you can resolve `JuryComment` from a `Response` based on `juryComment.responseId`.
+
+Example from the Express starter demo:
+```gql
+query ReversedRelationQuery {
+  contributors {
+    results {
+      _id
+      # constributor model DOESN'T know about respositories!
+      # this field has been added by the Repository model
+      # and is computed based on repository.contributorId
+      repository {
+        _id
+      }
+    }
+  }
+}
+```
+
+This is a quite advanced scenario. However it starts making more sense when you implement an admin area for your application and you don't want it to leak within your core application.
+
+
+### Method 3 - Almost the same as top-level resolvers...
 
 Field resolvers behave almost the same as [top-level resolvers](./customTopLevelResolvers.md) described earlier. So you can either create a fully custom resolver, or use a `mutator` if you must manipulate data.
 
@@ -83,7 +117,7 @@ You can use the `resolveAs` field of a schema to create a custom field resolver 
 
 [Vulcan Next has a complete example of this setup.](https://github.dev/VulcanJS/vulcan-next/blob/main/src/vulcan-demo/models/sampleModel.server.ts)
 
-### Method 3 - ...but use DataSources if possible
+### Method 4 - ...but use DataSources if possible
 
 The main difference between field resolvers and top-level resolvers is that, if possible, you should use [DataSources](https://www.apollographql.com/docs/apollo-server/data/data-sources/) for field-resolvers. DataSources will reduce the number of calls to your database in many scenarios, this is what we call the "N+1" problem.
 

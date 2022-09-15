@@ -42,8 +42,15 @@ export type RelationDefinition =
 
 interface ReversedRelationDefinition {
   model: VulcanGraphqlModel;
-  kind: "belongsToOne" | "belongsToMany";
-  /** Be cautious that field should not exist in the initial model */
+  /**
+   * Same has hasOne and hasMany, but the field is add
+   * in the related model graphql schema, not the current model schema
+   */
+  kind: "hasOneReversed" | "hasManyReversed";
+  /**
+   * Name of the field in the related model
+   * Be cautious that field should not exist in the initial model
+   * */
   foreignFieldName: string;
 }
 export interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {

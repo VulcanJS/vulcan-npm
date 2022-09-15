@@ -74,8 +74,8 @@ describe("hasOne", () => {
   });
 });
 
-describe("belongsToOne", () => {
-  test("generate a type for a field with an belongsToOne relation", () => {
+describe("hasOneReversed", () => {
+  test("generate a type for a field with an hasOneReversed relation", () => {
     const FooModel = createGraphqlModelServer({
       schema: {
         _id: {
@@ -119,7 +119,7 @@ describe("belongsToOne", () => {
           // will use 'Bar.fooId' to find the Bar
           reversedRelation: {
             model: FooModel,
-            kind: "belongsToOne",
+            kind: "hasOneReversed",
             foreignFieldName: "bar",
           },
           canRead: ["anyone"],

@@ -9,7 +9,15 @@ import {
 import * as relations from "./resolvers/relationResolvers";
 import { withFieldPermissionCheckResolver } from "./resolvers/fieldResolver";
 import { VulcanGraphqlFieldSchema } from "../typings";
+import { extendType } from "../templates/extend";
 
+/**
+ * "extend" graphql type + corresponding resolverMap
+ */
+export interface GraphqlSchemaExtension {
+  typeDefs: string;
+  resolverMap: AnyResolverMap;
+}
 interface MainTypeDefinition {
   description?: string;
   name: string;
@@ -169,45 +177,41 @@ export const parseFieldResolvers = ({
   return { fields, resolvers };
 };
 
+/**
+ * Extends another model with a new "virtual" field
+ */
 export const parseReversedRelation = ({
   field,
   fieldName,
   typeName,
+  currentModel,
 }: {
   field: VulcanGraphqlFieldSchemaServer;
   /** Fieldname of the CURRENT model */
   fieldName: string;
   /** TypeName of the CURRENT model */
   typeName: string;
-}) => {
+  currentModel;
+}): GraphqlSchemaExtension => {
   if (!field.reversedRelation)
     throw new Error(
       `Tried to parse a field with no reversed relation: ${field.typeName}`
     );
   const { reversedRelation } = field;
   const { model, foreignFieldName } = reversedRelation;
-  // TODO: support "belongsToMany"
-  // currently only work for "belongsToOne"
-  // Typename of the EXTENDED model */
   const foreignTypeName = model.graphql.typeName;
-  const resolveBelongsToOne = () => {
-    // find one Bar whose fooId is equal to current Foo id
-    // find one "typeName" whose "fieldName" is equal to "foreignTypeName"._id
-    throw new Error("belongsToOne resolver not yet implemented");
-  };
-  const resolvers = {
+  const resolverMap = {
     [foreignTypeName]: {
-      [foreignFieldName]: resolveBelongsToOne,
+      [foreignFieldName]: relations.reversed({
+        fieldName,
+        reversedRelation,
+        relatedModel: currentModel,
+      }),
     },
   };
-  // TODO: centralize with other templates
-  const typeDefs = `
-  extend type ${foreignTypeName} {
-    ${foreignFieldName}: ${typeName}
-  }
-  `;
+  const typeDefs = extendType({ foreignTypeName, foreignFieldName, typeName });
   return {
     typeDefs,
-    resolvers,
+    resolverMap,
   };
 };
