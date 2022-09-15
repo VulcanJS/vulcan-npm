@@ -128,7 +128,7 @@ export const Repository = createGraphqlModelServer({
       reversedRelation: {
         model: Contributor,
         kind: "belongsToOne",
-        foreignFieldName: "contributor",
+        foreignFieldName: "repository",
       },
       canRead: ["guests", "anyone"],
       canCreate: ["guests", "anyone"],
