@@ -2,6 +2,6 @@
   "name": "eslint-plugin-vulcan-internal",
   "description": "A plugin for our custom liniting rules",
   "private": true,
-  "version": "0.7.1-alpha.0",
+  "version": "0.7.1",
   "main": "index.js"
 }
