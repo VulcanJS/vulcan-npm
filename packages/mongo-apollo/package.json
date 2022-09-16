@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/mongo-apollo",
-  "version": "0.7.0",
+  "version": "0.7.1-alpha.0",
   "description": "Vulcan mongo + Apollo graphql bindings and helpers",
   "main": "./dist/index.js",
   "files": [
@@ -36,10 +36,10 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/crud": "^0.7.0",
-    "@vulcanjs/graphql": "^0.7.0",
-    "@vulcanjs/mongo": "^0.7.0",
-    "@vulcanjs/utils": "^0.7.0",
+    "@vulcanjs/crud": "^0.7.1-alpha.0",
+    "@vulcanjs/graphql": "^0.7.1-alpha.0",
+    "@vulcanjs/mongo": "^0.7.1-alpha.0",
+    "@vulcanjs/utils": "^0.7.1-alpha.0",
     "apollo-datasource-mongodb": "^0.5.2",
     "graphql-objectid-scalar": "^1.0.4"
   },
