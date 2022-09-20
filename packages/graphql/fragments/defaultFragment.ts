@@ -12,14 +12,17 @@ import {
   hasNestedSchema,
 } from "@vulcanjs/schema";
 import type { VulcanSchema } from "@vulcanjs/schema";
-import type { VulcanGraphqlModelSkeleton } from "../typings";
+import type {
+  DefaultFragmentOptions,
+  VulcanGraphqlModelSkeleton,
+} from "../typings";
 
 const intlSuffix = "_intl";
 
 interface GetObjectFragmentInput {
   schema: VulcanSchema;
   fragmentName: string;
-  options: any;
+  options: DefaultFragmentOptions;
 }
 // get fragment for a whole object (root schema or nested schema of an object or an array)
 const getObjectFragment = ({
@@ -48,7 +51,7 @@ const getObjectFragment = ({
 interface GetFragmentInput {
   schema: VulcanSchema;
   fieldName: string;
-  options: any;
+  options: DefaultFragmentOptions;
   getObjectFragment?: Function;
 }
 // get fragment for a specific field (either the field name or a nested fragment)
@@ -59,7 +62,7 @@ export const getFieldFragment = ({
   getObjectFragment: getObjectFragmentArg = getObjectFragment, // a callback to call on nested schema
 }: GetFragmentInput): string => {
   // intl
-  if (fieldName.slice(-5) === intlSuffix) {
+  if (!options.noIntlFields && fieldName.slice(-5) === intlSuffix) {
     return `${fieldName}{ locale value }`;
   }
   if (fieldName === "_id") return fieldName;
@@ -112,9 +115,13 @@ Create default "dumb" gql fragment object for a given collection
 */
 export const getDefaultFragmentText = (
   model: VulcanGraphqlModelSkeleton, // only need a partially defined model
-  options = { onlyViewable: true }
+  options = { onlyViewable: true, noIntlFields: false }
 ) => {
   const schema = model.schema;
+  const mergedOptions = {
+    ...(model.graphql.defaultFragmentOptions || {}),
+    ...options,
+  };
   return (
     getObjectFragment({
       schema,

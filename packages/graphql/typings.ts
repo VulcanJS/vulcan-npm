@@ -75,7 +75,7 @@ export type VulcanGraphqlSchema = VulcanSchema<VulcanGraphqlFieldSchema>;
 // MODEL TYPINGS
 // Those typings extends the raw model/schema system
 export interface VulcanGraphqlModelSkeleton extends VulcanModel {
-  graphql: Pick<GraphqlModel, "typeName">;
+  graphql: Pick<GraphqlModel, "typeName" | "defaultFragmentOptions">;
 }
 
 // information relevant for server and client
@@ -86,7 +86,18 @@ export interface GraphqlModel {
   singleResolverName: string;
   defaultFragment?: string;
   defaultFragmentName?: string;
+  defaultFragmentOptions?: DefaultFragmentOptions;
 }
+
+export type DefaultFragmentOptions = {
+  /**
+   * If true, fields ending by "_intl" are considered normal strings
+   * If false, they are interpreted as fields of type Intl
+   */
+  noIntlFields?: boolean;
+  onlyViewable?: boolean;
+};
+
 // Client only model fields
 // interface GraphqlClientModel extends GraphqlModel {}
 
