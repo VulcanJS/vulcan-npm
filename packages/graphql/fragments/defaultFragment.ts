@@ -128,7 +128,7 @@ export const getDefaultFragmentText = (
       fragmentName: `fragment ${getDefaultFragmentName(model)} on ${
         model.graphql.typeName
       }`,
-      options,
+      options: mergedOptions,
     }) || undefined
   );
 };
