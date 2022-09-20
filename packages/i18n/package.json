@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/i18n",
-  "version": "0.7.1",
+  "version": "0.7.2-alpha.0",
   "description": "Vulcan i18n helpers",
   "main": "./dist/index.js",
   "files": [
@@ -28,8 +28,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/schema": "^0.7.1",
-    "@vulcanjs/utils": "^0.7.1",
+    "@vulcanjs/schema": "^0.7.2-alpha.0",
+    "@vulcanjs/utils": "^0.7.2-alpha.0",
     "prop-types": "^15.7.2",
     "simpl-schema": "^1.12.0"
   },
