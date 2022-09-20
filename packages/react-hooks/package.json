@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-hooks",
-  "version": "0.7.2-alpha.0",
+  "version": "0.7.2-alpha.1",
   "description": "Connect to an existing Vulcan backend using hooks",
   "main": "./dist/index.js",
   "files": [
@@ -19,9 +19,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/crud": "^0.7.2-alpha.0",
-    "@vulcanjs/graphql": "^0.7.2-alpha.0",
-    "@vulcanjs/mongo": "^0.7.2-alpha.0",
+    "@vulcanjs/crud": "^0.7.2-alpha.1",
+    "@vulcanjs/graphql": "^0.7.2-alpha.1",
+    "@vulcanjs/mongo": "^0.7.2-alpha.1",
     "debug": "^4.3.1",
     "lodash": "^4.17.20",
     "mingo": "^3.0.6"
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@testing-library/react-hooks": "^3.4.1",
-    "@vulcanjs/schema": "^0.7.2-alpha.0",
+    "@vulcanjs/schema": "^0.7.2-alpha.1",
     "mock-apollo-client": "^1.1.0",
     "react-test-renderer": "^16.13.1"
   }
