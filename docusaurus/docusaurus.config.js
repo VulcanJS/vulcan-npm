@@ -148,6 +148,31 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      // @see https://docusaurus.io/fr/docs/search
+      algolia: {
+        // L'ID de l'application fourni par Algolia
+        appId: 'M8OIENR0HJ',
+
+        // Clé d'API publique : il est possible de la committer en toute sécurité
+        apiKey: '7870e4c4bae50c2173d89f7771e260d5',
+
+        indexName: 'vulcan',
+
+        // Facultatif : voir la section doc ci-dessous
+        contextualSearch: true,
+
+        // Facultatif : Spécifiez les domaines où la navigation doit se faire par window.location au lieu de history.push. Utile lorsque notre configuration Algolia explore plusieurs sites de documentation et que nous voulons naviguer vers eux avec window.location.href.
+        //externalUrlRegex: 'external\\.com|domain\\.com',
+
+        // Facultatif : paramètres de recherche de Algolia
+        //searchParameters: {},
+
+        // Facultatif : chemin pour la page de recherche qui est activée par défaut (`false` pour le désactiver)
+        searchPagePath: 'search',
+
+        //... autres paramètres d'Algolia
+      },
+
     }),
 };
 

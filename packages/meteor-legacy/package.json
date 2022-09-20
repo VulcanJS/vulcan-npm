@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/meteor-legacy",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Vulcan Meteor bindings",
   "main": "./dist/index.js",
   "files": [
@@ -27,7 +27,7 @@
     "url": "https://github.com/VulcanJS/vulcan-npm/issues"
   },
   "dependencies": {
-    "@vulcanjs/graphql": "^0.7.0",
+    "@vulcanjs/graphql": "^0.7.1",
     "lodash": "^4.17.21"
   },
   "peerDependencies": {
