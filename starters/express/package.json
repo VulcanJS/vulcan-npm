@@ -1,6 +1,6 @@
 {
   "name": "vulcan-express",
-  "version": "0.6.6-alpha.4",
+  "version": "0.7.2-alpha.2",
   "description": "Vulcan Express",
   "main": "./dist/app.mjs",
   "private": true,
@@ -13,6 +13,8 @@
     "transpile": "tsc # Beware, this won't resolve local dependencies (missing .js)",
     "build:tsup": "tsup-node",
     "build": "yarn run build:tsup",
+    "//build:vercel": "See https://vercel.com/guides/using-express-with-vercel#standalone-express",
+    "build:vercel": "yarn run build && mkdir -p api && cp dist/app.js api/index.js",
     "mongo": "yarn run start:mogno",
     "//start:mongo": "### Will start or create & start the image + store data locally in .mongo folder + remove the container when stopped.",
     "start:mongo": "docker run --rm -p 27017:27017 -v \"$(pwd)/.mongo:/data/db\" --label vulcan-mongodb mongo:4.0.4 ",
@@ -23,17 +25,18 @@
   "license": "MIT",
   "devDependencies": {
     "nodemon": "^2.0.15",
-    "tsup": "^5.12.1",
+    "tsup": "^6.0.1",
     "typescript": "^4.6.2"
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.2",
-    "@vulcanjs/graphql": "^0.6.6-alpha.4",
-    "@vulcanjs/mongo": "^0.6.4",
-    "@vulcanjs/mongo-apollo": "^0.6.6-alpha.4",
-    "apollo-server-express": "^3.6.4",
+    "@vulcanjs/graphql": "^0.7.2-alpha.2",
+    "@vulcanjs/mongo": "^0.7.2-alpha.1",
+    "@vulcanjs/mongo-apollo": "^0.7.2-alpha.2",
+    "apollo-server": "3.9",
+    "apollo-server-express": "3.9",
     "express": "^4.17.3",
-    "mongodb-memory-server": "^8.4.0",
+    "mongodb-memory-server": "^8.9.1",
     "mongoose": "^6.2.5"
   }
 }

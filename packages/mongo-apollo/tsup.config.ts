@@ -11,6 +11,13 @@ const commonConfig = {
 };
 export default defineConfig([
   {
+    entry: ["server/index.ts"],
+    ...commonConfig,
+    // NOTE: it means CJS will be .js and ESM will be .mjs
+    format: ["esm"],
+    outDir: "dist/server",
+  },
+  {
     entry: ["index.ts"],
     ...commonConfig,
     // NOTE: it means CJS will be .js and ESM will be .mjs

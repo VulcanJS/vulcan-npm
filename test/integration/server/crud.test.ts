@@ -47,17 +47,17 @@ const Contributor = createGraphqlModelServer({
     _id: {
       type: String,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["anyone"],
+      canCreate: ["anyone"],
+      canUpdate: ["anyone"],
       //canDelete: ["guests"],
     },
     name: {
       type: String,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["anyone"],
+      canCreate: ["anyone"],
+      canUpdate: ["anyone"],
       //canDelete: ["guests"],
     },
   },
@@ -69,8 +69,8 @@ const Contributor = createGraphqlModelServer({
     }),
   },
   permissions: {
-    canRead: ["guests"],
-    canCreate: ["guests"],
+    canRead: ["anyone"],
+    canCreate: ["anyone"],
   },
 });
 const contributorConnector = createMongooseConnector(Contributor);

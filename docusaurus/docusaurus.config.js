@@ -7,7 +7,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Vulcan",
-  tagline: "The fullstack JavaScript framework",
+  tagline: "The full-stack JavaScript toolkit",
   url: "https://vulcan-docs.vercel.app",
   baseUrl: "/",
   onBrokenLinks: "warn",
@@ -25,13 +25,13 @@ const config = {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl:
-            "https://github.com/VulcanJS/vulcan-npm/tree/main/packages/docusaurus/",
+            "https://github.com/VulcanJS/vulcan-npm/tree/main/docusaurus/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            "https://github.com/VulcanJS/vulcan-npm/tree/main/packages/docusaurus/",
+            "https://github.com/VulcanJS/vulcan-npm/tree/main/docusaurus/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -80,6 +80,10 @@ const config = {
       },
       footer: {
         style: "dark",
+        logo: {
+          alt: "Vulcan Logo",
+          src: "theme/images/vulcan-logo-border.png",
+        },
         links: [
           {
             title: "Docs",
@@ -110,6 +114,10 @@ const config = {
                 href: "http://slack.vulcanjs.org/",
               },
               {
+                label: "Join our Discord",
+                href: "https://discord.gg/4dqeKSNv",
+              },
+              {
                 label: "Twitter",
                 href: "https://twitter.com/VulcanJS",
               },
@@ -126,6 +134,11 @@ const config = {
                 label: "GitHub",
                 href: "https://github.com/VulcanJS/vulcan-next",
               },
+              {
+                html: `<a href="https://vercel.com?utm_source=vulcan&utm_campaign=oss" target="_blank" rel="noopener">
+              <img alt="Powered by Vercel" src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg"/>
+              </a>`,
+              },
             ],
           },
         ],
@@ -135,6 +148,31 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      // @see https://docusaurus.io/fr/docs/search
+      algolia: {
+        // L'ID de l'application fourni par Algolia
+        appId: 'M8OIENR0HJ',
+
+        // Clé d'API publique : il est possible de la committer en toute sécurité
+        apiKey: '7870e4c4bae50c2173d89f7771e260d5',
+
+        indexName: 'vulcan',
+
+        // Facultatif : voir la section doc ci-dessous
+        contextualSearch: true,
+
+        // Facultatif : Spécifiez les domaines où la navigation doit se faire par window.location au lieu de history.push. Utile lorsque notre configuration Algolia explore plusieurs sites de documentation et que nous voulons naviguer vers eux avec window.location.href.
+        //externalUrlRegex: 'external\\.com|domain\\.com',
+
+        // Facultatif : paramètres de recherche de Algolia
+        //searchParameters: {},
+
+        // Facultatif : chemin pour la page de recherche qui est activée par défaut (`false` pour le désactiver)
+        searchPagePath: 'search',
+
+        //... autres paramètres d'Algolia
+      },
+
     }),
 };
 

@@ -41,7 +41,10 @@ export const makeLocalesRegistry = () => {
   };
 
   const getLocale = (localeId: string) => {
-    return Locales.find((locale) => locale.id === localeId);
+    // TODO: not very reliable, can't find per country when region is not exactly the same
+    return Locales.find(
+      (locale) => locale.id.toLowerCase() === localeId.toLowerCase()
+    );
   };
   return { registerLocale, getLocale, Locales };
 };
@@ -118,7 +121,12 @@ export const initLocale =
     locale,
   }: {
     currentUser?: any;
+    /**
+     * Read the cookie directly
+     * @deprecated Pass the "locale" directly
+     */
     cookies?: { locale?: string };
+    /** Already known locale */
     locale?: any;
   }): LocaleType => {
     let userLocaleId = "";

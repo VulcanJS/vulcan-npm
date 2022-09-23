@@ -7,7 +7,10 @@ import {
 // but here we show how you can provide your own connector if necessary
 // (eg for supporting SQL)
 import { createMongooseConnector } from "@vulcanjs/mongo";
-import { createMongooseDataSource } from "@vulcanjs/mongo-apollo";
+import {
+  createMongooseDataSource,
+  MongoId,
+} from "@vulcanjs/mongo-apollo/server";
 
 /**
  * Demo model
@@ -19,25 +22,27 @@ export const Contributor = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
+      // Don't forget this typeName, in order to correctly handle Mongo ObjectId conversion
+      typeName: MongoId,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
       //canDelete: ["guests"],
     },
     name: {
       type: String,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
       //canDelete: ["guests"],
     },
     // Virtual field that queries the contributor itself
     // This is just a dumb demo for Apollo dataSources
     myselfVirtual: {
       type: String,
-      canRead: ["guests"],
+      canRead: ["guests", "anyone"],
       canCreate: [],
       canUpdate: [],
       resolveAs: {
@@ -84,8 +89,8 @@ export const Contributor = createGraphqlModelServer({
     },
   },
   permissions: {
-    canRead: ["guests"],
-    canCreate: ["guests"],
+    canRead: ["guests", "anyone"],
+    canCreate: ["guests", "anyone"],
   },
 });
 
@@ -94,32 +99,40 @@ export const Repository = createGraphqlModelServer({
   schema: {
     _id: {
       type: String,
+      typeName: MongoId,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
       //canDelete: ["guests"],
     },
     url: {
       type: String,
       optional: true,
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
       //canDelete: ["guests"],
     },
     contributorId: {
       type: String,
+      typeName: MongoId,
       // You will be able to query the "contributor" field of any "repository" object
       relation: {
         fieldName: "contributor",
         kind: "hasOne",
         model: Contributor,
-        typeName: "Contributor",
       },
-      canRead: ["guests"],
-      canCreate: ["guests"],
-      canUpdate: ["guests"],
+      // will add a "repository" field to the contributor type
+      // (without having to extend the contributor model explicitely)
+      reversedRelation: {
+        model: Contributor,
+        kind: "hasOneReversed",
+        foreignFieldName: "repository",
+      },
+      canRead: ["guests", "anyone"],
+      canCreate: ["guests", "anyone"],
+      canUpdate: ["guests", "anyone"],
     },
   },
   graphql: {
@@ -128,8 +141,8 @@ export const Repository = createGraphqlModelServer({
     typeName: "Repository",
   },
   permissions: {
-    canRead: ["guests"],
-    canCreate: ["guests"],
+    canRead: ["guests", "anyone"],
+    canCreate: ["guests", "anyone"],
   },
 });
 

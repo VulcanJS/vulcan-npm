@@ -19,6 +19,6 @@ For the `Article`, it could be the title, content, and the author unique id.
 Based on the `SmartForm`, it's possible to spawn a full admin area for all the models of your application.
 As easy as writing a loop!
 
-You can see a demonstration of this approach in `src/pages/admin`, or in your application by opening
-`http://localhost:3000/admin`.
+You can see a demonstration of this approach in `src/pages/vn/admin`, or in your application by opening
+`http://localhost:3000/vn/admin`.
 

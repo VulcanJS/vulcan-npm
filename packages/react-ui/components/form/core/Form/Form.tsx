@@ -142,10 +142,10 @@ const getChildrenProps = (
   // TODO: that belongs to the context instead
   callbacks: { deleteDocument: Function }
 ): {
-  formLayoutProps: any;//FormLayoutProps;
+  formLayoutProps: any; //FormLayoutProps;
   formGroupProps: Function;
   commonProps: any;
-  formSubmitProps: any;// FormSubmitProps;
+  formSubmitProps: any; // FormSubmitProps;
 } => {
   const {
     currentUser,
@@ -543,7 +543,7 @@ export const Form = (props: FormProps) => {
     }
   };
 
-  const [disabled, setDisabled] = useState<boolean>(false); // TODO
+  const [disabled, setDisabled] = useState<boolean>(!!props.disabled);
   const [success, setSuccess] = useState<boolean>(false); // TODO
   /**
    * Clears form errors and values.
@@ -831,6 +831,7 @@ export const Form = (props: FormProps) => {
           currentValues,
           deletedValues,
           clearFieldErrors,
+          disabled,
         }}
       >
         <FormComponents.FormLayout {...formLayoutProps}>

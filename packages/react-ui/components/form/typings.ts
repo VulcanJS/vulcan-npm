@@ -10,6 +10,10 @@ import type {
 export interface FormComponentProps<TField = any>
   extends Omit<FormField, "type"> {
   document: any;
+  /**
+   * Legacy type was Array<{type: Number | String | Boolean} = the "type" of a SimpleSchema object
+   * Now it's just the type from the JSON schema:
+   */
   datatype: VulcanFieldType; // TODO: type of the field, replace this by a cleaner value like we do in graphql to get the field type
   disabled: boolean;
   errors: Array<any>;
@@ -52,6 +56,14 @@ export type FormOption<TField = any> = {
   value: TField;
   /** Can force a default value */
   checked?: boolean;
+  /**
+   * Translated option
+   */
+  intlId?: string;
+  /**
+   * Non clickable option (visual clue)
+   */
+  disabled?: boolean;
 };
 
 /**

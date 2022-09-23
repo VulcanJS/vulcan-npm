@@ -1,20 +1,33 @@
 # Architecture and others
 
+The point of Vulcan Next is to bring everything you need to setup a scalable application, in terms of number of users but also in terms of code. Here is what Vulcan includes:
+
 ## TypeScript
+
+### TypeScript in Next
 
 [Relevant Next doc](https://nextjs.org/docs/basic-features/typescript)
 
-We use TypeScript extensively, and try to enable it wherever possible (sources, Jest, Cypress, Storybook...)
+We use TypeScript extensively, and try to enable it wherever possible (sources, Jest, Cypress, Storybook...).
 
-## Code architecture and build
+### Scripts written in TypeScript
+
+What's more annoying than writing an utility script, for instance to clean your database, and being forced to use *JavaScript* or even worse, *bash scripts* :(!
+
+We have created a command `yarn run build:scripts` that builds files from `.vn/scripts/ts-sources` into reusable `.js` scripts. You can reuse
+your code utilities within those scripts. The build script is based on [Tsup](https://tsup.egoist.sh/). It used to be based on Vercel [ncc builder](https://github.com/vercel/ncc), which is however more suited for fully reusable scripts (outside of Vulcan).
+
+### Multiple tsconfig via folder nesting
+
+The `src` folder has its own `tsconfig.json`: this way collocated files like Stories and Unit tests are correctly handled by your text editor, but they can be excluded from the root `tsconfig.json` to avoid bloating Next.js build.
+
+## Code architecture and build system
 
 ### Code in `src`
 
 All your code should go into the `/src` directory ([doc](https://nextjs.org/docs/advanced-features/src-directory)).
 
 This folder structure is officially supported by Next. It is relevant when you have a lot of development tooling alongside your actual codebase, like we do in Vulcan.
-
-The `src` folder has its own `tsconfig.json`: this way collocated files like Stories and Unit tests are correctly handled by your text editor, but they can be excluded from the root `tsconfig.json` to avoid bloating Next.js build.
 
 ### Package-oriented architecture
 
@@ -25,34 +38,30 @@ You can reproduce the same behaviour with any other prefix by changing `tsconfig
 
 However, you are **not** forced to structure your own code as packages. [Avoid Hasty Abstractions!](https://kentcdodds.com/blog/aha-programming)
 
+### Full-stack NPM packages (advanced)
+
+If you want real NPM packages, you might want to discover the [Vulcan NPM monorepository](https://github.com/VulcanJS/vulcan-npm) where we actually develop Vulcan.
+
 ### Magic src imports with `~`
 
 Import code in `src` from anywhere by writing `import "~/components/foobar"`.
 
 Relative imports are a huge mess to support. A relative import should never go further than the category it belongs too: `pages` should never have to import `components` using a messy `../../../components/myComponent`.
 
-### Scripts written in TypeScript
-
-What's more annoying than writing an utility script, for instance to clean your database, and being forced to use *JavaScript* or even worse, *bash scripts* :(!
-
-We have created a command `yarn run build:scripts` that builds files from `.vn/scripts/ts-sources` into reusable `.js` scripts. You can reuse
-your code utilities within those scripts. The build script is based on Vercel [ncc builder](https://github.com/vercel/ncc).
 
 ### Quasi-imorphism
 
 We allow folders and packages to contain an `index.client` or `index.server` file, that will be used at build time depending on the environment.
 /!\ You still need to have a bare `index` file alongside those environment specific file. Otherwise TypeScript will complain (see the "Learnings" documentation for more details).
 
-#### Env variables in .env
+### Env variables in .env
 
-We demo Next.js 9.4 new feature, `.env` file support. Open `.env.development` to see the default development variables.
+Since Next.js 9.4, `.env` files contain configuration. Open `.env.development` to see the default development variables.
 
 [Official doc.](https://nextjs.org/docs/basic-features/environment-variables)
 
-## Transition from Vulcan Meteor
+Check [our article to learn more about configuration in Next.js](https://blog.vulcanjs.org/how-to-set-configuration-variables-in-next-js-a81505e43dad)
 
-If you were using Vulcan Meteor, check `https://github.com/VulcanJS/vulcan-meteor-next-transition` for a demonstration of using Vulcan Next for the frontend
-and an existing Vulcan Meteor app for the backend.
 
 ## Various
 
@@ -65,12 +74,6 @@ For example, we use it to inject current version into the `html` tag for better 
 ### Sitemap.xml and Robots.txt with next-sitemap
 
 We use [next-sitemap](https://github.com/iamvishnusankar/next-sitemap#readme) to create both the `robots.txt` and `sitemap.xml` in the `postbuild` script.  Change `https://vulcan.next` to your root url in `/vulcan-next-sitemap.js`.  Here's more [configuration options](https://github.com/iamvishnusankar/next-sitemap#configuration-options).
-
-### Performance debugging
-
-[See official doc](https://nextjs.org/docs/advanced-features/measuring-performance).
-
-`DEBUG=vns:perf npm run dev`
 
 ### Auto-changelog
 
@@ -89,47 +92,14 @@ See `src/components/ui` for the code, and run Storybook to see the demos.
 
 No more excuses to make dull UIs, you have all the tools you need :)
 
-## Internationalization (i18n)
-
-### next-i18next latest version
-
-Next.js and its ecosystem has made a lot of progress regarding i18n while we were coding VulcanNext.
-We currently use the latest version of [next-i18next](https://github.com/isaachinman/next-i18next) package. 
-Its role is to handle the loading of the right translation files depending on the user current locale.
-
-I18n is a very vast subject, if you need more advanced features, [check Next.js documentation](https://nextjs.org/docs/advanced-features/i18n-routing), it's complete and well written.
-
-You can tweak the configuration to fit your need, see the file named `next-i18next.config.js`.
-
-### No automated redirect
-
-As a default, we disable automated i18n redirect. So a French user
-accessing `/` will still see the page in English. You need to redirect those user manually to `/fr`.
-
-We think that this setup is more consistent, but don't hesitate to tweak the `i18n` config in `next-i18next.config.js`.
-
-### Lang and dir in the custom \_document
-
-`lang` attribute is set automatically by Next.js on `<html>` during server-render/static-render.
-`dir` attribute (`rtl` or `ltr` for right-to-left and left-to-right languages) is set based on the current locale.
-
-
-## MDX support
-
-Get started by reading [MDXJS official doc](https://mdxjs.com/). If you want to write a blog with fancy interactive blocks, you'll fall in love with this feature.
-
-### Next-mdx-enhanced
-
-Thanks to [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote), you can easily use markdown files as your CMS.
-Check the `/docs` page when running the app to see the live documentation.
-
-### MD and MDX import in React
-
-### Loading MD/MDX in Storybook
-
-Work out of the box. Will however disable default behaviour for ".md" import of Storybook, which is replaced by MDX behaviour.
 
 ## Debugging
+
+### Performance debugging
+
+[See official doc](https://nextjs.org/docs/advanced-features/measuring-performance).
+
+`DEBUG=vns:perf npm run dev`
 
 ### Webpack bundle analyzer
 

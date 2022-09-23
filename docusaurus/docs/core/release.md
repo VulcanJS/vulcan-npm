@@ -1,6 +1,7 @@
 ---
 title: Release packages
 ---
+
 # Release
 
 Work in progress
@@ -39,7 +40,7 @@ yarn build:storybook
 yarn test
 # Update typedoc
 yarn typedoc && npx serve generated/docs
-# Test built docusaurus
+# Test built docusaurus (already built during "yarn build" stage)
 yarn serve:doc
 
 # Deploy (Lerna will prompt questions for versionning)
@@ -52,9 +53,13 @@ yarn run auto-changelog
 git commit -am "bump version"
 git push
 git push --tags
+```
 
-# Publish starters on GitHub
+## Publish starters on GitHub
 
+[Check Next release doc](./release-next)
+
+```sh
 # /!\ Follow each specific starter release guide before publishing
 node ./scripts/push-starters.mjs
 ```

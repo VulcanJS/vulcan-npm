@@ -1,13 +1,14 @@
 import { Request } from "express";
 import { updateMutator } from "@vulcanjs/crud/server";
 import { NextApiRequest, NextApiResponse } from "next";
-import { User, UserMongooseModel } from "~/models/user.server";
+import { User, UserMongooseModel } from "~/account/models/user.server";
 import {
   StorableTokenConnector,
   hashToken,
-} from "~/models/storableToken.server";
+} from "~/account/models/storableToken.server";
 
-import { contextFromReq } from "~/lib/api/context";
+import { contextFromReq } from "~/core/server/context";
+import { connectToAppDb } from "~/core/server/mongoose/connection";
 
 interface VerifyEmailBody {
   token: string;
@@ -20,6 +21,7 @@ export default async function verifyEmail(
   res: NextApiResponse
 ) {
   try {
+    await connectToAppDb();
     const body = req.body;
     const { token } = body as VerifyEmailBody;
     // context computation step is shared with graphql endpoint

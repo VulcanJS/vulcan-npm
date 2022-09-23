@@ -139,9 +139,8 @@ export const parseMutationResolvers = ({
       mutation: deleteMutationTemplate({ typeName }),
       description: mutationDefinitions.delete.description,
     });
-    mutationResolvers[
-      `delete${typeName}`
-    ] = mutationDefinitions.delete.mutation.bind(mutationDefinitions.delete);
+    mutationResolvers[`delete${typeName}`] =
+      mutationDefinitions.delete.mutation.bind(mutationDefinitions.delete);
   }
   //addGraphQLResolvers({ Mutation: { ...mutationResolvers } });
   return { mutationResolvers, mutations };

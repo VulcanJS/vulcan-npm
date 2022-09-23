@@ -28,4 +28,4 @@ Examples:
 
 ### Vercel.json
 
-Update [vercel.json](https://vercel.com/docs/configuration) to match your project.
+Update [vercel.json](https://vercel.com/docs/configuration?utm_source=vulcan&utm_campaign=oss) to match your project.

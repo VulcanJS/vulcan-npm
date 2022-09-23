@@ -5,7 +5,11 @@
  *
  * End user is supposed to use only the "createGraphqlModel" function
  */
-import { VulcanGraphqlModel, VulcanGraphqlSchema } from "./typings";
+import {
+  DefaultFragmentOptions,
+  VulcanGraphqlModel,
+  VulcanGraphqlSchema,
+} from "./typings";
 import { VulcanModel, createModel, CreateModelOptions } from "@vulcanjs/model";
 import {
   getDefaultFragmentText,
@@ -26,6 +30,7 @@ import { camelCaseify } from "@vulcanjs/utils";
 export interface GraphqlModelOptions {
   typeName: string; // Canonical name of the model = its graphQL type name
   multiTypeName: string; // Plural version, to be defined manually (automated pluralization leads to unexpected results)
+  defaultFragmentOptions?: DefaultFragmentOptions;
 }
 /**
  * This type is meant to be exposed in the "default", shared helper

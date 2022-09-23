@@ -16,6 +16,13 @@ export default defineConfig([
     format: ["esm"],
     outDir: "dist",
   },
+  // testing utils use a separated entry point
+  {
+    entry: ["testing.ts"],
+    ...commonConfig,
+    format: ["esm"],
+    outDir: "dist",
+  },
   /*
   There is no server/client specific code in this package yet,
   every component is isomorphic (work on client and server)

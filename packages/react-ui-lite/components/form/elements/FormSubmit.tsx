@@ -33,10 +33,14 @@ export const FormSubmit = ({
   currentUser,
 }) => {
   const VulcanComponents = useVulcanComponents();
-  const { clearForm } = useFormContext();
+  const { clearForm, disabled } = useFormContext();
   return (
     <div className="form-submit">
-      <VulcanComponents.Button type="submit" variant="primary">
+      <VulcanComponents.Button
+        type="submit"
+        variant="primary"
+        disabled={disabled}
+      >
         {submitLabel ? (
           submitLabel
         ) : (
@@ -87,11 +91,11 @@ export const FormSubmit = ({
       ) : null}
 
       {deleteDocument &&
-        canDeleteDocument({
-          user: currentUser,
-          document,
-          model,
-        }) ? (
+      canDeleteDocument({
+        user: currentUser,
+        document,
+        model,
+      }) ? (
         <div>
           <hr />
           <VulcanComponents.Button

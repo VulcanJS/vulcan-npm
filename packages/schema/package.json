@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/schema",
-  "version": "0.6.4",
+  "version": "0.7.2-alpha.1",
   "description": "Vulcan JS schema",
   "main": "./dist/index.mjs",
   "files": [

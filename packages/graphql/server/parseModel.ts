@@ -1,6 +1,10 @@
 /**
  */
-import { parseSchema } from "./parseSchema";
+import {
+  parseSchema,
+  ParseSchemaOutput,
+  QueriableFieldsDefinitions,
+} from "./parseSchema";
 import {
   selectorInputTemplate,
   mainTypeTemplate,
@@ -36,14 +40,14 @@ import {
   parseQueryResolvers,
 } from "./parseModelResolvers";
 
-interface Fields {
+interface Fields extends QueriableFieldsDefinitions {
   mainType: any;
   create: Array<any>;
   update: Array<any>;
-  selector: any;
-  selectorUnique: any;
-  readable: Array<any>;
-  filterable: Array<any>;
+  // selector: Array<any>;
+  // selectorUnique: Array<any>;
+  // readable: Array<any>;
+  // filterable: Array<any>;
   // enums: Array<{ allowedValues: Array<any>; typeName: string }>;
 }
 interface GenerateSchemaFragmentsInput {
@@ -145,13 +149,20 @@ const generateTypeDefs = ({
     return schemaFragments; // return now
   }
 
-  schemaFragments.push(singleInputTemplate({ typeName }));
+  const idTypeName = model?.schema._id?.typeName || "String";
+  schemaFragments.push(
+    singleInputTemplate({
+      typeName,
+      idTypeName,
+      hasSelector: !!selectorUnique.length,
+    })
+  );
   schemaFragments.push(multiInputTemplate({ typeName }));
   schemaFragments.push(singleOutputTemplate({ typeName }));
   schemaFragments.push(multiOutputTemplate({ typeName }));
   schemaFragments.push(mutationOutputTemplate({ typeName }));
 
-  schemaFragments.push(deleteInputTemplate({ typeName }));
+  schemaFragments.push(deleteInputTemplate({ typeName, idTypeName }));
 
   if (create.length) {
     schemaFragments.push(createInputTemplate({ typeName }));
@@ -159,17 +170,23 @@ const generateTypeDefs = ({
   }
 
   if (update.length) {
-    schemaFragments.push(updateInputTemplate({ typeName }));
-    schemaFragments.push(upsertInputTemplate({ typeName }));
+    schemaFragments.push(updateInputTemplate({ typeName, idTypeName }));
+    schemaFragments.push(upsertInputTemplate({ typeName, idTypeName }));
     schemaFragments.push(updateDataInputTemplate({ typeName, fields: update }));
   }
 
   if (filterable.length) {
     // TODO: reneable customFilters?
-    const customFilters = []; //collection.options.customFilters;
+    // FIXME: .crud exists only for server models, but here we accept both types
+    // We should enhance VulcanGraphqlModel to fix that somehow
+    const customFilters =
+      (model as VulcanGraphqlModelServer)?.crud?.customFilters || []; //collection.options.customFilters;
     schemaFragments.push(
       fieldFilterInputTemplate({ typeName, fields: filterable, customFilters })
     );
+    //console.log(
+    //  fieldFilterInputTemplate({ typeName, fields: filterable, customFilters })
+    //);
     if (customFilters?.length) {
       customFilters.forEach((filter) => {
         schemaFragments.push(customFilterTemplate({ typeName, filter }));
@@ -188,11 +205,23 @@ const generateTypeDefs = ({
     // }
   }
 
-  schemaFragments.push(selectorInputTemplate({ typeName, fields: selector }));
+  if (selector.length) {
+    schemaFragments.push(selectorInputTemplate({ typeName, fields: selector }));
+  } else {
+    console.warn(
+      `No selectable field in your schema for model ${model?.name}, is _id correctly defined?`
+    );
+  }
 
-  schemaFragments.push(
-    selectorUniqueInputTemplate({ typeName, fields: selectorUnique })
-  );
+  if (selectorUnique.length) {
+    schemaFragments.push(
+      selectorUniqueInputTemplate({ typeName, fields: selectorUnique })
+    );
+  } else {
+    console.warn(
+      `No unique selectable field in your schema for model ${model?.name}, is _id correctly defined?`
+    );
+  }
 
   return schemaFragments;
 };
@@ -204,36 +233,14 @@ interface ParseModelOutput
   schemaResolvers?: Array<AnyResolverMap>;
   resolvers?: ModelResolverMap;
 }
-export const parseModel = (
-  model: VulcanGraphqlModelServer
-): ParseModelOutput => {
+
+const modelTypefs = (
+  model: VulcanGraphqlModelServer,
+  parsedSchema: ParseSchemaOutput
+): string => {
+  const { nestedFieldsList, fields, schemaExtensions } = parsedSchema;
   const typeDefs: Array<string> = [];
-
-  // const {
-  //   collectionName,
-  //   description,
-  //   interfaces = [],
-  //   resolvers,
-  //   mutations,
-  // } = getCollectionInfos(collection);
-  const { schema, name: modelName } = model;
-  const { typeName, multiTypeName } = model.graphql;
-
-  const {
-    nestedFieldsList,
-    fields,
-    resolvers: schemaResolvers,
-  } = parseSchema(schema, typeName);
-
-  const { mainType } = fields;
-
-  if (!mainType.length) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `// Warning: model ${model.name} doesn't have any GraphQL-enabled fields, so no corresponding type can be generated. Pass generateGraphQLSchema = false to createCollection() to disable this warning`
-    );
-    return { typeDefs: "" };
-  }
+  // typedefs
   typeDefs.push(
     ...generateTypeDefs({
       model,
@@ -257,11 +264,28 @@ export const parseModel = (
       );
     }
   }
+  // extending other models
+  if (schemaExtensions.length) {
+    schemaExtensions.forEach((schemaExtension) => {
+      typeDefs.push(schemaExtension.typeDefs);
+    });
+  }
+  const mergedTypeDefs = typeDefs.join("\n\n") + "\n\n\n";
+  return mergedTypeDefs;
+};
 
-  // resolvers
-  const resolvers: ModelResolverMap = {};
+const modelResolverMap = (
+  model: VulcanGraphqlModelServer,
+  parsedSchema: ParseSchemaOutput
+) => {
+  const { schema, name: modelName } = model;
+  const { typeName, multiTypeName } = model.graphql;
+  const { fields, resolvers: schemaResolvers, schemaExtensions } = parsedSchema;
+
+  let resolvers: ModelResolverMap = {};
   let queries;
   let mutations;
+
   const queryDefinitions = model.graphql?.queryResolvers; // TODO: get from Model?
   const mutationDefinitions = model.graphql?.mutationResolvers; // TODO: get from Model?
   if (queryDefinitions) {
@@ -284,10 +308,44 @@ export const parseModel = (
     resolvers.Mutation = parsedMutations.mutationResolvers;
   }
 
-  const mergedTypeDefs = typeDefs.join("\n\n") + "\n\n\n";
+  if (schemaExtensions.length) {
+    schemaExtensions.forEach((schemaExtension) => {
+      resolvers = {
+        ...(resolvers || {}),
+        ...schemaExtension.resolverMap,
+      };
+    });
+  }
+
+  return { queries, mutations, resolvers };
+};
+
+export const parseModel = (
+  model: VulcanGraphqlModelServer
+): ParseModelOutput => {
+  const { schema, name: modelName } = model;
+  const { typeName, multiTypeName } = model.graphql;
+
+  const parsedSchema = parseSchema(schema, typeName, model);
+  const { fields, resolvers: schemaResolvers, schemaExtensions } = parsedSchema;
+
+  const { mainType } = fields;
+  if (!mainType.length) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `// Warning: model ${model.name} doesn't have any GraphQL-enabled fields, so no corresponding type can be generated. Pass generateGraphQLSchema = false to createCollection() to disable this warning`
+    );
+    return { typeDefs: "" };
+  }
+
+  const typeDefs = modelTypefs(model, parsedSchema);
+  const { queries, mutations, resolvers } = modelResolverMap(
+    model,
+    parsedSchema
+  );
 
   return {
-    typeDefs: mergedTypeDefs,
+    typeDefs,
     queries,
     mutations,
     schemaResolvers,

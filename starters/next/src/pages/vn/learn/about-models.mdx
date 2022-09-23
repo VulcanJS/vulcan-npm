@@ -1,8 +1,8 @@
 import { NextMuiButton } from "@vulcanjs/next-mui";
-import { LearnLayout } from "~/components/vn/learn/LearnLayout";
-import { StepIfElse } from "~/components/vn/learn/Steps";
-import { MultipleChoiceQuestion } from "~/components/vn/learn/MultipleChoiceQuestion";
-import models from "~/models";
+import { LearnLayout } from "~/learn/components/LearnLayout";
+import { StepIfElse } from "~/learn/components/Steps";
+import { MultipleChoiceQuestion } from "~/learn/components/MultipleChoiceQuestion";
+import models from "~/core/models";
 
 # Step 3: Discover models
 
@@ -23,7 +23,7 @@ We only keep the "fields" that matters for our web application.
 
 ## Describing a model using a schema
 
-Vulcan provides a Sample model in `src/models/sampleModel.ts`. Open this file and take a look at it.
+Vulcan provides a Sample model in `src/vulcan-demo/models/sampleModel.ts`. Open this file and take a look at it.
 
 ### The base fields
 
@@ -71,7 +71,7 @@ export const modelDef: CreateGraphqlModelOptionsShared = {
     multiTypeName,
   },
   permissions: {
-    canCreate: ["member"],
+    canCreate: ["members"],
     canUpdate: ["owners", "admins"],
     canDelete: ["owners", "admins"],
     canRead: ["members", "admins"],
@@ -85,6 +85,8 @@ Vulcan automates a lot of things based on your model:
 - generating the corresponding GraphQL server (to provide data to any app)
 - generating the corresponding GraphQL client (to get data in your app)
 - generating an admin area, etc.
+
+[Read 🔥Vulcan Fire documentation for more info.](https://vulcan-docs.vercel.app/docs/vulcan-fire/)
 
 **Always remember to export your model in `src/models/index` to activate this automated generation.**
 

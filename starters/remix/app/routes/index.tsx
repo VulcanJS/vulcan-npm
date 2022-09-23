@@ -1,83 +1,90 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link } from "@remix-run/react";
+import { GithubButtons } from "~/components/GithubButtons";
 
 import { useOptionalUser } from "~/utils";
 
-import type { GraphQLError } from "graphql";
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import {
-  // When using a local executable shema (avoids an HTTP roundtrip)
-  //processRequestWithGraphQL,
-  // When using a remote endpoint
-  sendGraphQLRequest,
-} from "@vulcanjs/remix-graphql/index.server";
-//import gql from "graphql-tag";
+const graphqlSection = (
+  <section>
+    <div className="m-8 border p-4">
+      <h2 className="text-center text-3xl">GraphQL with a remote API</h2>
+      <div className="py-8">
+        <p>
+          The Eurodance stack demoes patterns to connect your Remix app with
+          your prefered GraphQL API.
+        </p>
+        <p>
+          <strong>There is no client-side GraphQL involved.</strong>{" "}
+        </p>
+        <p>
+          Remix let you define queries and mutations in a server-side, in a
+          loader : you can consume GraphQL APIs as usual, but you don't need to
+          bloat your client bundle with a massive GraphQL client!
+        </p>
+      </div>
+      <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
+        <Link
+          className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
+          to="/distant-api/query"
+        >
+          Query a distant API
+        </Link>
+        <Link
+          className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
+          to="/distant-api/mutation"
+        >
+          Send mutations to a distant API
+        </Link>
+      </div>
+      {/*<div>
+              <p>
+                The query example connects to the{" "}
+                <a
+                  href="https://rickandmortyapi.com/"
+                  target="_blank"
+                  rel="norefferer noreferrer"
+                >
+                  Rick and Morty API
+                </a>
+              </p>
+              <p>
+                The mutation example connects to the{" "}
+                <a href="https://api.spacex.land/graphql/">SpaceX API</a>.
+              </p>
+            </div>*/}
+    </div>
+  </section>
+);
+const contributeSection = (
+  <section>
+    <div className="m-8 border p-4 text-center">
+      <div className="my-2">
+        <a href="https://github.com/VulcanJS/eurodance-stack">
+          <button className="border px-4 py-3 text-3xl text-yellow-700 shadow-sm hover:bg-yellow-50">
+            Click to use this stack for your own app
+          </button>
+        </a>
+      </div>
+      <div>
+        <a href="https://github.com/VulcanJS/vulcan-npm/issues/117">
+          <button className="border px-4 py-3 text-xl text-yellow-700 shadow-sm hover:bg-yellow-50">
+            Contribute
+          </button>
+        </a>
+      </div>
+    </div>
+  </section>
+);
 
-const JERRYS_QUERY = /*gql*/ `
-  query {
-    characters(page: 1, filter: { name: "jerry" }) {
-      info {
-        count
-      }
-      results {
-        name
-      }
-    }
-  }
-`;
-
-export const loader: LoaderFunction = (args) =>
-  //processRequestWithGraphQL({
-  sendGraphQLRequest({
-    // Pass on the arguments that Remix passes to a loader function.
-    args,
-    // Provide your schema.
-    //schema,
-    endpoint: "https://rickandmortyapi.com/graphql",
-    // Provide a GraphQL operation that should be executed. This can also be a
-    // mutation, it is named `query` to align with the common naming when
-    // sending GraphQL requests over HTTP.
-    query: JERRYS_QUERY,
-    // Optionally provide variables that should be used for executing the
-    // operation. If this is not passed, `remix-graphql` will derive variables
-    // from...
-    // - ...the route params.
-    // - ...the submitted `formData` (if it exists).
-    variables: { filter: { name: "Jerry" } },
-    // Optionally pass an object with properties that should be included in the
-    // execution context.
-    // context: {},
-    // Optionally pass a function to derive a custom HTTP status code for a
-    // successfully executed operation.
-    /*deriveStatusCode(
-      // The result of the execution.
-      executionResult: ExecutionResult,
-      // The status code that would be returned by default, i.e. of the
-      // `deriveStatusCode` function is not passed.
-      defaultStatusCode: number
-    ) {
-      return defaultStatusCode;
-    },*/
-  });
-
-type LoaderData = {
-  data?: {
-    characters?: { results?: Array<any> };
-  };
-  errors?: GraphQLError[];
-}; // TODO: compute automatically based on the query?
-
-// Import your schema from whereever you export it
-//import { schema } from "~/graphql/schema";
+// local url: /img/eurodance-bg-no-text.jpg
+const bgUrl =
+  "https://raw.githubusercontent.com/VulcanJS/eurodance-stack/main/public/img/eurodance-bg-no-text.jpg";
 
 export default function Index() {
   const user = useOptionalUser();
-  const { data } = useLoaderData<LoaderData>();
-  const jerrys = data?.characters?.results?.length
-    ? data.characters.results.slice(0, 5)
-    : [];
   return (
     <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
       <div className="relative sm:pb-16 sm:pt-8">
+        <GithubButtons />
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
             <div className="absolute inset-0">
@@ -86,11 +93,15 @@ export default function Index() {
                 src="https://user-images.githubusercontent.com/1500684/157774694-99820c51-8165-4908-a031-34fc371ac0d6.jpg"
                 alt="Sonic Youth On Stage"
               />*/}
-              <div className="absolute inset-0 bg-[color:#7a273c] mix-blend-multiply" />
+              <div className="absolute inset-0 bg-[color:#7a273c] bg-[url('https://raw.githubusercontent.com/VulcanJS/eurodance-stack/main/public/img/eurodance-bg-no-text.jpg')] bg-cover bg-center bg-no-repeat mix-blend-multiply" />
             </div>
-            <div className="lg:pb-18 relative px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pt-32">
+            <div className="lg:pb-18 relative bg-[rgba(0,0,0,0.3)] px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pt-32">
               <h1 className="text-center text-6xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
-                <span className="block uppercase text-yellow-500 drop-shadow-md">
+                <span
+                  // @ts-ignore
+                  style={{ "text-shadow": "2px 2px 5px #333333" }}
+                  className="block uppercase text-yellow-500 drop-shadow-md"
+                >
                   Vulcan Eurodance Stack
                   <br />
                   🇪🇺 🐸 🛵
@@ -135,18 +146,9 @@ export default function Index() {
             </div>
           </div>
         </div>
+        {graphqlSection}
+        {contributeSection}
 
-        <div className="mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl">Results of a loader using GraphQL:</h2>
-          <pre>
-            <code>{JSON.stringify(jerrys, null, 2)}</code>
-          </pre>
-          <p>
-            Note: no client-side GraphQL was involved! GraphQL is used only
-            server-side. Remix handles the data fetching via its loader system
-            as usual.
-          </p>
-        </div>
         <div className="mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8">
           <div className="mt-6 flex flex-wrap justify-center gap-8">
             {[
@@ -215,6 +217,19 @@ export default function Index() {
               </a>
             ))}
           </div>
+        </div>
+        <div className="my-4 text-center">
+          <a
+            href="https://vercel.com?utm_source=vulcan&utm_campaign=oss"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              className="inline-block"
+              alt="Powered by Vercel"
+              src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg"
+            />
+          </a>
         </div>
       </div>
     </main>

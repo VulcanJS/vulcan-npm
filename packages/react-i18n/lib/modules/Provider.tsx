@@ -79,8 +79,14 @@ export const IntlProviderContext =
       stringsRegistry: {
         Strings: [],
         getStrings: () => {},
-        getString: () =>
-          "intl-provider-context not setup with a string registry",
+        getString: ({ id, values, defaultMessage }) => {
+          // TODO: here we use Vulcan custom i18n system to display translations, eg for form submit
+          // we should get rid of that somehow?
+          console.warn(
+            "intl-provider-context not setup with a string registry"
+          );
+          return defaultMessage;
+        },
         addStrings: () => {},
       },
     })

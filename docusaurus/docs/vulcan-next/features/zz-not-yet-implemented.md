@@ -27,10 +27,6 @@ Setup debug client side programmatically based on DEBUG environment variable
 
 Splitting tests in folders? In order to differentiate real e2e tests from integration testing
 
-## Jest
-
-Load .env development config automatically in Jest
-
 ## GraphQL
 
 Graphql code generator for better autocompletion
@@ -39,6 +35,7 @@ Demo support of multiple graphQL API using Link split
 ## Next
 
 Remove debug routes from bundle during build
+=> we currently protect them with a middleware
 
 ## Others
 

@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/crud",
-  "version": "0.6.4",
+  "version": "0.7.2-alpha.1",
   "main": "./dist/index.js",
   "files": [
     "dist/"
@@ -23,10 +23,11 @@
   "homepage": "https://github.com/VulcanJS/vulcan-npm#readme",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/core": "^0.6.4",
-    "@vulcanjs/model": "^0.6.4",
-    "@vulcanjs/permissions": "^0.6.4",
-    "@vulcanjs/schema": "^0.6.4",
+    "@vulcanjs/core": "^0.7.2-alpha.1",
+    "@vulcanjs/model": "^0.7.2-alpha.1",
+    "@vulcanjs/permissions": "^0.7.2-alpha.1",
+    "@vulcanjs/schema": "^0.7.2-alpha.1",
+    "@vulcanjs/utils": "^0.7.2-alpha.1",
     "debug": "^4.3.1",
     "lodash": "^4.17.21"
   },

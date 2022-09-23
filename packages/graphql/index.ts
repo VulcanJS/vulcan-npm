@@ -6,3 +6,5 @@ export * from "./fragments/typings";
 export * from "./fragments/utils";
 
 export * from "./decorators";
+
+export * from "./queries";

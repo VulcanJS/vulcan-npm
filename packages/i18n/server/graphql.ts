@@ -6,18 +6,38 @@ import { LocalesRegistry, StringsRegistry } from "../intl";
 
 //addGraphQLSchema(localeType);
 
-const locale =
+/**
+ * Reusable helper to avoid calling the "locale" API from graphql,
+ * during SSR
+ * @param registries
+ * @returns
+ */
+export const getLocaleFromRegistries =
   (registries: {
     LocalesRegistry: LocalesRegistry;
     StringsRegistry: StringsRegistry;
   }) =>
-  async (root, { localeId }, context) => {
+  (localeId: string) => {
     const locale = registries.LocalesRegistry.getLocale(localeId);
     const strings = registries.StringsRegistry.getStrings(localeId);
     const localeObject = { ...locale, strings };
     return localeObject;
   };
 
+const locale =
+  (registries: {
+    LocalesRegistry: LocalesRegistry;
+    StringsRegistry: StringsRegistry;
+  }) =>
+  async (root, { localeId }, context) => {
+    return getLocaleFromRegistries(registries)(localeId);
+  };
+
+/**
+ * TODO: I think the "dynamic" version is specific to State of surveys
+ * It is not currently used in Vulcan, as we load translation string in-app and not dynamically
+ * via a 3rd party API
+ */
 const typeDefs = `type Locale {
   id: String,
   label: String
@@ -31,6 +51,7 @@ type Query {
 `;
 const resolvers = (registries) => ({
   Query: {
+    // NOTE: you can override this resolver if you want to be able to load strings dynamically
     locale: locale(registries),
   },
 });

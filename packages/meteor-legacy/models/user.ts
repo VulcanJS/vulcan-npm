@@ -10,7 +10,7 @@ export const User = createGraphqlModel({
     _id: {
       type: String,
       optional: true,
-      // canRead: ["guests"],
+      // canRead: ["guests", "anyone"],
     },
     createdAt: {
       type: Date,
@@ -27,7 +27,7 @@ export const User = createGraphqlModel({
       // optional: true,
       // canCreate: ["admins"],
       // canUpdate: ["admins"],
-      // canRead: ["guests"],
+      // canRead: ["guests", "anyone"],
       // group: adminGroup,
     },
     // TODO
@@ -139,7 +139,7 @@ const schema = {
   username: {
     type: String,
     optional: true,
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     canUpdate: ["admins"],
     canCreate: ["members"],
     onCreate: ({ document: user }) => {
@@ -176,7 +176,7 @@ const schema = {
     optional: true,
     canCreate: ["admins"],
     canUpdate: ["admins"],
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     group: adminGroup,
   },
 
@@ -187,7 +187,7 @@ const schema = {
     input: "select",
     canCreate: ["members"],
     canUpdate: ownsOrIsAdmin,
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     options: () => Locales.map(({ id, label }) => ({ value: id, label })),
     hidden: () => Locales.length <= 1,
   },
@@ -221,7 +221,7 @@ const schema = {
     input: "text",
     canCreate: ["members"],
     canUpdate: ownsOrIsAdmin,
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     order: 10,
     onCreate: ({ document: user }) => {
       return createDisplayName(user);
@@ -283,7 +283,7 @@ const schema = {
   emailHash: {
     type: String,
     optional: true,
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     onCreate: ({ document: user }) => {
       if (user.email) {
         return getCollection("Users").avatar.hash(user.email);
@@ -293,7 +293,7 @@ const schema = {
   avatarUrl: {
     type: String,
     optional: true,
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     onCreate: ({ document: user }) => {
       const twitterAvatar = Utils.getNestedProperty(
         user,
@@ -330,7 +330,7 @@ const schema = {
   slug: {
     type: String,
     optional: true,
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     order: 40,
     onCreate: ({ document: user }) => {
       // create a basic slug from display name and then modify it if this slugs already exists;
@@ -375,7 +375,7 @@ const schema = {
     input: "checkboxgroup",
     canCreate: ["admins"],
     canUpdate: ["admins"],
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     group: adminGroup,
     form: {
       options: function () {
@@ -402,7 +402,7 @@ const schema = {
   pageUrl: {
     type: String,
     optional: true,
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     resolveAs: {
       type: "String",
       resolver: (user, args, { Users }) => {
@@ -414,7 +414,7 @@ const schema = {
   pagePath: {
     type: String,
     optional: true,
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     resolveAs: {
       type: "String",
       resolver: (user, args, { Users }) => {
@@ -426,7 +426,7 @@ const schema = {
   editUrl: {
     type: String,
     optional: true,
-    canRead: ["guests"],
+    canRead: ["guests", "anyone"],
     resolveAs: {
       type: "String",
       resolver: (user, args, { Users }) => {

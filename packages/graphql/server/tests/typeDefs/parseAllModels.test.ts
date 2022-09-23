@@ -19,9 +19,9 @@ describe("graphql/typeDefs", () => {
       schema: {
         foo: {
           type: String,
-          canRead: ["guests"],
-          canCreate: ["guests"],
-          canUpdate: ["guests"],
+          canRead: ["anyone"],
+          canCreate: ["anyone"],
+          canUpdate: ["anyone"],
         },
       },
       name: "Foo",
@@ -36,9 +36,9 @@ describe("graphql/typeDefs", () => {
       schema: {
         bar: {
           type: String,
-          canRead: ["guests"],
-          canCreate: ["guests"],
-          canUpdate: ["guests"],
+          canRead: ["anyone"],
+          canCreate: ["anyone"],
+          canUpdate: ["anyone"],
         },
       },
       name: "Bar",

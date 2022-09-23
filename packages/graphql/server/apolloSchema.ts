@@ -2,14 +2,14 @@
  * Finalize the graphql schema creation by adding
  * common elements to the model-based schema
  */
-import { VulcanGraphqlModelServer } from "./typings";
+import { VulcanGraphqlModel } from "../typings";
 import { parseAllModels } from "./parseAllModels";
 import { defaultTypeDefs, defaultResolvers } from "./defaultSchema";
 import { mergeResolvers } from "./utils";
 import isEmpty from "lodash/isEmpty.js";
 
 export const buildApolloSchema = (
-  models: Array<VulcanGraphqlModelServer>
+  models: Array<VulcanGraphqlModel>
 ): {
   typeDefs: string;
   resolvers: any;

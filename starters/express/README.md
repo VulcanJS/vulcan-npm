@@ -129,7 +129,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 They give time and share knowledge to support the project.
 
 <a href="https://aplines.com" target="_blank" rel="noopener noreferrer">
-<img src="https://aplines.com/wp-content/uploads/2020/06/logo-1.png" alt="aplines" height="75"/>
+<img src="https://aplines.com/wp-content/uploads/2022/03/cropped-aplines-logo.png" alt="aplines" height="75"/>
 </a>
 <a href="https://www.lbke.fr" target="_blank" rel="noopener noreferrer">
 <img src="https://www.lbke.fr/img/logo-md.png" height="75" alt="lbke" />
@@ -137,3 +137,7 @@ They give time and share knowledge to support the project.
 <a href="https://letter.so/" target="_blank" rel="noopener noreferrer">
 <img src="https://github.com/VulcanJS/vulcan-next/blob/devel/public/img/letter-96x96.png?raw=true" height="75" alt="lette.so" />
 </a>
+
+---
+
+[![Powered by Vercel](https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg)](https://vercel.com?utm_source=vulcan&utm_campaign=oss)

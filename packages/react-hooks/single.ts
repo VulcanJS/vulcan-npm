@@ -76,7 +76,7 @@ const buildQueryOptions = <TData = any, TVariables = OperationVariables>(
   const pollInterval =
     typeof window === "undefined"
       ? undefined
-      : options?.queryOptions?.pollInterval ?? 2000;
+      : options?.queryOptions?.pollInterval ?? 20000;
 
   return {
     variables: {

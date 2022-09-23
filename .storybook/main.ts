@@ -6,6 +6,7 @@ module.exports = {
   stories: [
     // TODO: reenable progressively, we currently have an issue with build never ending
     "../packages/react-ui/**/*.stories.@(js|jsx|tsx)",
+    "../packages/react-ui-lite/**/*.stories.@(js|jsx|tsx)",
     "../packages/react-ui-bootstrap/**/*.stories.@(js|jsx|tsx)",
     // // specifying packages folder is important to avoid rebuilding on cache change
     // // @see https://github.com/storybookjs/storybook/issues/14342

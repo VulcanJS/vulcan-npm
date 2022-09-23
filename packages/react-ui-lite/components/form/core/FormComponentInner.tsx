@@ -1,6 +1,7 @@
 import React from "react";
 import { useIntlContext } from "@vulcanjs/react-i18n";
-import { whitelistInputProps } from "../utils/ui_utils";
+import { uiUtils } from "@vulcanjs/react-ui";
+const { whitelistInputProps } = uiUtils
 /*
 import {
   instantiateComponent,

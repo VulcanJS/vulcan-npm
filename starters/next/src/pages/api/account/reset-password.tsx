@@ -1,14 +1,15 @@
 import { Request } from "express";
 import { updateMutator } from "@vulcanjs/crud/server";
 import { NextApiRequest, NextApiResponse } from "next";
-import { User, UserMongooseModel } from "~/models/user.server";
+import { User, UserMongooseModel } from "~/account/models/user.server";
 import {
   StorableTokenConnector,
   hashToken,
-} from "~/models/storableToken.server";
+} from "~/account/models/storableToken.server";
 
-import { contextFromReq } from "~/lib/api/context";
-import { sendResetPasswordSuccessEmail } from "~/lib/api/account";
+import { contextFromReq } from "~/core/server/context";
+import { sendResetPasswordSuccessEmail } from "~/account/server";
+import { connectToAppDb } from "~/core/server/mongoose/connection";
 
 interface ResetPasswordBody {
   token: string;
@@ -22,6 +23,7 @@ export default async function changePassword(
   res: NextApiResponse
 ) {
   try {
+    await connectToAppDb();
     const body = req.body;
     const { token, newPassword } = body as ResetPasswordBody;
     // context computation step œis shared with graphql endpoint

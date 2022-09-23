@@ -1,6 +1,6 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
-import { VulcanComponentsProvider } from "../../VulcanComponents/Provider";
+import { VulcanComponentsProvider } from "@vulcanjs/react-ui";
 import { IntlProvider } from "@vulcanjs/react-i18n";
 import { makeStringsRegistry } from "@vulcanjs/i18n";
 import { action, actions } from "@storybook/addon-actions";
@@ -8,14 +8,14 @@ import {
   FormNestedArray,
   FormNestedArrayProps,
 } from "../nested/FormNestedArray";
-import { FormContext } from "../core/FormContext";
+import { FormContext } from "@vulcanjs/react-ui";
 
 // TODO: instead, compose with Form stories
 const defaultFormProps = {
-  changeCallback: () => {},
-  createDocument: () => {},
-  updateDocument: () => {},
-  deleteDocument: () => {},
+  changeCallback: () => { },
+  createDocument: () => { },
+  updateDocument: () => { },
+  deleteDocument: () => { },
 };
 export default {
   component: FormNestedArray,

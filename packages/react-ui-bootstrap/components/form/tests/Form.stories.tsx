@@ -20,6 +20,15 @@ export default {
   decorators: [
     (Story) => (
       <VulcanComponentsProvider value={bootstrapVulcanComponents}>
+        {/** Hacky solution to get styling, until Storybook
+         * can load a config per package
+         */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+          crossOrigin="anonymous"
+        />
         <Story />
       </VulcanComponentsProvider>
     ),
@@ -107,6 +116,15 @@ AllBasicFields.args = {
     name: "Biography",
     schema: basicFieldsSchema,
   }),
+};
+
+export const Disabled = FormTemplate.bind({});
+Disabled.args = {
+  model: createModel({
+    name: "Biography",
+    schema: basicFieldsSchema,
+  }),
+  disabled: true,
 };
 
 // SELECT

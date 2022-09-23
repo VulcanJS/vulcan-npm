@@ -5,9 +5,12 @@
  *
  * Ideally for such a rich component we should also expose
  * hooks and internal logic so users can build their own
+ * 
+ * 
+ * NOTE: currently we don't load react-boostrap css
  */
 import { AsyncTypeahead } from "react-bootstrap-typeahead"; // ES2015
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // We don't auto-expand queries in Vulcan NPM, since we don't use the registry pattern
 // anymore. Instead, provide the right fragments directly, using composition with string templates.
 //import { expandQueryFragments } from "meteor/vulcan:core";
@@ -54,10 +57,6 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
     }
   );
 
-  if (error) {
-    // TODO: probably not the best way to displat the error
-    throw new Error(error.message);
-  }
   // apply options function to data to get suggestions in { value, label } pairs
   const autocompleteOptions = data && optionsFunction({ data });
 
@@ -80,6 +79,8 @@ export const AutocompleteMultiple = (props: AutocompleteMultipleProps) => {
       {...itemProperties}
       name={path}
     >
+      {/** Inspired by "FormErrors" */}
+      {error && error.message && <Components.Alert className="flash-message" variant="danger">{error.message}</Components.Alert>}
       {/** @ts-ignore */}
       <AsyncTypeahead
         {...inputProperties}

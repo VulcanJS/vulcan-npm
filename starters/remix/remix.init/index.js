@@ -2,9 +2,9 @@ const { execSync } = require("child_process");
 const crypto = require("crypto");
 const fs = require("fs/promises");
 const path = require("path");
-const inquirer = require("inquirer");
 
 const toml = require("@iarna/toml");
+const YAML = require("yaml");
 const sort = require("sort-package-json");
 
 function escapeRegExp(string) {
@@ -16,12 +16,22 @@ function getRandomString(length) {
   return crypto.randomBytes(length).toString("hex");
 }
 
-async function main({ rootDirectory }) {
+async function main({ rootDirectory, packageManager, isTypeScript }) {
+  const isVulcanNpmRepo = !!rootDirectory.match(/vulcan-npm/);
+  if (isVulcanNpmRepo)
+    console.log(
+      "Running init in Vulcan NPM monorepo for development, will skip some init steps."
+    );
   const README_PATH = path.join(rootDirectory, "README.md");
   const FLY_TOML_PATH = path.join(rootDirectory, "fly.toml");
   const EXAMPLE_ENV_PATH = path.join(rootDirectory, ".env.example");
   const ENV_PATH = path.join(rootDirectory, ".env");
   const PACKAGE_JSON_PATH = path.join(rootDirectory, "package.json");
+  const DEPLOY_YAML_PATH = path.join(
+    rootDirectory,
+    ".github/workflows/deploy.yml"
+  );
+  const DOCKERFILE_PATH = path.join(rootDirectory, "Dockerfile");
 
   const REPLACER = "eurodance-stack-template";
 
@@ -32,18 +42,15 @@ async function main({ rootDirectory }) {
     // get rid of anything that's not allowed in an app name
     .replace(/[^a-zA-Z0-9-_]/g, "-");
 
-  const [prodContent, readme, env, packageJson] = await Promise.all([
-    fs.readFile(FLY_TOML_PATH, "utf-8"),
-    fs.readFile(README_PATH, "utf-8"),
-    fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
-    fs.readFile(PACKAGE_JSON_PATH, "utf-8"),
-    /*
-    fs.rm(path.join(rootDirectory, ".github/ISSUE_TEMPLATE"), {
-      recursive: true,
-    }),
-    fs.rm(path.join(rootDirectory, ".github/PULL_REQUEST_TEMPLATE.md")),
-    */
-  ]);
+  const [prodContent, readme, env, packageJson, deployConfig, dockerfile] =
+    await Promise.all([
+      fs.readFile(FLY_TOML_PATH, "utf-8"),
+      fs.readFile(README_PATH, "utf-8"),
+      fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
+      fs.readFile(PACKAGE_JSON_PATH, "utf-8").then((s) => JSON.parse(s)),
+      fs.readFile(DEPLOY_YAML_PATH, "utf-8").then((s) => YAML.parse(s)),
+      fs.readFile(DOCKERFILE_PATH, "utf-8"),
+    ]);
 
   const newEnv = env.replace(
     /^SESSION_SECRET=.*$/m,
@@ -58,32 +65,78 @@ async function main({ rootDirectory }) {
     APP_NAME
   );
 
-  const newPackageJson =
-    JSON.stringify(
-      sort({ ...JSON.parse(packageJson), name: APP_NAME }),
-      null,
-      2
-    ) + "\n";
+  let saveDeploy = null;
+  if (!isTypeScript) {
+    delete packageJson.scripts.typecheck;
+    packageJson.scripts.validate = packageJson.scripts.validate.replace(
+      " typecheck",
+      ""
+    );
+
+    delete deployConfig.jobs.typecheck;
+    deployConfig.jobs.deploy.needs = deployConfig.jobs.deploy.needs.filter(
+      (n) => n !== "typecheck"
+    );
+    // only write the deploy config if it's changed
+    saveDeploy = fs.writeFile(DEPLOY_YAML_PATH, YAML.stringify(deployConfig));
+  }
+
+  const newPackageJson = isVulcanNpmRepo
+    ? // Leave it alone in dev mode
+      JSON.stringify(packageJson)
+    : // Change the app name to a random name =>
+      // except if we are in the Vulcan Monorepo during dev
+      JSON.stringify(
+        sort({
+          ...packageJson,
+          name: APP_NAME,
+        }),
+        null,
+        2
+      ) + "\n";
+
+  const lockfile = {
+    npm: "package-lock.json",
+    yarn: "yarn.lock",
+    pnpm: "pnpm-lock.yaml",
+  }[packageManager];
+
+  const newDockerfile = lockfile
+    ? dockerfile.replace(
+        new RegExp(escapeRegExp("ADD package.json"), "g"),
+        `ADD package.json ${lockfile}`
+      )
+    : dockerfile;
 
   await Promise.all([
     fs.writeFile(FLY_TOML_PATH, toml.stringify(prodToml)),
     fs.writeFile(README_PATH, newReadme),
     fs.writeFile(ENV_PATH, newEnv),
     fs.writeFile(PACKAGE_JSON_PATH, newPackageJson),
+    fs.writeFile(DOCKERFILE_PATH, newDockerfile),
+    saveDeploy,
+    // generate .gitignore
+    fs.copyFile(
+      path.join(rootDirectory, "remix.init", "gitignore"),
+      path.join(rootDirectory, ".gitignore")
+    ),
+    // generate .npmrc
+    fs.copyFile(
+      path.join(rootDirectory, "remix.init", "npmrc"),
+      path.join(rootDirectory, ".npmrc")
+    ),
+    /*fs.rm(path.join(rootDirectory, ".github/ISSUE_TEMPLATE"), {
+      recursive: true,
+    }),
+    fs.rm(path.join(rootDirectory, ".github/PULL_REQUEST_TEMPLATE.md")),*/
   ]);
 
   execSync(`npm run setup`, { stdio: "inherit", cwd: rootDirectory });
 
-  // TODO: There is currently an issue with the test cleanup script that results
-  // in an error when running Cypress in some cases. Add this question back
-  // when this is fixed.
-  // await askSetupQuestions({ rootDirectory }).catch((error) => {
-  //   if (error.isTtyError) {
-  //     // Prompt couldn't be rendered in the current environment
-  //   } else {
-  //     throw error;
-  //   }
-  // });
+  execSync("npm run format -- --loglevel warn", {
+    stdio: "inherit",
+    cwd: rootDirectory,
+  });
 
   console.log(
     `Setup is complete. You're now ready to rock and roll 🤘
@@ -91,25 +144,6 @@ async function main({ rootDirectory }) {
 Start development with \`npm run dev\`
     `.trim()
   );
-}
-
-async function askSetupQuestions({ rootDirectory }) {
-  const answers = await inquirer.prompt([
-    {
-      name: "validate",
-      type: "confirm",
-      default: false,
-      message:
-        "Do you want to run the build/tests/etc to verify things are setup properly?",
-    },
-  ]);
-
-  if (answers.validate) {
-    console.log(
-      `Running the validate script to make sure everything was set up properly`
-    );
-    execSync(`npm run validate`, { stdio: "inherit", cwd: rootDirectory });
-  }
 }
 
 module.exports = main;

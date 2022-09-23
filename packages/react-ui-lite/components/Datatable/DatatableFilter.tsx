@@ -5,7 +5,8 @@ import { useQuery } from "@apollo/client";
 import moment from "moment";
 import isEmpty from "lodash/isEmpty.js";
 import { useVulcanComponents } from "@vulcanjs/react-ui";
-import { getFieldType } from "../form/utils/utils";
+import { utils } from "@vulcanjs/react-ui";
+const { getFieldType } = utils
 
 const getCount = (columnFilters) => {
   if (!columnFilters) {

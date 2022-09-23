@@ -1,9 +1,11 @@
 # Vulcan Eurodance Stack
 
-The Remix Eurodance Stack 🇪🇺 🐸 🛵
-*Based on Remix [Indie Stack](https://github.com/remix-run/indie-stack)*
+![The Remix Eurodance Stack 🇪🇺 🐸 🛵](https://raw.githubusercontent.com/VulcanJS/vulcan-npm/main/docusaurus/static/img/remix/eurodance-banner.jpeg)
+_Based on Remix [Indie Stack](https://github.com/remix-run/indie-stack)_
 
 <!--![The Remix Eurodance Stack](https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf)-->
+
+Eurodance Stack is the Remix stack for **GraphQL** developers.
 
 Learn more about [Remix Stacks](https://remix.run/stacks).
 
@@ -11,33 +13,66 @@ Learn more about [Remix Stacks](https://remix.run/stacks).
 npx create-remix --template VulcanJS/eurodance-stack
 ```
 
-**NOTE: if you clone this repo directly, and don't use `create-remix`, you will need to run `yarn remix init` manually!**
+You can also run Eurodance Stack on [CodeSandbox Projects](https://projects.codesandbox.io/). As it is currently in beta (06/2022), you need to ask for an early access, and then search for "VulcanJS/eurodance-stack" when creating your project.
+
+**NOTE: if you clone this repo directly, and don't use `create-remix`, you will need to run `yarn remix init` manually after the first install!**
 
 ## What's in the stack
 
 ### From Vulcan (work in progress):
 
-**Development tools**
-
-- A Storybook based development workflow. Write a story, get unit and visual regression tests for free.
-
 **GraphQL**
 
 - Invisible GraphQL: work transparently with GraphQL, without ever depending client-side
-- A GraphQL resource route with [GraphQL Yoga](https://www.graphql-yoga.com/)
-- Vulcan Artemis Engine
-
-**MongoDB supports (via Prisma)**
-
-Remix stacks works with Prisma out-of-the-box, and various databases.
-For historical reasons, Vulcan prefers Mongo, but you can switch very easily to any database.
 
 **Vercel deployment**
 
 Remix stacks hosts on Fly out-of-the-box.
 For historical reasons Vulcan prefers Vercel, but you can deploy your Remix app almost anywhere very easily.
 
-### From Remix indie stack:
+- We already setup remix to run a specific "vercel.server.js" on Vercel
+- We already set a minimum vercel.json
+- Create a new project on Vercel or run Vercel CLI to setup the project: `vercel` (answer the questions)
+- IMPORTANT: add a `SESSION_SECRET` to your Vercel app secrets, to do this you can run the following commands:
+  ```sh
+  vercel env add SESSION_SECRET=$(openssl rand -hex 32)
+  ```
+  If you don't have openssl installed, you can also use [1password](https://1password.com/password-generator/) to generate a random secret, just replace `$(openssl rand -hex 32)` with the generated secret.
+- If using SQLite, set `DATABASE_URL` to `file:./tmp/data/data.db?connection_limit=1`. **Important note: the data will not persist!**
+**This is only for demonstration purpose.** You should find an host that supports SQLite or wait until we introduce MongoDB in this stack.
+
+**CodeSandbox Projects**
+
+Eurodance supports being installed as a CodeSandbox Project (beta feature).
+
+**Storybook**
+
+Basic setup with Vite, but also [@storybook/testing-react](https://storybook.js.org/addons/@storybook/testing-react). This brilliant addon lets you import your stories in unit tests.
+
+***Embrace Story Driven Development:***:
+
+1. Develop components visually in isolation with Storybook
+2. Share with your designers and teammates to validate the behaviour and appearance
+3. Import your stories in a Vitest unit test
+4. Automate testing and prevent regression with React Testing Library
+
+### Incoming
+
+**MongoDB supports (via Prisma)**
+
+Remix stacks works with Prisma out-of-the-box, and various databases.
+For historical reasons, Vulcan prefers Mongo, but you can switch very easily to any database.
+
+**Advanced GraphQL**
+
+- A GraphQL resource route with [GraphQL Yoga](https://www.graphql-yoga.com/)
+- Vulcan Fire Engine
+
+
+[And many others, follow the umbrella ticket on GitHub to learn more about our roadmap.](https://github.com/VulcanJS/vulcan-npm/issues/117)
+
+### Features inherited from Remix Indie stack:
+
 - [Fly app deployment](https://fly.io) with [Docker](https://www.docker.com/)
 - Production-ready [SQLite Database](https://sqlite.org)
 - Healthcheck endpoint for [Fly backups region fallbacks](https://fly.io/docs/reference/configuration/#services-http_checks)
@@ -61,6 +96,12 @@ Click this button to create a [Gitpod](https://gitpod.io) workspace with the pro
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/from-referrer/)
 
 ## Development
+
+- This step only applies if you've opted out of having the CLI install dependencies for you:
+  
+  ```sh
+  npx remix init
+  ```
 
 - Initial setup: _If you just generated this project, this step has been done for you._
 
@@ -89,7 +130,10 @@ This is a pretty simple note-taking app, but it's a good example of how you can 
 - user sessions, and verifying them [./app/session.server.ts](./app/session.server.ts)
 - creating, and deleting notes [./app/models/note.server.ts](./app/models/note.server.ts)
 
-## Deployment
+## Deployment with Fly
+
+**NOTE: in Eurodance stack we favour Vercel deployment. We have commented out Fly related setup.**
+**You can easily remove Vercel and reenable FLy.**
 
 This Remix Stack comes with two GitHub Actions that handle automatically deploying your app to production and staging environments.
 
@@ -226,7 +270,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 They give time and share knowledge to support the project.
 
 <a href="https://aplines.com" target="_blank" rel="noopener noreferrer">
-<img src="https://aplines.com/wp-content/uploads/2020/06/logo-1.png" alt="aplines" height="75"/>
+<img src="https://aplines.com/wp-content/uploads/2022/03/cropped-aplines-logo.png" alt="aplines" height="75"/>
 </a>
 <a href="https://www.lbke.fr" target="_blank" rel="noopener noreferrer">
 <img src="https://www.lbke.fr/img/logo-md.png" height="75" alt="lbke" />
@@ -238,3 +282,7 @@ They give time and share knowledge to support the project.
 ## Other cool stuff that inspires us
 
 - [remix-graphql](https://github.com/thomasheyenbrock/remix-graphql) served as a basis to setup GraphQL in Remix
+
+---
+
+[![Powered by Vercel](https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg)](https://vercel.com?utm_source=vulcan&utm_campaign=oss)

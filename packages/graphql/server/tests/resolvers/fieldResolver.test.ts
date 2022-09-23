@@ -3,6 +3,8 @@ import { ApolloServer } from "apollo-server";
 import { createGraphqlModelServer } from "../../../extendModel.server";
 import { VulcanGraphqlSchemaServer } from "../../typings";
 import { buildApolloSchema } from "../../apolloSchema";
+import gql from "graphql-tag";
+import { print } from "graphql";
 const makeFooModel = (schema: VulcanGraphqlSchemaServer) =>
   createGraphqlModelServer({
     schema,
@@ -22,6 +24,12 @@ describe("permissions", () => {
     // so we can test multiple requests with a different user
     let currentUser = { isAdmin: false, groups: [] };
     const model = makeFooModel({
+      // Needed to get at least one unique field
+      _id: {
+        type: String,
+        optional: true,
+        canRead: ["anyone"],
+      },
       field: {
         type: String,
         optional: true,
@@ -60,14 +68,16 @@ describe("permissions", () => {
       }),
     });
     // Testing our field resolver
-    const GET_FOO = `query getFoo($variable: String) {
-          foo(input:{}) {
-            result {
-              field
-              resolvedField(variable: $variable)
-            }
-          } 
-        }`;
+    const GET_FOO = print(gql`
+      query getFoo($variable: String) {
+        foo(input: {}) {
+          result {
+            field
+            resolvedField(variable: $variable)
+          }
+        }
+      }
+    `);
     const result = await server.executeOperation({
       query: GET_FOO,
       variables: { variable: "world" },

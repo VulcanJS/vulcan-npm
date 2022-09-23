@@ -9,18 +9,18 @@ import { Connector } from "@vulcanjs/crud/server";
 const schema = {
   _id: {
     type: String,
-    canRead: ["guests"],
+    canRead: ["anyone"],
     optional: true,
   },
   createdAfter: {
     optional: true,
     type: Number,
-    canRead: ["guests"],
+    canRead: ["anyone"],
   },
   createdBefore: {
     optional: true,
     type: Number,
-    canRead: ["guests"],
+    canRead: ["anyone"],
   },
 };
 const defaultModelOptions = {

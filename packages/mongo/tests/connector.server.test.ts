@@ -1,6 +1,6 @@
 // NOTE: this set of test applies to almost any kind of connector,
 // the only moving part is the way we setup the dummy test database
-import { createMongooseConnector } from "../connector";
+import { createMongooseConnector } from "../mongooseConnector";
 import { MongoMemoryServer } from "mongodb-memory-server"; // @see https://github.com/nodkz/mongodb-memory-server
 // @see https://mongoosejs.com/docs/jest.html
 import mongoose from "mongoose";

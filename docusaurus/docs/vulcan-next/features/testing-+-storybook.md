@@ -7,7 +7,7 @@
 We support server and client testing based on the following naming convention:
 
 - A test named `myTest.test.ts` will be executed in a JSDOM environment (~ like a browser). Use as a default for React components and generic utility code.
-- A test named `myTest.test.server.ts` will be executed only in the Node server environment. Use to test your Graphql resolvers for instance.
+- A test named `myTest.test.server.ts`, or any test located within a `server` folder, will be executed only in the Node server environment. Use to test your Graphql resolvers for instance.
 
 ### React Testing library
 
@@ -15,13 +15,18 @@ We have preinstalled [React Testing Library](https://testing-library.com/docs/re
 
 ### Tests for Vulcan Next (for contributors only)
 
-We have a unit tests for some key features and scripts of VN, through the `tests/vns` folder.
+We have a unit tests for some key features and scripts of VN, through the `tests/vn` folder.
 
 This folder is ignored when running `yarn run test:unit`, to avoid bloating your own tests.
 
 ### MDX parsing, magic imports with ~
 
 [jest-transformer-mdx](https://github.com/bitttttten/jest-transformer-mdx) allow importing .mdx also in Jest
+
+### .env support
+
+Load `.env` config automatically in Jest,
+see [Jest globalSetup](https://github.dev/VulcanJS/vulcan-next/blob/main/.vn/tests/globalSetup.js).
 
 ## Unified testing patterns
 

@@ -40,8 +40,29 @@ export type RelationDefinition =
       model: VulcanGraphqlModel;
     });
 
+interface ReversedRelationDefinition {
+  model: VulcanGraphqlModel;
+  /**
+   * Same has hasOne and hasMany, but the field is add
+   * in the related model graphql schema, not the current model schema
+   */
+  kind: "hasOneReversed" | "hasManyReversed";
+  /**
+   * Name of the field in the related model
+   * Be cautious that field should not exist in the initial model
+   * */
+  foreignFieldName: string;
+}
 export interface VulcanGraphqlFieldSchema extends VulcanFieldSchema {
   relation?: RelationDefinition; // define a relation to another model
+  /**
+   * Adds a relation field on the foreign model
+   * => useful to extend a model based on another,
+   * eg add admin only field to a core model
+   *
+   * @see Devographics survey form Responses and NormalizedResponses relation
+   */
+  reversedRelation?: ReversedRelationDefinition;
   typeName?: string; // the GraphQL type to resolve the field with
 
   // TODO: not sure about the arguments in function mode
@@ -54,7 +75,7 @@ export type VulcanGraphqlSchema = VulcanSchema<VulcanGraphqlFieldSchema>;
 // MODEL TYPINGS
 // Those typings extends the raw model/schema system
 export interface VulcanGraphqlModelSkeleton extends VulcanModel {
-  graphql: Pick<GraphqlModel, "typeName">;
+  graphql: Pick<GraphqlModel, "typeName" | "defaultFragmentOptions">;
 }
 
 // information relevant for server and client
@@ -65,7 +86,18 @@ export interface GraphqlModel {
   singleResolverName: string;
   defaultFragment?: string;
   defaultFragmentName?: string;
+  defaultFragmentOptions?: DefaultFragmentOptions;
 }
+
+export type DefaultFragmentOptions = {
+  /**
+   * If true, fields ending by "_intl" are considered normal strings
+   * If false, they are interpreted as fields of type Intl
+   */
+  noIntlFields?: boolean;
+  onlyViewable?: boolean;
+};
+
 // Client only model fields
 // interface GraphqlClientModel extends GraphqlModel {}
 

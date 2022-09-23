@@ -82,6 +82,42 @@ interface CrudModelServer extends CrudModel {
    */
   connector?: Connector;
   callbacks?: MutationCallbackDefinitions;
+  /**
+   * See "Filtering" documentation
+   * 
+   * @experimental Only supports Mongo at the moment
+   * The return type should match your Connector type
+   * so a Mongo selector/mongo options for example
+   * 
+   * @example {
+      name: '_withRating',
+      arguments: 'average: Int',
+      filter: ({ input, context, filterArguments }) => {
+        const { average } = filterArguments;
+        const { Reviews } = context;
+        // get all movies that have an average review score of X stars 
+        const xStarReviewsMoviesIds = getMoviesByScore(average);
+        return {
+          selector: { _id: {$in: xStarReviewsMoviesIds } },
+          options: {}
+        }
+      };
+    }
+   */
+  customFilters?: Array<{
+    /**
+     * Preferably start with a underscore
+     * Must not be a name already used (avoid _in, _eq etc.)
+     * @example _withRatings
+     */
+    name: string;
+    /**
+     * GraphqQL arugments
+     * @example "average: Int"
+     */
+    arguments?: string;
+    filter: (args: { input: any; context: any; filterArguments: any }) => any;
+  }>;
 }
 
 // Extended model with extended schema

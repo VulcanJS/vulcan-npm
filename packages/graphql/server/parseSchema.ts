@@ -10,7 +10,6 @@ import {
   unarrayfyFieldName,
   getArrayChild,
   getNestedSchema,
-  shouldAddOriginalField,
   VulcanFieldSchema,
   VulcanSchema,
   hasNestedSchema,
@@ -20,15 +19,39 @@ import {
 import { getGraphQLType } from "../utils";
 import { isIntlField, isIntlDataField } from "@vulcanjs/i18n";
 import { capitalize } from "@vulcanjs/utils";
-import {
-  AnyResolverMap,
-  QueryResolverDefinitions,
-  ResolverMap,
-} from "./typings";
+import { AnyResolverMap, ResolverMap } from "./typings";
 // import { buildResolveAsResolver } from "./resolvers/resolveAsResolver";
-import * as relations from "./resolvers/relationResolvers";
-import { withFieldPermissionCheckResolver } from "./resolvers/fieldResolver";
-import { ResolveAsDefinition } from "./typings";
+import { VulcanGraphqlFieldSchemaServer } from "./typings";
+import {
+  parseFieldResolvers,
+  parseReversedRelation,
+  ResolveAsField,
+  GraphqlSchemaExtension,
+} from "./parseField";
+import { VulcanGraphqlModel } from "../typings";
+
+/**
+ * Vulcan field types that support filtering
+ */
+
+/**
+ * Cleaner graphql type
+ * @param type
+ * @returns
+ */
+const getContentType = (graphqlType) =>
+  graphqlType.replace("[", "").replace("]", "").replace("!", "");
+/**
+ * Vulcan types that can be filtered
+ * (in previous versions of Vulcan, we would check the GraphQL
+ * type, but here we check the schema type => this allow handling custom graphql scalar such as ObjectId
+ * as long as they can be converted to a filterable graphql type)
+ */
+const supportedFieldTypes = [String, Number, Boolean, Date]; //["String", "Int", "Float", "Boolean", "Date"];
+const isSupportedFieldType = (
+  /** The Schema type type */
+  type
+) => supportedFieldTypes.includes(type);
 
 // get GraphQL type for a nested object (<MainTypeName><FieldName> e.g PostAuthor, EventAdress, etc.)
 export const getNestedGraphQLType = (
@@ -41,6 +64,8 @@ export const getNestedGraphQLType = (
   }`;
 
 const hasTypeName = (field: VulcanFieldSchema): boolean => !!field.typeName;
+const hasRelation = (field: VulcanFieldSchema): boolean => !!field.relation;
+const hasResolver = (field: VulcanFieldSchema): boolean => !!field.resolveAs;
 
 const hasPermissions = (field) =>
   field.canRead || field.canCreate || field.canUpdate;
@@ -52,159 +77,6 @@ const hasLegacyPermissions = (field) => {
       "Some field is using legacy permission fields viewableBy, insertableBy and editableBy. Please replace those fields with canRead, canCreate and canUpdate."
     );
   return hasLegacyPermissions;
-};
-
-interface ResolveAsRelation extends ResolveAsDefinition {}
-interface ResolveAsCustom extends ResolveAsDefinition {}
-type ResolveAs = ResolveAsCustom | ResolveAsRelation;
-
-interface ResolveAsField extends VulcanFieldSchema {
-  resolveAs: Array<ResolveAs> | ResolveAs;
-}
-
-/** Parsed ResolveAs definition? */
-interface GetResolveAsFieldsInput {
-  typeName: string;
-  field: ResolveAsField;
-  fieldName: string;
-  fieldType?: string;
-  fieldDescription?: string;
-  fieldDirective?: string;
-  fieldArguments?: Array<{ name: string; type: string }>;
-}
-interface MainTypeDefinition {
-  description?: string;
-  name: string;
-  args?: any;
-  type: string;
-  direction?: any;
-  directive?: any;
-}
-
-interface GetResolveAsFieldsOutput {
-  fields: {
-    mainType: Array<MainTypeDefinition>;
-  };
-  resolvers: Array<AnyResolverMap>;
-}
-
-// Generate GraphQL fields and resolvers for a field with a specific resolveAs
-// resolveAs allow to generate "virtual" fields that are queryable in GraphQL but does not exist in the database
-export const parseFieldResolvers = ({
-  typeName,
-  field,
-  fieldName,
-  fieldType,
-  fieldDescription,
-  fieldDirective,
-  fieldArguments,
-}: GetResolveAsFieldsInput): GetResolveAsFieldsOutput => {
-  const fields: GetResolveAsFieldsOutput["fields"] = {
-    mainType: [],
-  };
-  const resolvers: Array<QueryResolverDefinitions> = [];
-
-  const relation = field.relation;
-  const resolveAsArray = field.resolveAs
-    ? Array.isArray(field.resolveAs)
-      ? field.resolveAs
-      : [field.resolveAs]
-    : [];
-
-  if (!(resolveAsArray.length || relation)) {
-    throw new Error(
-      `Neither resolver nor relation is defined for field ${fieldName} of model ${typeName}.`
-    );
-  }
-  // NOTE: technically, we could support it as long as the resolveAs are creating fields that don't
-  // clash with the relation
-  // But until we have a more powerful check for this we might prefer to protect the user from misuse
-  if (resolveAsArray.length && relation) {
-    throw new Error(
-      `Defined both a custom resolver and a relation for field ${fieldName} of model ${typeName}.`
-    );
-  }
-
-  // relation
-  if (relation) {
-    const relationResolver = relations[relation.kind]({
-      fieldName,
-      relation,
-    });
-    const resolver = withFieldPermissionCheckResolver(field, relationResolver);
-    // then build actual resolver object and pass it to addGraphQLResolvers
-    const resolverName = relation.fieldName;
-    const resolverDefinition = {
-      [typeName]: {
-        [resolverName]: resolver,
-      },
-    };
-    resolvers.push(resolverDefinition);
-    // add the original field systematically for relations
-    if (fieldType) {
-      fields.mainType.push({
-        description: fieldDescription,
-        name: fieldName,
-        args: fieldArguments,
-        type: fieldType,
-        directive: fieldDirective,
-      });
-    }
-    // add the resolved field "Foo { resolvedField }"
-    fields.mainType.push({
-      //description: resolveAs.description,
-      name: resolverName,
-      //args: resolveAs.arguments,
-      type: relation.typeName, //,
-      //type: fieldGraphQLType,
-    });
-    // resolveAs with custom resolution(s)
-  } else if (resolveAsArray) {
-    // check if original (main schema) field should be added to GraphQL schema
-    const addOriginalField = shouldAddOriginalField(fieldName, field);
-    if (addOriginalField && fieldType) {
-      fields.mainType.push({
-        description: fieldDescription,
-        name: fieldName,
-        args: fieldArguments,
-        type: fieldType,
-        directive: fieldDirective,
-      });
-    }
-
-    resolveAsArray.forEach((resolveAs) => {
-      // get resolver name from resolveAs object, or else default to field name
-      const resolverName = resolveAs.fieldName || fieldName;
-      const customResolver = resolveAs.resolver;
-
-      // use specified GraphQL type or else convert schema type
-      const fieldGraphQLType =
-        resolveAs.typeName || resolveAs.type || fieldType;
-
-      // if resolveAs is an object, first push its type definition
-      // include arguments if there are any
-      // note: resolved fields are not internationalized
-      if (fieldGraphQLType) {
-        fields.mainType.push({
-          description: resolveAs.description,
-          name: resolverName,
-          args: resolveAs.arguments,
-          type: fieldGraphQLType,
-        });
-      }
-      // then build actual resolver object and pass it to addGraphQLResolvers
-      const resolver =
-        customResolver &&
-        withFieldPermissionCheckResolver(field, customResolver);
-      const resolverDefinition = {
-        [typeName]: {
-          [resolverName]: resolver,
-        },
-      };
-      resolvers.push(resolverDefinition);
-    });
-  }
-  return { fields, resolvers };
 };
 
 /**
@@ -231,6 +103,10 @@ interface GetPermissionFieldsInput {
   fieldName: string;
   fieldType: string;
   inputFieldType: any;
+  /**
+   * Whether the field is nested IN THE DATABASE
+   * (do not include resolved fields)
+   */
   hasNesting?: boolean;
 }
 // Parsed representation of a field
@@ -276,7 +152,7 @@ export const parseMutable = ({
   fieldName,
   fieldType,
   inputFieldType,
-  hasNesting = false,
+  hasNesting,
 }: GetPermissionFieldsInput): MutableFieldsDefinitions => {
   const fields: MutableFieldsDefinitions = {
     create: [],
@@ -291,6 +167,7 @@ export const parseMutable = ({
     : inputFieldType;
 
   if (canCreate) {
+    //console.log("canCreate", fieldName, createInputFieldType);
     fields.create.push({
       name: fieldName,
       type: createInputFieldType,
@@ -325,6 +202,15 @@ export const parseMutable = ({
   return fields;
 };
 
+const isSpecialUniqueField = (fieldName) =>
+  // database id
+  [
+    "_id",
+    // @deprecated Open CRUD backward compatibility
+    "documentId",
+    // human readable slug
+    "slug",
+  ].includes(fieldName);
 /**
  * Parse fields depending on whether they can be queried and how
  * @param param0
@@ -332,10 +218,13 @@ export const parseMutable = ({
 export const parseQueriable = ({
   field,
   fieldName,
+  /**
+   * GraphQL type
+   */
   fieldType,
   inputFieldType,
-  hasNesting = false,
-}: GetPermissionFieldsInput): QueriableFieldsDefinitions => {
+}: //hasNesting = false,
+GetPermissionFieldsInput): QueriableFieldsDefinitions => {
   const fields: QueriableFieldsDefinitions = {
     selector: [],
     selectorUnique: [],
@@ -343,37 +232,41 @@ export const parseQueriable = ({
     readable: [],
     filterable: [],
   };
-  const { canRead, canCreate, canUpdate, selectable, unique, apiOnly } = field;
-  const createInputFieldType = hasNesting
-    ? suffixType(prefixType("Create", fieldType), "DataInput")
-    : inputFieldType;
-  const updateInputFieldType = hasNesting
-    ? suffixType(prefixType("Update", fieldType), "DataInput")
-    : inputFieldType;
+  const { canRead, selectable, unique, apiOnly } = field;
 
   // if field is readable, make it filterable/orderable too
-  if (canRead) {
+  if (!!canRead) {
     fields.readable.push({
       name: fieldName,
       type: fieldType,
     });
     // we can only filter based on fields that actually exist in the db
     if (!apiOnly) {
-      fields.filterable.push({
-        name: fieldName,
-        type: fieldType,
-      });
+      const { type } = field;
+      if (isSupportedFieldType(type)) {
+        // Build the right graphql type (respecting the field typename)
+        // = typeName_Selector
+        const contentType = getContentType(fieldType);
+        const isArrayField = type[0] === "[";
+        const filterFieldType = `${contentType}_${
+          isArrayField ? "Array_" : ""
+        }Selector`;
+        fields.filterable.push({
+          name: fieldName,
+          type: filterFieldType,
+        });
+      }
     }
   }
 
-  if (selectable) {
+  if (selectable || isSpecialUniqueField(fieldName)) {
     fields.selector.push({
       name: fieldName,
       type: inputFieldType,
     });
   }
 
-  if (selectable && unique) {
+  if ((selectable && unique) || isSpecialUniqueField(fieldName)) {
     fields.selectorUnique.push({
       name: fieldName,
       type: inputFieldType,
@@ -395,15 +288,27 @@ export interface ParseSchemaOutput {
   fields: GraphqlFieldsDefinitions;
   nestedFieldsList: Array<Partial<NestedFieldsOutput>>;
   resolvers: Array<ResolverMap>;
+  schemaExtensions: Array<{
+    typeDefs: string;
+    resolverMap: AnyResolverMap;
+  }>;
 }
+
 // for a given schema, return main type fields, selector fields,
 // unique selector fields, sort fields, creatable fields, and updatable fields
 export const parseSchema = (
   schema: VulcanSchema,
-  typeName: string
+  typeName: string,
+  /**
+   * At this point needed only for reverse relation resolver,
+   * that must be triggered on the current model
+   */
+  currentModel?: VulcanGraphqlModel
 ): ParseSchemaOutput => {
   if (!schema) throw new Error(`No schema for typeName ${typeName}`);
-  // result fields
+  /**
+   * Results of parsing all fields of the schema
+   */
   const fields: GraphqlFieldsDefinitions = {
     mainType: [],
     selector: [],
@@ -417,9 +322,14 @@ export const parseSchema = (
   };
   const nestedFieldsList: Array<Partial<NestedFieldsOutput>> = [];
   const resolvers: Array<AnyResolverMap> = [];
+  /**
+   * "reversedRelations" will generate schema extensions directly
+   * with typedefs and resolvers
+   */
+  const schemaExtensions: Array<GraphqlSchemaExtension> = [];
 
   Object.keys(schema).forEach((fieldName) => {
-    const field: VulcanFieldSchema = schema[fieldName]; // TODO: remove the need to call SimpleSchema
+    const field: VulcanGraphqlFieldSchemaServer = schema[fieldName]; // TODO: remove the need to call SimpleSchema
     const fieldType = getGraphQLType({
       schema,
       fieldName,
@@ -441,15 +351,17 @@ export const parseSchema = (
       hasNestedSchema(getArrayChild(fieldName, schema)) &&
       !isIntlField(field) &&
       !isIntlDataField(field);
-    const isReferencedObject = hasTypeName(field);
+
     const arrayChild = getArrayChild(fieldName, schema);
-    const isReferencedArray = arrayChild && hasTypeName(arrayChild);
-    const hasNesting =
-      !isBlackbox(field) &&
-      (isNestedArray ||
-        isNestedObject ||
-        isReferencedObject ||
-        isReferencedArray);
+
+    //const isReferencedObject = hasTypeName(field);
+    //const isReferencedArray = arrayChild && hasTypeName(arrayChild);
+
+    const hasNesting = !isBlackbox(field) && (isNestedArray || isNestedObject); //||
+    // FIXME: why did we introduce this in the first place?
+    // This seems to generate wrong types when using a custom type like "GraphqlObjectId" instead of "String" (tested 2022/06)
+    // isReferencedObject ||
+    // isReferencedArray);
 
     // only include fields that are viewable/insertable/editable and don't contain "$" in their name
     // note: insertable/editable fields must be included in main schema in case they're returned by a mutation
@@ -489,6 +401,17 @@ export const parseSchema = (
         });
       }
 
+      if (field.reversedRelation) {
+        schemaExtensions.push(
+          parseReversedRelation({
+            field,
+            typeName,
+            fieldName,
+            currentModel,
+          })
+        );
+      }
+
       // Support for enums from allowedValues has been removed (counter-productive)
       // if field has allowedValues, add enum type
       /*if (hasAllowedValues(field)) {
@@ -521,7 +444,6 @@ export const parseSchema = (
         fieldName,
         fieldType,
         inputFieldType,
-        hasNesting,
       });
       fields.create.push(...mutableDefinitions.create);
       fields.update.push(...mutableDefinitions.update);
@@ -567,6 +489,7 @@ export const parseSchema = (
     fields,
     nestedFieldsList,
     resolvers,
+    schemaExtensions,
   };
 };
 

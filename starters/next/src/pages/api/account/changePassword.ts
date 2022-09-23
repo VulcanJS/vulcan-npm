@@ -1,13 +1,14 @@
 import { Request } from "express";
 import { updateMutator } from "@vulcanjs/crud/server";
 import { NextApiRequest, NextApiResponse } from "next";
-import { User, UserType } from "~/models/user.server";
+import { User, UserType } from "~/account/models/user.server";
 
-import { contextFromReq } from "~/lib/api/context";
+import { contextFromReq } from "~/core/server/context";
 import {
   checkPasswordForUser,
   sendChangePasswordSuccessEmail,
-} from "~/lib/api/account";
+} from "~/account/server";
+import { connectToAppDb } from "~/core/server/mongoose/connection";
 
 interface ChangePasswordBody {
   oldPassword: string;
@@ -23,6 +24,7 @@ export default async function changePassword(
   res: NextApiResponse
 ) {
   try {
+    await connectToAppDb();
     const body = req.body;
     const { oldPassword, newPassword } = body as ChangePasswordBody;
     // context computation step œis shared with graphql endpoint
