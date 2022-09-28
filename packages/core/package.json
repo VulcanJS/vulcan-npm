@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/core",
-  "version": "0.7.2-alpha.1",
+  "version": "0.7.2-alpha.3",
   "main": "dist/index.js",
   "files": [
     "dist/"
@@ -33,7 +33,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@vulcanjs/utils": "^0.7.2-alpha.1",
+    "@vulcanjs/utils": "^0.7.2-alpha.3",
     "debug": "^4.3.1",
     "lodash": "^4.17.21"
   }

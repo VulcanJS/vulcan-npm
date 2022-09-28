@@ -1,6 +1,6 @@
 {
   "name": "vulcan-express",
-  "version": "0.7.2-alpha.2",
+  "version": "0.7.2-alpha.3",
   "description": "Vulcan Express",
   "main": "./dist/app.mjs",
   "private": true,
@@ -30,9 +30,9 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.2",
-    "@vulcanjs/graphql": "^0.7.2-alpha.2",
-    "@vulcanjs/mongo": "^0.7.2-alpha.1",
-    "@vulcanjs/mongo-apollo": "^0.7.2-alpha.2",
+    "@vulcanjs/graphql": "^0.7.2-alpha.3",
+    "@vulcanjs/mongo": "^0.7.2-alpha.3",
+    "@vulcanjs/mongo-apollo": "^0.7.2-alpha.3",
     "apollo-server": "3.9",
     "apollo-server-express": "3.9",
     "express": "^4.17.3",
