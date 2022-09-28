@@ -1,6 +1,6 @@
 {
   "name": "vulcan-express",
-  "version": "0.7.2-alpha.3",
+  "version": "0.7.2-alpha.4",
   "description": "Vulcan Express",
   "main": "./dist/app.mjs",
   "private": true,

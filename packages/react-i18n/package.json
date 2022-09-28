@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-i18n",
-  "version": "0.7.2-alpha.3",
+  "version": "0.7.2-alpha.4",
   "description": "Vulcan i18n React components",
   "main": "./dist/index.js",
   "files": [
