@@ -1,6 +1,3 @@
-import { FormattedMessage } from "@vulcanjs/react-i18n";
-import { Button, Loading, TooltipTrigger, Alert } from "../../core";
-
 import {
   defaultCoreComponents,
   PossibleCoreComponents,
@@ -11,13 +8,6 @@ import {
  */
 export const liteCoreComponents: Partial<PossibleCoreComponents> = {
   ...defaultCoreComponents,
-  // core components taht were used in forms
-  Loading,
-  Alert,
-  Button,
+  // core components that were used in forms
   Icon: () => null,
-  // i18n
-  FormattedMessage,
-  // core
-  TooltipTrigger,
 };

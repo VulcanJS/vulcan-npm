@@ -597,25 +597,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vulcanjs/core@^0.6.10":
+"@vulcanjs/core@^0.7.2-alpha.1":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/core@workspace:packages/core"
   dependencies:
-    "@vulcanjs/utils": ^0.6.10
+    "@vulcanjs/utils": ^0.7.2-alpha.1
     debug: ^4.3.1
     lodash: ^4.17.21
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/crud@^0.6.10":
+"@vulcanjs/crud@^0.7.2-alpha.1":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/crud@workspace:packages/crud"
   dependencies:
-    "@vulcanjs/core": ^0.6.10
-    "@vulcanjs/model": ^0.6.10
-    "@vulcanjs/permissions": ^0.6.10
-    "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.10
+    "@vulcanjs/core": ^0.7.2-alpha.1
+    "@vulcanjs/model": ^0.7.2-alpha.1
+    "@vulcanjs/permissions": ^0.7.2-alpha.1
+    "@vulcanjs/schema": ^0.7.2-alpha.1
+    "@vulcanjs/utils": ^0.7.2-alpha.1
     debug: ^4.3.1
     lodash: ^4.17.21
     msw: ^0.35.0
@@ -625,16 +625,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/graphql@^0.6.10":
+"@vulcanjs/graphql@^0.7.2-alpha.2":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/graphql@workspace:packages/graphql"
   dependencies:
-    "@vulcanjs/crud": ^0.6.10
-    "@vulcanjs/i18n": ^0.6.10
-    "@vulcanjs/model": ^0.6.10
-    "@vulcanjs/permissions": ^0.6.10
-    "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.10
+    "@vulcanjs/crud": ^0.7.2-alpha.1
+    "@vulcanjs/i18n": ^0.7.2-alpha.1
+    "@vulcanjs/model": ^0.7.2-alpha.1
+    "@vulcanjs/permissions": ^0.7.2-alpha.1
+    "@vulcanjs/schema": ^0.7.2-alpha.1
+    "@vulcanjs/utils": ^0.7.2-alpha.1
     apollo-datasource: ^3.3.1
     debug: ^4.3.1
     deepmerge: ^4.2.2
@@ -654,12 +654,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/i18n@^0.6.10":
+"@vulcanjs/i18n@^0.7.2-alpha.1":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/i18n@workspace:packages/i18n"
   dependencies:
-    "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.10
+    "@vulcanjs/schema": ^0.7.2-alpha.1
+    "@vulcanjs/utils": ^0.7.2-alpha.1
     prop-types: ^15.7.2
     simpl-schema: ^1.12.0
   peerDependencies:
@@ -667,23 +667,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/model@^0.6.10":
+"@vulcanjs/model@^0.7.2-alpha.1":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/model@workspace:packages/model"
   dependencies:
-    "@vulcanjs/schema": ^0.6.7
+    "@vulcanjs/schema": ^0.7.2-alpha.1
     lodash: ^4.17.21
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/mongo-apollo@^0.6.10":
+"@vulcanjs/mongo-apollo@^0.7.2-alpha.2":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/mongo-apollo@workspace:packages/mongo-apollo"
   dependencies:
-    "@vulcanjs/crud": ^0.6.10
-    "@vulcanjs/graphql": ^0.6.10
-    "@vulcanjs/mongo": ^0.6.10
-    "@vulcanjs/utils": ^0.6.10
+    "@vulcanjs/crud": ^0.7.2-alpha.1
+    "@vulcanjs/graphql": ^0.7.2-alpha.2
+    "@vulcanjs/mongo": ^0.7.2-alpha.1
+    "@vulcanjs/utils": ^0.7.2-alpha.1
     apollo-datasource-mongodb: ^0.5.2
     graphql-objectid-scalar: ^1.0.4
   peerDependencies:
@@ -692,15 +692,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/mongo@^0.6.10":
+"@vulcanjs/mongo@^0.7.2-alpha.1":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/mongo@workspace:packages/mongo"
   dependencies:
-    "@vulcanjs/crud": ^0.6.10
-    "@vulcanjs/model": ^0.6.10
-    "@vulcanjs/permissions": ^0.6.10
-    "@vulcanjs/schema": ^0.6.7
-    "@vulcanjs/utils": ^0.6.10
+    "@vulcanjs/crud": ^0.7.2-alpha.1
+    "@vulcanjs/model": ^0.7.2-alpha.1
+    "@vulcanjs/permissions": ^0.7.2-alpha.1
+    "@vulcanjs/schema": ^0.7.2-alpha.1
+    "@vulcanjs/utils": ^0.7.2-alpha.1
     lodash: ^4.17.20
     mongodb-memory-server: ^8.4.0
   peerDependencies:
@@ -712,13 +712,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/permissions@^0.6.10":
+"@vulcanjs/permissions@^0.7.2-alpha.1":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/permissions@workspace:packages/permissions"
   dependencies:
     "@types/lodash": ^4.14.168
-    "@vulcanjs/model": ^0.6.10
-    "@vulcanjs/schema": ^0.6.7
+    "@vulcanjs/model": ^0.7.2-alpha.1
+    "@vulcanjs/schema": ^0.7.2-alpha.1
     lodash: ^4.17.21
   peerDependencies:
     react: ^17.0.1
@@ -726,7 +726,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/schema@^0.6.7":
+"@vulcanjs/schema@^0.7.2-alpha.1":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/schema@workspace:packages/schema"
   dependencies:
@@ -735,11 +735,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/utils@^0.6.10":
+"@vulcanjs/utils@^0.7.2-alpha.1":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/utils@workspace:packages/utils"
   dependencies:
-    "@vulcanjs/model": ^0.6.10
+    "@vulcanjs/model": ^0.7.2-alpha.1
     debug: ^4.3.1
     lodash: ^4.17.21
     msw: ^0.35.0
@@ -1224,6 +1224,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bson@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "bson@npm:4.7.0"
+  dependencies:
+    buffer: ^5.6.0
+  checksum: 83e7b64afdad5a505073a7e6206e7b345f59e7888fbcb1948fba72b6101a1baf58b7499314f8e24b650567665f7973eda048aabbb1ddcfbadfba7d6c6b0f5e83
+  languageName: node
+  linkType: hard
+
 "buffer-crc32@npm:~0.2.3":
   version: 0.2.13
   resolution: "buffer-crc32@npm:0.2.13"
@@ -1688,6 +1697,13 @@ __metadata:
   version: 2.0.1
   resolution: "denque@npm:2.0.1"
   checksum: ec398d1e3c6c8d4f5213dcf9ad74d7faa3b461e29a0019c9742b49a97ac5e16aa7134db45fa9d841e318e7722dd1ba670a474fde9a5b0d870b3a5fc6fe914c30
+  languageName: node
+  linkType: hard
+
+"denque@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "denque@npm:2.1.0"
+  checksum: 1d4ae1d05e59ac3a3481e7b478293f4b4c813819342273f3d5b826c7ffa9753c520919ba264f377e09108d24ec6cf0ec0ac729a5686cbb8f32d797126c5dae74
   languageName: node
   linkType: hard
 
@@ -2809,6 +2825,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ip@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "ip@npm:2.0.0"
+  checksum: cfcfac6b873b701996d71ec82a7dd27ba92450afdb421e356f44044ed688df04567344c36cbacea7d01b1c39a4c732dc012570ebe9bebfb06f27314bca625349
+  languageName: node
+  linkType: hard
+
 "ipaddr.js@npm:1.9.1":
   version: 1.9.1
   resolution: "ipaddr.js@npm:1.9.1"
@@ -3533,6 +3556,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mongodb-connection-string-url@npm:^2.5.3":
+  version: 2.5.3
+  resolution: "mongodb-connection-string-url@npm:2.5.3"
+  dependencies:
+    "@types/whatwg-url": ^8.2.1
+    whatwg-url: ^11.0.0
+  checksum: 1b7a97ccff75176319801ab3552ac472c8657a026268416be52ff3821db66ce869a70f8ac629dc2b18d94b997e8408d485bf1142c3afbecd02d713521b14e9ba
+  languageName: node
+  linkType: hard
+
 "mongodb-memory-server-core@npm:8.5.1":
   version: 8.5.1
   resolution: "mongodb-memory-server-core@npm:8.5.1"
@@ -3557,13 +3590,47 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb-memory-server@npm:8.5.1, mongodb-memory-server@npm:^8.4.0":
+"mongodb-memory-server-core@npm:8.9.1":
+  version: 8.9.1
+  resolution: "mongodb-memory-server-core@npm:8.9.1"
+  dependencies:
+    "@types/tmp": ^0.2.3
+    async-mutex: ^0.3.2
+    camelcase: ^6.3.0
+    debug: ^4.3.4
+    find-cache-dir: ^3.3.2
+    get-port: ^5.1.1
+    https-proxy-agent: ^5.0.1
+    md5-file: ^5.0.0
+    mongodb: ~4.9.0
+    new-find-package-json: ^2.0.0
+    semver: ^7.3.7
+    tar-stream: ^2.1.4
+    tmp: ^0.2.1
+    tslib: ^2.4.0
+    uuid: ^8.3.1
+    yauzl: ^2.10.0
+  checksum: 2610c90f66803046af993907ecbebbac6cdd1b5b653ecfc56e185f668a1bc46c21d5c64b65caa81fe8488831cb64156fbbab7fea5d43407ef175f08fa928493b
+  languageName: node
+  linkType: hard
+
+"mongodb-memory-server@npm:^8.4.0":
   version: 8.5.1
   resolution: "mongodb-memory-server@npm:8.5.1"
   dependencies:
     mongodb-memory-server-core: 8.5.1
     tslib: ^2.3.1
   checksum: f936716abd7ccb1cc3b4be9615a5d51378d17ec1a3bce2415bbd710d16ec6447d35234eb9f7defd6fa2af2ea96a6a129b686075c9ce080fd3d91ccc9ab72beeb
+  languageName: node
+  linkType: hard
+
+"mongodb-memory-server@npm:^8.9.1":
+  version: 8.9.1
+  resolution: "mongodb-memory-server@npm:8.9.1"
+  dependencies:
+    mongodb-memory-server-core: 8.9.1
+    tslib: ^2.4.0
+  checksum: d594ca8c389a643a32d8b3e453ebd837b7a089c4e8401532f9e760a6e049fc5e6253ff8b28616df45d3c39251f65b972d92c0ba15b70d3daf6996ec1f92634fe
   languageName: node
   linkType: hard
 
@@ -3580,6 +3647,22 @@ __metadata:
     saslprep:
       optional: true
   checksum: 423974a663c90e6673226a9ad691e8b445ecd43fc4e9e424343644b20c35188bd3d6692dcc2798022cc6b5c6f4391b54747c7543134b46f93cb3da428e5f9246
+  languageName: node
+  linkType: hard
+
+"mongodb@npm:~4.9.0":
+  version: 4.9.1
+  resolution: "mongodb@npm:4.9.1"
+  dependencies:
+    bson: ^4.7.0
+    denque: ^2.1.0
+    mongodb-connection-string-url: ^2.5.3
+    saslprep: ^1.0.3
+    socks: ^2.7.0
+  dependenciesMeta:
+    saslprep:
+      optional: true
+  checksum: 43d66207f094930d134e263489f788c5efd0ef079bf059986cd887570b561067f4dcf23d6e4334d2fd13fee7ce3ef8f9b163e609fc48e03e1236b6407095a4c5
   languageName: node
   linkType: hard
 
@@ -3697,6 +3780,15 @@ __metadata:
     debug: ^4.3.2
     tslib: ^2.3.0
   checksum: 818e5a837f87c62fb9bc4893247fd9b7b2ff1bbf25b174af9e9ec22d60d44ce355e60f80ed0657652370cca06e59539c7df292354250820403fa33cd210e76ed
+  languageName: node
+  linkType: hard
+
+"new-find-package-json@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "new-find-package-json@npm:2.0.0"
+  dependencies:
+    debug: ^4.3.4
+  checksum: 5488ead794bd506894ddd8f3ac6240615e625ce56241ed6ff41a5ff46bdf495a81881bef6d25a3aa16d25f742e86e5629c2d052cd2f60530db3a85b2b1bd146c
   languageName: node
   linkType: hard
 
@@ -4562,6 +4654,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"socks@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "socks@npm:2.7.0"
+  dependencies:
+    ip: ^2.0.0
+    smart-buffer: ^4.2.0
+  checksum: 0b5d94e2b3c11e7937b40fc5dac1e80d8b92a330e68c51f1d271ce6980c70adca42a3f8cd47c4a5769956bada074823b53374f2dc5f2ea5c2121b222dec6eadf
+  languageName: node
+  linkType: hard
+
 "source-map@npm:0.8.0-beta.0":
   version: 0.8.0-beta.0
   resolution: "source-map@npm:0.8.0-beta.0"
@@ -4862,7 +4964,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1":
+"tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0":
   version: 2.4.0
   resolution: "tslib@npm:2.4.0"
   checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
@@ -5111,13 +5213,13 @@ __metadata:
   resolution: "vulcan-express@workspace:starters/express"
   dependencies:
     "@graphql-tools/schema": ^8.3.2
-    "@vulcanjs/graphql": ^0.6.10
-    "@vulcanjs/mongo": ^0.6.10
-    "@vulcanjs/mongo-apollo": ^0.6.10
+    "@vulcanjs/graphql": ^0.7.2-alpha.2
+    "@vulcanjs/mongo": ^0.7.2-alpha.1
+    "@vulcanjs/mongo-apollo": ^0.7.2-alpha.2
     apollo-server: 3.9
     apollo-server-express: 3.9
     express: ^4.17.3
-    mongodb-memory-server: 8.5.1
+    mongodb-memory-server: ^8.9.1
     mongoose: ^6.2.5
     nodemon: ^2.0.15
     tsup: ^6.0.1
