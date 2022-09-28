@@ -1,6 +1,5 @@
 import { defineConfig } from "tsup";
 import path from "path";
-import glob from "tiny-glob";
 
 const commonConfig = {
   clean: true,
@@ -14,7 +13,7 @@ export default defineConfig([
   // actual exposed modules = 1 per component
   {
     // This is a demo with one component but you can use a glob here
-    entry: await glob("./components/core/*.tsx"),
+    entry: ["./components/core/*.tsx"],
     //["./components/core/Loading.tsx"],
     ...commonConfig,
     format: ["esm"],
