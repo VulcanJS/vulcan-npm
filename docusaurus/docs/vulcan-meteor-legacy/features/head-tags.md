@@ -2,6 +2,10 @@
 title: Head Tags
 ---
 
+/!\ In Vulcan Next and Vulcan NPM, 
+we don't provide Head Tags anymore,
+because modern frameworks already provide their own solution at app-level
+
 You'll often need to add tags to your app's `<head>` section. There are three ways to do this: using the [Helmet](https://github.com/nfl/react-helmet) library, using the `<Components.HeadTags/>` component, or using the `Head` object. 
 
 ## Helmet
