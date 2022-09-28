@@ -1,6 +1,11 @@
 // import { forEachDocumentField } from "./schema_utils";
-import moment from "moment";
-export const getDateRange = function (pageNumber) {
+/**
+ *
+ * @param moment An instance of "moment" => this avoids bundling moment in the package
+ * @param pageNumber
+ * @returns
+ */
+export const getDateRange = function (moment: any, pageNumber: number) {
   var now = moment(new Date());
   var dayToDisplay = now.subtract(pageNumber - 1, "days");
   var range: any = {};
