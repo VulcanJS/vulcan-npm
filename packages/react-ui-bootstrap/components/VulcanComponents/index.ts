@@ -1,3 +1,3 @@
-export { bootstrapCoreComponents } from "./bootstrapCoreComponents";
-export { bootstrapFormComponents } from "./bootstrapFormComponents";
-export { bootstrapVulcanComponents } from "./bootstrapVulcanComponents";
+export { bootstrapCoreComponents } from "./bootstrapCoreComponents.js";
+export { bootstrapFormComponents } from "./bootstrapFormComponents.js";
+export { bootstrapVulcanComponents } from "./bootstrapVulcanComponents.js";

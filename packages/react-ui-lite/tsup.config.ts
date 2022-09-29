@@ -15,8 +15,11 @@ export default defineConfig([
   // actual exposed modules = 1 per component
   {
     entry: [
+      // basic reusable components
       "./components/core/!(index).ts?(x)",
+      // sets of components eg "all form components", "all datatable components"
       "./components/VulcanComponents/liteVulcanComponents/!(index).ts?(x)",
+      "./components/form/inputs/!(index).ts?(x)",
     ],
     ...commonConfig,
     // For debugging, will output ESbuild metafile
@@ -33,6 +36,8 @@ export default defineConfig([
       "index.ts",
       "./components/core/index.ts",
       "./components/VulcanComponents/liteVulcanComponents/index.ts",
+      "./components/form/inputs/index.ts",
+      "./components/form/index.ts",
     ],
     ...commonConfig,
     esbuildOptions(options, context) {
