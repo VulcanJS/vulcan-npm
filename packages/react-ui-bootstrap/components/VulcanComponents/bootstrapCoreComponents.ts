@@ -11,12 +11,14 @@ import Dropdown from "../bootstrap/Dropdown";
 import { BootstrapModal } from "../bootstrap/Modal";
 import { ModalTrigger } from "../bootstrap/ModalTrigger";
 import { liteCoreComponents } from "@vulcanjs/react-ui-lite";
+import { FormattedMessage } from "@vulcanjs/react-i18n";
 
 export const bootstrapCoreComponents: Partial<PossibleCoreComponents> = {
   ...defaultCoreComponents,
   // TODO: boostrap doesn't include all components so we also
   // include the lite versio
   ...liteCoreComponents,
+  FormattedMessage,
   Alert,
   Button,
   TooltipTrigger,
