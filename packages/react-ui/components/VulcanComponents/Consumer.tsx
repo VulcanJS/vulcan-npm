@@ -4,9 +4,10 @@ import { VulcanComponentsContext } from "./Context";
 
 export const VulcanComponentsConsumer = VulcanComponentsContext.Consumer;
 
-export const useVulcanComponents = () => {
+export const useVulcanComponents = (components?: any[]) => {
   const val = useContext(VulcanComponentsContext);
-  return val;
+  const Components = {...val.Components, ...components}
+  return {...val, Components};
 };
 
 export const withVulcanComponents = (C) => (props) => {
