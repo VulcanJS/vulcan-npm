@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/utils",
-  "version": "0.7.2-alpha.1",
+  "version": "0.7.2-alpha.3",
   "description": "Vulcan helpers",
   "main": "./dist/index.mjs",
   "files": [
@@ -39,15 +39,12 @@
   },
   "gitHead": "672e9ed494ded98361abe47132899d3f825d6d23",
   "dependencies": {
-    "@vulcanjs/model": "^0.7.2-alpha.1",
+    "@vulcanjs/model": "^0.7.2-alpha.3",
     "debug": "^4.3.1",
     "lodash": "^4.17.21",
     "speakingurl": "^14.0.1"
   },
   "optionalDependencies": {
     "msw": "^0.35.0"
-  },
-  "peerDependencies": {
-    "moment": "^2.29.1"
   }
 }

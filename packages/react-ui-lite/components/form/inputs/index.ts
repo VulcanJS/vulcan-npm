@@ -1,7 +1,7 @@
-export * from "./BasicInputs";
-export * from "./RadioGroup";
-export * from "./Checkboxgroup";
-export * from "./SelectInputs";
+export * from "./BasicInputs.js";
+export * from "./RadioGroup.js";
+export * from "./Checkboxgroup.js";
+export * from "./SelectInputs.js";
 
-export * from "./FormItem";
-export * from "./FormOptionLabel";
+export * from "./FormItem.js";
+export * from "./FormOptionLabel.js";

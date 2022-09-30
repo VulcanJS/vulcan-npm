@@ -34,6 +34,12 @@ export const FormSubmit = ({
 }) => {
   const VulcanComponents = useVulcanComponents();
   const { clearForm, disabled } = useFormContext();
+  console.log(
+    "VULCAN",
+    VulcanComponents.Button,
+    VulcanComponents.FormattedMessage,
+    VulcanComponents.Icon
+  );
   return (
     <div className="form-submit">
       <VulcanComponents.Button

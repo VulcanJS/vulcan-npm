@@ -8,7 +8,14 @@ import {
 } from "../../VulcanComponents";
 // NOTE: this is a DEV ONLY dependency because we need some component implementation
 // It should never be a normal dependency otherwise it would create a circular dependency!
-import { liteCoreComponents } from "@vulcanjs/react-ui-lite";
+import {
+  liteCoreComponents,
+  Alert,
+  Button,
+  Loading,
+  FormattedMessage,
+  TooltipTrigger,
+} from "@vulcanjs/react-ui-lite";
 
 export default {
   component: MutationButton,
@@ -19,12 +26,14 @@ export default {
         <VulcanComponentsProvider
           value={{
             ...defaultCoreComponents,
+            Alert,
+            Button,
+            Loading,
+            FormattedMessage,
+            TooltipTrigger,
             // NOTE: when we do this, the "context" of liteCoreComponents is not the right one
             // So this only works with "leaf" components that do not have a child "Components.Something"
             // If it doesn't work, you need to move the story into "react-ui-lite" instead
-            Button: liteCoreComponents.Button,
-            Loading: liteCoreComponents.Loading,
-            TooltipTrigger: liteCoreComponents.TooltipTrigger,
           }}
         >
           <Story />

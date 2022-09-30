@@ -1,5 +1,8 @@
+/**
+ * @deprecated HeadTags are not exposed anymore,
+ * copy paste this logic and adapt to your app if you need HeadTags
+ */
 import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
 // import { Helmet } from 'react-helmet';
 // import { registerComponent, Utils, getSetting, registerSetting, Head } from 'meteor/vulcan:lib';
 // import compose from "recompose/compose";

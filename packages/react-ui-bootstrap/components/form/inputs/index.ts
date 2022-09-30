@@ -1,15 +1,15 @@
-export { FormComponentCheckboxGroup } from "./Checkboxgroup";
-export { FormComponentRadioGroup } from "./Radiogroup";
-export { AutocompleteMultiple } from "./AutocompleteMultiple";
+export { FormComponentCheckboxGroup } from "./Checkboxgroup.js";
+export { FormComponentRadioGroup } from "./Radiogroup.js";
+export { AutocompleteMultiple } from "./AutocompleteMultiple.js";
 
-export { Autocomplete as FormComponentAutocomplete } from "./Autocomplete";
+export { Autocomplete as FormComponentAutocomplete } from "./Autocomplete.js";
 
-export { FormComponentDefault } from "./Default";
-export { FormComponentEmail } from "./Email";
-export { FormComponentNumber } from "./Number";
-export { FormComponentPassword } from "./Password";
-export { FormComponentSelect } from "./Select";
-export { FormComponentSelectMultiple } from "./SelectMultiple";
-export { FormComponentUrl } from "./Url";
-export { FormComponentStaticText } from "./StaticText";
-export { FormComponentTextarea } from "./Textarea";
+export { FormComponentDefault } from "./Default.js";
+export { FormComponentEmail } from "./Email.js";
+export { FormComponentNumber } from "./Number.js";
+export { FormComponentPassword } from "./Password.js";
+export { FormComponentSelect } from "./Select.js";
+export { FormComponentSelectMultiple } from "./SelectMultiple.js";
+export { FormComponentUrl } from "./Url.js";
+export { FormComponentStaticText } from "./StaticText.js";
+export { FormComponentTextarea } from "./Textarea.js";

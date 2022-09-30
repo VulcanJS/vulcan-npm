@@ -29,7 +29,7 @@
     "strictBindCallApply": true, // @see https://github.com/storybookjs/storybook/issues/11916
     "sourceMap": true,
     "strict": false,
-    "target": "es2020",
+    "target": "ESNext",
     "typeRoots": [
       "./types",
       "./node_modules/@types"

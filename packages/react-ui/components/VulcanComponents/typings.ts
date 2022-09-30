@@ -97,7 +97,6 @@ export interface PossibleCoreComponents {
   // TODO: define props more precisely
   MutationButton: any; //React.ComponentType<MutationButtonProps>;
   LoadingButton: React.ComponentType<any>;
-  HeadTags: React.ComponentType<any>;
   // Previously from Bootstrap and Mui
   TooltipTrigger: React.ComponentType<any>;
   Dropdown: React.ComponentType<any>;

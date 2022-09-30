@@ -1,3 +1,4 @@
+import ResolveTypeScriptPlugin from "resolve-typescript-plugin";
 import { WebpackPluginInstance, Configuration } from "webpack";
 module.exports = {
   core: {
@@ -22,6 +23,9 @@ module.exports = {
     "@storybook/addon-interactions",
   ],
   webpackFinal: async (config: Configuration, { configType }) => {
+    if (!config.resolve) {
+      config.resolve = {};
+    }
     // add magic imports and isomorphic imports to Storybook
     // Webpack4
     //withVulcan.node = { ...(withVulcan.node || {}), fs: "empty" };
@@ -37,6 +41,17 @@ module.exports = {
       https: false,
       zlib: false,
     };
+    config.resolve.plugins = [
+      ...(config.resolve.plugins || []),
+
+      /**
+       * See https://github.com/storybookjs/storybook/issues/15962
+       * and https://github.com/softwareventures/resolve-typescript-plugin
+       * and https://github.com/evanw/esbuild/issues/622
+       * and https://github.com/egoist/tsup/issues/736
+       */
+      new ResolveTypeScriptPlugin(),
+    ];
     return config;
   },
 };

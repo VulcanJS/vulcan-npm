@@ -1,7 +1,12 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 // TODO: we have to do this otherwise we end up with a circular dep...
-import { defaultCoreComponents, defaultFormComponents, Form, FormProps } from "@vulcanjs/react-ui";
+import {
+  defaultCoreComponents,
+  defaultFormComponents,
+  Form,
+  FormProps,
+} from "@vulcanjs/react-ui";
 import { createModel } from "@vulcanjs/model";
 import * as models from "./fixtures/models";
 import {
@@ -11,8 +16,8 @@ import {
 } from "./fixtures/schemas";
 import { VulcanComponentsProvider } from "@vulcanjs/react-ui";
 import { action } from "@storybook/addon-actions";
-import { liteCoreComponents } from "../../..";
-import { liteFormComponents } from "../../..";
+import { liteCoreComponents } from "../../VulcanComponents/liteVulcanComponents/coreComponents";
+import { liteFormComponents } from "../../VulcanComponents/liteVulcanComponents/formComponents";
 
 export default {
   component: Form,
@@ -24,8 +29,9 @@ export default {
           ...defaultCoreComponents,
           ...defaultFormComponents,
           ...liteCoreComponents,
-          ...liteFormComponents
-        }}>
+          ...liteFormComponents,
+        }}
+      >
         <Story />
       </VulcanComponentsProvider>
     ),
