@@ -44,9 +44,9 @@ export const LoadingButton = ({
       onClick={onClick}
       {...rest}
     >
-      <span style={wrapperStyle}>
-        <span style={labelStyle}>{label || children}</span>
-        <span style={loadingStyle}>
+      <span style={wrapperStyle} className="loading-button-inner">
+        <span style={labelStyle} className="loading-button-label">{label || children}</span>
+        <span style={loadingStyle} className="loading-button-loader">
           <Components.Loading />
         </span>
       </span>
