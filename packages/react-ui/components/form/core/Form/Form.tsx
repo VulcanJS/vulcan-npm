@@ -57,6 +57,7 @@ import {
 } from "./typings";
 import { MutationResult } from "@apollo/client";
 import { useVulcanComponents } from "../../../VulcanComponents/Consumer";
+import { useSubmitCallbacks } from "./hooks";
 
 const NEW_FORM_TYPE = "new";
 const EDIT_FORM_TYPE = "edit";
@@ -96,7 +97,9 @@ const compactObject = (o) => omitBy(o, (f) => f === null || f === undefined);
 const getInitialStateFromProps = (nextProps: FormProps): FormState => {
   const schema = nextProps.schema || nextProps.model.schema;
   const convertedSchema = convertSchema(schema);
-  const formType: FormType = nextProps.document ? EDIT_FORM_TYPE : NEW_FORM_TYPE;
+  const formType: FormType = nextProps.document
+    ? EDIT_FORM_TYPE
+    : NEW_FORM_TYPE;
   // for new document forms, add default values to initial document
   const defaultValues =
     formType === NEW_FORM_TYPE ? getDefaultValues(convertedSchema) : {};
@@ -210,7 +213,10 @@ const getChildrenProps = (
     document: currentDocument,
     // TODO: should probably be passed through context
     deleteDocument:
-      (formType === EDIT_FORM_TYPE && showRemove && showDelete && deleteDocument) ||
+      (formType === EDIT_FORM_TYPE &&
+        showRemove &&
+        showDelete &&
+        deleteDocument) ||
       null,
   };
 
@@ -312,52 +318,6 @@ const getData = (
   return data;
 };
 
-/**
- * TODO: should be props of the Forms as well for initialization
- */
-interface Callbacks {
-  submitFormCallbacks: Array<any>;
-  successFormCallbacks: Array<any>;
-  failureFormCallbacks: Array<any>;
-}
-/**
- * Advanced callbacks that lets an input hook some logic on submit/success/failure
- */
-const useSubmitCallbacks = () => {
-  const [callbacks, setCallbacks] = useState<Callbacks>({
-    submitFormCallbacks: [],
-    successFormCallbacks: [],
-    failureFormCallbacks: [],
-  });
-  // add a callback to the form submission
-  const addToSubmitForm = (callback) => {
-    setCallbacks((cbs) => ({
-      ...cbs,
-      submitFormCallbacks: [...cbs.submitFormCallbacks, callback],
-    }));
-  };
-  // add a callback to form submission success
-  const addToSuccessForm = (callback) => {
-    setCallbacks((cbs) => ({
-      ...cbs,
-      successFormCallbacks: [...cbs.successFormCallbacks, callback],
-    }));
-  };
-  // add a callback to form submission failure
-  const addToFailureForm = (callback) => {
-    setCallbacks((cbs) => ({
-      ...cbs,
-      failureFormCallbacks: [...cbs.failureFormCallbacks, callback],
-    }));
-  };
-  return {
-    callbacks,
-    addToSuccessForm,
-    addToSubmitForm,
-    addToFailureForm,
-  };
-};
-
 export const Form = (props: FormProps) => {
   const { initCallback, createDocument, updateDocument, deleteDocument } =
     props;
@@ -385,7 +345,8 @@ export const Form = (props: FormProps) => {
   const failureFormCallbacks: Array<Function> = [];
   const intl = useIntlContext();
 
-  const { addToFailureForm, addToSubmitForm, addToSuccessForm } =
+  // TODO: call those callbacks where appropriate
+  const { callbacks, addToFailureForm, addToSubmitForm, addToSuccessForm } =
     useSubmitCallbacks();
 
   // --------------------------------------------------------------------- //
@@ -825,7 +786,8 @@ export const Form = (props: FormProps) => {
   On success/failure, will call the relevant callbacks
 
   */
-  const submitForm = formType === NEW_FORM_TYPE ? submitFormCreate : submitFormUpdate;
+  const submitForm =
+    formType === NEW_FORM_TYPE ? submitFormCreate : submitFormUpdate;
 
   // Fields computation
   const mutableFields =

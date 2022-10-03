@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
+import { AddSubmitCallbacks } from "./Form/hooks";
 
-interface FormContextValue {
+interface FormContextValue extends AddSubmitCallbacks {
   clearForm: Function;
   clearFieldErrors: Function;
   currentValues: object;
@@ -18,26 +19,7 @@ interface FormContextValue {
   throwError: Function;
   updateCurrentValues: Function;
   disabled: boolean;
-
   addToDeletedValues: Function;
-  /**
-   * To be called in a useEffect on component mount
-   * Used to clean advanced input values on submit events,
-   * eg UploadInput
-   */
-  addToSubmitForm: Function;
-  /**
-   * To be called in a useEffect on component mount
-   * Used to clean advanced input values on submit events,
-   * eg UploadInput
-   */
-  addToSuccessForm: Function;
-  /**
-   * To be called in a useEffect on component mount
-   * Used to clean advanced input values on submit events,
-   * eg UploadInput
-   */
-  addToFailureForm: Function;
 }
 
 export const FormContext = React.createContext<FormContextValue | undefined>(
