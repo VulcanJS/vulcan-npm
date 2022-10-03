@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-ui-bootstrap",
-  "version": "0.7.2-alpha.7",
+  "version": "0.7.2-alpha.8",
   "description": "Vulcan UI components for React - Written with React Bootstrap",
   "main": "./dist/index.js",
   "files": [
@@ -41,9 +41,9 @@
   "devDependencies": {
     "@types/lodash": "^4.14.168",
     "@types/underscore": "^1.11.1",
-    "@vulcanjs/graphql": "^0.7.2-alpha.3",
-    "@vulcanjs/model": "^0.7.2-alpha.3",
-    "@vulcanjs/schema": "^0.7.2-alpha.3"
+    "@vulcanjs/graphql": "^0.7.2-alpha.8",
+    "@vulcanjs/model": "^0.7.2-alpha.8",
+    "@vulcanjs/schema": "^0.7.2-alpha.8"
   },
   "gitHead": "ee0303a08e123a54d65af6c36410fa8929f9427f"
 }
