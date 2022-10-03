@@ -340,14 +340,13 @@ export const Form = (props: FormProps) => {
   };
   const allProps = { ...defaultProps, ...props };
   const defaultValues = {};
-  const submitFormCallbacks: Array<Function> = [];
-  const successFormCallbacks: Array<Function> = [];
-  const failureFormCallbacks: Array<Function> = [];
   const intl = useIntlContext();
 
-  // TODO: call those callbacks where appropriate
   const { callbacks, addToFailureForm, addToSubmitForm, addToSuccessForm } =
     useSubmitCallbacks();
+
+  const { submitFormCallbacks, successFormCallbacks, failureFormCallbacks } =
+    callbacks;
 
   // --------------------------------------------------------------------- //
   // ------------------------------- Errors ------------------------------ //
