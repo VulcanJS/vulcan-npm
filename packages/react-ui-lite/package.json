@@ -1,6 +1,6 @@
 {
   "name": "@vulcanjs/react-ui-lite",
-  "version": "0.7.2-alpha.7",
+  "version": "0.7.2-alpha.8",
   "description": "Vulcan UI components for React - Written with the lightest libraries avaiable",
   "main": "./dist/index.js",
   "files": [
@@ -21,15 +21,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vulcanjs/graphql": "^0.7.2-alpha.3",
-    "@vulcanjs/i18n": "^0.7.2-alpha.3",
-    "@vulcanjs/model": "^0.7.2-alpha.3",
-    "@vulcanjs/permissions": "^0.7.2-alpha.3",
-    "@vulcanjs/react-hooks": "^0.7.2-alpha.3",
-    "@vulcanjs/react-i18n": "^0.7.2-alpha.4",
-    "@vulcanjs/react-ui": "^0.7.2-alpha.5",
-    "@vulcanjs/schema": "^0.7.2-alpha.3",
-    "@vulcanjs/utils": "^0.7.2-alpha.3",
+    "@vulcanjs/graphql": "^0.7.2-alpha.8",
+    "@vulcanjs/i18n": "^0.7.2-alpha.8",
+    "@vulcanjs/model": "^0.7.2-alpha.8",
+    "@vulcanjs/permissions": "^0.7.2-alpha.8",
+    "@vulcanjs/react-hooks": "^0.7.2-alpha.8",
+    "@vulcanjs/react-i18n": "^0.7.2-alpha.8",
+    "@vulcanjs/react-ui": "^0.7.2-alpha.8",
+    "@vulcanjs/schema": "^0.7.2-alpha.8",
+    "@vulcanjs/utils": "^0.7.2-alpha.8",
     "classnames": "^2.3.1",
     "debug": "^4.3.1",
     "lodash": "^4.17.21"

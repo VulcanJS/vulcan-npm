@@ -34,7 +34,6 @@ export const PaginatedList = ({ className, options, Components }) => {
     ...useMultiResults,
   };
 
-  // console.log(Components)
 
   return (
     <Components.PaginatedListLayout {...props}>

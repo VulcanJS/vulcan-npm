@@ -115,7 +115,7 @@
   "prisma": {
     "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
   },
-  "version": "0.7.2-alpha.3",
+  "version": "0.7.2-alpha.8",
   "overrides": {
     "@mdx-js/react": {
       "react": "$react",

@@ -6,6 +6,7 @@ import {
   defaultFormComponents,
   Form,
   FormProps,
+  VulcanComponentsProvider,
 } from "@vulcanjs/react-ui";
 import { createModel } from "@vulcanjs/model";
 import * as models from "./fixtures/models";
@@ -14,10 +15,10 @@ import {
   basicFieldsSchema,
   withDefaultFieldSchema,
 } from "./fixtures/schemas";
-import { VulcanComponentsProvider } from "@vulcanjs/react-ui";
 import { action } from "@storybook/addon-actions";
 import { liteCoreComponents } from "../../VulcanComponents/liteVulcanComponents/coreComponents";
 import { liteFormComponents } from "../../VulcanComponents/liteVulcanComponents/formComponents";
+console.log("Form comps", defaultFormComponents, liteFormComponents);
 
 export default {
   component: Form,
