@@ -434,7 +434,7 @@ export const Form = (props: FormProps) => {
 
   const [currentValues, setCurrentValues] = useState<Object>({});
 
-  const submitFormContext = (formType: FormType) => (event /*newValues*/) => {
+  const submitFormContext = async (event /*newValues*/) => {
     /*
     TODO: previously this callback was updating the current values with new values after this call
     Need to check how this worked in Vulcan initially
@@ -446,7 +446,7 @@ export const Form = (props: FormProps) => {
     // TODO: previously, this was using a callback from setCurrentValues
     // this needs to be rearchitectured to work without, will need some check
     // https://stackoverflow.com/questions/56247433/how-to-use-setstate-callback-on-react-hooks
-    submitForm(formType)(event);
+    await submitForm(event);
   };
 
   // --------------------------------------------------------------------- //
@@ -659,26 +659,7 @@ export const Form = (props: FormProps) => {
     //Utils.scrollIntoView(".flash-message");
   };
 
-  /*
-
-  Submit form handler
-
-  */
-  const submitForm = (formType: FormType) => async (event?: Event) => {
-    event && event.preventDefault();
-    event && event.stopPropagation();
-
-    const { contextName } = props;
-
-    // if form is disabled (there is already a submit handler running) don't do anything
-    if (disabled) {
-      return;
-    }
-
-    // clear errors and disable form while it's submitting
-    setErrors([]);
-    setDisabled(true);
-
+  const getSubmitData = () => {
     // complete the data with values from custom components
     // note: it follows the same logic as SmartForm's getDocument method
     let data = getData(
@@ -695,45 +676,91 @@ export const Form = (props: FormProps) => {
     if (props.submitCallback) {
       data = props.submitCallback(data) || data;
     }
+    return data;
+  };
+  /** 
 
-    if (formType === "new") {
-      // create document form
-      try {
-        const result = await createDocument({
-          input: {
-            data,
-            contextName,
-          },
-        });
-        if (result.errors?.length) {
-          // TODO: previously got from meta, we could have more than 1 error
-          mutationErrorCallback(document, result.errors[0]);
-        } else {
-          newMutationSuccessCallback(result);
-        }
-      } catch (error) {
-        mutationErrorCallback(document, error);
+  Submit form handler
+
+  On success/failure, will call the relevant callbacks
+
+  */
+  const submitFormCreate = async (event?: Event) => {
+    event && event.preventDefault();
+    event && event.stopPropagation();
+    const { contextName } = props;
+    // if form is disabled (there is already a submit handler running) don't do anything
+    if (disabled) {
+      return;
+    }
+    // clear errors and disable form while it's submitting
+    setErrors([]);
+    setDisabled(true);
+
+    const data = getSubmitData();
+
+    // create document form
+    try {
+      const result = await createDocument({
+        input: {
+          data,
+          contextName,
+        },
+      });
+      if (result.errors?.length) {
+        // TODO: previously got from meta, we could have more than 1 error
+        mutationErrorCallback(document, result.errors[0]);
+      } else {
+        newMutationSuccessCallback(result);
       }
-    } else {
-      // update document form
-      try {
-        const documentId = currentDocument._id;
-        const result = await updateDocument({
-          input: {
-            id: documentId,
-            data,
-            contextName,
-          },
-        });
-        // TODO: handle more than 1 error
-        if (result.errors?.length) {
-          mutationErrorCallback(document, result.errors[0]);
-        } else {
-          editMutationSuccessCallback(result);
-        }
-      } catch (error) {
-        mutationErrorCallback(document, error);
+    } catch (error) {
+      mutationErrorCallback(document, error);
+    }
+  };
+  /** 
+
+  Submit form handler
+
+  On success/failure, will call the relevant callbacks
+
+  */
+  const submitFormUpdate = async (event?: Event) => {
+    event && event.preventDefault();
+    event && event.stopPropagation();
+
+    const { contextName } = props;
+
+    // if form is disabled (there is already a submit handler running) don't do anything
+    if (disabled) {
+      return;
+    }
+
+    // clear errors and disable form while it's submitting
+    setErrors([]);
+    setDisabled(true);
+
+    // complete the data with values from custom components
+    // note: it follows the same logic as SmartForm's getDocument method
+    const data = getSubmitData();
+
+    // update document form
+    try {
+      const documentId = currentDocument._id;
+      const result = await updateDocument({
+        input: {
+          id: documentId,
+          data,
+          contextName,
+        },
+      });
+      // TODO: handle more than 1 error
+      if (result.errors?.length) {
+        mutationErrorCallback(document, result.errors[0]);
+      } else {
+        editMutationSuccessCallback(result);
       }
+    } catch (error) {
+      mutationErrorCallback(document, error);
     }
   };
 
@@ -781,6 +808,15 @@ export const Form = (props: FormProps) => {
 
   const formType: "edit" | "new" = document ? "edit" : "new";
 
+  /** 
+
+  Submit form handler
+
+  On success/failure, will call the relevant callbacks
+
+  */
+  const submitForm = formType === "new" ? submitFormCreate : submitFormUpdate;
+
   // Fields computation
   const mutableFields =
     formType === "edit"
@@ -812,7 +848,7 @@ export const Form = (props: FormProps) => {
           clearForm,
           refetchForm,
           isChanged,
-          submitForm: submitFormContext(formType), //Change in name because we already have a function
+          submitForm: submitFormContext, //Change in name because we already have a function
           // called submitForm, but no reason for the user to know
           // about that
           addToDeletedValues: addToDeletedValues,

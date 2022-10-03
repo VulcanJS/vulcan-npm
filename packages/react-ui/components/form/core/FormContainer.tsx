@@ -270,17 +270,6 @@ export const FormContainer = (props: FormContainerProps) => {
       skip: formType === "new",
     },
   };
-  /* debug
-  console.log(
-    "MUT",
-    (mutationFragment as any).loc.source.body,
-    mutationFragmentName
-  );
-  console.log(
-    "QUERY",
-    (queryFragment as any).loc.source.body,
-    queryFragmentName
-  );*/
   const { data, document, loading, refetch } = useSingle(queryOptions);
   if (formType !== "new") {
     debugForm(

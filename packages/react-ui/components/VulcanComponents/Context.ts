@@ -4,7 +4,6 @@ import { Dummy } from "./Dummy";
 
 const dummyHandler = {
   get(target, property) {
-    //console.log("target", property);
     if (property in target) {
       return target[property];
     }
