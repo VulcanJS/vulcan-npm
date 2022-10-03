@@ -11042,7 +11042,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui-lite@^0.7.2-alpha.5, @vulcanjs/react-ui-lite@workspace:packages/react-ui-lite":
+"@vulcanjs/react-ui-lite@^0.7.2-alpha.6, @vulcanjs/react-ui-lite@workspace:packages/react-ui-lite":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui-lite@workspace:packages/react-ui-lite"
   dependencies:
@@ -37701,7 +37701,7 @@ __metadata:
     "@vulcanjs/mongo-apollo": ^0.7.2-alpha.3
     "@vulcanjs/react-hooks": ^0.7.2-alpha.3
     "@vulcanjs/react-ui": ^0.7.2-alpha.5
-    "@vulcanjs/react-ui-lite": ^0.7.2-alpha.5
+    "@vulcanjs/react-ui-lite": ^0.7.2-alpha.6
     "@vulcanjs/schema": ^0.7.2-alpha.3
     apollo-datasource-mongodb: ^0.5.2
     apollo-server: 3.9
