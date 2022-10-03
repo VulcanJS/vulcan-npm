@@ -58,6 +58,9 @@ import {
 import { MutationResult } from "@apollo/client";
 import { useVulcanComponents } from "../../../VulcanComponents/Consumer";
 
+const NEW_FORM_TYPE = "new";
+const EDIT_FORM_TYPE = "edit";
+
 // props that should trigger a form reset
 const RESET_PROPS = [
   "model",
@@ -93,10 +96,10 @@ const compactObject = (o) => omitBy(o, (f) => f === null || f === undefined);
 const getInitialStateFromProps = (nextProps: FormProps): FormState => {
   const schema = nextProps.schema || nextProps.model.schema;
   const convertedSchema = convertSchema(schema);
-  const formType: FormType = nextProps.document ? "edit" : "new";
+  const formType: FormType = nextProps.document ? EDIT_FORM_TYPE : NEW_FORM_TYPE;
   // for new document forms, add default values to initial document
   const defaultValues =
-    formType === "new" ? getDefaultValues(convertedSchema) : {};
+    formType === NEW_FORM_TYPE ? getDefaultValues(convertedSchema) : {};
   // note: we remove null/undefined values from the loaded document so they don't overwrite possible prefilledProps
   const initialDocument = merge(
     {},
@@ -207,7 +210,7 @@ const getChildrenProps = (
     document: currentDocument,
     // TODO: should probably be passed through context
     deleteDocument:
-      (formType === "edit" && showRemove && showDelete && deleteDocument) ||
+      (formType === EDIT_FORM_TYPE && showRemove && showDelete && deleteDocument) ||
       null,
   };
 
@@ -585,13 +588,13 @@ export const Form = (props: FormProps) => {
   const newMutationSuccessCallback = function <TModel = Object>(
     result: CreateDocumentResult<TModel>
   ) {
-    mutationSuccessCallback(result, "new");
+    mutationSuccessCallback(result, NEW_FORM_TYPE);
   };
 
   const editMutationSuccessCallback = function <TModel = Object>(
     result: UpdateDocumentResult<TModel>
   ) {
-    mutationSuccessCallback(result, "edit");
+    mutationSuccessCallback(result, EDIT_FORM_TYPE);
   };
 
   const formRef = useRef(null);
@@ -606,7 +609,7 @@ export const Form = (props: FormProps) => {
     // for new mutation, run refetch function if it exists
     // TODO: the create mutation should already return the freshest value, do we really need that?
     // instead we might want to update currentResult with the result of the creation
-    if (mutationType === "new") refetchForm();
+    if (mutationType === NEW_FORM_TYPE) refetchForm();
     let { document } = result;
 
     // call the clear form method (i.e. trigger setState) only if the form has not been unmounted
@@ -614,7 +617,7 @@ export const Form = (props: FormProps) => {
     // TODO: this should rely on a ref
     if (formRef.current) {
       clearForm({
-        document: mutationType === "edit" ? document : undefined,
+        document: mutationType === EDIT_FORM_TYPE ? document : undefined,
       });
     }
 
@@ -806,7 +809,7 @@ export const Form = (props: FormProps) => {
     props;
   const FormComponents = useVulcanComponents();
 
-  const formType: "edit" | "new" = document ? "edit" : "new";
+  const formType: FormType = document ? EDIT_FORM_TYPE : NEW_FORM_TYPE;
 
   /** 
 
@@ -815,11 +818,11 @@ export const Form = (props: FormProps) => {
   On success/failure, will call the relevant callbacks
 
   */
-  const submitForm = formType === "new" ? submitFormCreate : submitFormUpdate;
+  const submitForm = formType === NEW_FORM_TYPE ? submitFormCreate : submitFormUpdate;
 
   // Fields computation
   const mutableFields =
-    formType === "edit"
+    formType === EDIT_FORM_TYPE
       ? getEditableFields(schema, currentUser, initialDocument)
       : getInsertableFields(schema, currentUser);
 
