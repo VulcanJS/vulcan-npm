@@ -18,7 +18,6 @@ import {
 import { action } from "@storybook/addon-actions";
 import { liteCoreComponents } from "../../VulcanComponents/liteVulcanComponents/coreComponents";
 import { liteFormComponents } from "../../VulcanComponents/liteVulcanComponents/formComponents";
-console.log("Form comps", defaultFormComponents, liteFormComponents);
 
 export default {
   component: Form,

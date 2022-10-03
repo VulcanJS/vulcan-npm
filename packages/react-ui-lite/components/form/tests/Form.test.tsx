@@ -11,12 +11,9 @@ import { composeStories } from "@storybook/testing-react";
 import * as stories from "./Form.stories"; // import all stories from the stories file
 import {
   Addresses,
-  ArrayOfObjects,
   Objects,
-  ArrayOfUrls,
   ArrayFullCustom,
   ArrayOfCustomObjects,
-  addressSchema,
   OneField,
 } from "./fixtures/models";
 // Every component that is returned maps 1:1 with the stories,
