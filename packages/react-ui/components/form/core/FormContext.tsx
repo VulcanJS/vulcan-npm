@@ -1,12 +1,7 @@
 import React, { useContext } from "react";
 
 interface FormContextValue {
-  addToDeletedValues: Function;
-  addToFailureForm: Function;
-  addToSubmitForm: Function;
-  addToSuccessForm: Function;
   clearForm: Function;
-  clearFormCallbacks: Function;
   clearFieldErrors: Function;
   currentValues: object;
   deletedValues: Array<any>;
@@ -23,6 +18,26 @@ interface FormContextValue {
   throwError: Function;
   updateCurrentValues: Function;
   disabled: boolean;
+
+  addToDeletedValues: Function;
+  /**
+   * To be called in a useEffect on component mount
+   * Used to clean advanced input values on submit events,
+   * eg UploadInput
+   */
+  addToSubmitForm: Function;
+  /**
+   * To be called in a useEffect on component mount
+   * Used to clean advanced input values on submit events,
+   * eg UploadInput
+   */
+  addToSuccessForm: Function;
+  /**
+   * To be called in a useEffect on component mount
+   * Used to clean advanced input values on submit events,
+   * eg UploadInput
+   */
+  addToFailureForm: Function;
 }
 
 export const FormContext = React.createContext<FormContextValue | undefined>(

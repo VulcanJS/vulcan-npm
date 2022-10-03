@@ -309,6 +309,52 @@ const getData = (
   return data;
 };
 
+/**
+ * TODO: should be props of the Forms as well for initialization
+ */
+interface Callbacks {
+  submitFormCallbacks: Array<any>;
+  successFormCallbacks: Array<any>;
+  failureFormCallbacks: Array<any>;
+}
+/**
+ * Advanced callbacks that lets an input hook some logic on submit/success/failure
+ */
+const useSubmitCallbacks = () => {
+  const [callbacks, setCallbacks] = useState<Callbacks>({
+    submitFormCallbacks: [],
+    successFormCallbacks: [],
+    failureFormCallbacks: [],
+  });
+  // add a callback to the form submission
+  const addToSubmitForm = (callback) => {
+    setCallbacks((cbs) => ({
+      ...cbs,
+      submitFormCallbacks: [...cbs.submitFormCallbacks, callback],
+    }));
+  };
+  // add a callback to form submission success
+  const addToSuccessForm = (callback) => {
+    setCallbacks((cbs) => ({
+      ...cbs,
+      successFormCallbacks: [...cbs.successFormCallbacks, callback],
+    }));
+  };
+  // add a callback to form submission failure
+  const addToFailureForm = (callback) => {
+    setCallbacks((cbs) => ({
+      ...cbs,
+      failureFormCallbacks: [...cbs.failureFormCallbacks, callback],
+    }));
+  };
+  return {
+    callbacks,
+    addToSuccessForm,
+    addToSubmitForm,
+    addToFailureForm,
+  };
+};
+
 export const Form = (props: FormProps) => {
   const { initCallback, createDocument, updateDocument, deleteDocument } =
     props;
@@ -335,6 +381,9 @@ export const Form = (props: FormProps) => {
   const successFormCallbacks: Array<Function> = [];
   const failureFormCallbacks: Array<Function> = [];
   const intl = useIntlContext();
+
+  const { addToFailureForm, addToSubmitForm, addToSuccessForm } =
+    useSubmitCallbacks();
 
   // --------------------------------------------------------------------- //
   // ------------------------------- Errors ------------------------------ //
@@ -382,48 +431,6 @@ export const Form = (props: FormProps) => {
   // add something to deleted values
   const addToDeletedValues = (name) => {
     setDeletedValues((prevDeletedValues) => [...prevDeletedValues, name]);
-  };
-
-  interface Callbacks {
-    submitFormCallbacks: Array<any>;
-    successFormCallbacks: Array<any>;
-    failureFormCallbacks: Array<any>;
-  }
-  const [callbacks, setCallbacks] = useState<Callbacks>({
-    submitFormCallbacks: [],
-    successFormCallbacks: [],
-    failureFormCallbacks: [],
-  });
-  // add a callback to the form submission
-  const addToSubmitForm = (callback) => {
-    setCallbacks((cbs) => ({
-      ...cbs,
-      // submitFormCallbacks: [...cbs.submitFormCallbacks, callback],
-    }));
-  };
-
-  // add a callback to form submission success
-  const addToSuccessForm = (callback) => {
-    setCallbacks((cbs) => ({
-      ...cbs,
-      successFormCallbacks: [...cbs.successFormCallbacks, callback],
-    }));
-  };
-
-  // add a callback to form submission failure
-  const addToFailureForm = (callback) => {
-    setCallbacks((cbs) => ({
-      ...cbs,
-      failureFormCallbacks: [...cbs.failureFormCallbacks, callback],
-    }));
-  };
-
-  const clearFormCallbacks = () => {
-    setCallbacks({
-      submitFormCallbacks: [],
-      successFormCallbacks: [],
-      failureFormCallbacks: [],
-    });
   };
 
   /*
@@ -862,7 +869,6 @@ export const Form = (props: FormProps) => {
           addToSubmitForm,
           addToSuccessForm,
           addToFailureForm,
-          clearFormCallbacks,
           errors,
           currentValues,
           deletedValues,
