@@ -121,7 +121,7 @@
     "@vulcanjs/schema": "^0.7.2-alpha.8",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-server": "3.9",
-    "apollo-server-core": "3.9",
+    "apollo-server-core": "3.11",
     "apollo-server-express": "3.9",
     "babel-jest": "28",
     "babel-plugin-istanbul": "6.0.0",

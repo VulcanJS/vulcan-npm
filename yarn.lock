@@ -334,6 +334,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apollo/protobufjs@npm:1.2.6":
+  version: 1.2.6
+  resolution: "@apollo/protobufjs@npm:1.2.6"
+  dependencies:
+    "@protobufjs/aspromise": ^1.1.2
+    "@protobufjs/base64": ^1.1.2
+    "@protobufjs/codegen": ^2.0.4
+    "@protobufjs/eventemitter": ^1.1.0
+    "@protobufjs/fetch": ^1.1.0
+    "@protobufjs/float": ^1.0.2
+    "@protobufjs/inquire": ^1.1.0
+    "@protobufjs/path": ^1.1.2
+    "@protobufjs/pool": ^1.1.0
+    "@protobufjs/utf8": ^1.1.0
+    "@types/long": ^4.0.0
+    "@types/node": ^10.1.0
+    long: ^4.0.0
+  bin:
+    apollo-pbjs: bin/pbjs
+    apollo-pbts: bin/pbts
+  checksum: 1410e94f87f7ce202491f2c45633ddea0590f5279bd3eaaeb25aa114345d09a5041f15d79b75e5915b23813dc71ec52e71fc1fda858fee21dead890dcb768416
+  languageName: node
+  linkType: hard
+
 "@apollo/utils.dropunuseddefinitions@npm:^1.1.0":
   version: 1.1.0
   resolution: "@apollo/utils.dropunuseddefinitions@npm:1.1.0"
@@ -10864,12 +10888,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/graphql@^0.7.2-alpha.8, @vulcanjs/graphql@workspace:packages/graphql":
+"@vulcanjs/graphql@^0.8.1-y.0, @vulcanjs/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/graphql@workspace:packages/graphql"
   dependencies:
     "@vulcanjs/crud": ^0.7.2-alpha.8
-    "@vulcanjs/i18n": ^0.7.2-alpha.8
+    "@vulcanjs/i18n": ^0.8.1-y.0
     "@vulcanjs/model": ^0.7.2-alpha.8
     "@vulcanjs/permissions": ^0.7.2-alpha.8
     "@vulcanjs/schema": ^0.7.2-alpha.8
@@ -10893,7 +10917,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/i18n@^0.7.2-alpha.8, @vulcanjs/i18n@workspace:packages/i18n":
+"@vulcanjs/i18n@^0.8.1-y.0, @vulcanjs/i18n@workspace:packages/i18n":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/i18n@workspace:packages/i18n"
   dependencies:
@@ -10912,11 +10936,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/meteor-legacy@^0.7.2-alpha.8, @vulcanjs/meteor-legacy@workspace:packages/meteor-legacy":
+"@vulcanjs/meteor-legacy@^0.8.1-y.0, @vulcanjs/meteor-legacy@workspace:packages/meteor-legacy":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/meteor-legacy@workspace:packages/meteor-legacy"
   dependencies:
-    "@vulcanjs/graphql": ^0.7.2-alpha.8
+    "@vulcanjs/graphql": ^0.8.1-y.0
     lodash: ^4.17.21
   peerDependencies:
     "@apollo/client": ">= 3.2.0"
@@ -10933,12 +10957,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/mongo-apollo@^0.7.2-alpha.8, @vulcanjs/mongo-apollo@workspace:packages/mongo-apollo":
+"@vulcanjs/mongo-apollo@^0.8.1-y.0, @vulcanjs/mongo-apollo@workspace:packages/mongo-apollo":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/mongo-apollo@workspace:packages/mongo-apollo"
   dependencies:
     "@vulcanjs/crud": ^0.7.2-alpha.8
-    "@vulcanjs/graphql": ^0.7.2-alpha.8
+    "@vulcanjs/graphql": ^0.8.1-y.0
     "@vulcanjs/mongo": ^0.7.2-alpha.8
     "@vulcanjs/utils": ^0.7.2-alpha.8
     apollo-datasource-mongodb: ^0.5.2
@@ -10983,13 +11007,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-hooks@^0.7.2-alpha.8, @vulcanjs/react-hooks@workspace:packages/react-hooks":
+"@vulcanjs/react-hooks@^0.8.1-y.0, @vulcanjs/react-hooks@workspace:packages/react-hooks":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-hooks@workspace:packages/react-hooks"
   dependencies:
     "@testing-library/react-hooks": ^3.4.1
     "@vulcanjs/crud": ^0.7.2-alpha.8
-    "@vulcanjs/graphql": ^0.7.2-alpha.8
+    "@vulcanjs/graphql": ^0.8.1-y.0
     "@vulcanjs/mongo": ^0.7.2-alpha.8
     "@vulcanjs/schema": ^0.7.2-alpha.8
     debug: ^4.3.1
@@ -11005,11 +11029,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-i18n@^0.7.2-alpha.8, @vulcanjs/react-i18n@workspace:packages/react-i18n":
+"@vulcanjs/react-i18n@^0.8.1-y.0, @vulcanjs/react-i18n@workspace:packages/react-i18n":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-i18n@workspace:packages/react-i18n"
   dependencies:
-    "@vulcanjs/i18n": ^0.7.2-alpha.8
+    "@vulcanjs/i18n": ^0.8.1-y.0
     "@vulcanjs/utils": ^0.7.2-alpha.8
     prop-types: ^15.7.2
   peerDependencies:
@@ -11024,7 +11048,7 @@ __metadata:
   dependencies:
     "@types/lodash": ^4.14.168
     "@types/underscore": ^1.11.1
-    "@vulcanjs/graphql": ^0.7.2-alpha.8
+    "@vulcanjs/graphql": ^0.8.1-y.0
     "@vulcanjs/model": ^0.7.2-alpha.8
     "@vulcanjs/schema": ^0.7.2-alpha.8
     classnames: ^2.3.1
@@ -11042,18 +11066,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui-lite@^0.8.0, @vulcanjs/react-ui-lite@workspace:packages/react-ui-lite":
+"@vulcanjs/react-ui-lite@^0.8.1-y.0, @vulcanjs/react-ui-lite@workspace:packages/react-ui-lite":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui-lite@workspace:packages/react-ui-lite"
   dependencies:
     "@types/lodash": ^4.14.168
-    "@vulcanjs/graphql": ^0.7.2-alpha.8
-    "@vulcanjs/i18n": ^0.7.2-alpha.8
+    "@vulcanjs/graphql": ^0.8.1-y.0
+    "@vulcanjs/i18n": ^0.8.1-y.0
     "@vulcanjs/model": ^0.7.2-alpha.8
     "@vulcanjs/permissions": ^0.7.2-alpha.8
-    "@vulcanjs/react-hooks": ^0.7.2-alpha.8
-    "@vulcanjs/react-i18n": ^0.7.2-alpha.8
-    "@vulcanjs/react-ui": ^0.8.0
+    "@vulcanjs/react-hooks": ^0.8.1-y.0
+    "@vulcanjs/react-i18n": ^0.8.1-y.0
+    "@vulcanjs/react-ui": ^0.8.1-y.0
     "@vulcanjs/schema": ^0.7.2-alpha.8
     "@vulcanjs/utils": ^0.7.2-alpha.8
     classnames: ^2.3.1
@@ -11080,11 +11104,11 @@ __metadata:
     "@types/lodash": ^4.14.168
     "@types/underscore": ^1.11.1
     "@vulcanjs/core": ^0.7.2-alpha.8
-    "@vulcanjs/graphql": ^0.7.2-alpha.8
+    "@vulcanjs/graphql": ^0.8.1-y.0
     "@vulcanjs/model": ^0.7.2-alpha.8
     "@vulcanjs/permissions": ^0.7.2-alpha.8
-    "@vulcanjs/react-hooks": ^0.7.2-alpha.8
-    "@vulcanjs/react-i18n": ^0.7.2-alpha.8
+    "@vulcanjs/react-hooks": ^0.8.1-y.0
+    "@vulcanjs/react-i18n": ^0.8.1-y.0
     "@vulcanjs/schema": ^0.7.2-alpha.8
     "@vulcanjs/utils": ^0.7.2-alpha.8
     autosuggest-highlight: ^3.2.0
@@ -11105,19 +11129,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vulcanjs/react-ui@^0.8.0, @vulcanjs/react-ui@workspace:packages/react-ui":
+"@vulcanjs/react-ui@^0.8.1-y.0, @vulcanjs/react-ui@workspace:packages/react-ui":
   version: 0.0.0-use.local
   resolution: "@vulcanjs/react-ui@workspace:packages/react-ui"
   dependencies:
     "@types/lodash": ^4.14.168
     "@types/underscore": ^1.11.1
     "@vulcanjs/core": ^0.7.2-alpha.8
-    "@vulcanjs/graphql": ^0.7.2-alpha.8
-    "@vulcanjs/i18n": ^0.7.2-alpha.8
+    "@vulcanjs/graphql": ^0.8.1-y.0
+    "@vulcanjs/i18n": ^0.8.1-y.0
     "@vulcanjs/model": ^0.7.2-alpha.8
     "@vulcanjs/permissions": ^0.7.2-alpha.8
-    "@vulcanjs/react-hooks": ^0.7.2-alpha.8
-    "@vulcanjs/react-i18n": ^0.7.2-alpha.8
+    "@vulcanjs/react-hooks": ^0.8.1-y.0
+    "@vulcanjs/react-i18n": ^0.8.1-y.0
     "@vulcanjs/schema": ^0.7.2-alpha.8
     "@vulcanjs/utils": ^0.7.2-alpha.8
     classnames: ^2.3.1
@@ -12189,6 +12213,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"apollo-reporting-protobuf@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "apollo-reporting-protobuf@npm:3.3.3"
+  dependencies:
+    "@apollo/protobufjs": 1.2.6
+  checksum: 6900db30476ef2e888ecef4c291e26579eba9695dc874ca8b3d1f93064bea307689172790b9d574849e5bdb371953ea38f2caddc5abb51e1ca197197f3d56d28
+  languageName: node
+  linkType: hard
+
 "apollo-server-caching@npm:0.3.1, apollo-server-caching@npm:^0.3.1":
   version: 0.3.1
   resolution: "apollo-server-caching@npm:0.3.1"
@@ -12207,7 +12240,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-core@npm:3.9, apollo-server-core@npm:^3.9.0":
+"apollo-server-core@npm:3.11":
+  version: 3.11.1
+  resolution: "apollo-server-core@npm:3.11.1"
+  dependencies:
+    "@apollo/utils.keyvaluecache": ^1.0.1
+    "@apollo/utils.logger": ^1.0.0
+    "@apollo/utils.usagereporting": ^1.0.0
+    "@apollographql/apollo-tools": ^0.5.3
+    "@apollographql/graphql-playground-html": 1.6.29
+    "@graphql-tools/mock": ^8.1.2
+    "@graphql-tools/schema": ^8.0.0
+    "@josephg/resolvable": ^1.0.0
+    apollo-datasource: ^3.3.2
+    apollo-reporting-protobuf: ^3.3.3
+    apollo-server-env: ^4.2.1
+    apollo-server-errors: ^3.3.1
+    apollo-server-plugin-base: ^3.7.1
+    apollo-server-types: ^3.7.1
+    async-retry: ^1.2.1
+    fast-json-stable-stringify: ^2.1.0
+    graphql-tag: ^2.11.0
+    loglevel: ^1.6.8
+    lru-cache: ^6.0.0
+    node-abort-controller: ^3.0.1
+    sha.js: ^2.4.11
+    uuid: ^9.0.0
+    whatwg-mimetype: ^3.0.0
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: a5cb7cff331680c2a926c64e88f744425b724bcfae46aeb02ae636d0b6f57a605e561eb284e765618bd0b2b5f8c556c92183f69852f2e4f5889368fee6aa38dc
+  languageName: node
+  linkType: hard
+
+"apollo-server-core@npm:^3.9.0":
   version: 3.9.0
   resolution: "apollo-server-core@npm:3.9.0"
   dependencies:
@@ -12309,6 +12375,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"apollo-server-plugin-base@npm:^3.7.1":
+  version: 3.7.1
+  resolution: "apollo-server-plugin-base@npm:3.7.1"
+  dependencies:
+    apollo-server-types: ^3.7.1
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: db8c5f658da8c51c067bd6659b31ec2436d4961437b6f6f6b1b2a109d26764bc52a4dbe1bdafcb3c712b0e2f13ca10ed787e90423505685d2043a77363bdfc0b
+  languageName: node
+  linkType: hard
+
 "apollo-server-types@npm:^3.6.1":
   version: 3.6.1
   resolution: "apollo-server-types@npm:3.6.1"
@@ -12320,6 +12397,20 @@ __metadata:
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
   checksum: b637c7d040f3c8bc1121918b441180999ea71e142e2ab9626e341015905d0b89be630bdf848fb0a4f39be71f12ac702f49e5b060eb0f13314f0a9e5183a759ab
+  languageName: node
+  linkType: hard
+
+"apollo-server-types@npm:^3.7.1":
+  version: 3.7.1
+  resolution: "apollo-server-types@npm:3.7.1"
+  dependencies:
+    "@apollo/utils.keyvaluecache": ^1.0.1
+    "@apollo/utils.logger": ^1.0.0
+    apollo-reporting-protobuf: ^3.3.3
+    apollo-server-env: ^4.2.1
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: fe9a0847d0b8ab70dbe407b4ba1f5e506d351ff1f728193f4b308806e73b958f50537478a71edeefdd66fcf3dbf32ec732b6ffe6542860d5b683b1d657a019a2
   languageName: node
   linkType: hard
 
@@ -27867,6 +27958,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-abort-controller@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "node-abort-controller@npm:3.0.1"
+  checksum: 2b3d75c65249fea99e8ba22da3a8bc553f034f44dd12f5f4b38b520f718b01c88718c978f0c24c2a460fc01de9a80b567028f547b94440cb47adeacfeb82c2ee
+  languageName: node
+  linkType: hard
+
 "node-addon-api@npm:^1.7.1":
   version: 1.7.2
   resolution: "node-addon-api@npm:1.7.2"
@@ -37358,6 +37456,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "uuid@npm:9.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
+  languageName: node
+  linkType: hard
+
 "uvu@npm:^0.5.0":
   version: 0.5.3
   resolution: "uvu@npm:0.5.3"
@@ -37631,9 +37738,9 @@ __metadata:
   resolution: "vulcan-express@workspace:starters/express"
   dependencies:
     "@graphql-tools/schema": ^8.3.2
-    "@vulcanjs/graphql": ^0.7.2-alpha.8
+    "@vulcanjs/graphql": ^0.8.1-y.0
     "@vulcanjs/mongo": ^0.7.2-alpha.8
-    "@vulcanjs/mongo-apollo": ^0.7.2-alpha.8
+    "@vulcanjs/mongo-apollo": ^0.8.1-y.0
     apollo-server: 3.9
     apollo-server-express: 3.9
     express: ^4.17.3
@@ -37693,19 +37800,19 @@ __metadata:
     "@types/shelljs": ^0.8.8
     "@vercel/ncc": ^0.30.0
     "@vulcanjs/crud": ^0.7.2-alpha.8
-    "@vulcanjs/graphql": ^0.7.2-alpha.8
+    "@vulcanjs/graphql": ^0.8.1-y.0
     "@vulcanjs/mdx": ^0.7.2-alpha.8
-    "@vulcanjs/meteor-legacy": ^0.7.2-alpha.8
+    "@vulcanjs/meteor-legacy": ^0.8.1-y.0
     "@vulcanjs/model": ^0.7.2-alpha.8
     "@vulcanjs/mongo": ^0.7.2-alpha.8
-    "@vulcanjs/mongo-apollo": ^0.7.2-alpha.8
-    "@vulcanjs/react-hooks": ^0.7.2-alpha.8
-    "@vulcanjs/react-ui": ^0.8.0
-    "@vulcanjs/react-ui-lite": ^0.8.0
+    "@vulcanjs/mongo-apollo": ^0.8.1-y.0
+    "@vulcanjs/react-hooks": ^0.8.1-y.0
+    "@vulcanjs/react-ui": ^0.8.1-y.0
+    "@vulcanjs/react-ui-lite": ^0.8.1-y.0
     "@vulcanjs/schema": ^0.7.2-alpha.8
     apollo-datasource-mongodb: ^0.5.2
     apollo-server: 3.9
-    apollo-server-core: 3.9
+    apollo-server-core: 3.11
     apollo-server-express: 3.9
     auto-changelog: ^2.2.1
     babel-jest: 28
