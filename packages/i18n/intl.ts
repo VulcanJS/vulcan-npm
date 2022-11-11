@@ -97,14 +97,17 @@ export const truncateKey = (key) => key.split("-")[0];
  */
 export const getValidLocale =
   (Locales: Array<LocaleType>) => (localeId: string) => {
-    const validLocale = Locales.find((locale: LocaleType) => {
+    const exactLocale = Locales.find((locale: LocaleType) => {
       const { id } = locale;
-      return (
-        id.toLowerCase() === localeId.toLowerCase() ||
-        truncateKey(id) === truncateKey(localeId)
-      );
+      return id.toLowerCase() === localeId.toLowerCase();
     });
-    return validLocale;
+    if (exactLocale) return exactLocale;
+    const countryLocale = Locales.find((locale: LocaleType) => {
+      const { id } = locale;
+      return truncateKey(id) === truncateKey(localeId);
+    });
+    if (countryLocale) return countryLocale;
+    return null;
   };
 
 /*
