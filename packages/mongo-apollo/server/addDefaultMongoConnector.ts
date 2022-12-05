@@ -16,7 +16,7 @@ const debugMongo = debugVulcan("mongo");
  */
 export const addDefaultMongoConnector = (
   models: Array<VulcanGraphqlModelServer>,
-  connectorOptions?: Pick<MongooseConnectorOptions, "mongooseInstance">
+  connectorOptions?: Pick<MongooseConnectorOptions, "mongooseInstance" | "mongooseConnection">
 ) => {
   models.forEach((model) => {
     if (!model.crud.connector) {

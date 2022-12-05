@@ -5,7 +5,6 @@ import { filterFunction } from "./mongoParams";
 import mongoose, { QueryOptions, FilterQuery } from "mongoose";
 import { Connector, convertToJSON } from "@vulcanjs/crud/server";
 import { debugVulcan } from "@vulcanjs/utils";
-import { deprecate } from "util";
 const debugMongoose = debugVulcan("mongoose");
 
 export type MongooseConnector<TModel = any> = Connector<
@@ -24,9 +23,17 @@ export interface MongooseConnectorOptions {
   /** Force a mongoose model. Use if you need to customize the schema or options */
   mongooseModel?: mongoose.Model<any>;
   mongooseSchema?: mongoose.Schema;
-  /** Force a Mongoose instance (when using multiple databases,
-   * also useful during local development when not using Yalc) */
+  /** 
+   * Force a Mongoose instance
+   * Avoids issue with multiple mongoose versions
+   * When using multiple databases, prefer using 1 instance of mongoose, but 2 or more "mongooseConnection"
+   **/
   mongooseInstance?: mongoose.Mongoose;
+  /**
+   * Force a mongoose connection
+   * Useful when using multiple databases
+   */
+  mongooseConnection?: mongoose.Connection
 }
 /**
  * Will be deprecated @see https://github.com/VulcanJS/vulcan-npm/pull/129
@@ -36,10 +43,11 @@ export const createMongooseConnector = <TModel = any>(
   options?: MongooseConnectorOptions
 ): MongooseConnector<TModel> => {
   const mongooseInstance = options?.mongooseInstance || mongoose;
+  const mongooseConnection = options?.mongooseConnection || mongoose.connection
   // 1. use, retrieve or create the mongoose model
   // TODO: get a better key than "model.name" eg "model.mongo.collectionName"
   let MongooseModel =
-    options?.mongooseModel || mongooseInstance.models?.[model.name];
+    options?.mongooseModel || mongooseConnection.models?.[model.name];
   if (!MongooseModel) {
     debugMongoose("Mongoose model", model.name, "not found, will create it.");
     // TODO: compute a Mongoose schema from a VulcanSchema automatically
@@ -49,7 +57,7 @@ export const createMongooseConnector = <TModel = any>(
       options?.mongooseSchema ||
       new mongooseInstance.Schema(defaultSchema, { strict: false });
     // TODO: get name from a custom "model.mongo" option, using the model extension system like for graphql
-    MongooseModel = mongooseInstance.model(model.name, schema);
+    MongooseModel = mongooseConnection.model(model.name, schema);
   }
   // 2. create the connector
   return {
