@@ -1,6 +1,8 @@
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
-export function middleware(req: NextRequest, ev: NextFetchEvent) {
+export const debugMatcher = "/vn/debug/:path*";
+
+export function debugMiddleware(req: NextRequest, ev: NextFetchEvent) {
   // @see https://nextjs.org/docs/messages/middleware-relative-urls
   if (
     process.env.NODE_ENV === "production" &&
