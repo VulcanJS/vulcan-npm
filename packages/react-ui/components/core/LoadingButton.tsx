@@ -7,6 +7,7 @@ export interface LoadingButtonProps extends ButtonProps {
   onClick?: any;
   children?: React.ReactNode;
   className?: string;
+  components?: any[]
 }
 export const LoadingButton = ({
   loading,
@@ -14,9 +15,10 @@ export const LoadingButton = ({
   onClick,
   children,
   className = "",
+  components,
   ...rest
 }: LoadingButtonProps & any) => {
-  const Components = useVulcanComponents();
+  const Components = useVulcanComponents(components);
 
   const wrapperStyle: CSSProperties = {
     position: "relative",
